@@ -1,0 +1,615 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		85CF3457252D430C00A101C9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF3456252D430C00A101C9 /* AppDelegate.swift */; };
+		85CF3459252D430C00A101C9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF3458252D430C00A101C9 /* SceneDelegate.swift */; };
+		85CF345B252D430C00A101C9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF345A252D430C00A101C9 /* ViewController.swift */; };
+		85CF345E252D430C00A101C9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 85CF345C252D430C00A101C9 /* Main.storyboard */; };
+		85CF3461252D430C00A101C9 /* WotMovie.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 85CF345F252D430C00A101C9 /* WotMovie.xcdatamodeld */; };
+		85CF3463252D430F00A101C9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 85CF3462252D430F00A101C9 /* Assets.xcassets */; };
+		85CF3466252D430F00A101C9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 85CF3464252D430F00A101C9 /* LaunchScreen.storyboard */; };
+		85CF3471252D430F00A101C9 /* WotMovieTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF3470252D430F00A101C9 /* WotMovieTests.swift */; };
+		85CF347C252D430F00A101C9 /* WotMovieUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF347B252D430F00A101C9 /* WotMovieUITests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		85CF346D252D430F00A101C9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 85CF344B252D430C00A101C9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 85CF3452252D430C00A101C9;
+			remoteInfo = WotMovie;
+		};
+		85CF3478252D430F00A101C9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 85CF344B252D430C00A101C9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 85CF3452252D430C00A101C9;
+			remoteInfo = WotMovie;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		85CF3453252D430C00A101C9 /* WotMovie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WotMovie.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		85CF3456252D430C00A101C9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		85CF3458252D430C00A101C9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		85CF345A252D430C00A101C9 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		85CF345D252D430C00A101C9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		85CF3460252D430C00A101C9 /* WotMovie.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = WotMovie.xcdatamodel; sourceTree = "<group>"; };
+		85CF3462252D430F00A101C9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		85CF3465252D430F00A101C9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		85CF3467252D430F00A101C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		85CF346C252D430F00A101C9 /* WotMovieTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WotMovieTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		85CF3470252D430F00A101C9 /* WotMovieTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WotMovieTests.swift; sourceTree = "<group>"; };
+		85CF3472252D430F00A101C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		85CF3477252D430F00A101C9 /* WotMovieUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WotMovieUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		85CF347B252D430F00A101C9 /* WotMovieUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WotMovieUITests.swift; sourceTree = "<group>"; };
+		85CF347D252D430F00A101C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		85CF3450252D430C00A101C9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		85CF3469252D430F00A101C9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		85CF3474252D430F00A101C9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		85CF344A252D430C00A101C9 = {
+			isa = PBXGroup;
+			children = (
+				85CF3455252D430C00A101C9 /* WotMovie */,
+				85CF346F252D430F00A101C9 /* WotMovieTests */,
+				85CF347A252D430F00A101C9 /* WotMovieUITests */,
+				85CF3454252D430C00A101C9 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		85CF3454252D430C00A101C9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				85CF3453252D430C00A101C9 /* WotMovie.app */,
+				85CF346C252D430F00A101C9 /* WotMovieTests.xctest */,
+				85CF3477252D430F00A101C9 /* WotMovieUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		85CF3455252D430C00A101C9 /* WotMovie */ = {
+			isa = PBXGroup;
+			children = (
+				85CF3456252D430C00A101C9 /* AppDelegate.swift */,
+				85CF3458252D430C00A101C9 /* SceneDelegate.swift */,
+				85CF345A252D430C00A101C9 /* ViewController.swift */,
+				85CF345C252D430C00A101C9 /* Main.storyboard */,
+				85CF3462252D430F00A101C9 /* Assets.xcassets */,
+				85CF3464252D430F00A101C9 /* LaunchScreen.storyboard */,
+				85CF3467252D430F00A101C9 /* Info.plist */,
+				85CF345F252D430C00A101C9 /* WotMovie.xcdatamodeld */,
+			);
+			path = WotMovie;
+			sourceTree = "<group>";
+		};
+		85CF346F252D430F00A101C9 /* WotMovieTests */ = {
+			isa = PBXGroup;
+			children = (
+				85CF3470252D430F00A101C9 /* WotMovieTests.swift */,
+				85CF3472252D430F00A101C9 /* Info.plist */,
+			);
+			path = WotMovieTests;
+			sourceTree = "<group>";
+		};
+		85CF347A252D430F00A101C9 /* WotMovieUITests */ = {
+			isa = PBXGroup;
+			children = (
+				85CF347B252D430F00A101C9 /* WotMovieUITests.swift */,
+				85CF347D252D430F00A101C9 /* Info.plist */,
+			);
+			path = WotMovieUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		85CF3452252D430C00A101C9 /* WotMovie */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 85CF3480252D430F00A101C9 /* Build configuration list for PBXNativeTarget "WotMovie" */;
+			buildPhases = (
+				85CF344F252D430C00A101C9 /* Sources */,
+				85CF3450252D430C00A101C9 /* Frameworks */,
+				85CF3451252D430C00A101C9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WotMovie;
+			productName = WotMovie;
+			productReference = 85CF3453252D430C00A101C9 /* WotMovie.app */;
+			productType = "com.apple.product-type.application";
+		};
+		85CF346B252D430F00A101C9 /* WotMovieTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 85CF3483252D430F00A101C9 /* Build configuration list for PBXNativeTarget "WotMovieTests" */;
+			buildPhases = (
+				85CF3468252D430F00A101C9 /* Sources */,
+				85CF3469252D430F00A101C9 /* Frameworks */,
+				85CF346A252D430F00A101C9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				85CF346E252D430F00A101C9 /* PBXTargetDependency */,
+			);
+			name = WotMovieTests;
+			productName = WotMovieTests;
+			productReference = 85CF346C252D430F00A101C9 /* WotMovieTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		85CF3476252D430F00A101C9 /* WotMovieUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 85CF3486252D430F00A101C9 /* Build configuration list for PBXNativeTarget "WotMovieUITests" */;
+			buildPhases = (
+				85CF3473252D430F00A101C9 /* Sources */,
+				85CF3474252D430F00A101C9 /* Frameworks */,
+				85CF3475252D430F00A101C9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				85CF3479252D430F00A101C9 /* PBXTargetDependency */,
+			);
+			name = WotMovieUITests;
+			productName = WotMovieUITests;
+			productReference = 85CF3477252D430F00A101C9 /* WotMovieUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		85CF344B252D430C00A101C9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1200;
+				LastUpgradeCheck = 1200;
+				TargetAttributes = {
+					85CF3452252D430C00A101C9 = {
+						CreatedOnToolsVersion = 12.0.1;
+					};
+					85CF346B252D430F00A101C9 = {
+						CreatedOnToolsVersion = 12.0.1;
+						TestTargetID = 85CF3452252D430C00A101C9;
+					};
+					85CF3476252D430F00A101C9 = {
+						CreatedOnToolsVersion = 12.0.1;
+						TestTargetID = 85CF3452252D430C00A101C9;
+					};
+				};
+			};
+			buildConfigurationList = 85CF344E252D430C00A101C9 /* Build configuration list for PBXProject "WotMovie" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 85CF344A252D430C00A101C9;
+			productRefGroup = 85CF3454252D430C00A101C9 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				85CF3452252D430C00A101C9 /* WotMovie */,
+				85CF346B252D430F00A101C9 /* WotMovieTests */,
+				85CF3476252D430F00A101C9 /* WotMovieUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		85CF3451252D430C00A101C9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				85CF3466252D430F00A101C9 /* LaunchScreen.storyboard in Resources */,
+				85CF3463252D430F00A101C9 /* Assets.xcassets in Resources */,
+				85CF345E252D430C00A101C9 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		85CF346A252D430F00A101C9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		85CF3475252D430F00A101C9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		85CF344F252D430C00A101C9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				85CF345B252D430C00A101C9 /* ViewController.swift in Sources */,
+				85CF3457252D430C00A101C9 /* AppDelegate.swift in Sources */,
+				85CF3459252D430C00A101C9 /* SceneDelegate.swift in Sources */,
+				85CF3461252D430C00A101C9 /* WotMovie.xcdatamodeld in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		85CF3468252D430F00A101C9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				85CF3471252D430F00A101C9 /* WotMovieTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		85CF3473252D430F00A101C9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				85CF347C252D430F00A101C9 /* WotMovieUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		85CF346E252D430F00A101C9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 85CF3452252D430C00A101C9 /* WotMovie */;
+			targetProxy = 85CF346D252D430F00A101C9 /* PBXContainerItemProxy */;
+		};
+		85CF3479252D430F00A101C9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 85CF3452252D430C00A101C9 /* WotMovie */;
+			targetProxy = 85CF3478252D430F00A101C9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		85CF345C252D430C00A101C9 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				85CF345D252D430C00A101C9 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		85CF3464252D430F00A101C9 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				85CF3465252D430F00A101C9 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		85CF347E252D430F00A101C9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		85CF347F252D430F00A101C9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		85CF3481252D430F00A101C9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YTRTBZT9JR;
+				INFOPLIST_FILE = WotMovie/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.griffinstorback.WotMovie;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		85CF3482252D430F00A101C9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YTRTBZT9JR;
+				INFOPLIST_FILE = WotMovie/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.griffinstorback.WotMovie;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		85CF3484252D430F00A101C9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YTRTBZT9JR;
+				INFOPLIST_FILE = WotMovieTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.griffinstorback.WotMovieTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WotMovie.app/WotMovie";
+			};
+			name = Debug;
+		};
+		85CF3485252D430F00A101C9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YTRTBZT9JR;
+				INFOPLIST_FILE = WotMovieTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.griffinstorback.WotMovieTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WotMovie.app/WotMovie";
+			};
+			name = Release;
+		};
+		85CF3487252D430F00A101C9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YTRTBZT9JR;
+				INFOPLIST_FILE = WotMovieUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.griffinstorback.WotMovieUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = WotMovie;
+			};
+			name = Debug;
+		};
+		85CF3488252D430F00A101C9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YTRTBZT9JR;
+				INFOPLIST_FILE = WotMovieUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.griffinstorback.WotMovieUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = WotMovie;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		85CF344E252D430C00A101C9 /* Build configuration list for PBXProject "WotMovie" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				85CF347E252D430F00A101C9 /* Debug */,
+				85CF347F252D430F00A101C9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		85CF3480252D430F00A101C9 /* Build configuration list for PBXNativeTarget "WotMovie" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				85CF3481252D430F00A101C9 /* Debug */,
+				85CF3482252D430F00A101C9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		85CF3483252D430F00A101C9 /* Build configuration list for PBXNativeTarget "WotMovieTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				85CF3484252D430F00A101C9 /* Debug */,
+				85CF3485252D430F00A101C9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		85CF3486252D430F00A101C9 /* Build configuration list for PBXNativeTarget "WotMovieUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				85CF3487252D430F00A101C9 /* Debug */,
+				85CF3488252D430F00A101C9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		85CF345F252D430C00A101C9 /* WotMovie.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				85CF3460252D430C00A101C9 /* WotMovie.xcdatamodel */,
+			);
+			currentVersion = 85CF3460252D430C00A101C9 /* WotMovie.xcdatamodel */;
+			path = WotMovie.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 85CF344B252D430C00A101C9 /* Project object */;
+}
