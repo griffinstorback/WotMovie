@@ -1,21 +1,24 @@
 //
-//  WotMovieTests.swift
+//  ServiceTests.swift
 //  WotMovieTests
 //
-//  Created by Griffin Storback on 2020-10-06.
+//  Created by Griffin Storback on 2020-10-11.
 //
 
 import XCTest
 @testable import WotMovie
 
-class WotMovieTests: XCTestCase {
-
+class ServiceTests: XCTestCase {
+    
+    var router: Router<MovieApi>!
+    
     override func setUpWithError() throws {
         try super.setUpWithError()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
 
     override func tearDownWithError() throws {
+        try super.tearDownWithError()
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 

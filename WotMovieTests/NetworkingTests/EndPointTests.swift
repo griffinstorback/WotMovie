@@ -1,14 +1,13 @@
 //
-//  WotMovieTests.swift
+//  EndPointTests.swift
 //  WotMovieTests
 //
-//  Created by Griffin Storback on 2020-10-06.
+//  Created by Griffin Storback on 2020-10-11.
 //
 
 import XCTest
-@testable import WotMovie
 
-class WotMovieTests: XCTestCase {
+class EndPointTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -16,6 +15,7 @@ class WotMovieTests: XCTestCase {
     }
 
     override func tearDownWithError() throws {
+        try super.tearDownWithError()
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
