@@ -44,6 +44,17 @@ extension UIView {
             heightAnchor.constraint(equalToConstant: size.height).isActive = true
         }
     }
+    
+    func anchorSize(height: NSLayoutDimension?, width: NSLayoutDimension?) {
+        translatesAutoresizingMaskIntoConstraints = false
+        
+        if let heightConstraint = height {
+            heightAnchor.constraint(equalTo: heightConstraint).isActive = true
+        }
+        if let widthConstraint = width {
+            widthAnchor.constraint(equalTo: widthConstraint).isActive = true
+        }
+    }
 }
 
 extension NSLayoutConstraint {

@@ -53,7 +53,9 @@ class GuessPresenter {
         networkManager.getMovieGenres { [weak self] genres, error in
             if let error = error {
                 self?.movieGenres = []
-                self?.guessViewDelegate?.displayErrorLoadingGenres()
+                DispatchQueue.main.async {
+                    self?.guessViewDelegate?.displayErrorLoadingGenres()
+                }
             }
             if let genres = genres {
                 self?.movieGenres = genres
@@ -64,7 +66,9 @@ class GuessPresenter {
         networkManager.getTVShowGenres { [weak self] genres, error in
             if let error = error {
                 self?.tvShowGenres = []
-                self?.guessViewDelegate?.displayErrorLoadingGenres()
+                DispatchQueue.main.async {
+                    self?.guessViewDelegate?.displayErrorLoadingGenres()
+                }
             }
             if let genres = genres {
                 self?.tvShowGenres = genres

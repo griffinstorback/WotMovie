@@ -24,6 +24,9 @@ public enum MovieApi {
         
     case movieGenres
     case tvShowGenres
+    
+    case movieCredits(id: Int)
+    case tvShowCredits(id: Int)
 }
 
 extension MovieApi: EndPointType {
@@ -54,6 +57,9 @@ extension MovieApi: EndPointType {
         
         case .movieGenres: return "genre/movie/list"
         case .tvShowGenres: return "genre/tv/list"
+            
+        case .movieCredits(let id): return "movie/\(id)/credits"
+        case .tvShowCredits(let id): return "tv/\(id)/credits"
         }
     }
     
@@ -77,7 +83,9 @@ extension MovieApi: EndPointType {
                 urlParameters["with_genres"] = "\(id)"
             }
             return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
-            
+        case .movieCredits, .tvShowCredits:
+            let urlParameters: [String:Any] = ["api_key": NetworkManager.MovieAPIKey]
+            return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
         default: return .request
         }
     }

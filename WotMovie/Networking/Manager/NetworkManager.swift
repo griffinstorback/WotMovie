@@ -181,4 +181,68 @@ final class NetworkManager {
             }
         }
     }
+    
+    public func getCreditsForMovie(id: Int, completion: @escaping (_ credits: Credits?, _ error: String?) -> ()) {
+        router.request(.movieCredits(id: id)) { data, response, error in
+            if error != nil {
+                completion(nil, "Please check your network connection.")
+            }
+            
+            if let response = response as? HTTPURLResponse {
+                let result = NetworkResponse.handleNetworkResponse(response)
+                
+                switch result {
+                case .success:
+                    guard let responseData = data else {
+                        completion(nil, NetworkResponse.noData.rawValue)
+                        return
+                    }
+                    do {
+                        let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
+                        print(jsonData)
+                        let apiResponse = try JSONDecoder().decode(Credits.self, from: responseData)
+                        completion(apiResponse, nil)
+                    } catch {
+                        print(error)
+                        completion(nil, NetworkResponse.unableToDecode.rawValue)
+                    }
+                case .failure(let networkFailureError):
+                    print(networkFailureError)
+                    completion(nil, networkFailureError)
+                }
+            }
+        }
+    }
+    
+    public func getCreditsForTVShow(id: Int, completion: @escaping (_ credits: Credits?, _ error: String?) -> ()) {
+        router.request(.tvShowCredits(id: id)) { data, response, error in
+            if error != nil {
+                completion(nil, "Please check your network connection.")
+            }
+            
+            if let response = response as? HTTPURLResponse {
+                let result = NetworkResponse.handleNetworkResponse(response)
+                
+                switch result {
+                case .success:
+                    guard let responseData = data else {
+                        completion(nil, NetworkResponse.noData.rawValue)
+                        return
+                    }
+                    do {
+                        let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
+                        print(jsonData)
+                        let apiResponse = try JSONDecoder().decode(Credits.self, from: responseData)
+                        completion(apiResponse, nil)
+                    } catch {
+                        print(error)
+                        completion(nil, NetworkResponse.unableToDecode.rawValue)
+                    }
+                case .failure(let networkFailureError):
+                    print(networkFailureError)
+                    completion(nil, networkFailureError)
+                }
+            }
+        }
+    }
 }

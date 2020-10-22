@@ -9,22 +9,20 @@ import UIKit
 
 class GuessGridCollectionViewCell: UICollectionViewCell {
     
-    private var imageView: UIImageView!
+    private var posterImageView: PosterImageView!
     private var blurEffectView: UIVisualEffectView!
     
-    private var hasBeenGuessed = Bool.random()
+    private var hasBeenGuessed = true
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        imageView = UIImageView()
-        addSubview(imageView)
-        imageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
+        posterImageView = PosterImageView()
+        addSubview(posterImageView)
+        posterImageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
         
         if !hasBeenGuessed {
-            blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .systemUltraThinMaterialDark))
-            addSubview(blurEffectView)
-            blurEffectView?.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
+            posterImageView.removeBlurEffectOverlay(animated: true)
         }
     }
     
@@ -35,7 +33,7 @@ class GuessGridCollectionViewCell: UICollectionViewCell {
     override func prepareForReuse() {
         //self.imageView?.removeFromSuperview()
         //self.imageView = nil
-        self.imageView.image = nil
+        self.posterImageView.image = nil
     }
     
     // this function passed as closure to GuessGridPresenter in cellForItemAt
@@ -46,6 +44,6 @@ class GuessGridCollectionViewCell: UICollectionViewCell {
             return
         }
         
-        imageView.image = image
+        posterImageView.image = image
     }
 }

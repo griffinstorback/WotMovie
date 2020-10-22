@@ -50,6 +50,11 @@
 		85CF3591253A346800A101C9 /* NetworkResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF3590253A346800A101C9 /* NetworkResponse.swift */; };
 		85CF3596253CBE1900A101C9 /* GuessDetailPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF3595253CBE1900A101C9 /* GuessDetailPresenter.swift */; };
 		85CF359B253E0CFB00A101C9 /* DetailOverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF359A253E0CFB00A101C9 /* DetailOverviewView.swift */; };
+		85CF35A0253E48A300A101C9 /* PosterImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF359F253E48A300A101C9 /* PosterImageView.swift */; };
+		85CF35AA2540B3F600A101C9 /* PeopleTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF35A92540B3F600A101C9 /* PeopleTableViewController.swift */; };
+		85CF35B22540D92900A101C9 /* ContentSizedTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF35B12540D92900A101C9 /* ContentSizedTableView.swift */; };
+		85CF35B72540E1D000A101C9 /* Credits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF35B62540E1D000A101C9 /* Credits.swift */; };
+		85CF35BC2540E41B00A101C9 /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF35BB2540E41B00A101C9 /* Person.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -119,6 +124,11 @@
 		85CF3590253A346800A101C9 /* NetworkResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkResponse.swift; sourceTree = "<group>"; };
 		85CF3595253CBE1900A101C9 /* GuessDetailPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessDetailPresenter.swift; sourceTree = "<group>"; };
 		85CF359A253E0CFB00A101C9 /* DetailOverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailOverviewView.swift; sourceTree = "<group>"; };
+		85CF359F253E48A300A101C9 /* PosterImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosterImageView.swift; sourceTree = "<group>"; };
+		85CF35A92540B3F600A101C9 /* PeopleTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleTableViewController.swift; sourceTree = "<group>"; };
+		85CF35B12540D92900A101C9 /* ContentSizedTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentSizedTableView.swift; sourceTree = "<group>"; };
+		85CF35B62540E1D000A101C9 /* Credits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credits.swift; sourceTree = "<group>"; };
+		85CF35BB2540E41B00A101C9 /* Person.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -261,6 +271,8 @@
 				85CF356A25377D0200A101C9 /* Genre.swift */,
 				85CF356F2538D38600A101C9 /* TVShow.swift */,
 				85CF35792538DE1D00A101C9 /* Title.swift */,
+				85CF35B62540E1D000A101C9 /* Credits.swift */,
+				85CF35BB2540E41B00A101C9 /* Person.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -285,6 +297,7 @@
 				85CF354325365CBB00A101C9 /* SettingsViewController.swift */,
 				85CF354825365D0B00A101C9 /* GuessGridViewController.swift */,
 				85CF354D25365D3B00A101C9 /* GuessDetailViewController.swift */,
+				85CF35A92540B3F600A101C9 /* PeopleTableViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -339,6 +352,8 @@
 			children = (
 				85CF3586253A306100A101C9 /* GuessGridCollectionViewCell.swift */,
 				85CF359A253E0CFB00A101C9 /* DetailOverviewView.swift */,
+				85CF359F253E48A300A101C9 /* PosterImageView.swift */,
+				85CF35B12540D92900A101C9 /* ContentSizedTableView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -482,9 +497,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				85CF35B72540E1D000A101C9 /* Credits.swift in Sources */,
 				85CF35752538DA5700A101C9 /* GuessGridPresenter.swift in Sources */,
 				85CF35702538D38600A101C9 /* TVShow.swift in Sources */,
 				85CF34B4252E739B00A101C9 /* JSONParameterEncoder.swift in Sources */,
+				85CF35B22540D92900A101C9 /* ContentSizedTableView.swift in Sources */,
 				85CF34B9252E8CEE00A101C9 /* NetworkRouter.swift in Sources */,
 				85CF354425365CBB00A101C9 /* SettingsViewController.swift in Sources */,
 				85CF34A5252E5F3A00A101C9 /* HTTPTask.swift in Sources */,
@@ -501,11 +518,13 @@
 				85CF354925365D0B00A101C9 /* GuessGridViewController.swift in Sources */,
 				85CF34C4252EB18100A101C9 /* Movie.swift in Sources */,
 				85CF3459252D430C00A101C9 /* SceneDelegate.swift in Sources */,
+				85CF35A0253E48A300A101C9 /* PosterImageView.swift in Sources */,
 				85CF357A2538DE1D00A101C9 /* Title.swift in Sources */,
 				85CF356625377CBA00A101C9 /* GuessPresenter.swift in Sources */,
 				85CF3596253CBE1900A101C9 /* GuessDetailPresenter.swift in Sources */,
 				85CF34CC252EB61500A101C9 /* NetworkManager.swift in Sources */,
 				85CF352825362D5F00A101C9 /* Extensions.swift in Sources */,
+				85CF35AA2540B3F600A101C9 /* PeopleTableViewController.swift in Sources */,
 				85CF3498252E5E1700A101C9 /* EndPointType.swift in Sources */,
 				85CF353A25365C5B00A101C9 /* GuessViewController.swift in Sources */,
 				85CF358C253A32D700A101C9 /* ImageDownloadManager.swift in Sources */,
@@ -514,6 +533,7 @@
 				85CF3461252D430C00A101C9 /* WotMovie.xcdatamodeld in Sources */,
 				85CF34AF252E61CE00A101C9 /* URLParameterEncoder.swift in Sources */,
 				85CF353F25365C7900A101C9 /* WatchListViewController.swift in Sources */,
+				85CF35BC2540E41B00A101C9 /* Person.swift in Sources */,
 				85CF3587253A306100A101C9 /* GuessGridCollectionViewCell.swift in Sources */,
 				85CF34D1252F97C400A101C9 /* MovieEndPoint.swift in Sources */,
 			);
