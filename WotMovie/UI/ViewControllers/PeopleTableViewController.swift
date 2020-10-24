@@ -38,7 +38,7 @@ extension PeopleTableViewController: UITableViewDelegate, UITableViewDataSource 
     func setupTableView() {
         tableView = ContentSizedTableView()
         
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "PeopleTableViewCell")
+        tableView.register(PersonTableViewCell.self, forCellReuseIdentifier: "PeopleTableViewCell")
         tableView.isUserInteractionEnabled = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.isScrollEnabled = false
@@ -76,14 +76,22 @@ extension PeopleTableViewController: UITableViewDelegate, UITableViewDataSource 
         }
         return 0
     }
-
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return PersonTableViewCell.cellHeight
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "PeopleTableViewCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "PeopleTableViewCell", for: indexPath) as! PersonTableViewCell
+        let section = indexPath.section
+        let index = indexPath.row
         
-        if indexPath.section == 0 {
-            cell.textLabel?.text = guessDetailPresenter.getCastMember(for: indexPath.row)?.name
-        } else if indexPath.section == 1 {
-            cell.textLabel?.text = guessDetailPresenter.getCrewMember(for: indexPath.row)?.name
+        if section == 0 {
+            cell.setName(text: guessDetailPresenter.getCastMember(for: index)?.name ?? "")
+            guessDetailPresenter.loadCastPersonImage(index: index, completion: cell.setImage)
+        } else if section == 1 {
+            cell.setName(text: guessDetailPresenter.getCrewMember(for: index)?.name ?? "")
+            guessDetailPresenter.loadCrewPersonImage(index: index, completion: cell.setImage)
         }
 
         return cell

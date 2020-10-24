@@ -7,7 +7,6 @@
 
 import UIKit
 
-// TODO: Delete and rename GuessTitleDetailViewController
 class GuessDetailViewController: UIViewController {
     
     private let guessDetailViewPresenter: GuessDetailPresenter
@@ -20,7 +19,8 @@ class GuessDetailViewController: UIViewController {
     private let revealButton: UIButton!
     
     // stackview items
-    private var detailOverviewView: DetailOverviewView!
+    private let detailOverviewView: DetailOverviewView!
+    private let castCollectionView: HorizontalCollectionViewController!
     private let peopleTableView: PeopleTableViewController!
     
     init(title: Title) {
@@ -33,6 +33,7 @@ class GuessDetailViewController: UIViewController {
         revealButton = UIButton()
         
         detailOverviewView = DetailOverviewView(frame: .zero)
+        castCollectionView = HorizontalCollectionViewController(title: "Cast")
         peopleTableView = PeopleTableViewController(guessDetailPresenter: guessDetailViewPresenter)
         
         super.init(nibName: nil, bundle: nil)
@@ -63,7 +64,7 @@ class GuessDetailViewController: UIViewController {
     
     @objc func revealButtonPressed() {
         detailOverviewView.removePosterImageBlurEffectOverlay(animated: true)
-        detailOverviewView.setTitle(text: guessDetailViewPresenter.getTitle())
+        detailOverviewView.setTitle(guessDetailViewPresenter.getTitle())
     }
     
     private func setupViews() {
@@ -71,14 +72,15 @@ class GuessDetailViewController: UIViewController {
         
         contentStackView.axis = .vertical
         contentStackView.spacing = 20
-        contentStackView.layoutMargins = UIEdgeInsets(top: 50, left: 0, bottom: 200, right: 0)
+        contentStackView.layoutMargins = UIEdgeInsets(top: 80, left: 0, bottom: 200, right: 0)
         contentStackView.isLayoutMarginsRelativeArrangement = true
         
         // set poster image
         guessDetailViewPresenter.loadPosterImage(completion: detailOverviewView.setPosterImage)
-
         // set overview text
-        detailOverviewView.setOverviewText(text: guessDetailViewPresenter.getOverview())
+        detailOverviewView.setOverviewText(guessDetailViewPresenter.getOverview())
+        
+        castCollectionView.setDelegate(self)
         
         // if hasBeenGuessed
         //titleLabel.text = guessDetailViewPresenter.getTitle()
@@ -105,6 +107,7 @@ class GuessDetailViewController: UIViewController {
         
         // add the stack view items
         contentStackView.addArrangedSubview(detailOverviewView)
+        addChildToStackView(castCollectionView)
         addChildToStackView(peopleTableView)
         
         // add the top buttons (reveal, and close)
@@ -116,12 +119,28 @@ class GuessDetailViewController: UIViewController {
     }
 }
 
+extension GuessDetailViewController: HorizontalCollectionViewDelegate {
+    func getNumberOfItems() -> Int {
+        return guessDetailViewPresenter.getCastCount()
+    }
+    
+    func getNameForPersonAt(index: Int) -> String {
+        return guessDetailViewPresenter.getCastMember(for: index)?.name ?? ""
+    }
+    
+    func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?) -> Void) {
+        guessDetailViewPresenter.loadCastPersonImage(index: index, completion: completion)
+        return
+    }
+}
+
 extension GuessDetailViewController: GuessDetailViewDelegate {
     func displayErrorLoadingDetail() {
         print("error loading detail view")
     }
     
     func reloadCreditsData() {
+        castCollectionView.reloadData()
         peopleTableView.reloadTableViewData()
     }
 }

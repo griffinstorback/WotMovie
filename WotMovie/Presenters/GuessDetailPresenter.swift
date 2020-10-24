@@ -52,7 +52,34 @@ class GuessDetailPresenter {
     }
     
     func loadPosterImage(completion: @escaping (_ image: UIImage?) -> Void) {
-        imageDownloadManager.downloadImage(path: title.posterPath ?? "") { image, error in
+        guard let posterPath = title.posterPath else {
+            completion(nil)
+            return
+        }
+        
+        loadImage(path: posterPath, completion: completion)
+    }
+    
+    func loadCastPersonImage(index: Int, completion: @escaping (_ image: UIImage?) -> Void) {
+        guard let credits = credits, let profilePath = credits.cast[index].profilePath else {
+            completion(nil)
+            return
+        }
+        
+        loadImage(path: profilePath, completion: completion)
+    }
+    
+    func loadCrewPersonImage(index: Int, completion: @escaping (_ image: UIImage?) -> Void) {
+        guard let credits = credits, let profilePath = credits.crew[index].profilePath else {
+            completion(nil)
+            return
+        }
+        
+        loadImage(path: profilePath, completion: completion)
+    }
+    
+    func loadImage(path: String, completion: @escaping (_ image: UIImage?) -> Void) {
+        imageDownloadManager.downloadImage(path: path) { image, error in
             if let error = error {
                 print(error)
                 DispatchQueue.main.async {

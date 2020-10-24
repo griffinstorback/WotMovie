@@ -9,6 +9,7 @@ import UIKit
 
 class PosterImageView: UIImageView {
 
+    // lazy because they're completely unneeded if the image is never "anonymized" (blurred out)
     private lazy var blurEffectView: UIVisualEffectView = {
         let view = UIVisualEffectView(effect: UIBlurEffect(style: .systemUltraThinMaterialDark))
         return view
@@ -17,19 +18,21 @@ class PosterImageView: UIImageView {
         return UIImageView() // TODO: - make question mark png - UIImageView(image: UIImage(named: "question_mark.png"))
     }()
     
-    convenience init() {
+    convenience init(startHidden: Bool) {
         self.init(frame: .zero)
+        
+        if startHidden {
+            // Initially starts with blur on. Call removeBlurEffectOverlay when user has guessed it or given up.
+            addBlurEffectOverlay(animated: false)
+            
+            // But animate the question mark on.
+            //addQuestionMarkOverlay(animated: true)
+        }
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .white
-        
-        // Initially starts with blur on. Call removeBlurEffectOverlay when user has guessed it or given up.
-        addBlurEffectOverlay(animated: false)
-        
-        // But animate the question mark on.
-        //addQuestionMarkOverlay(animated: true)
     }
     
     func addQuestionMarkOverlay(animated: Bool) {

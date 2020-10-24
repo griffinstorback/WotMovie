@@ -55,6 +55,17 @@ extension UIView {
             widthAnchor.constraint(equalTo: widthConstraint).isActive = true
         }
     }
+    
+    func anchorToCenter(yAnchor: NSLayoutYAxisAnchor?, xAnchor: NSLayoutXAxisAnchor?) {
+        translatesAutoresizingMaskIntoConstraints = false
+        
+        if let yAnchor = yAnchor {
+            centerYAnchor.constraint(equalTo: yAnchor).isActive = true
+        }
+        if let xAnchor = xAnchor {
+            centerXAnchor.constraint(equalTo: xAnchor).isActive = true
+        }
+    }
 }
 
 extension NSLayoutConstraint {

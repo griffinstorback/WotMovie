@@ -11,7 +11,7 @@ import UIKit
 class DetailOverviewView: UIView {
     
     private lazy var posterImageView: PosterImageView = {
-        return PosterImageView()
+        return PosterImageView(startHidden: true)
     }()
     private lazy var genreListView: UILabel = {
         return UILabel()
@@ -28,7 +28,7 @@ class DetailOverviewView: UIView {
         let label = UILabel()
         label.numberOfLines = 0
         label.text = "?"
-        label.font = UIFont.systemFont(ofSize: 32)
+        label.font = UIFont.boldSystemFont(ofSize: 32)
         return label
     }()
     private lazy var overviewTextView: UITextView = {
@@ -53,14 +53,14 @@ class DetailOverviewView: UIView {
     }
     
     private func setupView() {
-        backgroundColor = .lightGray
+        backgroundColor = .white
         overviewTextView.isScrollEnabled = false
-        overviewTextView.backgroundColor = .lightGray
+        overviewTextView.backgroundColor = .white
         overviewTextView.font = UIFont.systemFont(ofSize: 17.0)
         
         genreListView.text = "Horror, Comedy, Anything"
 
-        verticalStackView.backgroundColor = .lightGray
+        verticalStackView.backgroundColor = .white
         
         addSubview(verticalStackView)
         setupLayout()
@@ -71,23 +71,23 @@ class DetailOverviewView: UIView {
         verticalStackView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
     }
     
-    func setTitle(text: String) {
+    public func setTitle(_ text: String) {
         titleLabel.text = text
     }
     
-    func setPosterImage(image: UIImage?) {
+    public func setPosterImage(_ image: UIImage?) {
         posterImageView.image = image
     }
     
-    func setOverviewText(text: String) {
+    public func setOverviewText(_ text: String) {
         overviewTextView.text = text
     }
     
-    func removePosterImageBlurEffectOverlay(animated: Bool) {
+    public func removePosterImageBlurEffectOverlay(animated: Bool) {
         posterImageView.removeBlurEffectOverlay(animated: animated)
     }
     
-    func addPosterImageBlurEffectOverlay(animated: Bool) {
+    public func addPosterImageBlurEffectOverlay(animated: Bool) {
         posterImageView.addBlurEffectOverlay(animated: animated)
     }
 }

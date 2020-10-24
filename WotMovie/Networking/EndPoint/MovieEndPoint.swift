@@ -84,7 +84,7 @@ extension MovieApi: EndPointType {
             }
             return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
         case .movieCredits, .tvShowCredits:
-            let urlParameters: [String:Any] = ["api_key": NetworkManager.MovieAPIKey]
+            let urlParameters: [String: Any] = ["api_key": NetworkManager.MovieAPIKey]
             return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
         default: return .request
         }

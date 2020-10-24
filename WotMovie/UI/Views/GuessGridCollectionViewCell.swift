@@ -10,14 +10,13 @@ import UIKit
 class GuessGridCollectionViewCell: UICollectionViewCell {
     
     private var posterImageView: PosterImageView!
-    private var blurEffectView: UIVisualEffectView!
     
     private var hasBeenGuessed = true
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        posterImageView = PosterImageView()
+        posterImageView = PosterImageView(startHidden: true)
         addSubview(posterImageView)
         posterImageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
         
@@ -31,14 +30,12 @@ class GuessGridCollectionViewCell: UICollectionViewCell {
     }
     
     override func prepareForReuse() {
-        //self.imageView?.removeFromSuperview()
-        //self.imageView = nil
         self.posterImageView.image = nil
     }
     
-    // this function passed as closure to GuessGridPresenter in cellForItemAt
     func imageDataReceived(image: UIImage?) {
         guard let image = image else {
+            // TODO
             //imageView.image = UIImage(named: "N/A")
             print("ERROR: image came back nil")
             return

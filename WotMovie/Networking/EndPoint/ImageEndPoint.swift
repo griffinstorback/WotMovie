@@ -37,7 +37,9 @@ extension ImageApi: EndPointType {
     var task: HTTPTask {
         switch self {
         case .imageWithPath:
-            return .request
+            //let urlParameters: [String: Any] = ["api_key": NetworkManager.MovieAPIKey]
+            //return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
+            return .request // don't need api key for images
         }
     }
     

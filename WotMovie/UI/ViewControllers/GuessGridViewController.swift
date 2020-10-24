@@ -15,6 +15,7 @@ class GuessGridViewController: UIViewController {
     
     init(for genre: Genre) {
         guessGridViewPresenter = GuessGridPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared, genre: genre)
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         
         super.init(nibName: nil, bundle: nil)
         
@@ -61,7 +62,6 @@ extension GuessGridViewController: GuessGridViewDelegate {
 
 extension GuessGridViewController: UICollectionViewDataSource {
     func setupCollectionView() {
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.backgroundColor = .white
@@ -95,7 +95,8 @@ extension GuessGridViewController: UICollectionViewDataSource {
 
 extension GuessGridViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.bounds.width/3, height: 200)
+        let screenWidth = collectionView.bounds.width
+        return CGSize(width: screenWidth/3, height: (screenWidth/3)*1.5)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
