@@ -31,6 +31,7 @@ class GuessDetailViewController: UIViewController {
         
         closeButton = UIButton()
         revealButton = UIButton()
+        revealButton.layer.cornerRadius = 10
         
         detailOverviewView = DetailOverviewView(frame: .zero)
         castCollectionView = HorizontalCollectionViewController(title: "Cast")
@@ -65,6 +66,7 @@ class GuessDetailViewController: UIViewController {
     @objc func revealButtonPressed() {
         detailOverviewView.removePosterImageBlurEffectOverlay(animated: true)
         detailOverviewView.setTitle(guessDetailViewPresenter.getTitle())
+        revealButton.isHidden = true
     }
     
     private func setupViews() {
@@ -91,7 +93,7 @@ class GuessDetailViewController: UIViewController {
         closeButton.addTarget(self, action: #selector(closeButtonPressed), for: .touchUpInside)
         
         revealButton.setTitle("Reveal", for: .normal)
-        revealButton.backgroundColor = .blue
+        revealButton.backgroundColor = .systemBlue
         revealButton.titleLabel?.textColor = .white
         revealButton.addTarget(self, action: #selector(revealButtonPressed), for: .touchUpInside)
     }
@@ -112,10 +114,10 @@ class GuessDetailViewController: UIViewController {
         
         // add the top buttons (reveal, and close)
         view.addSubview(closeButton)
-        closeButton.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: nil, bottom: nil, trailing: view.safeAreaLayoutGuide.trailingAnchor, size: CGSize(width: 44, height: 44))
+        closeButton.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: nil, trailing: nil, size: CGSize(width: 44, height: 44))
         
         view.addSubview(revealButton)
-        revealButton.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: nil, trailing: nil, size: CGSize(width: 60, height: 44))
+        revealButton.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: nil, bottom: nil, trailing: view.safeAreaLayoutGuide.trailingAnchor, padding: UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 10), size: CGSize(width: 66, height: 44))
     }
 }
 
