@@ -67,8 +67,8 @@ class DetailOverviewView: UIView {
     }
     
     private func setupLayout() {
-        posterImageView.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: CGSize(width: 133, height: 200))
-        verticalStackView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
+        posterImageView.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: CGSize(width: 140, height: 210))
+        verticalStackView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor, padding: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10))
     }
     
     public func setTitle(_ text: String) {

@@ -16,26 +16,45 @@ class HorizontalCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        backgroundColor = .green
+        
         imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
+        imageView.backgroundColor = .gray
         
         nameLabel = UILabel()
         nameLabel.numberOfLines = 0
         nameLabel.font = UIFont.systemFont(ofSize: 14.0)
-        subtitleLabel = UILabel()
+        nameLabel.textAlignment = .center
+        nameLabel.backgroundColor = .red
         
+        subtitleLabel = UILabel()
+        subtitleLabel.numberOfLines = 0
+        subtitleLabel.font = UIFont.systemFont(ofSize: 13.0)
+        subtitleLabel.textAlignment = .center
+        subtitleLabel.textColor = .gray
+        subtitleLabel.backgroundColor = .blue
+        
+        if Bool.random() {
+            subtitleLabel.text = "Character blah akjg oiwi wpopw qllkf jg oioif  nbbvbv dhhe ytyytyt shbg ytaoo ppppooppppp wkejhkjh po  o oooooooooo poopp po po po pOOP"
+        } else {
+            subtitleLabel.text = "Character blah"
+        }
         layoutViews()
     }
     
     private func layoutViews() {
         addSubview(imageView)
-        imageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor)
+        imageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor, size: CGSize(width: 0, height: 150))
         
         addSubview(nameLabel)
         nameLabel.anchor(top: imageView.bottomAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor)
         
         addSubview(subtitleLabel)
-        subtitleLabel.anchor(top: nameLabel.bottomAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
+        subtitleLabel.anchor(top: nameLabel.bottomAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor)
+        
+        // bottom constraint is less than or equal to so that label text appears at top (instead of being centered)
+        subtitleLabel.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -5).isActive = true
     }
     
     required init?(coder: NSCoder) {

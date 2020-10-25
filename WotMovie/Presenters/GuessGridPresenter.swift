@@ -74,7 +74,8 @@ class GuessGridPresenter {
                     return
                 }
                 if let movies = movies {
-                    self?.titles += movies
+                    //self?.titles += movies
+                    self?.titles.append(movies[0])
                     self?.nextPage += 1
                 }
             }

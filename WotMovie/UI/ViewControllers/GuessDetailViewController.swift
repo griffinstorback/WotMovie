@@ -74,7 +74,7 @@ class GuessDetailViewController: UIViewController {
         
         contentStackView.axis = .vertical
         contentStackView.spacing = 20
-        contentStackView.layoutMargins = UIEdgeInsets(top: 80, left: 0, bottom: 200, right: 0)
+        contentStackView.layoutMargins = UIEdgeInsets(top: 60, left: 0, bottom: 0, right: 0)
         contentStackView.isLayoutMarginsRelativeArrangement = true
         
         // set poster image
@@ -88,7 +88,8 @@ class GuessDetailViewController: UIViewController {
         //titleLabel.text = guessDetailViewPresenter.getTitle()
         // else
         
-        closeButton.setImage(UIImage(systemName: "x.circle.fill"), for: .normal)
+        closeButton.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
+        closeButton.imageView?.contentMode = .scaleAspectFill
         closeButton.tintColor = .gray
         closeButton.addTarget(self, action: #selector(closeButtonPressed), for: .touchUpInside)
         
