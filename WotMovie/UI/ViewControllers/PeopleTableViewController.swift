@@ -91,6 +91,7 @@ extension PeopleTableViewController: UITableViewDelegate, UITableViewDataSource 
             guessDetailPresenter.loadCastPersonImage(index: index, completion: cell.setImage)
         } else if section == 1 {
             cell.setName(text: guessDetailPresenter.getCrewMember(for: index)?.name ?? "")
+            cell.setSubtitle(text: guessDetailPresenter.getCrewMember(for: index)?.job ?? "")
             guessDetailPresenter.loadCrewPersonImage(index: index, completion: cell.setImage)
         }
 

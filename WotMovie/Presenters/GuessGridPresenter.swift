@@ -21,9 +21,11 @@ class GuessGridPresenter {
     weak private var guessGridViewDelegate: GuessGridViewDelegate?
     
     private let genre: Genre
+    private var nextPage = 1
     
     private var titles: [Title] = [] {
         didSet {
+            print("titles.count is ", titles.count)
             DispatchQueue.main.async {
                 self.guessGridViewDelegate?.reloadData()
             }
@@ -66,23 +68,25 @@ class GuessGridPresenter {
     
     func loadTitles() {
         if genre.isMovie {
-            networkManager.getListOfMoviesByGenre(id: genre.id) { [weak self] movies, error in
+            networkManager.getListOfMoviesByGenre(id: genre.id, page: nextPage) { [weak self] movies, error in
                 if let error = error {
                     print(error)
                     return
                 }
                 if let movies = movies {
-                    self?.titles = movies
+                    self?.titles += movies
+                    self?.nextPage += 1
                 }
             }
         } else {
-            networkManager.getListOfTVShowsByGenre(id: genre.id) { [weak self] tvShows, error in
+            networkManager.getListOfTVShowsByGenre(id: genre.id, page: nextPage) { [weak self] tvShows, error in
                 if let error = error {
                     print(error)
                     return
                 }
                 if let tvShows = tvShows {
-                    self?.titles = tvShows
+                    self?.titles += tvShows
+                    self?.nextPage += 1
                 }
             }
         }

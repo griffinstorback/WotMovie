@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8501403B2544E22F0088FA3E /* GuessGridFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8501403A2544E22F0088FA3E /* GuessGridFooterView.swift */; };
 		85CF3457252D430C00A101C9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF3456252D430C00A101C9 /* AppDelegate.swift */; };
 		85CF3459252D430C00A101C9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF3458252D430C00A101C9 /* SceneDelegate.swift */; };
 		85CF345B252D430C00A101C9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF345A252D430C00A101C9 /* ViewController.swift */; };
@@ -78,6 +79,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8501403A2544E22F0088FA3E /* GuessGridFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessGridFooterView.swift; sourceTree = "<group>"; };
 		85CF3453252D430C00A101C9 /* WotMovie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WotMovie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		85CF3456252D430C00A101C9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		85CF3458252D430C00A101C9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -363,6 +365,7 @@
 				85CF35B12540D92900A101C9 /* ContentSizedTableView.swift */,
 				85CF35C02541F9DD00A101C9 /* PersonTableViewCell.swift */,
 				85CF35DA2543A8AD00A101C9 /* HorizontalCollectionViewCell.swift */,
+				8501403A2544E22F0088FA3E /* GuessGridFooterView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -525,6 +528,7 @@
 				85CF35DB2543A8AD00A101C9 /* HorizontalCollectionViewCell.swift in Sources */,
 				85CF3457252D430C00A101C9 /* AppDelegate.swift in Sources */,
 				85CF359B253E0CFB00A101C9 /* DetailOverviewView.swift in Sources */,
+				8501403B2544E22F0088FA3E /* GuessGridFooterView.swift in Sources */,
 				85CF34A0252E5EE400A101C9 /* HTTPMethod.swift in Sources */,
 				85CF354925365D0B00A101C9 /* GuessGridViewController.swift in Sources */,
 				85CF34C4252EB18100A101C9 /* Movie.swift in Sources */,

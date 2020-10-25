@@ -34,6 +34,7 @@ class GuessGridViewController: UIViewController {
         
         setupCollectionView()
         
+        // load first page of movies/tv shows
         guessGridViewPresenter.loadTitles()
     }
 }
@@ -67,6 +68,7 @@ extension GuessGridViewController: UICollectionViewDataSource {
         collectionView.backgroundColor = .white
         
         collectionView.register(GuessGridCollectionViewCell.self, forCellWithReuseIdentifier: "TitleCollectionViewCell")
+        collectionView.register(GuessGridFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footer")
         
         view.addSubview(collectionView)
         
@@ -90,6 +92,46 @@ extension GuessGridViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guessGridViewPresenter.showGuessDetail(index: indexPath.row)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+        if guessGridViewPresenter.titlesCount > 0 {
+            return CGSize(width: collectionView.frame.width, height: 100)
+        }
+        return .zero
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        if kind == UICollectionView.elementKindSectionFooter {
+            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footer", for: indexPath) as! GuessGridFooterView
+            
+            return footerView
+        }
+        
+        return UICollectionReusableView()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
+        if elementKind == UICollectionView.elementKindSectionFooter {
+            if let footerView = view as? GuessGridFooterView {
+                if guessGridViewPresenter.titlesCount > 0 {
+                    print("displaying loading animation")
+                    footerView.startLoadingAnimation()
+                    guessGridViewPresenter.loadTitles()
+                } else {
+                    print("nothing more to load?")
+                }
+            }
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath) {
+        if elementKind == UICollectionView.elementKindSectionFooter {
+            if let footerView = view as? GuessGridFooterView {
+                print("removing loading animation")
+                footerView.stopLoadingAnimation()
+            }
+        }
     }
 }
 

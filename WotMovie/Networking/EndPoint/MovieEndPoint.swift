@@ -19,8 +19,8 @@ public enum MovieApi {
     case newMovies(page: Int)
     case video(id: Int)
     
-    case discoverMoviesByGenre(id: Int)
-    case discoverTVShowsByGenre(id: Int)
+    case discoverMoviesByGenre(id: Int, page: Int)
+    case discoverTVShowsByGenre(id: Int, page: Int)
         
     case movieGenres
     case tvShowGenres
@@ -77,8 +77,8 @@ extension MovieApi: EndPointType {
             let urlParameters: [String: Any] = ["api_key": NetworkManager.MovieAPIKey]
             return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
             
-        case .discoverMoviesByGenre(let id), .discoverTVShowsByGenre(let id):
-            var urlParameters: [String: Any] = ["api_key": NetworkManager.MovieAPIKey, "sort_by": "popularity.desc"]
+        case .discoverMoviesByGenre(let id, let page), .discoverTVShowsByGenre(let id, let page):
+            var urlParameters: [String: Any] = ["api_key": NetworkManager.MovieAPIKey, "sort_by": "popularity.desc", "page": page]
             if id != -1 { // id of -1 means display all genres
                 urlParameters["with_genres"] = "\(id)"
             }

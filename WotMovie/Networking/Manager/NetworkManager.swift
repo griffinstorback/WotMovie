@@ -119,8 +119,8 @@ final class NetworkManager {
         }
     }
     
-    public func getListOfMoviesByGenre(id: Int, completion: @escaping (_ tvShows: [Movie]?, _ error: String?) -> ()) {
-        router.request(.discoverMoviesByGenre(id: id)) { data, response, error in
+    public func getListOfMoviesByGenre(id: Int, page: Int, completion: @escaping (_ tvShows: [Movie]?, _ error: String?) -> ()) {
+        router.request(.discoverMoviesByGenre(id: id, page: page)) { data, response, error in
             if error != nil {
                 completion(nil, "Please check your network connection.")
             }
@@ -150,8 +150,8 @@ final class NetworkManager {
         }
     }
     
-    public func getListOfTVShowsByGenre(id: Int, completion: @escaping (_ tvShows: [TVShow]?, _ error: String?) -> ()) {
-        router.request(.discoverTVShowsByGenre(id: id)) { data, response, error in
+    public func getListOfTVShowsByGenre(id: Int, page: Int, completion: @escaping (_ tvShows: [TVShow]?, _ error: String?) -> ()) {
+        router.request(.discoverTVShowsByGenre(id: id, page: page)) { data, response, error in
             if error != nil {
                 completion(nil, "Please check your network connection.")
             }

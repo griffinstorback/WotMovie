@@ -21,4 +21,8 @@ final class ContentSizedTableView: UITableView {
         layoutIfNeeded()
         return CGSize(width: UIView.noIntrinsicMetric, height: contentSize.height)
     }
+    
+    override var style: UITableView.Style {
+        return .grouped
+    }
 }
