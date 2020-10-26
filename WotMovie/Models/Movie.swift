@@ -33,10 +33,10 @@ extension Movie: Decodable {
         let container = try decoder.container(keyedBy: MovieCodingKeys.self)
         
         id = try container.decode(Int.self, forKey: .id)
-        posterPath = try container.decode(String?.self, forKey: .posterPath)
-        backdrop = try container.decode(String?.self, forKey: .backdrop)
+        posterPath = try container.decodeIfPresent(String.self, forKey: .posterPath)
+        backdrop = try container.decodeIfPresent(String.self, forKey: .backdrop)
         title = try container.decode(String.self, forKey: .title)
-        releaseDate = try container.decode(String?.self, forKey: .releaseDate)
+        releaseDate = try container.decodeIfPresent(String.self, forKey: .releaseDate)
         rating = try container.decode(Double.self, forKey: .rating)
         overview = try container.decode(String.self, forKey: .overview)
     }
