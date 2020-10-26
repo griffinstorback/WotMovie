@@ -115,7 +115,6 @@ extension GuessGridViewController: UICollectionViewDataSource {
         if elementKind == UICollectionView.elementKindSectionFooter {
             if let footerView = view as? GuessGridFooterView {
                 if guessGridViewPresenter.titlesCount > 0 {
-                    print("displaying loading animation")
                     footerView.startLoadingAnimation()
                     guessGridViewPresenter.loadTitles()
                 } else {
@@ -128,7 +127,6 @@ extension GuessGridViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath) {
         if elementKind == UICollectionView.elementKindSectionFooter {
             if let footerView = view as? GuessGridFooterView {
-                print("removing loading animation")
                 footerView.stopLoadingAnimation()
             }
         }

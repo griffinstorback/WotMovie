@@ -55,6 +55,8 @@ class DetailOverviewView: UIView {
     private func setupView() {
         backgroundColor = .white
         overviewTextView.isScrollEnabled = false
+        overviewTextView.isUserInteractionEnabled = false
+        overviewTextView.isEditable = false
         overviewTextView.backgroundColor = .white
         overviewTextView.font = UIFont.systemFont(ofSize: 17.0)
         

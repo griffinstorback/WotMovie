@@ -15,9 +15,7 @@ class HorizontalCollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        backgroundColor = .green
-        
+                
         imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.backgroundColor = .gray
@@ -26,14 +24,12 @@ class HorizontalCollectionViewCell: UICollectionViewCell {
         nameLabel.numberOfLines = 0
         nameLabel.font = UIFont.systemFont(ofSize: 14.0)
         nameLabel.textAlignment = .center
-        nameLabel.backgroundColor = .red
         
         subtitleLabel = UILabel()
         subtitleLabel.numberOfLines = 0
         subtitleLabel.font = UIFont.systemFont(ofSize: 13.0)
         subtitleLabel.textAlignment = .center
         subtitleLabel.textColor = .gray
-        subtitleLabel.backgroundColor = .blue
         
         if Bool.random() {
             subtitleLabel.text = "Character blah akjg oiwi wpopw qllkf jg oioif  nbbvbv dhhe ytyytyt shbg ytaoo ppppooppppp wkejhkjh po  o oooooooooo poopp po po po pOOP"

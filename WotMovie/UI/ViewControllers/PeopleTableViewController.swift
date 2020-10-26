@@ -7,15 +7,24 @@
 
 import UIKit
 
+protocol PeopleTableViewDelegate {
+    func getSectionsCount() -> Int
+    func getCountForSection(section: Int) -> Int
+    func getSectionTitle(for index: Int) -> String?
+    func getName(for index: Int, section: Int) -> String?
+    func loadImage(for index: Int, section: Int, completion: @escaping (_ image: UIImage?) -> Void)
+}
+
 class PeopleTableViewController: UIViewController {
     
-    private let guessDetailPresenter: GuessDetailPresenter
+    private var delegate: PeopleTableViewDelegate?
     
     private var tableView: ContentSizedTableView!
     
-    init(guessDetailPresenter: GuessDetailPresenter) {
-        self.guessDetailPresenter = guessDetailPresenter
+    init() {
         super.init(nibName: nil, bundle: nil)
+        
+        tableView = ContentSizedTableView()
     }
     
     required init?(coder: NSCoder) {
@@ -29,15 +38,17 @@ class PeopleTableViewController: UIViewController {
         layoutTableView()
     }
     
-    func reloadTableViewData() {
+    func setDelegate(_ delegate: PeopleTableViewDelegate) {
+        self.delegate = delegate
+    }
+    
+    func reloadData() {
         tableView.reloadData()
     }
 }
 
 extension PeopleTableViewController: UITableViewDelegate, UITableViewDataSource {
     func setupTableView() {
-        tableView = ContentSizedTableView()
-        
         tableView.register(PersonTableViewCell.self, forCellReuseIdentifier: "PeopleTableViewCell")
         tableView.isUserInteractionEnabled = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -53,28 +64,15 @@ extension PeopleTableViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 2
+        return delegate?.getSectionsCount() ?? 0
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 0 {
-            return "Cast"
-        } else if section == 1 {
-            return "Crew"
-        }
-        
-        return nil
+        return delegate?.getSectionTitle(for: section)
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        if section == 0 {
-            return guessDetailPresenter.getCastCount()
-        } else if section == 1 {
-            return guessDetailPresenter.getCrewCount()
-        }
-        return 0
+        return delegate?.getCountForSection(section: section) ?? 0
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -86,14 +84,8 @@ extension PeopleTableViewController: UITableViewDelegate, UITableViewDataSource 
         let section = indexPath.section
         let index = indexPath.row
         
-        if section == 0 {
-            cell.setName(text: guessDetailPresenter.getCastMember(for: index)?.name ?? "")
-            guessDetailPresenter.loadCastPersonImage(index: index, completion: cell.setImage)
-        } else if section == 1 {
-            cell.setName(text: guessDetailPresenter.getCrewMember(for: index)?.name ?? "")
-            cell.setSubtitle(text: guessDetailPresenter.getCrewMember(for: index)?.job ?? "")
-            guessDetailPresenter.loadCrewPersonImage(index: index, completion: cell.setImage)
-        }
+        cell.setName(text: delegate?.getName(for: index, section: section) ?? "")
+        delegate?.loadImage(for: index, section: section, completion: cell.setImage(image:))
 
         return cell
     }

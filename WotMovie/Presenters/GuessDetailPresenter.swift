@@ -23,8 +23,32 @@ class GuessDetailPresenter {
     private let tvShow: TVShow?
     private var credits: Credits? {
         didSet {
+            setCrewToDisplay()
+            print(crewToDisplay)
             DispatchQueue.main.async {
                 self.guessDetailViewDelegate?.reloadCreditsData()
+            }
+        }
+    }
+    
+    private let crewTypeForSection: [Int:String] = [
+            0: "Director",
+            1: "Writer",
+            2: "Producer"
+        ]
+    private var crewToDisplay: [String:[CrewMember]] = [:]
+    private func setCrewToDisplay() {
+        if let credits = credits {
+            for crewMember in credits.crew {
+                for crewType in crewTypeForSection.values {
+                    if crewMember.job == crewType {
+                        if crewToDisplay[crewType] == nil {
+                            crewToDisplay[crewType] = [crewMember]
+                        } else {
+                            crewToDisplay[crewType]?.append(crewMember)
+                        }
+                    }
+                }
             }
         }
     }
@@ -69,8 +93,18 @@ class GuessDetailPresenter {
         loadImage(path: profilePath, completion: completion)
     }
     
-    func loadCrewPersonImage(index: Int, completion: @escaping (_ image: UIImage?) -> Void) {
-        guard let credits = credits, let profilePath = credits.crew[index].profilePath else {
+    func loadCrewPersonImage(index: Int, section: Int, completion: @escaping (_ image: UIImage?) -> Void) {
+        guard let crewType = crewTypeForSection[section] else {
+            completion(nil)
+            return
+        }
+        
+        guard let crewMember = crewToDisplay[crewType]?[index] else {
+            completion(nil)
+            return
+        }
+        
+        guard let profilePath = crewMember.profilePath else {
             completion(nil)
             return
         }
@@ -92,30 +126,6 @@ class GuessDetailPresenter {
                 completion(image)
             }
         }
-    }
-    
-    func getOverview() -> String {
-        if let movie = movie {
-            return movie.overview
-        }
-        
-        if let tvShow = tvShow {
-            return tvShow.overview
-        }
-        
-        return "Error retrieving overview"
-    }
-    
-    func getTitle() -> String {
-        if let movie = movie {
-            return movie.title
-        }
-        
-        if let tvShow = tvShow {
-            return tvShow.title
-        }
-        
-        return "Error retrieving title"
     }
     
     func loadCredits() {
@@ -148,19 +158,75 @@ class GuessDetailPresenter {
         }
     }
     
-    func getCastCount() -> Int {
-        return credits?.cast.count ?? 0
+    func getOverview() -> String {
+        if let movie = movie {
+            return movie.overview
+        }
+        
+        if let tvShow = tvShow {
+            return tvShow.overview
+        }
+        
+        return "Error retrieving overview"
     }
     
-    func getCrewCount() -> Int {
-        return credits?.crew.count ?? 0
+    func getTitle() -> String {
+        if let movie = movie {
+            return movie.title
+        }
+        
+        if let tvShow = tvShow {
+            return tvShow.title
+        }
+        
+        return "Error retrieving title"
+    }
+    
+    func getCastCount() -> Int {
+        return credits?.cast.count ?? 0
     }
     
     func getCastMember(for index: Int) -> CastMember? {
         return credits?.cast[index]
     }
     
-    func getCrewMember(for index: Int) -> CrewMember? {
-        return credits?.crew[index]
+    func getCrewTypesToDisplayCount() -> Int {
+        print("crewTodisplaycount", crewToDisplay.count)
+        return crewTypeForSection.count
+    }
+    
+    func getCrewCountForType(section: Int) -> Int {
+        guard let crewType = crewTypeForSection[section] else {
+            return 0
+        }
+        print("crewcount for \(crewType) is \(crewToDisplay[crewType]?.count ?? 0)")
+        return crewToDisplay[crewType]?.count ?? 0
+    }
+    
+    func getCrewTypeToDisplay(for section: Int) -> String? {
+        guard let crewType = crewTypeForSection[section] else {
+            return nil
+        }
+        
+        guard let crewTypeCount = crewToDisplay[crewType]?.count else {
+            return nil
+        }
+        
+        // if more than one crew of this type, return plural (e.g. "Director" or "Directors")
+        if crewTypeCount <= 0 {
+            return nil
+        } else if crewTypeCount == 1 {
+            return crewType
+        } else {
+            return "\(crewType)s"
+        }
+    }
+    
+    func getCrewMember(for index: Int, section: Int) -> CrewMember? {
+        guard let crewType = crewTypeForSection[section] else {
+            return nil
+        }
+        
+        return crewToDisplay[crewType]?[index]
     }
 }

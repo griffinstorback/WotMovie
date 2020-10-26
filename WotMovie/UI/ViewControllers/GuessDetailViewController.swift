@@ -21,7 +21,7 @@ class GuessDetailViewController: UIViewController {
     // stackview items
     private let detailOverviewView: DetailOverviewView!
     private let castCollectionView: HorizontalCollectionViewController!
-    private let peopleTableView: PeopleTableViewController!
+    private let crewTableView: PeopleTableViewController!
     
     init(title: Title) {
         guessDetailViewPresenter = GuessDetailPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared, title: title)
@@ -35,7 +35,7 @@ class GuessDetailViewController: UIViewController {
         
         detailOverviewView = DetailOverviewView(frame: .zero)
         castCollectionView = HorizontalCollectionViewController(title: "Cast")
-        peopleTableView = PeopleTableViewController(guessDetailPresenter: guessDetailViewPresenter)
+        crewTableView = PeopleTableViewController()
         
         super.init(nibName: nil, bundle: nil)
         
@@ -83,6 +83,7 @@ class GuessDetailViewController: UIViewController {
         detailOverviewView.setOverviewText(guessDetailViewPresenter.getOverview())
         
         castCollectionView.setDelegate(self)
+        crewTableView.setDelegate(self)
         
         // if hasBeenGuessed
         //titleLabel.text = guessDetailViewPresenter.getTitle()
@@ -111,7 +112,7 @@ class GuessDetailViewController: UIViewController {
         // add the stack view items
         contentStackView.addArrangedSubview(detailOverviewView)
         addChildToStackView(castCollectionView)
-        addChildToStackView(peopleTableView)
+        addChildToStackView(crewTableView)
         
         // add the top buttons (reveal, and close)
         view.addSubview(closeButton)
@@ -137,6 +138,29 @@ extension GuessDetailViewController: HorizontalCollectionViewDelegate {
     }
 }
 
+extension GuessDetailViewController: PeopleTableViewDelegate {
+    
+    func getSectionsCount() -> Int {
+        return guessDetailViewPresenter.getCrewTypesToDisplayCount()
+    }
+    
+    func getCountForSection(section: Int) -> Int {
+        return guessDetailViewPresenter.getCrewCountForType(section: section)
+    }
+
+    func getSectionTitle(for index: Int) -> String? {
+        return guessDetailViewPresenter.getCrewTypeToDisplay(for: index)
+    }
+    
+    func getName(for index: Int, section: Int) -> String? {
+        return guessDetailViewPresenter.getCrewMember(for: index, section: section)?.name
+    }
+    
+    func loadImage(for index: Int, section: Int, completion: @escaping (UIImage?) -> Void) {
+        guessDetailViewPresenter.loadCrewPersonImage(index: index, section: section, completion: completion)
+    }
+}
+
 extension GuessDetailViewController: GuessDetailViewDelegate {
     func displayErrorLoadingDetail() {
         print("error loading detail view")
@@ -144,7 +168,7 @@ extension GuessDetailViewController: GuessDetailViewDelegate {
     
     func reloadCreditsData() {
         castCollectionView.reloadData()
-        peopleTableView.reloadTableViewData()
+        crewTableView.reloadData()
     }
 }
 

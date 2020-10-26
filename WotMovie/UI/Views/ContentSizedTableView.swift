@@ -23,6 +23,6 @@ final class ContentSizedTableView: UITableView {
     }
     
     override var style: UITableView.Style {
-        return .grouped
+        return .plain
     }
 }
