@@ -16,13 +16,18 @@ class GuessGridCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        posterImageView = PosterImageView(startHidden: true)
+        posterImageView = PosterImageView(startHidden: true)        
         addSubview(posterImageView)
         posterImageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
         
         if !hasBeenGuessed {
             posterImageView.removeBlurEffectOverlay(animated: true)
         }
+    }
+    
+    func setCornerRadius() {
+        posterImageView.layer.cornerRadius = posterImageView.frame.height * Constants.imageCornerRadiusRatio
+        posterImageView.layer.masksToBounds = true
     }
     
     required init?(coder: NSCoder) {
@@ -41,6 +46,7 @@ class GuessGridCollectionViewCell: UICollectionViewCell {
             return
         }
         
+        setCornerRadius()
         posterImageView.image = image
     }
 }

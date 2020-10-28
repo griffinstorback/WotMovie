@@ -13,11 +13,15 @@ class GuessGridViewController: UIViewController {
     
     private var collectionView: UICollectionView!
     
+    private let spacingAmount: CGFloat = 5
+    private let minimumCellWidth: CGFloat = 120
+    
     init(for genre: Genre) {
         guessGridViewPresenter = GuessGridPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared, genre: genre)
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         
         super.init(nibName: nil, bundle: nil)
+        
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         
         navigationItem.largeTitleDisplayMode = .never
         title = genre.name
@@ -136,14 +140,17 @@ extension GuessGridViewController: UICollectionViewDataSource {
 extension GuessGridViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let screenWidth = collectionView.bounds.width
-        return CGSize(width: screenWidth/3, height: (screenWidth/3)*1.5)
+        let numberOfCellsPerRow = Int(screenWidth/minimumCellWidth)
+        let spacing = spacingAmount - spacingAmount/CGFloat(numberOfCellsPerRow)
+        
+        return CGSize(width: screenWidth/CGFloat(numberOfCellsPerRow) - spacing, height: (screenWidth/CGFloat(numberOfCellsPerRow))*1.5)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        return 5
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        return 5
     }
 }

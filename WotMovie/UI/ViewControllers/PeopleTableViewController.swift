@@ -50,6 +50,8 @@ class PeopleTableViewController: UIViewController {
 extension PeopleTableViewController: UITableViewDelegate, UITableViewDataSource {
     func setupTableView() {
         tableView.register(PersonTableViewCell.self, forCellReuseIdentifier: "PeopleTableViewCell")
+        tableView.register(PersonTableSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: "PeopleTableViewSectionHeader")
+
         tableView.isUserInteractionEnabled = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.isScrollEnabled = false
@@ -67,8 +69,23 @@ extension PeopleTableViewController: UITableViewDelegate, UITableViewDataSource 
         return delegate?.getSectionsCount() ?? 0
     }
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return delegate?.getSectionTitle(for: section)
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let sectionTitle = delegate?.getSectionTitle(for: section) else {
+            return nil
+        }
+        
+        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "PeopleTableViewSectionHeader") as! PersonTableSectionHeaderView
+        header.setTitle(sectionTitle)
+        return header
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        // if there is no data in this section, display no header
+        guard tableView.dataSource?.tableView(tableView, numberOfRowsInSection: section) ?? -1 > 0 else {
+            return 0
+        }
+        
+        return 50
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

@@ -10,14 +10,14 @@ import UIKit
 class PersonTableViewCell: UITableViewCell {
     
     static let cellHeight: CGFloat = 60
-    private let profileImageViewSize = CGSize(width: 50, height: 50)
+    private let profileImageViewSize = CGSize(width: 36, height: 54)
     
     private lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
-        //imageView.layer.cornerRadius = profileImageViewSize.width/2
-        //imageView.layer.masksToBounds = true
-        //imageView.clipsToBounds = true
+        imageView.contentMode = .scaleAspectFill
+        imageView.layer.cornerRadius = PersonTableViewCell.cellHeight * Constants.imageCornerRadiusRatio
+        print(PersonTableViewCell.cellHeight * Constants.imageCornerRadiusRatio)
+        imageView.layer.masksToBounds = true
         return imageView
     }()
     
@@ -29,7 +29,7 @@ class PersonTableViewCell: UITableViewCell {
     
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 20)
+        label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = .black
         return label
     }()
@@ -47,21 +47,23 @@ class PersonTableViewCell: UITableViewCell {
         setupViews()
         
         // replace image with N/A image
-        setImage(image: UIImage(systemName: "x.circle.fill"))
+        //setImage(image: UIImage(systemName: "x.circle.fill"))
+        profileImageView.backgroundColor = .lightGray
     }
     
     func setupViews() {
         contentView.addSubview(profileImageView)
-        profileImageView.anchor(top: contentView.topAnchor, leading: contentView.leadingAnchor, bottom: contentView.bottomAnchor, trailing: nil, padding: UIEdgeInsets(top: 3, left: 0, bottom: 3, right: 0), size: CGSize(width: profileImageViewSize.width, height: 0))
+        profileImageView.anchor(top: nil, leading: contentView.leadingAnchor, bottom: nil, trailing: nil, padding: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0), size: CGSize(width: profileImageViewSize.width, height: profileImageViewSize.height))
+        profileImageView.anchorToCenter(yAnchor: contentView.centerYAnchor, xAnchor: nil)
         
         contentView.addSubview(containerView)
-        containerView.anchor(top: contentView.topAnchor, leading: profileImageView.trailingAnchor, bottom: contentView.bottomAnchor, trailing: contentView.trailingAnchor)
+        containerView.anchor(top: contentView.topAnchor, leading: profileImageView.trailingAnchor, bottom: contentView.bottomAnchor, trailing: contentView.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0))
         
         containerView.addSubview(nameLabel)
-        nameLabel.anchor(top: containerView.topAnchor, leading: containerView.leadingAnchor, bottom: nil, trailing: containerView.trailingAnchor)
+        nameLabel.anchor(top: containerView.topAnchor, leading: containerView.leadingAnchor, bottom: containerView.bottomAnchor, trailing: containerView.trailingAnchor)
         
-        containerView.addSubview(subtitleLabel)
-        subtitleLabel.anchor(top: nameLabel.bottomAnchor, leading: containerView.leadingAnchor, bottom: containerView.bottomAnchor, trailing: containerView.trailingAnchor)
+        //containerView.addSubview(subtitleLabel)
+        //subtitleLabel.anchor(top: nameLabel.bottomAnchor, leading: containerView.leadingAnchor, bottom: containerView.bottomAnchor, trailing: containerView.trailingAnchor)
     }
     
     required init?(coder: NSCoder) {

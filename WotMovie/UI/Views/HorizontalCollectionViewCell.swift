@@ -9,6 +9,8 @@ import UIKit
 
 class HorizontalCollectionViewCell: UICollectionViewCell {
     
+    static let cellHeight: CGFloat = 150
+    
     private var imageView: UIImageView!
     private var nameLabel: UILabel!
     private var subtitleLabel: UILabel!
@@ -18,7 +20,9 @@ class HorizontalCollectionViewCell: UICollectionViewCell {
                 
         imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.backgroundColor = .gray
+        imageView.backgroundColor = .lightGray
+        imageView.layer.cornerRadius = HorizontalCollectionViewCell.cellHeight * Constants.imageCornerRadiusRatio
+        imageView.layer.masksToBounds = true
         
         nameLabel = UILabel()
         nameLabel.numberOfLines = 0
@@ -41,7 +45,7 @@ class HorizontalCollectionViewCell: UICollectionViewCell {
     
     private func layoutViews() {
         addSubview(imageView)
-        imageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor, size: CGSize(width: 0, height: 150))
+        imageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor, size: CGSize(width: 0, height: HorizontalCollectionViewCell.cellHeight))
         
         addSubview(nameLabel)
         nameLabel.anchor(top: imageView.bottomAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor)

@@ -25,7 +25,6 @@ class GuessGridPresenter {
     
     private var titles: [Title] = [] {
         didSet {
-            print("titles.count is ", titles.count)
             DispatchQueue.main.async {
                 self.guessGridViewDelegate?.reloadData()
             }
@@ -74,8 +73,7 @@ class GuessGridPresenter {
                     return
                 }
                 if let movies = movies {
-                    //self?.titles += movies
-                    self?.titles.append(movies[0])
+                    self?.titles += movies
                     self?.nextPage += 1
                 }
             }

@@ -191,7 +191,6 @@ class GuessDetailPresenter {
     }
     
     func getCrewTypesToDisplayCount() -> Int {
-        print("crewTodisplaycount", crewToDisplay.count)
         return crewTypeForSection.count
     }
     
@@ -199,7 +198,7 @@ class GuessDetailPresenter {
         guard let crewType = crewTypeForSection[section] else {
             return 0
         }
-        print("crewcount for \(crewType) is \(crewToDisplay[crewType]?.count ?? 0)")
+        
         return crewToDisplay[crewType]?.count ?? 0
     }
     

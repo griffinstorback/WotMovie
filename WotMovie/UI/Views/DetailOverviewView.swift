@@ -9,9 +9,12 @@ import Foundation
 import UIKit
 
 class DetailOverviewView: UIView {
-    
+        
     private lazy var posterImageView: PosterImageView = {
-        return PosterImageView(startHidden: true)
+        let posterImageView = PosterImageView(startHidden: true)
+        posterImageView.layer.cornerRadius = Constants.DetailOverviewPosterImage.size.height * Constants.imageCornerRadiusRatio
+        posterImageView.layer.masksToBounds = true
+        return posterImageView
     }()
     private lazy var genreListView: UILabel = {
         return UILabel()
@@ -69,7 +72,7 @@ class DetailOverviewView: UIView {
     }
     
     private func setupLayout() {
-        posterImageView.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: CGSize(width: 140, height: 210))
+        posterImageView.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: Constants.DetailOverviewPosterImage.size)
         verticalStackView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor, padding: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10))
     }
     

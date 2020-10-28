@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		8501403B2544E22F0088FA3E /* GuessGridFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8501403A2544E22F0088FA3E /* GuessGridFooterView.swift */; };
+		85014048254795660088FA3E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85014047254795650088FA3E /* Constants.swift */; };
+		8501404D2548BAF10088FA3E /* PersonTableSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8501404C2548BAF10088FA3E /* PersonTableSectionHeaderView.swift */; };
 		85CF3457252D430C00A101C9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF3456252D430C00A101C9 /* AppDelegate.swift */; };
 		85CF3459252D430C00A101C9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF3458252D430C00A101C9 /* SceneDelegate.swift */; };
 		85CF345B252D430C00A101C9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF345A252D430C00A101C9 /* ViewController.swift */; };
@@ -80,6 +82,8 @@
 
 /* Begin PBXFileReference section */
 		8501403A2544E22F0088FA3E /* GuessGridFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessGridFooterView.swift; sourceTree = "<group>"; };
+		85014047254795650088FA3E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		8501404C2548BAF10088FA3E /* PersonTableSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonTableSectionHeaderView.swift; sourceTree = "<group>"; };
 		85CF3453252D430C00A101C9 /* WotMovie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WotMovie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		85CF3456252D430C00A101C9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		85CF3458252D430C00A101C9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -352,6 +356,7 @@
 			children = (
 				85CF352725362D5F00A101C9 /* Extensions.swift */,
 				85CF352F2536301F00A101C9 /* PropertyWrappers.swift */,
+				85014047254795650088FA3E /* Constants.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -366,6 +371,7 @@
 				85CF35C02541F9DD00A101C9 /* PersonTableViewCell.swift */,
 				85CF35DA2543A8AD00A101C9 /* HorizontalCollectionViewCell.swift */,
 				8501403A2544E22F0088FA3E /* GuessGridFooterView.swift */,
+				8501404C2548BAF10088FA3E /* PersonTableSectionHeaderView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -525,6 +531,7 @@
 				85CF354E25365D3B00A101C9 /* GuessDetailViewController.swift in Sources */,
 				85CF35D32543912300A101C9 /* HorizontalCollectionViewController.swift in Sources */,
 				85CF353525365B7900A101C9 /* RootTabViewController.swift in Sources */,
+				8501404D2548BAF10088FA3E /* PersonTableSectionHeaderView.swift in Sources */,
 				85CF35DB2543A8AD00A101C9 /* HorizontalCollectionViewCell.swift in Sources */,
 				85CF3457252D430C00A101C9 /* AppDelegate.swift in Sources */,
 				85CF359B253E0CFB00A101C9 /* DetailOverviewView.swift in Sources */,
@@ -532,6 +539,7 @@
 				85CF34A0252E5EE400A101C9 /* HTTPMethod.swift in Sources */,
 				85CF354925365D0B00A101C9 /* GuessGridViewController.swift in Sources */,
 				85CF34C4252EB18100A101C9 /* Movie.swift in Sources */,
+				85014048254795660088FA3E /* Constants.swift in Sources */,
 				85CF3459252D430C00A101C9 /* SceneDelegate.swift in Sources */,
 				85CF35A0253E48A300A101C9 /* PosterImageView.swift in Sources */,
 				85CF357A2538DE1D00A101C9 /* Title.swift in Sources */,
