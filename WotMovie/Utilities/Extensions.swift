@@ -75,3 +75,24 @@ extension NSLayoutConstraint {
         return self
     }
 }
+
+
+// MARK:- Appearance
+
+extension UIView {
+    // Give and update shadows
+    func giveShadow(radius: CGFloat = 5.0) {
+        layer.borderWidth = 1.0
+        layer.borderColor = UIColor.clear.cgColor
+
+        layer.shadowColor = UIColor.separator.cgColor
+        layer.shadowOffset = CGSize(width: 0, height: 2.0)
+        layer.shadowRadius = radius
+        layer.shadowOpacity = 1.0
+        layer.masksToBounds = false
+        layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: layer.cornerRadius).cgPath
+    }
+    func updateShadow() {
+        layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: layer.cornerRadius).cgPath
+    }
+}

@@ -18,7 +18,6 @@ class GuessDetailViewController: UIViewController {
     private let guessDetailViewPresenter: GuessDetailPresenter
     private var state: GuessDetailViewState = .fullyHidden {
         didSet {
-            print("didset \(state)")
             switch state {
             case .fullyHidden:
                 addShowHintButton()
@@ -53,6 +52,9 @@ class GuessDetailViewController: UIViewController {
     private let castCollectionView: HorizontalCollectionViewController!
     private let crewTableView: PeopleTableViewController!
     
+    // enter guess field at bottom
+    private let enterGuessViewController: EnterGuessViewController!
+    
     init(title: Title) {
         guessDetailViewPresenter = GuessDetailPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared, title: title)
         
@@ -70,6 +72,8 @@ class GuessDetailViewController: UIViewController {
         detailOverviewView = DetailOverviewView(frame: .zero)
         castCollectionView = HorizontalCollectionViewController(title: "Cast")
         crewTableView = PeopleTableViewController()
+        
+        enterGuessViewController = EnterGuessViewController()
         
         super.init(nibName: nil, bundle: nil)
         
@@ -93,8 +97,16 @@ class GuessDetailViewController: UIViewController {
         guessDetailViewPresenter.loadCredits()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        enterGuessViewController.modalPresentationStyle = .overFullScreen
+        present(enterGuessViewController, animated: true)
+    }
+    
     @objc func closeButtonPressed() {
-        self.dismiss(animated: true)
+        // dismiss all modals (this one and the enterguessview presented from here - self.dismiss does one at a time)
+        view.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
     
     @objc func revealButtonPressed() {
@@ -111,7 +123,7 @@ class GuessDetailViewController: UIViewController {
         contentStackView.axis = .vertical
         contentStackView.alignment = .fill
         contentStackView.spacing = 20
-        contentStackView.layoutMargins = UIEdgeInsets(top: 60, left: 0, bottom: 0, right: 0)
+        contentStackView.layoutMargins = UIEdgeInsets(top: 60, left: 0, bottom: 150, right: 0)
         contentStackView.isLayoutMarginsRelativeArrangement = true
         
         // set poster image
@@ -140,6 +152,12 @@ class GuessDetailViewController: UIViewController {
         showHintButton.backgroundColor = .systemBlue
         showHintButton.titleLabel?.textColor = .white
         showHintButton.addTarget(self, action: #selector(showHintButtonPressed), for: .touchUpInside)
+        
+        // add enter guess view controller to bottom of screen
+        /*addChild(enterGuessViewController)
+        view.addSubview(enterGuessViewController.view)
+        enterGuessViewController.view.anchor(top: nil, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: <#T##NSLayoutXAxisAnchor?#>, padding: <#T##UIEdgeInsets#>, size: <#T##CGSize#>)
+        enterGuessViewController.didMove(toParent: self)*/
     }
     
     private func layoutViews() {
@@ -170,7 +188,7 @@ class GuessDetailViewController: UIViewController {
     
     private func addCloseButton() {
         view.addSubview(closeButton)
-        closeButton.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: nil, bottom: nil, trailing: view.safeAreaLayoutGuide.trailingAnchor, size: CGSize(width: 44, height: 44))
+        closeButton.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: nil, bottom: nil, trailing: view.safeAreaLayoutGuide.trailingAnchor, size: CGSize(width: 54, height: 54))
     }
     
     private func addRevealButton() {
@@ -209,7 +227,7 @@ extension GuessDetailViewController: HorizontalCollectionViewDelegate {
         return guessDetailViewPresenter.getCastCount()
     }
     
-    func getNameForPersonAt(index: Int) -> String {
+    func getTitleFor(index: Int) -> String {
         return guessDetailViewPresenter.getCastMember(for: index)?.name ?? ""
     }
     

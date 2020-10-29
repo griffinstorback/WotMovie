@@ -21,6 +21,9 @@ public enum MovieApi {
     
     case discoverMoviesByGenre(id: Int, page: Int)
     case discoverTVShowsByGenre(id: Int, page: Int)
+    
+    case topRatedMovies(page: Int)
+    case topRatedTVShows(page: Int)
         
     case movieGenres
     case tvShowGenres
@@ -54,6 +57,9 @@ extension MovieApi: EndPointType {
             
         case .discoverMoviesByGenre: return "discover/movie"
         case .discoverTVShowsByGenre: return "discover/tv"
+            
+        case .topRatedMovies: return "movie/top_rated"
+        case .topRatedTVShows: return "tv/top_rated"
         
         case .movieGenres: return "genre/movie/list"
         case .tvShowGenres: return "genre/tv/list"
@@ -76,16 +82,23 @@ extension MovieApi: EndPointType {
         case .movieGenres, .tvShowGenres:
             let urlParameters: [String: Any] = ["api_key": NetworkManager.MovieAPIKey]
             return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
-            
+        
+        // main API call
         case .discoverMoviesByGenre(let id, let page), .discoverTVShowsByGenre(let id, let page):
-            var urlParameters: [String: Any] = ["api_key": NetworkManager.MovieAPIKey, "sort_by": "popularity.desc", "page": page]
+            var urlParameters: [String: Any] = ["api_key": NetworkManager.MovieAPIKey, "sort_by": "vote_count.desc", "page": page]
             if id != -1 { // id of -1 means display all genres
                 urlParameters["with_genres"] = "\(id)"
             }
             return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
+            
+        case .topRatedMovies(let page), .topRatedTVShows(let page):
+            let urlParameters: [String: Any] = ["api_key": NetworkManager.MovieAPIKey, "page": page]
+            return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
+            
         case .movieCredits, .tvShowCredits:
             let urlParameters: [String: Any] = ["api_key": NetworkManager.MovieAPIKey]
             return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
+            
         default: return .request
         }
     }

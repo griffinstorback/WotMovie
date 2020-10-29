@@ -73,7 +73,7 @@ final class NetworkManager {
                         return
                     }
                     do {
-                        let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
+                        //let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
                         let apiResponse = try JSONDecoder().decode(MovieGenreApiResponse.self, from: responseData)
                         completion(apiResponse.genres, nil)
                     } catch {
@@ -104,7 +104,7 @@ final class NetworkManager {
                         return
                     }
                     do {
-                        let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
+                        //let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
                         let apiResponse = try JSONDecoder().decode(TVShowGenreApiResponse.self, from: responseData)
                         completion(apiResponse.genres, nil)
                     } catch {
@@ -119,7 +119,7 @@ final class NetworkManager {
         }
     }
     
-    public func getListOfMoviesByGenre(id: Int, page: Int, completion: @escaping (_ tvShows: [Movie]?, _ error: String?) -> ()) {
+    public func getListOfMoviesByGenre(id: Int, page: Int, completion: @escaping (_ movies: [Movie]?, _ error: String?) -> ()) {
         router.request(.discoverMoviesByGenre(id: id, page: page)) { data, response, error in
             if error != nil {
                 completion(nil, "Please check your network connection.")
@@ -136,6 +136,7 @@ final class NetworkManager {
                     }
                     do {
                         let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
+                        print(jsonData)
                         let apiResponse = try JSONDecoder().decode(MovieApiResponse.self, from: responseData)
                         completion(apiResponse.movies, nil)
                     } catch {
@@ -198,8 +199,8 @@ final class NetworkManager {
                         return
                     }
                     do {
-                        let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
-                        print(jsonData)
+                        //let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
+                        //print(jsonData)
                         let apiResponse = try JSONDecoder().decode(Credits.self, from: responseData)
                         completion(apiResponse, nil)
                     } catch {
@@ -230,8 +231,8 @@ final class NetworkManager {
                         return
                     }
                     do {
-                        let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
-                        print(jsonData)
+                        //let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
+                        //print(jsonData)
                         let apiResponse = try JSONDecoder().decode(Credits.self, from: responseData)
                         completion(apiResponse, nil)
                     } catch {

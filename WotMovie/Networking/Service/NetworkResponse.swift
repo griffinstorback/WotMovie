@@ -17,6 +17,7 @@ public enum NetworkResponse: String {
     case unableToDecode = "We could not decode the response."
     
     static func handleNetworkResponse(_ response: HTTPURLResponse) -> Result<String> {
+        print("** STATUS CODE: ", response.statusCode)
         switch response.statusCode {
         case 200...299: return .success
         case 401...500: return .failure(NetworkResponse.authenticationError.rawValue)

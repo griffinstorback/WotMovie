@@ -23,7 +23,7 @@ class PersonTableSectionHeaderView: UITableViewHeaderFooterView {
     
     private func layoutView() {
         addSubview(title)
-        title.anchor(top: nil, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor, padding: UIEdgeInsets(top: 0, left: 10, bottom: 5, right: 0))
+        title.anchor(top: nil, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor, padding: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0))
     }
     
     public func setTitle(_ text: String?) {

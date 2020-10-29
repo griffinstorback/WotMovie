@@ -9,7 +9,7 @@ import UIKit
 
 protocol HorizontalCollectionViewDelegate {
     func getNumberOfItems() -> Int
-    func getNameForPersonAt(index: Int) -> String
+    func getTitleFor(index: Int) -> String
     func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?) -> Void)
 }
 
@@ -109,7 +109,7 @@ extension HorizontalCollectionViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HorizontalCollectionViewCell", for: indexPath) as! HorizontalCollectionViewCell
         
-        if let name = delegate?.getNameForPersonAt(index: indexPath.row) {
+        if let name = delegate?.getTitleFor(index: indexPath.row) {
             cell.setName(name)
         }
         

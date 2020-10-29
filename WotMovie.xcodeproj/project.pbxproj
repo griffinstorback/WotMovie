@@ -10,9 +10,10 @@
 		8501403B2544E22F0088FA3E /* GuessGridFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8501403A2544E22F0088FA3E /* GuessGridFooterView.swift */; };
 		85014048254795660088FA3E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85014047254795650088FA3E /* Constants.swift */; };
 		8501404D2548BAF10088FA3E /* PersonTableSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8501404C2548BAF10088FA3E /* PersonTableSectionHeaderView.swift */; };
+		850140552549E7350088FA3E /* EnterGuessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850140542549E7350088FA3E /* EnterGuessViewController.swift */; };
+		8501405A254A00830088FA3E /* TouchDelegatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85014059254A00830088FA3E /* TouchDelegatingView.swift */; };
 		85CF3457252D430C00A101C9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF3456252D430C00A101C9 /* AppDelegate.swift */; };
 		85CF3459252D430C00A101C9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF3458252D430C00A101C9 /* SceneDelegate.swift */; };
-		85CF345B252D430C00A101C9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF345A252D430C00A101C9 /* ViewController.swift */; };
 		85CF3461252D430C00A101C9 /* WotMovie.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 85CF345F252D430C00A101C9 /* WotMovie.xcdatamodeld */; };
 		85CF3463252D430F00A101C9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 85CF3462252D430F00A101C9 /* Assets.xcassets */; };
 		85CF3466252D430F00A101C9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 85CF3464252D430F00A101C9 /* LaunchScreen.storyboard */; };
@@ -84,10 +85,11 @@
 		8501403A2544E22F0088FA3E /* GuessGridFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessGridFooterView.swift; sourceTree = "<group>"; };
 		85014047254795650088FA3E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		8501404C2548BAF10088FA3E /* PersonTableSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonTableSectionHeaderView.swift; sourceTree = "<group>"; };
+		850140542549E7350088FA3E /* EnterGuessViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterGuessViewController.swift; sourceTree = "<group>"; };
+		85014059254A00830088FA3E /* TouchDelegatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchDelegatingView.swift; sourceTree = "<group>"; };
 		85CF3453252D430C00A101C9 /* WotMovie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WotMovie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		85CF3456252D430C00A101C9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		85CF3458252D430C00A101C9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		85CF345A252D430C00A101C9 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		85CF3460252D430C00A101C9 /* WotMovie.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = WotMovie.xcdatamodel; sourceTree = "<group>"; };
 		85CF3462252D430F00A101C9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		85CF3465252D430F00A101C9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -302,7 +304,6 @@
 		85CF34DC252FCB7500A101C9 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				85CF345A252D430C00A101C9 /* ViewController.swift */,
 				85CF353425365B7900A101C9 /* RootTabViewController.swift */,
 				85CF353925365C5B00A101C9 /* GuessViewController.swift */,
 				85CF353E25365C7900A101C9 /* WatchListViewController.swift */,
@@ -311,6 +312,7 @@
 				85CF354D25365D3B00A101C9 /* GuessDetailViewController.swift */,
 				85CF35A92540B3F600A101C9 /* PeopleTableViewController.swift */,
 				85CF35D22543912300A101C9 /* HorizontalCollectionViewController.swift */,
+				850140542549E7350088FA3E /* EnterGuessViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -372,6 +374,7 @@
 				85CF35DA2543A8AD00A101C9 /* HorizontalCollectionViewCell.swift */,
 				8501403A2544E22F0088FA3E /* GuessGridFooterView.swift */,
 				8501404C2548BAF10088FA3E /* PersonTableSectionHeaderView.swift */,
+				85014059254A00830088FA3E /* TouchDelegatingView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -524,10 +527,10 @@
 				85CF354425365CBB00A101C9 /* SettingsViewController.swift in Sources */,
 				85CF34A5252E5F3A00A101C9 /* HTTPTask.swift in Sources */,
 				85CF3582253A181F00A101C9 /* ImageEndPoint.swift in Sources */,
-				85CF345B252D430C00A101C9 /* ViewController.swift in Sources */,
 				85CF34BE252E8EAB00A101C9 /* Router.swift in Sources */,
 				85CF3591253A346800A101C9 /* NetworkResponse.swift in Sources */,
 				85CF34AA252E602600A101C9 /* ParameterEncoding.swift in Sources */,
+				8501405A254A00830088FA3E /* TouchDelegatingView.swift in Sources */,
 				85CF354E25365D3B00A101C9 /* GuessDetailViewController.swift in Sources */,
 				85CF35D32543912300A101C9 /* HorizontalCollectionViewController.swift in Sources */,
 				85CF353525365B7900A101C9 /* RootTabViewController.swift in Sources */,
@@ -558,6 +561,7 @@
 				85CF353F25365C7900A101C9 /* WatchListViewController.swift in Sources */,
 				85CF35BC2540E41B00A101C9 /* Person.swift in Sources */,
 				85CF3587253A306100A101C9 /* GuessGridCollectionViewCell.swift in Sources */,
+				850140552549E7350088FA3E /* EnterGuessViewController.swift in Sources */,
 				85CF35C12541F9DD00A101C9 /* PersonTableViewCell.swift in Sources */,
 				85CF34D1252F97C400A101C9 /* MovieEndPoint.swift in Sources */,
 			);

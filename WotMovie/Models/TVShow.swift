@@ -13,7 +13,7 @@ struct TVShow: Title {
     let isMovie: Bool = false
     let backdrop: String?
     let title: String
-    let releaseDate: String
+    let releaseDate: String?
     let rating: Double
     let overview: String
 }
@@ -36,7 +36,7 @@ extension TVShow: Decodable {
         posterPath = try container.decode(String?.self, forKey: .posterPath)
         backdrop = try container.decode(String?.self, forKey: .backdrop)
         title = try container.decode(String.self, forKey: .title)
-        releaseDate = try container.decode(String.self, forKey: .releaseDate)
+        releaseDate = try container.decodeIfPresent(String.self, forKey: .releaseDate)
         rating = try container.decode(Double.self, forKey: .rating)
         overview = try container.decode(String.self, forKey: .overview)
     }

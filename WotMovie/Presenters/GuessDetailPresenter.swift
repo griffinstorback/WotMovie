@@ -24,7 +24,7 @@ class GuessDetailPresenter {
     private var credits: Credits? {
         didSet {
             setCrewToDisplay()
-            print(crewToDisplay)
+            
             DispatchQueue.main.async {
                 self.guessDetailViewDelegate?.reloadCreditsData()
             }

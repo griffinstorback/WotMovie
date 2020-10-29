@@ -70,6 +70,11 @@ class GuessGridPresenter {
             networkManager.getListOfMoviesByGenre(id: genre.id, page: nextPage) { [weak self] movies, error in
                 if let error = error {
                     print(error)
+                    
+                    // TODO: Error sometimes is just the page not loading for some reason. Got a 500 error once just for one page.
+                    //       Should re-attempt the next page (just once)
+                    //self?.nextPage += 1
+                    
                     return
                 }
                 if let movies = movies {
@@ -81,6 +86,11 @@ class GuessGridPresenter {
             networkManager.getListOfTVShowsByGenre(id: genre.id, page: nextPage) { [weak self] tvShows, error in
                 if let error = error {
                     print(error)
+                    
+                    // TODO: Error sometimes is just the page not loading for some reason. Got a 500 error once just for one page.
+                    //       Should re-attempt the next page (just once)
+                    //self?.nextPage += 1
+                    
                     return
                 }
                 if let tvShows = tvShows {

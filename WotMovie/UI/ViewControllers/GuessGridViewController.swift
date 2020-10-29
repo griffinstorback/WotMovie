@@ -14,7 +14,7 @@ class GuessGridViewController: UIViewController {
     private var collectionView: UICollectionView!
     
     private let spacingAmount: CGFloat = 5
-    private let minimumCellWidth: CGFloat = 120
+    private let minimumCellWidth: CGFloat = 120 // max is (2 * minimum)
     
     init(for genre: Genre) {
         guessGridViewPresenter = GuessGridPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared, genre: genre)
