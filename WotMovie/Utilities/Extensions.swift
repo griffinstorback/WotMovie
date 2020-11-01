@@ -95,4 +95,15 @@ extension UIView {
     func updateShadow() {
         layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: layer.cornerRadius).cgPath
     }
+    
+    func giveBlurredBackground(style: UIBlurEffect.Style) {
+        backgroundColor = .clear
+        
+        let blurEffect = UIBlurEffect(style: style)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        insertSubview(blurEffectView, at: 0)
+    }
 }

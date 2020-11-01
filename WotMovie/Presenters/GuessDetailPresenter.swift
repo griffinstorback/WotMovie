@@ -158,6 +158,18 @@ class GuessDetailPresenter {
         }
     }
     
+    func getID() -> Int {
+        if let movie = movie {
+            return movie.id
+        }
+        
+        if let tvShow = tvShow {
+            return tvShow.id
+        }
+        
+        return -1
+    }
+    
     func getOverview() -> String {
         if let movie = movie {
             return movie.overview

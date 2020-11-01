@@ -7,24 +7,34 @@
 
 import UIKit
 
+protocol EnterGuessProtocol {
+    func showResults()
+    func hideResults()
+    func revealAnswer()
+    func nextQuestion()
+    func checkAnswer(id: Int) -> Bool
+}
+
 class EnterGuessViewController: UIViewController {
     
-    // enterGuessPresenter
+    private let enterGuessPresenter: EnterGuessPresenter
+    private var delegate: EnterGuessProtocol?
     
-    private let bottomView: UIView!
-    
-    private let enterGuessField: UISearchBar!
-    private var enterGuessFieldBottomConstraint: NSLayoutConstraint!
+    private let enterGuessControlsView: EnterGuessControlsView
+    private var enterGuessControlsViewBottomConstraint: NSLayoutConstraint!
     
     private let resultsTableView: UITableView!
 
     init() {
-        // enterGuessPresenter =
-        bottomView = UIView()
-        enterGuessField = UISearchBar()
+        enterGuessPresenter = EnterGuessPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared)
+        enterGuessControlsView = EnterGuessControlsView()
+        
         resultsTableView = UITableView()
         
         super.init(nibName: nil, bundle: nil)
+        
+        enterGuessControlsView.setDelegate(self)
+        enterGuessPresenter.setViewDelegate(self)
     }
     
     required init?(coder: NSCoder) {
@@ -32,60 +42,28 @@ class EnterGuessViewController: UIViewController {
     }
     
     override func loadView() {
+        // let touches through to the presenting view
         view = TouchDelegatingView()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        bottomView.backgroundColor = .white
-        bottomView.layer.cornerRadius = 20
-        bottomView.layer.masksToBounds = true
-        bottomView.layer.borderWidth = 1
-        bottomView.layer.borderColor = UIColor.separator.cgColor
+        enterGuessControlsView.setEnterGuessFieldPlaceholder(text: "Enter movie name")
         
-        enterGuessField.delegate = self
-        //enterGuessField.layer.cornerRadius = 20
-        //enterGuessField.layer.masksToBounds = true
-        enterGuessField.searchBarStyle = .minimal
-        enterGuessField.placeholder = "Enter movie name"
-        enterGuessField.tintColor = .systemBlue
-        
-        // TODO: Replace with question mark icon
-        let enterGuessFieldIcon = UIImage(systemName: "magnifyingglass.circle.fill")?.withTintColor(.systemBlue, renderingMode: .alwaysOriginal)
-        enterGuessField.setImage(enterGuessFieldIcon, for: .search, state: .normal)
-        
-        resultsTableView.backgroundColor = UIColor.black.withAlphaComponent(0.7)
-        resultsTableView.separatorColor = .white
-        resultsTableView.delegate = self
-        resultsTableView.dataSource = self
-        resultsTableView.alpha = 0
-        resultsTableView.isHidden = true
+        setupTableView()
         
         layoutSubviews()
     }
     
     private func layoutSubviews() {
-        view.addSubview(bottomView)
-        bottomView.anchor(top: nil, leading: nil, bottom: view.bottomAnchor, trailing: nil)
-        bottomView.anchorSize(height: nil, width: view.widthAnchor)
-        bottomView.anchorToCenter(yAnchor: nil, xAnchor: view.centerXAnchor)
-        
-        addGuessFieldToBottomView()
+        view.addSubview(enterGuessControlsView)
+        enterGuessControlsViewBottomConstraint = enterGuessControlsView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        enterGuessControlsViewBottomConstraint.isActive = true
+        enterGuessControlsView.anchor(top: nil, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor)
         
         view.addSubview(resultsTableView)
-        resultsTableView.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: bottomView.topAnchor, trailing: view.trailingAnchor)
-    }
-    
-    private func addGuessFieldToBottomView() {
-        bottomView.addSubview(enterGuessField)
-        enterGuessFieldBottomConstraint = enterGuessField.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10)
-        enterGuessFieldBottomConstraint.isActive = true
-        enterGuessField.anchor(top: bottomView.topAnchor, leading: bottomView.leadingAnchor, bottom: nil, trailing: bottomView.trailingAnchor, padding: UIEdgeInsets(top: 10, left: 10, bottom: 0, right: 10))
-    }
-    
-    private func removeGuessFieldFromBottomView() {
-        enterGuessField.removeFromSuperview()
+        resultsTableView.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: enterGuessControlsView.topAnchor, trailing: view.trailingAnchor)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -107,27 +85,38 @@ class EnterGuessViewController: UIViewController {
         super.viewDidDisappear(animated)
     }
     
+    public func setDelegate(_ delegate: EnterGuessProtocol) {
+        self.delegate = delegate
+    }
+    
+    public func setAnswerRevealed() {
+        print("uh huh")
+        enterGuessControlsView.setAnswerWasRevealed()
+    }
+    
     @objc func keyboardWillAppear(notification: Notification) {
         let userInfo: NSDictionary = notification.userInfo! as NSDictionary
         let keyboardFrame: NSValue = userInfo.value(forKey: UIResponder.keyboardFrameEndUserInfoKey) as! NSValue
         let keyboardRectangle = keyboardFrame.cgRectValue
         let keyboardHeight = view.convert(keyboardRectangle, from: nil).origin.y
         
-        let spacingBetweenKeyboardAndTextView: CGFloat = 10
+        let spacingBetweenKeyboardAndTextView: CGFloat = 0
         let constraintHeight = view.frame.height - view.safeAreaInsets.bottom - keyboardHeight + spacingBetweenKeyboardAndTextView
         
-        enterGuessFieldBottomConstraint.constant = -constraintHeight
+        enterGuessControlsViewBottomConstraint.constant = -constraintHeight
         resultsTableView.isHidden = false
         UIView.animate(withDuration: 0.5) {
             self.view.layoutIfNeeded()
             self.resultsTableView.alpha = 1
         }
         
-        enterGuessField.setShowsCancelButton(true, animated: true)
+        enterGuessControlsView.setShowsEnterGuessFieldCancelButton(true, animated: true)
+        enterGuessControlsView.setShowsRevealButton(false, animated: true)
+        delegate?.showResults()
     }
     
     @objc func keyboardWillDisappear() {
-        enterGuessFieldBottomConstraint.constant = -10
+        enterGuessControlsViewBottomConstraint.constant = 0
         UIView.animate(withDuration: 0.5) {
             self.view.layoutIfNeeded()
             self.resultsTableView.alpha = 0
@@ -135,26 +124,100 @@ class EnterGuessViewController: UIViewController {
             self.resultsTableView.isHidden = true
         }
         
-        enterGuessField.setShowsCancelButton(false, animated: true)
+        enterGuessControlsView.setShowsEnterGuessFieldCancelButton(false, animated: true)
+        enterGuessControlsView.setShowsRevealButton(true, animated: true)
+        delegate?.hideResults()
     }
 }
 
 extension EnterGuessViewController: UITableViewDelegate, UITableViewDataSource {
+    func setupTableView() {
+        resultsTableView.isHidden = true
+        resultsTableView.backgroundColor = UIColor.black.withAlphaComponent(0.2)
+        
+        // TODO: give results tableview blurred background
+        
+        resultsTableView.separatorColor = .white
+        resultsTableView.delegate = self
+        resultsTableView.dataSource = self
+        resultsTableView.alpha = 0
+        
+        // removes lines between cells when tableview empty
+        resultsTableView.tableFooterView = UIView()
+        
+        resultsTableView.register(PersonTableViewCell.self, forCellReuseIdentifier: "ResultsCell")
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return PersonTableViewCell.cellHeight
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 0
+        return enterGuessPresenter.searchResults.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ResultsCell") as! PersonTableViewCell
+        
+        let movie = enterGuessPresenter.searchResults[indexPath.row]
+        
+        cell.setName(text: movie.title)
+        enterGuessPresenter.loadImage(path: movie.posterPath ?? "", completion: cell.setImage)
+        cell.backgroundColor = .clear
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let movie = enterGuessPresenter.searchResults[indexPath.row]
+        
+        guard let correct = delegate?.checkAnswer(id: movie.id) else {
+            return
+        }
+        
+        if correct {
+            revealButtonPressed()
+            enterGuessControlsView.shouldResignFirstReponder()
+            print("Correct!")
+        } else {
+            print("Wrong.")
+        }
     }
 }
 
-extension EnterGuessViewController: UISearchBarDelegate {
+extension EnterGuessViewController: EnterGuessControlsDelegate {
+    func revealButtonPressed() {
+        delegate?.revealAnswer()
+    }
+    
+    func nextButtonPressed() {
+        delegate?.nextQuestion()
+    }
+    
+    func addToWatchlistButtonPressed() {
+        print("add to watchlist!")
+    }
+    
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
     }
-    
+        
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        print(searchText)
+        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(performSearch), object: searchBar)
+        self.perform(#selector(performSearch(_:)), with: searchBar, afterDelay: 0.5)
+    }
+    
+    @objc func performSearch(_ searchBar: UISearchBar) {
+        guard let query = searchBar.text, query.trimmingCharacters(in: .whitespaces) != "" else {
+            return
+        }
+        
+        enterGuessPresenter.search(searchText: query)
+    }
+}
+
+extension EnterGuessViewController: EnterGuessViewDelegate {
+    func reloadResults() {
+        resultsTableView.reloadData()
     }
 }

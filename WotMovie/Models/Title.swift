@@ -8,7 +8,7 @@
 import Foundation
 
 // Movie and TVShow inherit from Title, allowing them to be used interchangeably in Grids/Lists
-protocol Title {
+protocol Title: Entity {
     var id: Int { get }
     var posterPath: String? { get }
     var isMovie: Bool { get }

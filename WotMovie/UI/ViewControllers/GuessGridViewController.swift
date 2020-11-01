@@ -54,7 +54,8 @@ extension GuessGridViewController: GuessGridViewDelegate {
     
     func presentGuessTitleDetail(for title: Title) {
         let guessDetailViewController = GuessDetailViewController(title: title)
-        guessDetailViewController.modalPresentationStyle = .pageSheet
+        guessDetailViewController.modalPresentationStyle = .fullScreen
+        guessDetailViewController.modalPresentationCapturesStatusBarAppearance = true
         
         //navigationController?.pushViewController(guessDetailViewController, animated: true)
         present(guessDetailViewController, animated: true)

@@ -12,6 +12,9 @@
 		8501404D2548BAF10088FA3E /* PersonTableSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8501404C2548BAF10088FA3E /* PersonTableSectionHeaderView.swift */; };
 		850140552549E7350088FA3E /* EnterGuessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850140542549E7350088FA3E /* EnterGuessViewController.swift */; };
 		8501405A254A00830088FA3E /* TouchDelegatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85014059254A00830088FA3E /* TouchDelegatingView.swift */; };
+		8501405F254B50C20088FA3E /* EnterGuessPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8501405E254B50C20088FA3E /* EnterGuessPresenter.swift */; };
+		85014064254B53AC0088FA3E /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85014063254B53AC0088FA3E /* Entity.swift */; };
+		85014069254C7F1D0088FA3E /* EnterGuessControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85014068254C7F1D0088FA3E /* EnterGuessControlsView.swift */; };
 		85CF3457252D430C00A101C9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF3456252D430C00A101C9 /* AppDelegate.swift */; };
 		85CF3459252D430C00A101C9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF3458252D430C00A101C9 /* SceneDelegate.swift */; };
 		85CF3461252D430C00A101C9 /* WotMovie.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 85CF345F252D430C00A101C9 /* WotMovie.xcdatamodeld */; };
@@ -87,6 +90,9 @@
 		8501404C2548BAF10088FA3E /* PersonTableSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonTableSectionHeaderView.swift; sourceTree = "<group>"; };
 		850140542549E7350088FA3E /* EnterGuessViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterGuessViewController.swift; sourceTree = "<group>"; };
 		85014059254A00830088FA3E /* TouchDelegatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchDelegatingView.swift; sourceTree = "<group>"; };
+		8501405E254B50C20088FA3E /* EnterGuessPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterGuessPresenter.swift; sourceTree = "<group>"; };
+		85014063254B53AC0088FA3E /* Entity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
+		85014068254C7F1D0088FA3E /* EnterGuessControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterGuessControlsView.swift; sourceTree = "<group>"; };
 		85CF3453252D430C00A101C9 /* WotMovie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WotMovie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		85CF3456252D430C00A101C9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		85CF3458252D430C00A101C9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -287,6 +293,7 @@
 				85CF35792538DE1D00A101C9 /* Title.swift */,
 				85CF35B62540E1D000A101C9 /* Credits.swift */,
 				85CF35BB2540E41B00A101C9 /* Person.swift */,
+				85014063254B53AC0088FA3E /* Entity.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -375,6 +382,7 @@
 				8501403A2544E22F0088FA3E /* GuessGridFooterView.swift */,
 				8501404C2548BAF10088FA3E /* PersonTableSectionHeaderView.swift */,
 				85014059254A00830088FA3E /* TouchDelegatingView.swift */,
+				85014068254C7F1D0088FA3E /* EnterGuessControlsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -385,6 +393,7 @@
 				85CF356525377CBA00A101C9 /* GuessPresenter.swift */,
 				85CF35742538DA5700A101C9 /* GuessGridPresenter.swift */,
 				85CF3595253CBE1900A101C9 /* GuessDetailPresenter.swift */,
+				8501405E254B50C20088FA3E /* EnterGuessPresenter.swift */,
 			);
 			path = Presenters;
 			sourceTree = "<group>";
@@ -533,10 +542,12 @@
 				8501405A254A00830088FA3E /* TouchDelegatingView.swift in Sources */,
 				85CF354E25365D3B00A101C9 /* GuessDetailViewController.swift in Sources */,
 				85CF35D32543912300A101C9 /* HorizontalCollectionViewController.swift in Sources */,
+				8501405F254B50C20088FA3E /* EnterGuessPresenter.swift in Sources */,
 				85CF353525365B7900A101C9 /* RootTabViewController.swift in Sources */,
 				8501404D2548BAF10088FA3E /* PersonTableSectionHeaderView.swift in Sources */,
 				85CF35DB2543A8AD00A101C9 /* HorizontalCollectionViewCell.swift in Sources */,
 				85CF3457252D430C00A101C9 /* AppDelegate.swift in Sources */,
+				85014064254B53AC0088FA3E /* Entity.swift in Sources */,
 				85CF359B253E0CFB00A101C9 /* DetailOverviewView.swift in Sources */,
 				8501403B2544E22F0088FA3E /* GuessGridFooterView.swift in Sources */,
 				85CF34A0252E5EE400A101C9 /* HTTPMethod.swift in Sources */,
@@ -560,6 +571,7 @@
 				85CF34AF252E61CE00A101C9 /* URLParameterEncoder.swift in Sources */,
 				85CF353F25365C7900A101C9 /* WatchListViewController.swift in Sources */,
 				85CF35BC2540E41B00A101C9 /* Person.swift in Sources */,
+				85014069254C7F1D0088FA3E /* EnterGuessControlsView.swift in Sources */,
 				85CF3587253A306100A101C9 /* GuessGridCollectionViewCell.swift in Sources */,
 				850140552549E7350088FA3E /* EnterGuessViewController.swift in Sources */,
 				85CF35C12541F9DD00A101C9 /* PersonTableViewCell.swift in Sources */,

@@ -246,4 +246,38 @@ final class NetworkManager {
             }
         }
     }
+    
+    public func searchMovies(searchText: String, completion: @escaping (_ movies: [Movie]?, _ error: String?) -> ()) {
+        print("searching for ", searchText)
+        router.request(.searchMovies(text: searchText)) { data, response, error in
+            if error != nil {
+                completion(nil, "Please check your network connection.")
+            }
+            
+            if let response = response as? HTTPURLResponse {
+                let result = NetworkResponse.handleNetworkResponse(response)
+                
+                switch result {
+                case .success:
+                    guard let responseData = data else {
+                        completion(nil, NetworkResponse.noData.rawValue)
+                        return
+                    }
+                    do {
+                        //let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
+                        //print(jsonData)
+                        let apiResponse = try JSONDecoder().decode(MovieApiResponse.self, from: responseData)
+                        completion(apiResponse.movies, nil)
+                        print("returning results")
+                    } catch {
+                        print(error)
+                        completion(nil, NetworkResponse.unableToDecode.rawValue)
+                    }
+                case .failure(let networkFailureError):
+                    print(networkFailureError)
+                    completion(nil, networkFailureError)
+                }
+            }
+        }
+    }
 }

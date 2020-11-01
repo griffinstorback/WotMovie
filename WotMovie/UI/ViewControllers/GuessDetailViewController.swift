@@ -54,6 +54,8 @@ class GuessDetailViewController: UIViewController {
     
     // enter guess field at bottom
     private let enterGuessViewController: EnterGuessViewController!
+    private let enterGuessContainerView: UIView!
+    private var enterGuessContainerViewTopConstraint: NSLayoutConstraint!
     
     init(title: Title) {
         guessDetailViewPresenter = GuessDetailPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared, title: title)
@@ -74,6 +76,7 @@ class GuessDetailViewController: UIViewController {
         crewTableView = PeopleTableViewController()
         
         enterGuessViewController = EnterGuessViewController()
+        enterGuessContainerView = UIView()
         
         super.init(nibName: nil, bundle: nil)
         
@@ -100,8 +103,8 @@ class GuessDetailViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        enterGuessViewController.modalPresentationStyle = .overFullScreen
-        present(enterGuessViewController, animated: true)
+        //enterGuessViewController.modalPresentationStyle = .overFullScreen
+        //present(enterGuessViewController, animated: true)
     }
     
     @objc func closeButtonPressed() {
@@ -153,17 +156,14 @@ class GuessDetailViewController: UIViewController {
         showHintButton.titleLabel?.textColor = .white
         showHintButton.addTarget(self, action: #selector(showHintButtonPressed), for: .touchUpInside)
         
-        // add enter guess view controller to bottom of screen
-        /*addChild(enterGuessViewController)
-        view.addSubview(enterGuessViewController.view)
-        enterGuessViewController.view.anchor(top: nil, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: <#T##NSLayoutXAxisAnchor?#>, padding: <#T##UIEdgeInsets#>, size: <#T##CGSize#>)
-        enterGuessViewController.didMove(toParent: self)*/
+        enterGuessViewController.setDelegate(self)
+        enterGuessContainerView.giveBlurredBackground(style: .systemThickMaterialLight)
     }
     
     private func layoutViews() {
         
         view.addSubview(scrollView)
-        scrollView.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, trailing: view.safeAreaLayoutGuide.trailingAnchor)
+        scrollView.anchor(top: view.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: view.bottomAnchor, trailing: view.safeAreaLayoutGuide.trailingAnchor)
         
         scrollView.addSubview(contentStackView)
         contentStackView.anchor(top: scrollView.topAnchor, leading: scrollView.leadingAnchor, bottom: scrollView.bottomAnchor, trailing: scrollView.trailingAnchor)
@@ -176,14 +176,25 @@ class GuessDetailViewController: UIViewController {
         switch state {
         case .fullyHidden:
             addShowHintButton()
-            addRevealButton()
+            //addRevealButton()
+            addCloseButton()
         case .hintShown:
             showInfo()
-            addRevealButton()
+            addCloseButton()
+            //addRevealButton()
         case .revealed:
             showInfo()
             addCloseButton()
         }
+        
+        // add enter guess view controller to bottom of screen
+        view.addSubview(enterGuessContainerView)
+        enterGuessContainerViewTopConstraint = enterGuessContainerView.topAnchor.constraint(equalTo: view.topAnchor)
+        enterGuessContainerView.anchor(top: nil, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
+        addChild(enterGuessViewController)
+        enterGuessContainerView.addSubview(enterGuessViewController.view)
+        enterGuessViewController.view.anchor(top: enterGuessContainerView.topAnchor, leading: enterGuessContainerView.leadingAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, trailing: enterGuessContainerView.trailingAnchor)
+        enterGuessViewController.didMove(toParent: self)
     }
     
     private func addCloseButton() {
@@ -257,6 +268,29 @@ extension GuessDetailViewController: PeopleTableViewDelegate {
     
     func loadImage(for index: Int, section: Int, completion: @escaping (UIImage?) -> Void) {
         guessDetailViewPresenter.loadCrewPersonImage(index: index, section: section, completion: completion)
+    }
+}
+
+extension GuessDetailViewController: EnterGuessProtocol {
+    func showResults() {
+        enterGuessContainerViewTopConstraint.isActive = true
+    }
+    
+    func hideResults() {
+        enterGuessContainerViewTopConstraint.isActive = false
+    }
+    
+    func revealAnswer() {
+        state = .revealed
+        enterGuessViewController.setAnswerRevealed()
+    }
+    
+    func nextQuestion() {
+        
+    }
+    
+    func checkAnswer(id: Int) -> Bool {
+        return id == guessDetailViewPresenter.getID()
     }
 }
 

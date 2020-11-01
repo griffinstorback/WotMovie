@@ -16,7 +16,6 @@ class PersonTableViewCell: UITableViewCell {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = PersonTableViewCell.cellHeight * Constants.imageCornerRadiusRatio
-        print(PersonTableViewCell.cellHeight * Constants.imageCornerRadiusRatio)
         imageView.layer.masksToBounds = true
         return imageView
     }()
@@ -46,7 +45,7 @@ class PersonTableViewCell: UITableViewCell {
         
         setupViews()
         
-        // replace image with N/A image
+        // TODO replace image with N/A image
         //setImage(image: UIImage(systemName: "x.circle.fill"))
         profileImageView.backgroundColor = .lightGray
     }
