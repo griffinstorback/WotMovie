@@ -248,7 +248,6 @@ final class NetworkManager {
     }
     
     public func searchMovies(searchText: String, completion: @escaping (_ movies: [Movie]?, _ error: String?) -> ()) {
-        print("searching for ", searchText)
         router.request(.searchMovies(text: searchText)) { data, response, error in
             if error != nil {
                 completion(nil, NetworkResponse.checkNetworkConnection.rawValue)
