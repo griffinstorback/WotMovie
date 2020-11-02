@@ -21,7 +21,7 @@ final class NetworkManager {
     public func getNewMovies(page: Int, completion: @escaping (_ movies: [Movie]?, _ error: String?) -> ()) {
         router.request(.newMovies(page: page)) { data, response, error in
             if error != nil {
-                completion(nil, "Please check your network connection.")
+                completion(nil, NetworkResponse.checkNetworkConnection.rawValue)
             }
             
             if let response = response as? HTTPURLResponse {
@@ -60,7 +60,7 @@ final class NetworkManager {
     public func getMovieGenres(completion: @escaping (_ genres: [Genre]?, _ error: String?) -> ()) {
         router.request(.movieGenres) { data, response, error in
             if error != nil {
-                completion(nil, "Please check your network connection.")
+                completion(nil, NetworkResponse.checkNetworkConnection.rawValue)
             }
             
             if let response = response as? HTTPURLResponse {
@@ -91,7 +91,7 @@ final class NetworkManager {
     public func getTVShowGenres(completion: @escaping (_ genres: [Genre]?, _ error: String?) -> ()) {
         router.request(.tvShowGenres) { data, response, error in
             if error != nil {
-                completion(nil, "Please check your network connection.")
+                completion(nil, NetworkResponse.checkNetworkConnection.rawValue)
             }
             
             if let response = response as? HTTPURLResponse {
@@ -122,7 +122,7 @@ final class NetworkManager {
     public func getListOfMoviesByGenre(id: Int, page: Int, completion: @escaping (_ movies: [Movie]?, _ error: String?) -> ()) {
         router.request(.discoverMoviesByGenre(id: id, page: page)) { data, response, error in
             if error != nil {
-                completion(nil, "Please check your network connection.")
+                completion(nil, NetworkResponse.checkNetworkConnection.rawValue)
             }
             
             if let response = response as? HTTPURLResponse {
@@ -154,7 +154,7 @@ final class NetworkManager {
     public func getListOfTVShowsByGenre(id: Int, page: Int, completion: @escaping (_ tvShows: [TVShow]?, _ error: String?) -> ()) {
         router.request(.discoverTVShowsByGenre(id: id, page: page)) { data, response, error in
             if error != nil {
-                completion(nil, "Please check your network connection.")
+                completion(nil, NetworkResponse.checkNetworkConnection.rawValue)
             }
             
             if let response = response as? HTTPURLResponse {
@@ -186,7 +186,7 @@ final class NetworkManager {
     public func getCreditsForMovie(id: Int, completion: @escaping (_ credits: Credits?, _ error: String?) -> ()) {
         router.request(.movieCredits(id: id)) { data, response, error in
             if error != nil {
-                completion(nil, "Please check your network connection.")
+                completion(nil, NetworkResponse.checkNetworkConnection.rawValue)
             }
             
             if let response = response as? HTTPURLResponse {
@@ -218,7 +218,7 @@ final class NetworkManager {
     public func getCreditsForTVShow(id: Int, completion: @escaping (_ credits: Credits?, _ error: String?) -> ()) {
         router.request(.tvShowCredits(id: id)) { data, response, error in
             if error != nil {
-                completion(nil, "Please check your network connection.")
+                completion(nil, NetworkResponse.checkNetworkConnection.rawValue)
             }
             
             if let response = response as? HTTPURLResponse {
@@ -251,7 +251,7 @@ final class NetworkManager {
         print("searching for ", searchText)
         router.request(.searchMovies(text: searchText)) { data, response, error in
             if error != nil {
-                completion(nil, "Please check your network connection.")
+                completion(nil, NetworkResponse.checkNetworkConnection.rawValue)
             }
             
             if let response = response as? HTTPURLResponse {

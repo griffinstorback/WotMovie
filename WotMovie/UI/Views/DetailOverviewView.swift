@@ -17,13 +17,16 @@ class DetailOverviewView: UIView {
         return posterImageView
     }()
     private lazy var genreListView: UILabel = {
-        return UILabel()
+        let label = UILabel()
+        label.numberOfLines = 0
+        return label
     }()
     private lazy var horizontalStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.addArrangedSubview(posterImageView)
         stackView.addArrangedSubview(genreListView)
         stackView.axis = .horizontal
+        stackView.spacing = 10
         return stackView
     }()
     
@@ -34,12 +37,19 @@ class DetailOverviewView: UIView {
         label.font = UIFont.boldSystemFont(ofSize: 32)
         return label
     }()
+    private lazy var releaseDateLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 16)
+        label.textColor = .gray
+        return label
+    }()
     private lazy var overviewTextView: UITextView = {
         return UITextView()
     }()
     private lazy var verticalStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.addArrangedSubview(titleLabel)
+        stackView.addArrangedSubview(releaseDateLabel)
         stackView.addArrangedSubview(horizontalStackView)
         stackView.addArrangedSubview(overviewTextView)
         stackView.axis = .vertical
@@ -63,8 +73,6 @@ class DetailOverviewView: UIView {
         overviewTextView.backgroundColor = .white
         overviewTextView.font = UIFont.systemFont(ofSize: 17.0)
         
-        genreListView.text = "Horror, Comedy, Anything"
-
         verticalStackView.backgroundColor = .white
         
         addSubview(verticalStackView)
@@ -80,12 +88,20 @@ class DetailOverviewView: UIView {
         titleLabel.text = text
     }
     
+    public func setReleaseDate(dateString: String) {
+        releaseDateLabel.text = dateString
+    }
+    
     public func setPosterImage(_ image: UIImage?) {
         posterImageView.image = image
     }
     
     public func setOverviewText(_ text: String) {
         overviewTextView.text = text
+    }
+    
+    public func setGenreList(_ commaSeparatedList: String?) {
+        genreListView.text = commaSeparatedList
     }
     
     public func removePosterImageBlurEffectOverlay(animated: Bool) {

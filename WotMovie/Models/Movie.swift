@@ -9,13 +9,14 @@ import Foundation
 
 struct Movie: Title {
     let id: Int
+    let type: EntityType = .movie
     let posterPath: String?
-    let isMovie: Bool = true
     let backdrop: String?
     let title: String
     let releaseDate: String?
     let rating: Double
     let overview: String
+    let genreIDs: [Int]
 }
 
 extension Movie: Decodable {
@@ -27,6 +28,7 @@ extension Movie: Decodable {
         case releaseDate = "release_date"
         case rating = "vote_average"
         case overview
+        case genreIDs = "genre_ids"
     }
     
     init(from decoder: Decoder) throws {
@@ -39,6 +41,7 @@ extension Movie: Decodable {
         releaseDate = try container.decodeIfPresent(String.self, forKey: .releaseDate)
         rating = try container.decode(Double.self, forKey: .rating)
         overview = try container.decode(String.self, forKey: .overview)
+        genreIDs = try container.decode([Int].self, forKey: .genreIDs)
     }
 }
 

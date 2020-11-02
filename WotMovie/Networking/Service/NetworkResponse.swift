@@ -15,6 +15,7 @@ public enum NetworkResponse: String {
     case failed = "Network request failed."
     case noData = "Response returned with no data to decode"
     case unableToDecode = "We could not decode the response."
+    case checkNetworkConnection = "Please check your network connection."
     
     static func handleNetworkResponse(_ response: HTTPURLResponse) -> Result<String> {
         print("** STATUS CODE: ", response.statusCode)

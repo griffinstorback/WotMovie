@@ -7,23 +7,26 @@
 
 import Foundation
 
-protocol Person {
+protocol Person: Entity {
     var id: Int { get }
+    var type: EntityType { get }
+    var posterPath: String? { get }
     var name: String { get }
-    var profilePath: String? { get }
 }
 
 struct CastMember: Person {
     var id: Int
+    var type: EntityType = .person
     var name: String
-    var profilePath: String?
+    var posterPath: String?
     var character: String
 }
 
 struct CrewMember: Person {
     var id: Int
+    var type: EntityType = .person
     var name: String
-    var profilePath: String?
+    var posterPath: String?
     var department: String
     var job: String
 }
@@ -31,8 +34,8 @@ struct CrewMember: Person {
 extension CastMember: Decodable {
     enum CastMemberCodingKey: String, CodingKey {
         case id
+        case posterPath = "profile_path"
         case name
-        case profilePath = "profile_path"
         case character
     }
     
@@ -41,7 +44,7 @@ extension CastMember: Decodable {
         
         id = try container.decode(Int.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)
-        profilePath = try container.decode(String?.self, forKey: .profilePath)
+        posterPath = try container.decode(String?.self, forKey: .posterPath)
         character = try container.decode(String.self, forKey: .character)
     }
 }
@@ -49,8 +52,8 @@ extension CastMember: Decodable {
 extension CrewMember: Decodable {
     enum CrewMemberCodingKey: String, CodingKey {
         case id
+        case posterPath = "profile_path"
         case name
-        case profilePath = "profile_path"
         case department
         case job
     }
@@ -60,7 +63,7 @@ extension CrewMember: Decodable {
         
         id = try container.decode(Int.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)
-        profilePath = try container.decode(String?.self, forKey: .profilePath)
+        posterPath = try container.decode(String?.self, forKey: .posterPath)
         department = try container.decode(String.self, forKey: .department)
         job = try container.decode(String.self, forKey: .job)
     }

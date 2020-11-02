@@ -27,11 +27,11 @@ class GuessDetailViewController: UIViewController {
             case .revealed:
                 removeShowHintButton()
                 showInfo()
-                revealButton.isHidden = true
                 addCloseButton()
                 
                 detailOverviewView.removePosterImageBlurEffectOverlay(animated: true)
                 detailOverviewView.setTitle(guessDetailViewPresenter.getTitle())     //   // TODO *** animate this
+                detailOverviewView.setOverviewText(guessDetailViewPresenter.getOverview()) // uncensor title name from overview
             }
         }
     }
@@ -39,11 +39,9 @@ class GuessDetailViewController: UIViewController {
     private let scrollView: UIScrollView!
     private let contentStackView: UIStackView!
     
-    // buttons which remain at top of screen
     private let closeButton: UIButton!
-    private let revealButton: UIButton!
     
-    // needs container becuase stackview.alignment == .fill
+    // needs container becuase contentstackview.alignment == .fill
     private let showHintButtonContainer: UIView!
     private let showHintButton: UIButton!
     
@@ -64,8 +62,6 @@ class GuessDetailViewController: UIViewController {
         contentStackView = UIStackView()
         
         closeButton = UIButton()
-        revealButton = UIButton()
-        revealButton.layer.cornerRadius = 10
         
         showHintButtonContainer = UIView()
         showHintButton = UIButton()
@@ -129,27 +125,19 @@ class GuessDetailViewController: UIViewController {
         contentStackView.layoutMargins = UIEdgeInsets(top: 60, left: 0, bottom: 150, right: 0)
         contentStackView.isLayoutMarginsRelativeArrangement = true
         
-        // set poster image
+        // set detailOverviewView values
         guessDetailViewPresenter.loadPosterImage(completion: detailOverviewView.setPosterImage)
-        // set overview text
-        detailOverviewView.setOverviewText(guessDetailViewPresenter.getOverview())
+        guessDetailViewPresenter.getGenres(completion: detailOverviewView.setGenreList)
+        detailOverviewView.setOverviewText(guessDetailViewPresenter.getOverviewCensored())
+        detailOverviewView.setReleaseDate(dateString: guessDetailViewPresenter.getReleaseDate())
         
         castCollectionView.setDelegate(self)
         crewTableView.setDelegate(self)
-        
-        // if hasBeenGuessed
-        //titleLabel.text = guessDetailViewPresenter.getTitle()
-        // else
         
         closeButton.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
         closeButton.imageView?.contentMode = .scaleAspectFill
         closeButton.tintColor = .gray
         closeButton.addTarget(self, action: #selector(closeButtonPressed), for: .touchUpInside)
-        
-        revealButton.setTitle("Reveal", for: .normal)
-        revealButton.backgroundColor = .systemBlue
-        revealButton.titleLabel?.textColor = .white
-        revealButton.addTarget(self, action: #selector(revealButtonPressed), for: .touchUpInside)
         
         showHintButton.setTitle("Show hint", for: .normal)
         showHintButton.backgroundColor = .systemBlue
@@ -176,18 +164,16 @@ class GuessDetailViewController: UIViewController {
         switch state {
         case .fullyHidden:
             addShowHintButton()
-            //addRevealButton()
             addCloseButton()
-        case .hintShown:
-            showInfo()
-            addCloseButton()
-            //addRevealButton()
-        case .revealed:
+        case .hintShown, .revealed:
             showInfo()
             addCloseButton()
         }
         
-        // add enter guess view controller to bottom of screen
+        addEnterGuessView()
+    }
+    
+    private func addEnterGuessView() {
         view.addSubview(enterGuessContainerView)
         enterGuessContainerViewTopConstraint = enterGuessContainerView.topAnchor.constraint(equalTo: view.topAnchor)
         enterGuessContainerView.anchor(top: nil, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
@@ -200,11 +186,6 @@ class GuessDetailViewController: UIViewController {
     private func addCloseButton() {
         view.addSubview(closeButton)
         closeButton.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: nil, bottom: nil, trailing: view.safeAreaLayoutGuide.trailingAnchor, size: CGSize(width: 54, height: 54))
-    }
-    
-    private func addRevealButton() {
-        view.addSubview(revealButton)
-        revealButton.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: nil, bottom: nil, trailing: view.safeAreaLayoutGuide.trailingAnchor, padding: UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 10), size: CGSize(width: 66, height: 44))
     }
     
     private func addShowHintButton() {
@@ -286,7 +267,7 @@ extension GuessDetailViewController: EnterGuessProtocol {
     }
     
     func nextQuestion() {
-        
+        self.dismiss(animated: true)
     }
     
     func checkAnswer(id: Int) -> Bool {

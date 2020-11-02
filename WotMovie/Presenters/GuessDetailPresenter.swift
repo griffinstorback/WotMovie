@@ -32,10 +32,10 @@ class GuessDetailPresenter {
     }
     
     private let crewTypeForSection: [Int:String] = [
-            0: "Director",
-            1: "Writer",
-            2: "Producer"
-        ]
+        0: "Director",
+        1: "Writer",
+        2: "Producer"
+    ]
     private var crewToDisplay: [String:[CrewMember]] = [:]
     private func setCrewToDisplay() {
         if let credits = credits {
@@ -85,7 +85,7 @@ class GuessDetailPresenter {
     }
     
     func loadCastPersonImage(index: Int, completion: @escaping (_ image: UIImage?) -> Void) {
-        guard let credits = credits, let profilePath = credits.cast[index].profilePath else {
+        guard let credits = credits, let profilePath = credits.cast[index].posterPath else {
             completion(nil)
             return
         }
@@ -104,7 +104,7 @@ class GuessDetailPresenter {
             return
         }
         
-        guard let profilePath = crewMember.profilePath else {
+        guard let profilePath = crewMember.posterPath else {
             completion(nil)
             return
         }
@@ -182,6 +182,23 @@ class GuessDetailPresenter {
         return "Error retrieving overview"
     }
     
+    func getOverviewCensored() -> String {
+        if let movie = movie {
+            return getOverviewWithTitleCensored(title: movie.title, overview: movie.overview)
+        }
+        
+        if let tvShow = tvShow {
+            return getOverviewWithTitleCensored(title: tvShow.title, overview: tvShow.overview)
+        }
+        
+        return "Error retrieving overview"
+    }
+    
+    // censor the title from the overview, so that it doesn't give it away (i.e. 'The Matrix' tells the story of a computer hacker...)
+    private func getOverviewWithTitleCensored(title: String, overview: String) -> String {
+        return overview.replacingOccurrences(of: title, with: String(repeating: "*", count: title.count))
+    }
+    
     func getTitle() -> String {
         if let movie = movie {
             return movie.title
@@ -192,6 +209,63 @@ class GuessDetailPresenter {
         }
         
         return "Error retrieving title"
+    }
+    
+    func getReleaseDate() -> String {
+        if let movie = movie {
+            return movie.releaseDate ?? "-"
+        }
+        
+        if let tvShow = tvShow {
+            return tvShow.releaseDate ?? "-"
+        }
+        
+        return "-"
+    }
+    
+    // genres appear as comma separated list
+    func getGenres(completion: @escaping (_ genres: String?) -> Void) {
+        if let movie = movie {
+            networkManager.getMovieGenres { genres, error in
+                if let error = error {
+                    print(error)
+                    DispatchQueue.main.async {
+                        completion(nil)
+                    }
+                    return
+                }
+                
+                if let genres = genres {
+                    DispatchQueue.main.async {
+                        completion(self.getGenresStringFor(movie, genres: genres))
+                    }
+                }
+            }
+        }
+        
+        if let tvShow = tvShow {
+            networkManager.getTVShowGenres { genres, error in
+                if let error = error {
+                    print(error)
+                    DispatchQueue.main.async {
+                        completion(nil)
+                    }
+                    return
+                }
+                
+                if let genres = genres {
+                    DispatchQueue.main.async {
+                        completion(self.getGenresStringFor(tvShow, genres: genres))
+                    }
+                }
+            }
+        }
+    }
+    private func getGenresStringFor(_ title: Title, genres: [Genre]) -> String {
+        let titleGenres = genres.filter { title.genreIDs.contains($0.id) }
+        let titleGenresStringList = titleGenres.map { $0.name }
+        let titleGenresString = titleGenresStringList.joined(separator: ", ")
+        return titleGenresString
     }
     
     func getCastCount() -> Int {

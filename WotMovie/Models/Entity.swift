@@ -7,8 +7,14 @@
 
 import Foundation
 
-//
+enum EntityType {
+    case movie
+    case tvShow
+    case person
+}
+
 protocol Entity {
     var id: Int { get }
+    var type: EntityType { get }
     var posterPath: String? { get }
 }

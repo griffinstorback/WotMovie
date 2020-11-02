@@ -24,7 +24,7 @@ final class ImageDownloadManager {
         
         imageRouter.request(.imageWithPath(path: path)) { data, response, error in
             if error != nil {
-                completion(nil, "Please check your network connection.")
+                completion(nil, NetworkResponse.checkNetworkConnection.rawValue)
             }
             
             if let response = response as? HTTPURLResponse {
