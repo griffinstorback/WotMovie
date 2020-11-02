@@ -90,7 +90,6 @@ class EnterGuessViewController: UIViewController {
     }
     
     public func setAnswerRevealed() {
-        print("uh huh")
         enterGuessControlsView.setAnswerWasRevealed()
     }
     
@@ -204,7 +203,7 @@ extension EnterGuessViewController: EnterGuessControlsDelegate {
         
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(performSearch), object: searchBar)
-        self.perform(#selector(performSearch(_:)), with: searchBar, afterDelay: 0.5)
+        self.perform(#selector(performSearch(_:)), with: searchBar, afterDelay: 0.2)
     }
     
     @objc func performSearch(_ searchBar: UISearchBar) {

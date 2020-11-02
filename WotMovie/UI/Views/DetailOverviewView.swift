@@ -53,6 +53,7 @@ class DetailOverviewView: UIView {
         stackView.addArrangedSubview(horizontalStackView)
         stackView.addArrangedSubview(overviewTextView)
         stackView.axis = .vertical
+        stackView.spacing = 5
         return stackView
     }()
     

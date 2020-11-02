@@ -98,9 +98,6 @@ class GuessDetailViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        //enterGuessViewController.modalPresentationStyle = .overFullScreen
-        //present(enterGuessViewController, animated: true)
     }
     
     @objc func closeButtonPressed() {
@@ -151,11 +148,12 @@ class GuessDetailViewController: UIViewController {
     private func layoutViews() {
         
         view.addSubview(scrollView)
-        scrollView.anchor(top: view.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: view.bottomAnchor, trailing: view.safeAreaLayoutGuide.trailingAnchor)
+        // must anchor to safeAreaLayoutguide top and bottom. tried to go to view.top but kept freezing.
+        scrollView.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, trailing: view.safeAreaLayoutGuide.trailingAnchor)
         
         scrollView.addSubview(contentStackView)
         contentStackView.anchor(top: scrollView.topAnchor, leading: scrollView.leadingAnchor, bottom: scrollView.bottomAnchor, trailing: scrollView.trailingAnchor)
-        contentStackView.anchorSize(height: nil, width: view.safeAreaLayoutGuide.widthAnchor)
+        contentStackView.anchorSize(height: nil, width: scrollView.widthAnchor)
         
         // add the stack view items
         contentStackView.addArrangedSubview(detailOverviewView)

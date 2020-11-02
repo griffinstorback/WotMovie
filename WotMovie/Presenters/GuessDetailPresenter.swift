@@ -196,7 +196,7 @@ class GuessDetailPresenter {
     
     // censor the title from the overview, so that it doesn't give it away (i.e. 'The Matrix' tells the story of a computer hacker...)
     private func getOverviewWithTitleCensored(title: String, overview: String) -> String {
-        return overview.replacingOccurrences(of: title, with: String(repeating: "*", count: title.count))
+        return overview.replacingOccurrences(of: title, with: String(repeating: "?", count: title.count))
     }
     
     func getTitle() -> String {
