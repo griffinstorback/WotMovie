@@ -24,6 +24,9 @@ class EnterGuessPresenter {
             }
         }
     }
+    var searchResultsCount: Int {
+        return searchResults.count
+    }
     
     init(networkManager: NetworkManager, imageDownloadManager: ImageDownloadManager) {
         self.networkManager = networkManager
@@ -63,7 +66,7 @@ class EnterGuessPresenter {
             }
             
             if let movies = movies {
-                self?.searchResults = movies
+                self?.searchResults = movies.reversed()
             }
         }
     }

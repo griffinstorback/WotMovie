@@ -218,5 +218,13 @@ extension EnterGuessViewController: EnterGuessControlsDelegate {
 extension EnterGuessViewController: EnterGuessViewDelegate {
     func reloadResults() {
         resultsTableView.reloadData()
+        scrollToBottom()
+    }
+    
+    func scrollToBottom() {
+        if enterGuessPresenter.searchResultsCount > 0 {
+            let lastRow = IndexPath(row: enterGuessPresenter.searchResultsCount-1, section: 0)
+            resultsTableView.scrollToRow(at: lastRow, at: .bottom, animated: false)
+        }
     }
 }

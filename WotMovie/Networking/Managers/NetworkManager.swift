@@ -120,6 +120,9 @@ final class NetworkManager {
     }
     
     public func getListOfMoviesByGenre(id: Int, page: Int, completion: @escaping (_ movies: [Movie]?, _ error: String?) -> ()) {
+        
+        // check if cache contains a Page(genreID, page). 
+        
         router.request(.discoverMoviesByGenre(id: id, page: page)) { data, response, error in
             if error != nil {
                 completion(nil, NetworkResponse.checkNetworkConnection.rawValue)

@@ -16,7 +16,7 @@ class GuessGridViewController: UIViewController {
     private let spacingAmount: CGFloat = 5
     private let minimumCellWidth: CGFloat = 120 // max is (2 * minimum)
     
-    init(for genre: Genre) {
+    /*init(for genre: Genre) {
         guessGridViewPresenter = GuessGridPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared, genre: genre)
         
         super.init(nibName: nil, bundle: nil)
@@ -25,6 +25,18 @@ class GuessGridViewController: UIViewController {
         
         navigationItem.largeTitleDisplayMode = .never
         title = genre.name
+        
+        guessGridViewPresenter.setViewDelegate(guessGridViewDelegate: self)
+    }*/
+    init(for category: CategoryType) {
+        guessGridViewPresenter = GuessGridPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared, category: category)
+        
+        super.init(nibName: nil, bundle: nil)
+        
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        
+        navigationItem.largeTitleDisplayMode = .never
+        title = "\(category)"
         
         guessGridViewPresenter.setViewDelegate(guessGridViewDelegate: self)
     }

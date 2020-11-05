@@ -21,7 +21,7 @@ class RootTabViewController: UITabBarController {
         super.viewDidLoad()
 
         let guessViewController = UINavigationController(rootViewController: GuessViewController())
-        guessViewController.tabBarItem = UITabBarItem(title: "Guess", image: UIImage(systemName: "house"), selectedImage: UIImage(systemName: "house.fill"))
+        guessViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "house"), selectedImage: UIImage(systemName: "house.fill"))
         
         let watchListViewController = UINavigationController(rootViewController: WatchListViewController())
         watchListViewController.tabBarItem = UITabBarItem(title: "Watchlist", image: UIImage(systemName: "list.bullet"), selectedImage: nil)

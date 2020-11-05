@@ -21,13 +21,17 @@ class GuessDetailViewController: UIViewController {
             switch state {
             case .fullyHidden:
                 addShowHintButton()
+                
             case .hintShown:
                 removeShowHintButton()
                 showInfo()
+                
             case .revealed:
                 removeShowHintButton()
                 showInfo()
-                addCloseButton()
+                
+                // scroll to top of view to show title being revealed
+                scrollView.setContentOffset(.zero, animated: true)
                 
                 detailOverviewView.removePosterImageBlurEffectOverlay(animated: true)
                 detailOverviewView.setTitle(guessDetailViewPresenter.getTitle())     //   // TODO *** animate this
@@ -41,7 +45,7 @@ class GuessDetailViewController: UIViewController {
     
     private let closeButton: UIButton!
     
-    // needs container becuase contentstackview.alignment == .fill
+    // needs container because contentstackview.alignment == .fill
     private let showHintButtonContainer: UIView!
     private let showHintButton: UIButton!
     
@@ -162,11 +166,11 @@ class GuessDetailViewController: UIViewController {
         switch state {
         case .fullyHidden:
             addShowHintButton()
-            addCloseButton()
         case .hintShown, .revealed:
             showInfo()
-            addCloseButton()
         }
+        
+        addCloseButton()
         
         addEnterGuessView()
     }
@@ -197,13 +201,19 @@ class GuessDetailViewController: UIViewController {
     }
     
     private func removeShowHintButton() {
-        contentStackView.removeArrangedSubview(showHintButtonContainer)
-        showHintButtonContainer.removeFromSuperview()
+        if contentStackView.subviews.contains(showHintButtonContainer) {
+            contentStackView.removeArrangedSubview(showHintButtonContainer)
+            showHintButtonContainer.removeFromSuperview()
+        }
     }
     
     private func showInfo() {
-        addChildToStackView(castCollectionView)
-        addChildToStackView(crewTableView)
+        if !children.contains(castCollectionView) {
+            addChildToStackView(castCollectionView)
+        }
+        if !children.contains(crewTableView) {
+            addChildToStackView(crewTableView)
+        }
     }
     
     private func removeInfo() {

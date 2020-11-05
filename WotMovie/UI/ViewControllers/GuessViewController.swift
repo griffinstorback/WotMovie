@@ -11,10 +11,17 @@ class GuessViewController: UIViewController {
     
     private let guessViewPresenter = GuessPresenter(networkManager: NetworkManager.shared)
     
-    private var tableView: UITableView!
-    private var selectGenreLabel: UILabel!
+    private let scrollView: UIScrollView
+    
+    private let guessCategoryStackView: UIStackView
+    private var guessCategoryViews: [GuessCategoryView]
     
     init() {
+        scrollView = UIScrollView()
+        
+        guessCategoryStackView = UIStackView()
+        guessCategoryViews = []
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -29,34 +36,59 @@ class GuessViewController: UIViewController {
         
         view.backgroundColor = .white
         
-        setupNavigationView()
-        setupTableView()
-        setupSelectGenreLabel()
-        
-        guessViewPresenter.loadGenreList()
+        setupViews()
+        layoutViews()
     }
     
-    func setupNavigationView() {
+    func setupViews() {
+        // navigation view controller
         title = "WotMovie"
         self.navigationController?.navigationBar.prefersLargeTitles = true
+        
+        scrollView.isUserInteractionEnabled = true
+        
+        guessCategoryStackView.axis = .vertical
+        guessCategoryStackView.alignment = .fill
+        guessCategoryStackView.spacing = 20
+        guessCategoryStackView.layoutMargins = UIEdgeInsets(top: 30, left: 30, bottom: 30, right: 30)
+        guessCategoryStackView.isLayoutMarginsRelativeArrangement = true
+        
+        // add categories to guessCategoryViews list
+        for category in guessViewPresenter.categories {
+            let categoryView = GuessCategoryView(category: category)
+            categoryView.setDelegate(self)
+            guessCategoryViews.append(categoryView)
+        }
     }
     
-    func setupSelectGenreLabel() {
-        selectGenreLabel = UILabel()
-        selectGenreLabel.backgroundColor = .white
-        selectGenreLabel.text = "Select a genre to guess from"
-        selectGenreLabel.numberOfLines = 0
-        self.view.addSubview(selectGenreLabel)
+    func layoutViews() {
+        view.addSubview(scrollView)
+        scrollView.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, trailing: view.safeAreaLayoutGuide.trailingAnchor)
         
-        selectGenreLabel.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.leadingAnchor, bottom: tableView.topAnchor, trailing: view.trailingAnchor, padding: UIEdgeInsets(top: 10, left: 5, bottom: 10, right: 5))
+        scrollView.addSubview(guessCategoryStackView)
+        guessCategoryStackView.anchor(top: scrollView.topAnchor, leading: scrollView.leadingAnchor, bottom: scrollView.bottomAnchor, trailing: scrollView.trailingAnchor)
+        guessCategoryStackView.anchorSize(height: nil, width: scrollView.widthAnchor)
+        
+        for categoryView in guessCategoryViews {
+            guessCategoryStackView.addArrangedSubview(categoryView)
+        }
+    }
+}
+
+extension GuessViewController: GuessCategoryViewDelegate {
+    func categoryWasSelected(_ type: CategoryType) {
+        print("SELECTED TYPE \(type)")
+        
+        let guessGridViewController = GuessGridViewController(for: type)
+        navigationController?.pushViewController(guessGridViewController, animated: true)
     }
 }
 
 extension GuessViewController: GuessViewDelegate {
     func presentGuessGridView(for genre: Genre) {
-        let guessGridViewController = GuessGridViewController(for: genre)
+        //let guessGridViewController = GuessGridViewController(for: genre)
         
-        navigationController?.pushViewController(guessGridViewController, animated: true)
+        //navigationController?.pushViewController(guessGridViewController, animated: true)
     }
     
     func displayErrorLoadingGenres() {
@@ -64,11 +96,11 @@ extension GuessViewController: GuessViewDelegate {
     }
     
     func reloadData() {
-        tableView.reloadData()
+        //tableView.reloadData()
     }
 }
 
-extension GuessViewController: UITableViewDelegate, UITableViewDataSource {
+/*extension GuessViewController: UITableViewDelegate, UITableViewDataSource {
     func setupTableView() {
         tableView = UITableView()
         tableView.dataSource = self
@@ -129,3 +161,4 @@ extension GuessViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
 }
+*/

@@ -17,7 +17,14 @@ class GuessPresenter {
     private let networkManager: NetworkManager
     weak private var guessViewDelegate: GuessViewDelegate?
     
-    private var movieGenres: [Genre] = [] {
+    let categories: [GuessCategory] = [
+        GuessCategory(type: .movie, title: "Guess the movie", numberGuessed: 0, imageName: "house.fill"),
+        GuessCategory(type: .person, title: "Name the actor/actress", numberGuessed: 0, imageName: "house.fill"),
+        GuessCategory(type: .tvShow, title: "Guess the TV Show", numberGuessed: 0, imageName: "house.fill"),
+        GuessCategory(type: .stats, title: "See all stats", numberGuessed: nil, imageName: "house")
+    ]
+    
+    /*private var movieGenres: [Genre] = [] {
         didSet {
             movieGenres.insert(MovieGenre(id: -1, name: "All movies"), at: 0)
             DispatchQueue.main.async {
@@ -38,7 +45,7 @@ class GuessPresenter {
     }
     var tvShowGenresCount: Int {
         return tvShowGenres.count
-    }
+    }*/
     
     init(networkManager: NetworkManager) {
         self.networkManager = networkManager
@@ -48,7 +55,7 @@ class GuessPresenter {
         self.guessViewDelegate = guessViewDelegate
     }
     
-    func loadGenreList() {
+    /*func loadGenreList() {
         // load movie genres
         networkManager.getMovieGenres { [weak self] genres, error in
             if let error = error {
@@ -94,5 +101,5 @@ class GuessPresenter {
         }
         
         guessViewDelegate?.presentGuessGridView(for: genre)
-    }
+    }*/
 }
