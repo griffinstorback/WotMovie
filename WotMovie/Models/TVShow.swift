@@ -12,7 +12,7 @@ struct TVShow: Title {
     let type: EntityType = .tvShow
     let posterPath: String?
     let backdrop: String?
-    let title: String
+    let name: String
     let releaseDate: String?
     let rating: Double
     let overview: String
@@ -24,7 +24,7 @@ extension TVShow: Decodable {
         case id
         case posterPath = "poster_path"
         case backdrop = "backdrop_path"
-        case title = "name"
+        case name
         case releaseDate = "first_air_date"
         case rating = "vote_average"
         case overview
@@ -37,7 +37,7 @@ extension TVShow: Decodable {
         id = try container.decode(Int.self, forKey: .id)
         posterPath = try container.decode(String?.self, forKey: .posterPath)
         backdrop = try container.decode(String?.self, forKey: .backdrop)
-        title = try container.decode(String.self, forKey: .title)
+        name = try container.decode(String.self, forKey: .name)
         releaseDate = try container.decodeIfPresent(String.self, forKey: .releaseDate)
         rating = try container.decode(Double.self, forKey: .rating)
         overview = try container.decode(String.self, forKey: .overview)

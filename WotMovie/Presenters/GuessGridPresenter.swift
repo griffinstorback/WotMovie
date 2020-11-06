@@ -9,9 +9,9 @@ import Foundation
 import UIKit
 
 protocol GuessGridViewDelegate: NSObjectProtocol {
-    func displayTitles()
-    func displayErrorLoadingTitles()
-    func presentGuessTitleDetail(for title: Title)
+    func displayItems()
+    func displayErrorLoadingItems()
+    func presentGuessDetail(for item: Entity)
     func reloadData()
 }
 
@@ -24,15 +24,15 @@ class GuessGridPresenter {
     //private let genre: Genre
     private var nextPage = 1
     
-    private var titles: [Title] = [] {
+    private var items: [Entity] = [] {
         didSet {
             DispatchQueue.main.async {
                 self.guessGridViewDelegate?.reloadData()
             }
         }
     }
-    var titlesCount: Int {
-        return titles.count
+    var itemsCount: Int {
+        return items.count
     }
     
     init(networkManager: NetworkManager, imageDownloadManager: ImageDownloadManager, genre: Genre) {
@@ -52,13 +52,13 @@ class GuessGridPresenter {
         self.guessGridViewDelegate = guessGridViewDelegate
     }
     
-    func titleFor(index: Int) -> Title {
-        return titles[index]
+    func itemFor(index: Int) -> Entity {
+        return items[index]
     }
     
     func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?) -> Void) {
-        let title = titles[index]
-        imageDownloadManager.downloadImage(path: title.posterPath ?? "") { image, error in
+        let item = items[index]
+        imageDownloadManager.downloadImage(path: item.posterPath ?? "") { image, error in
             if let error = error {
                 print(error)
                 DispatchQueue.main.async {
@@ -73,7 +73,7 @@ class GuessGridPresenter {
         }
     }
     
-    /*func loadTitles() {
+    /*func loaditems() {
         if genre.isMovie {
             networkManager.getListOfMoviesByGenre(id: genre.id, page: nextPage) { [weak self] movies, error in
                 if let error = error {
@@ -86,7 +86,7 @@ class GuessGridPresenter {
                     return
                 }
                 if let movies = movies {
-                    self?.titles += movies
+                    self?.items += movies
                     self?.nextPage += 1
                 }
             }
@@ -102,13 +102,13 @@ class GuessGridPresenter {
                     return
                 }
                 if let tvShows = tvShows {
-                    self?.titles += tvShows
+                    self?.items += tvShows
                     self?.nextPage += 1
                 }
             }
         }
     }*/
-    func loadTitles() {
+    func loadItems() {
         if category == .movie {
             networkManager.getListOfMoviesByGenre(id: -1, page: nextPage) { [weak self] movies, error in
                 if let error = error {
@@ -121,7 +121,7 @@ class GuessGridPresenter {
                     return
                 }
                 if let movies = movies {
-                    self?.titles += movies
+                    self?.items += movies
                     self?.nextPage += 1
                 }
             }
@@ -137,7 +137,23 @@ class GuessGridPresenter {
                     return
                 }
                 if let tvShows = tvShows {
-                    self?.titles += tvShows
+                    self?.items += tvShows
+                    self?.nextPage += 1
+                }
+            }
+        } else if category == .person {
+            networkManager.getPopularPeople(page: nextPage) { [weak self] people, error in
+                if let error = error {
+                    print(error)
+                    
+                    // TODO: Error sometimes is just the page not loading for some reason. Got a 500 error once just for one page.
+                    //       Should re-attempt the next page (just once)
+                    //self?.nextPage += 1
+                    
+                    return
+                }
+                if let people = people {
+                    self?.items += people
                     self?.nextPage += 1
                 }
             }
@@ -145,7 +161,7 @@ class GuessGridPresenter {
     }
     
     func showGuessDetail(index: Int) {
-        let title = titles[index]
-        guessGridViewDelegate?.presentGuessTitleDetail(for: title)
+        let item = items[index]
+        guessGridViewDelegate?.presentGuessDetail(for: item)
     }
 }

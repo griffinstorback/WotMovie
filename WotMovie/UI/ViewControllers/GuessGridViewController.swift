@@ -51,21 +51,29 @@ class GuessGridViewController: UIViewController {
         setupCollectionView()
         
         // load first page of movies/tv shows
-        guessGridViewPresenter.loadTitles()
+        guessGridViewPresenter.loadItems()
     }
 }
 
 extension GuessGridViewController: GuessGridViewDelegate {
-    func displayTitles() {
-        print("displayTitles")
+    func displayItems() {
+        print("displayitems")
     }
     
-    func displayErrorLoadingTitles() {
-        print("displayErrorLoadingTitles")
+    func displayErrorLoadingItems() {
+        print("displayErrorLoadingitems")
     }
     
-    func presentGuessTitleDetail(for title: Title) {
-        let guessDetailViewController = GuessDetailViewController(title: title)
+    func presentGuessDetail(for item: Entity) {
+        let guessDetailViewController: GuessDetailViewController
+        
+        switch item.type {
+        case .movie, .tvShow:
+            guessDetailViewController = TitleDetailViewController(item: item)
+        case .person:
+            guessDetailViewController = PersonDetailViewController(item: item)
+        }
+        
         guessDetailViewController.modalPresentationStyle = .fullScreen
         guessDetailViewController.modalPresentationCapturesStatusBarAppearance = true
         
@@ -84,7 +92,7 @@ extension GuessGridViewController: UICollectionViewDataSource {
         collectionView.dataSource = self
         collectionView.backgroundColor = .white
         
-        collectionView.register(GuessGridCollectionViewCell.self, forCellWithReuseIdentifier: "TitleCollectionViewCell")
+        collectionView.register(GuessGridCollectionViewCell.self, forCellWithReuseIdentifier: "ItemCollectionViewCell")
         collectionView.register(GuessGridFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footer")
         
         view.addSubview(collectionView)
@@ -94,14 +102,14 @@ extension GuessGridViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if section == 0 {
-            return guessGridViewPresenter.titlesCount
+            return guessGridViewPresenter.itemsCount
         }
         
         return 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TitleCollectionViewCell", for: indexPath) as! GuessGridCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ItemCollectionViewCell", for: indexPath) as! GuessGridCollectionViewCell
         guessGridViewPresenter.loadImageFor(index: indexPath.row, completion: cell.imageDataReceived)
         
         return cell
@@ -112,7 +120,7 @@ extension GuessGridViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        if guessGridViewPresenter.titlesCount > 0 {
+        if guessGridViewPresenter.itemsCount > 0 {
             return CGSize(width: collectionView.frame.width, height: 100)
         }
         return .zero
@@ -131,9 +139,9 @@ extension GuessGridViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
         if elementKind == UICollectionView.elementKindSectionFooter {
             if let footerView = view as? GuessGridFooterView {
-                if guessGridViewPresenter.titlesCount > 0 {
+                if guessGridViewPresenter.itemsCount > 0 {
                     footerView.startLoadingAnimation()
-                    guessGridViewPresenter.loadTitles()
+                    guessGridViewPresenter.loadItems()
                 } else {
                     print("nothing more to load?")
                 }

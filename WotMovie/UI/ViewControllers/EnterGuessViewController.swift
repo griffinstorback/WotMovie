@@ -25,8 +25,8 @@ class EnterGuessViewController: UIViewController {
     
     private let resultsTableView: UITableView!
 
-    init() {
-        enterGuessPresenter = EnterGuessPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared)
+    init(item: Entity) {
+        enterGuessPresenter = EnterGuessPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared, item: item)
         enterGuessControlsView = EnterGuessControlsView()
         
         resultsTableView = UITableView()
@@ -49,7 +49,7 @@ class EnterGuessViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        enterGuessControlsView.setEnterGuessFieldPlaceholder(text: "Enter movie name")
+        enterGuessControlsView.setEnterGuessFieldPlaceholder(text: enterGuessPresenter.getPlaceholderText())
         
         setupTableView()
         
@@ -158,23 +158,17 @@ extension EnterGuessViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ResultsCell") as! PersonTableViewCell
         
-        let movie = enterGuessPresenter.searchResults[indexPath.row]
+        let item = enterGuessPresenter.searchResults[indexPath.row]
         
-        cell.setName(text: movie.title)
-        enterGuessPresenter.loadImage(path: movie.posterPath ?? "", completion: cell.setImage)
+        cell.setName(text: item.name)
+        enterGuessPresenter.loadImage(path: item.posterPath ?? "", completion: cell.setImage)
         cell.backgroundColor = .clear
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let movie = enterGuessPresenter.searchResults[indexPath.row]
-        
-        guard let correct = delegate?.checkAnswer(id: movie.id) else {
-            return
-        }
-        
-        if correct {
+        if enterGuessPresenter.isCorrect(index: indexPath.row) {
             revealButtonPressed()
             enterGuessControlsView.shouldResignFirstReponder()
             print("Correct!")

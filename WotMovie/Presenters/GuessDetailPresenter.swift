@@ -9,8 +9,8 @@ import Foundation
 import UIKit
 
 protocol GuessDetailViewDelegate: NSObjectProtocol {
-    func displayErrorLoadingDetail()
-    func reloadCreditsData()
+    func displayError()
+    func reloadData()
 }
 
 class GuessDetailPresenter {
@@ -18,15 +18,17 @@ class GuessDetailPresenter {
     private let imageDownloadManager: ImageDownloadManager
     weak private var guessDetailViewDelegate: GuessDetailViewDelegate?
     
-    private let title: Title
+    private let item: Entity
     private let movie: Movie?
     private let tvShow: TVShow?
+    private let person: Person?
+    
     private var credits: Credits? {
         didSet {
             setCrewToDisplay()
             
             DispatchQueue.main.async {
-                self.guessDetailViewDelegate?.reloadCreditsData()
+                self.guessDetailViewDelegate?.reloadData()
             }
         }
     }
@@ -53,22 +55,14 @@ class GuessDetailPresenter {
         }
     }
     
-    init(networkManager: NetworkManager, imageDownloadManager: ImageDownloadManager, title: Title) {
+    init(networkManager: NetworkManager, imageDownloadManager: ImageDownloadManager, item: Entity) {
         self.networkManager = networkManager
         self.imageDownloadManager = imageDownloadManager
-        self.title = title
+        self.item = item
         
-        if title is Movie {
-            movie = title as? Movie
-            tvShow = nil
-        } else if title is TVShow {
-            movie = nil
-            tvShow = title as? TVShow
-        } else {
-            // display error
-            movie = nil
-            tvShow = nil
-        }
+        movie = item as? Movie
+        tvShow = item as? TVShow
+        person = item as? Person
     }
     
     func setViewDelegate(guessDetailViewDelegate: GuessDetailViewDelegate?) {
@@ -76,7 +70,7 @@ class GuessDetailPresenter {
     }
     
     func loadPosterImage(completion: @escaping (_ image: UIImage?) -> Void) {
-        guard let posterPath = title.posterPath else {
+        guard let posterPath = item.posterPath else {
             completion(nil)
             return
         }
@@ -84,6 +78,50 @@ class GuessDetailPresenter {
         loadImage(path: posterPath, completion: completion)
     }
     
+    func loadImage(path: String, completion: @escaping (_ image: UIImage?) -> Void) {
+        imageDownloadManager.downloadImage(path: path) { image, error in
+            if let error = error {
+                print(error)
+                DispatchQueue.main.async {
+                    completion(nil)
+                }
+                return
+            }
+            
+            DispatchQueue.main.async {
+                completion(image)
+            }
+        }
+    }
+    
+    func getID() -> Int {
+        switch item.type {
+        case .movie:
+            return movie?.id ?? -1
+        case .tvShow:
+            return tvShow?.id ?? -1
+        case .person:
+            return person?.id ?? -1
+        }
+    }
+    
+    func getTitle() -> String {
+        switch item.type {
+        case .movie:
+            return movie?.name ?? "Error retrieving title"
+        case .tvShow:
+            return tvShow?.name ?? "Error retrieving title"
+        case .person:
+            return person?.name ?? "Error retrieving name"
+        }
+    }
+}
+
+
+
+// MARK: - Movie/TVShow methods
+
+extension GuessDetailPresenter {
     func loadCastPersonImage(index: Int, completion: @escaping (_ image: UIImage?) -> Void) {
         guard let credits = credits, let profilePath = credits.cast[index].posterPath else {
             completion(nil)
@@ -112,120 +150,91 @@ class GuessDetailPresenter {
         loadImage(path: profilePath, completion: completion)
     }
     
-    func loadImage(path: String, completion: @escaping (_ image: UIImage?) -> Void) {
-        imageDownloadManager.downloadImage(path: path) { image, error in
-            if let error = error {
-                print(error)
-                DispatchQueue.main.async {
-                    completion(nil)
+    func loadCredits() {
+        switch item.type {
+        case .movie:
+            networkManager.getCreditsForMovie(id: item.id) { [weak self] credits, error in
+                if let error = error {
+                    print(error)
+                    DispatchQueue.main.async {
+                        self?.guessDetailViewDelegate?.displayError()
+                    }
+                    return
                 }
-                return
+                
+                self?.credits = credits
+            }
+        
+        
+        case .tvShow:
+            networkManager.getCreditsForTVShow(id: item.id) { [weak self] credits, error in
+                if let error = error {
+                    print(error)
+                    DispatchQueue.main.async {
+                        self?.guessDetailViewDelegate?.displayError()
+                    }
+                    return
+                }
+                
+                self?.credits = credits
             }
             
+        case .person:
             DispatchQueue.main.async {
-                completion(image)
+                self.guessDetailViewDelegate?.displayError()
             }
         }
-    }
-    
-    func loadCredits() {
-        if movie != nil {
-            networkManager.getCreditsForMovie(id: title.id) { [weak self] credits, error in
-                if let error = error {
-                    print(error)
-                    DispatchQueue.main.async {
-                        self?.guessDetailViewDelegate?.displayErrorLoadingDetail()
-                    }
-                    return
-                }
-                
-                self?.credits = credits
-            }
-        }
-        
-        if tvShow != nil {
-            networkManager.getCreditsForTVShow(id: title.id) { [weak self] credits, error in
-                if let error = error {
-                    print(error)
-                    DispatchQueue.main.async {
-                        self?.guessDetailViewDelegate?.displayErrorLoadingDetail()
-                    }
-                    return
-                }
-                
-                self?.credits = credits
-            }
-        }
-    }
-    
-    func getID() -> Int {
-        if let movie = movie {
-            return movie.id
-        }
-        
-        if let tvShow = tvShow {
-            return tvShow.id
-        }
-        
-        return -1
     }
     
     func getOverview() -> String {
-        if let movie = movie {
-            return movie.overview
+        switch item.type {
+        case .movie:
+            return movie?.overview ?? "Error retrieving overview"
+        case .tvShow:
+            return tvShow?.overview ?? "Error retrieving overview"
+        case .person:
+            return "Error - no overview for type .person"
         }
-        
-        if let tvShow = tvShow {
-            return tvShow.overview
-        }
-        
-        return "Error retrieving overview"
     }
     
+    // censor the title from the overview, so that it doesn't give it away
+    // (i.e. "The matrix tells the story of..." becomes "********** tells the story of...")
     func getOverviewCensored() -> String {
-        if let movie = movie {
-            return getOverviewWithTitleCensored(title: movie.title, overview: movie.overview)
+        switch item.type {
+        case .movie:
+            guard let title = movie?.name, let overview = movie?.overview else {
+                return "Error retrieving overview"
+            }
+            return getOverviewWithTitleCensored(title: title, overview: overview)
+        case .tvShow:
+            guard let title = tvShow?.name, let overview = tvShow?.overview else {
+                return "Error retrieving overview"
+            }
+            return getOverviewWithTitleCensored(title: title, overview: overview)
+        case .person:
+            return "Error - no overview (censored) for type .person"
         }
-        
-        if let tvShow = tvShow {
-            return getOverviewWithTitleCensored(title: tvShow.title, overview: tvShow.overview)
-        }
-        
-        return "Error retrieving overview"
     }
     
-    // censor the title from the overview, so that it doesn't give it away (i.e. 'The Matrix' tells the story of a computer hacker...)
     private func getOverviewWithTitleCensored(title: String, overview: String) -> String {
         return overview.replacingOccurrences(of: title, with: String(repeating: "?", count: title.count))
     }
     
-    func getTitle() -> String {
-        if let movie = movie {
-            return movie.title
-        }
-        
-        if let tvShow = tvShow {
-            return tvShow.title
-        }
-        
-        return "Error retrieving title"
-    }
-    
     func getReleaseDate() -> String {
-        if let movie = movie {
-            return movie.releaseDate ?? "-"
+        switch item.type {
+        case .movie:
+            return movie?.releaseDate ?? "-"
+        case .tvShow:
+            return tvShow?.releaseDate ?? "-"
+        case .person:
+            return "Error - no release date for type .person"
         }
-        
-        if let tvShow = tvShow {
-            return tvShow.releaseDate ?? "-"
-        }
-        
-        return "-"
     }
     
     // genres appear as comma separated list
     func getGenres(completion: @escaping (_ genres: String?) -> Void) {
-        if let movie = movie {
+        switch item.type {
+        case .movie:
             networkManager.getMovieGenres { genres, error in
                 if let error = error {
                     print(error)
@@ -237,13 +246,13 @@ class GuessDetailPresenter {
                 
                 if let genres = genres {
                     DispatchQueue.main.async {
-                        completion(self.getGenresStringFor(movie, genres: genres))
+                        completion(self.getGenresStringFor(genres: genres))
                     }
                 }
             }
-        }
         
-        if let tvShow = tvShow {
+        
+        case .tvShow:
             networkManager.getTVShowGenres { genres, error in
                 if let error = error {
                     print(error)
@@ -255,13 +264,37 @@ class GuessDetailPresenter {
                 
                 if let genres = genres {
                     DispatchQueue.main.async {
-                        completion(self.getGenresStringFor(tvShow, genres: genres))
+                        completion(self.getGenresStringFor(genres: genres))
                     }
                 }
             }
+        
+        case .person:
+            DispatchQueue.main.async {
+                completion("Error - no genres for type .person")
+            }
         }
     }
-    private func getGenresStringFor(_ title: Title, genres: [Genre]) -> String {
+    private func getGenresStringFor(genres: [Genre]) -> String {
+        guard item.type == .movie || item.type == .tvShow else {
+            return "Error - can't get genre string for type .person"
+        }
+        
+        let title: Title
+        if item.type == .movie {
+            if let movie = movie {
+                title = movie
+            } else {
+                return "Error - no movie found to get genres for"
+            }
+        } else {
+            if let tvShow = tvShow {
+                title = tvShow
+            } else {
+                return "Error - no tv show found to get genres for"
+            }
+        }
+        
         let titleGenres = genres.filter { title.genreIDs.contains($0.id) }
         let titleGenresStringList = titleGenres.map { $0.name }
         let titleGenresString = titleGenresStringList.joined(separator: ", ")
@@ -313,5 +346,28 @@ class GuessDetailPresenter {
         }
         
         return crewToDisplay[crewType]?[index]
+    }
+}
+
+
+
+// MARK: - Person methods
+
+extension GuessDetailPresenter {
+    func loadKnownForTitleImage(index: Int, completion: @escaping (_ image: UIImage?) -> Void) {
+        guard let profilePath = person?.knownFor[index].posterPath else {
+            completion(nil)
+            return
+        }
+        
+        loadImage(path: profilePath, completion: completion)
+    }
+    
+    func getKnownForCount() -> Int {
+        return person?.knownFor.count ?? 0
+    }
+    
+    func getKnownForTitle(for index: Int) -> Title? {
+        return person?.knownFor[index]
     }
 }

@@ -17,7 +17,8 @@ class EnterGuessPresenter {
     private let imageDownloadManager: ImageDownloadManager
     weak private var enterGuessViewDelegate: EnterGuessViewDelegate?
     
-    var searchResults: [Movie] = [] {
+    private let item: Entity
+    var searchResults: [Entity] = [] {
         didSet {
             DispatchQueue.main.async {
                 self.enterGuessViewDelegate?.reloadResults()
@@ -28,7 +29,8 @@ class EnterGuessPresenter {
         return searchResults.count
     }
     
-    init(networkManager: NetworkManager, imageDownloadManager: ImageDownloadManager) {
+    init(networkManager: NetworkManager, imageDownloadManager: ImageDownloadManager, item: Entity) {
+        self.item = item
         self.networkManager = networkManager
         self.imageDownloadManager = imageDownloadManager
     }
@@ -59,15 +61,55 @@ class EnterGuessPresenter {
             return
         }
         
-        networkManager.searchMovies(searchText: searchText) { [weak self] movies, error in
-            if let error = error {
-                print(error)
-                return
+        switch item.type {
+        case .movie:
+            networkManager.searchMovies(searchText: searchText) { [weak self] movies, error in
+                if let error = error {
+                    print(error)
+                    return
+                }
+                
+                if let movies = movies {
+                    self?.searchResults = movies.reversed()
+                }
             }
-            
-            if let movies = movies {
-                self?.searchResults = movies.reversed()
+        case .tvShow:
+            networkManager.searchTVShows(searchText: searchText) { [weak self] tvShows, error in
+                if let error = error {
+                    print(error)
+                    return
+                }
+                
+                if let tvShows = tvShows {
+                    self?.searchResults = tvShows.reversed()
+                }
             }
+        case .person:
+            networkManager.searchPeople(searchText: searchText) { [weak self] people, error in
+                if let error = error {
+                    print(error)
+                    return
+                }
+                
+                if let people = people {
+                    self?.searchResults = people.reversed()
+                }
+            }
+        }
+    }
+    
+    func isCorrect(index: Int) -> Bool {
+        return item.id == searchResults[index].id
+    }
+    
+    func getPlaceholderText() -> String {
+        switch item.type {
+        case .movie:
+            return "Enter movie name"
+        case .tvShow:
+            return "Enter TV show name"
+        case .person:
+            return "Enter name of person"
         }
     }
 }

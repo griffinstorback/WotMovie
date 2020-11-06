@@ -138,11 +138,11 @@ class GuessCategoryView: UIView {
     
     private func setSelected(_ selected: Bool) {
         if selected {
-            UIView.animate(withDuration: 0.1) {
-                self.transform = CGAffineTransform.identity.scaledBy(x: 0.9, y: 0.9)
+            UIView.animate(withDuration: 0.2) {
+                self.transform = CGAffineTransform.identity.scaledBy(x: 0.95, y: 0.95)
             }
         } else {
-            UIView.animate(withDuration: 0.1) {
+            UIView.animate(withDuration: 0.2) {
                 self.transform = CGAffineTransform.identity.scaledBy(x: 1, y: 1)
             }
         }

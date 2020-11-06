@@ -15,30 +15,8 @@ enum GuessDetailViewState {
 
 class GuessDetailViewController: UIViewController {
     
-    private let guessDetailViewPresenter: GuessDetailPresenter
-    private var state: GuessDetailViewState = .fullyHidden {
-        didSet {
-            switch state {
-            case .fullyHidden:
-                addShowHintButton()
-                
-            case .hintShown:
-                removeShowHintButton()
-                showInfo()
-                
-            case .revealed:
-                removeShowHintButton()
-                showInfo()
-                
-                // scroll to top of view to show title being revealed
-                scrollView.setContentOffset(.zero, animated: true)
-                
-                detailOverviewView.removePosterImageBlurEffectOverlay(animated: true)
-                detailOverviewView.setTitle(guessDetailViewPresenter.getTitle())     //   // TODO *** animate this
-                detailOverviewView.setOverviewText(guessDetailViewPresenter.getOverview()) // uncensor title name from overview
-            }
-        }
-    }
+    let guessDetailViewPresenter: GuessDetailPresenter
+    var state: GuessDetailViewState = .fullyHidden
     
     private let scrollView: UIScrollView!
     private let contentStackView: UIStackView!
@@ -49,18 +27,13 @@ class GuessDetailViewController: UIViewController {
     private let showHintButtonContainer: UIView!
     private let showHintButton: UIButton!
     
-    // stackview items
-    private let detailOverviewView: DetailOverviewView!
-    private let castCollectionView: HorizontalCollectionViewController!
-    private let crewTableView: PeopleTableViewController!
-    
     // enter guess field at bottom
     private let enterGuessViewController: EnterGuessViewController!
     private let enterGuessContainerView: UIView!
     private var enterGuessContainerViewTopConstraint: NSLayoutConstraint!
     
-    init(title: Title) {
-        guessDetailViewPresenter = GuessDetailPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared, title: title)
+    init(item: Entity) {
+        guessDetailViewPresenter = GuessDetailPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared, item: item)
         
         scrollView = UIScrollView()
         contentStackView = UIStackView()
@@ -71,11 +44,7 @@ class GuessDetailViewController: UIViewController {
         showHintButton = UIButton()
         showHintButton.layer.cornerRadius = 10
         
-        detailOverviewView = DetailOverviewView(frame: .zero)
-        castCollectionView = HorizontalCollectionViewController(title: "Cast")
-        crewTableView = PeopleTableViewController()
-        
-        enterGuessViewController = EnterGuessViewController()
+        enterGuessViewController = EnterGuessViewController(item: item)
         enterGuessContainerView = UIView()
         
         super.init(nibName: nil, bundle: nil)
@@ -92,21 +61,12 @@ class GuessDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        guessDetailViewPresenter.setViewDelegate(guessDetailViewDelegate: self)
-        
         setupViews()
         layoutViews()
-        
-        guessDetailViewPresenter.loadCredits()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
     }
     
     @objc func closeButtonPressed() {
-        // dismiss all modals (this one and the enterguessview presented from here - self.dismiss does one at a time)
-        view.window?.rootViewController?.dismiss(animated: true, completion: nil)
+        self.dismiss(animated: true)
     }
     
     @objc func revealButtonPressed() {
@@ -125,15 +85,6 @@ class GuessDetailViewController: UIViewController {
         contentStackView.spacing = 20
         contentStackView.layoutMargins = UIEdgeInsets(top: 60, left: 0, bottom: 150, right: 0)
         contentStackView.isLayoutMarginsRelativeArrangement = true
-        
-        // set detailOverviewView values
-        guessDetailViewPresenter.loadPosterImage(completion: detailOverviewView.setPosterImage)
-        guessDetailViewPresenter.getGenres(completion: detailOverviewView.setGenreList)
-        detailOverviewView.setOverviewText(guessDetailViewPresenter.getOverviewCensored())
-        detailOverviewView.setReleaseDate(dateString: guessDetailViewPresenter.getReleaseDate())
-        
-        castCollectionView.setDelegate(self)
-        crewTableView.setDelegate(self)
         
         closeButton.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
         closeButton.imageView?.contentMode = .scaleAspectFill
@@ -159,19 +110,7 @@ class GuessDetailViewController: UIViewController {
         contentStackView.anchor(top: scrollView.topAnchor, leading: scrollView.leadingAnchor, bottom: scrollView.bottomAnchor, trailing: scrollView.trailingAnchor)
         contentStackView.anchorSize(height: nil, width: scrollView.widthAnchor)
         
-        // add the stack view items
-        contentStackView.addArrangedSubview(detailOverviewView)
-        
-        // add show hint button or show info
-        switch state {
-        case .fullyHidden:
-            addShowHintButton()
-        case .hintShown, .revealed:
-            showInfo()
-        }
-        
         addCloseButton()
-        
         addEnterGuessView()
     }
     
@@ -190,7 +129,7 @@ class GuessDetailViewController: UIViewController {
         closeButton.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: nil, bottom: nil, trailing: view.safeAreaLayoutGuide.trailingAnchor, size: CGSize(width: 54, height: 54))
     }
     
-    private func addShowHintButton() {
+    func addShowHintButton() {
         contentStackView.addArrangedSubview(showHintButtonContainer)
         
         showHintButtonContainer.addSubview(showHintButton)
@@ -200,63 +139,15 @@ class GuessDetailViewController: UIViewController {
         showHintButtonContainer.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: CGSize(width: 0, height: 60))
     }
     
-    private func removeShowHintButton() {
+    func removeShowHintButton() {
         if contentStackView.subviews.contains(showHintButtonContainer) {
             contentStackView.removeArrangedSubview(showHintButtonContainer)
             showHintButtonContainer.removeFromSuperview()
         }
     }
     
-    private func showInfo() {
-        if !children.contains(castCollectionView) {
-            addChildToStackView(castCollectionView)
-        }
-        if !children.contains(crewTableView) {
-            addChildToStackView(crewTableView)
-        }
-    }
-    
-    private func removeInfo() {
-        removeChildFromStackView(castCollectionView)
-        removeChildFromStackView(crewTableView)
-    }
-}
-
-extension GuessDetailViewController: HorizontalCollectionViewDelegate {
-    func getNumberOfItems() -> Int {
-        return guessDetailViewPresenter.getCastCount()
-    }
-    
-    func getTitleFor(index: Int) -> String {
-        return guessDetailViewPresenter.getCastMember(for: index)?.name ?? ""
-    }
-    
-    func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?) -> Void) {
-        guessDetailViewPresenter.loadCastPersonImage(index: index, completion: completion)
-        return
-    }
-}
-
-extension GuessDetailViewController: PeopleTableViewDelegate {
-    
-    func getSectionsCount() -> Int {
-        return guessDetailViewPresenter.getCrewTypesToDisplayCount()
-    }
-    
-    func getCountForSection(section: Int) -> Int {
-        return guessDetailViewPresenter.getCrewCountForType(section: section)
-    }
-
-    func getSectionTitle(for index: Int) -> String? {
-        return guessDetailViewPresenter.getCrewTypeToDisplay(for: index)
-    }
-    
-    func getName(for index: Int, section: Int) -> String? {
-        return guessDetailViewPresenter.getCrewMember(for: index, section: section)?.name
-    }
-    
-    func loadImage(for index: Int, section: Int, completion: @escaping (UIImage?) -> Void) {
-        guessDetailViewPresenter.loadCrewPersonImage(index: index, section: section, completion: completion)
+    func scrollToTop() {
+        scrollView.setContentOffset(.zero, animated: true)
     }
 }
 
@@ -283,18 +174,11 @@ extension GuessDetailViewController: EnterGuessProtocol {
     }
 }
 
-extension GuessDetailViewController: GuessDetailViewDelegate {
-    func displayErrorLoadingDetail() {
-        print("error loading detail view")
+extension GuessDetailViewController {
+    func addViewToStackView(_ view: UIView) {
+        contentStackView.addArrangedSubview(view)
     }
     
-    func reloadCreditsData() {
-        castCollectionView.reloadData()
-        crewTableView.reloadData()
-    }
-}
-
-extension GuessDetailViewController {
     func addChildToStackView(_ child: UIViewController) {
         addChild(child)
         contentStackView.addArrangedSubview(child.view)

@@ -42,10 +42,11 @@ class GuessViewController: UIViewController {
     
     func setupViews() {
         // navigation view controller
-        title = "WotMovie"
+        title = "?"
         self.navigationController?.navigationBar.prefersLargeTitles = true
         
         scrollView.isUserInteractionEnabled = true
+        scrollView.delaysContentTouches = false
         
         guessCategoryStackView.axis = .vertical
         guessCategoryStackView.alignment = .fill

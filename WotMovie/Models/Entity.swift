@@ -16,5 +16,6 @@ enum EntityType {
 protocol Entity {
     var id: Int { get }
     var type: EntityType { get }
+    var name: String { get }
     var posterPath: String? { get }
 }

@@ -186,6 +186,38 @@ final class NetworkManager {
         }
     }
     
+    public func getPopularPeople(page: Int, completion: @escaping (_ people: [Person]?, _ error: String?) -> ()) {
+        router.request(.popularPeople(page: page)) { data, response, error in
+            if error != nil {
+                completion(nil, NetworkResponse.checkNetworkConnection.rawValue)
+            }
+            
+            if let response = response as? HTTPURLResponse {
+                let result = NetworkResponse.handleNetworkResponse(response)
+                
+                switch result {
+                case .success:
+                    guard let responseData = data else {
+                        completion(nil, NetworkResponse.noData.rawValue)
+                        return
+                    }
+                    do {
+                        let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
+                        print(jsonData)
+                        let apiResponse = try JSONDecoder().decode(PersonApiResponse.self, from: responseData)
+                        completion(apiResponse.people, nil)
+                    } catch {
+                        print(error)
+                        completion(nil, NetworkResponse.unableToDecode.rawValue)
+                    }
+                case .failure(let networkFailureError):
+                    print(networkFailureError)
+                    completion(nil, networkFailureError)
+                }
+            }
+        }
+    }
+    
     public func getCreditsForMovie(id: Int, completion: @escaping (_ credits: Credits?, _ error: String?) -> ()) {
         router.request(.movieCredits(id: id)) { data, response, error in
             if error != nil {
@@ -270,7 +302,70 @@ final class NetworkManager {
                         //print(jsonData)
                         let apiResponse = try JSONDecoder().decode(MovieApiResponse.self, from: responseData)
                         completion(apiResponse.movies, nil)
-                        print("returning results")
+                    } catch {
+                        print(error)
+                        completion(nil, NetworkResponse.unableToDecode.rawValue)
+                    }
+                case .failure(let networkFailureError):
+                    print(networkFailureError)
+                    completion(nil, networkFailureError)
+                }
+            }
+        }
+    }
+    
+    public func searchTVShows(searchText: String, completion: @escaping (_ tvShows: [TVShow]?, _ error: String?) -> ()) {
+        router.request(.searchTVShows(text: searchText)) { data, response, error in
+            if error != nil {
+                completion(nil, NetworkResponse.checkNetworkConnection.rawValue)
+            }
+            
+            if let response = response as? HTTPURLResponse {
+                let result = NetworkResponse.handleNetworkResponse(response)
+                
+                switch result {
+                case .success:
+                    guard let responseData = data else {
+                        completion(nil, NetworkResponse.noData.rawValue)
+                        return
+                    }
+                    do {
+                        //let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
+                        //print(jsonData)
+                        let apiResponse = try JSONDecoder().decode(TVShowApiResponse.self, from: responseData)
+                        completion(apiResponse.tvShows, nil)
+                    } catch {
+                        print(error)
+                        completion(nil, NetworkResponse.unableToDecode.rawValue)
+                    }
+                case .failure(let networkFailureError):
+                    print(networkFailureError)
+                    completion(nil, networkFailureError)
+                }
+            }
+        }
+    }
+    
+    public func searchPeople(searchText: String, completion: @escaping (_ people: [Person]?, _ error: String?) -> ()) {
+        router.request(.searchPeople(text: searchText)) { data, response, error in
+            if error != nil {
+                completion(nil, NetworkResponse.checkNetworkConnection.rawValue)
+            }
+            
+            if let response = response as? HTTPURLResponse {
+                let result = NetworkResponse.handleNetworkResponse(response)
+                
+                switch result {
+                case .success:
+                    guard let responseData = data else {
+                        completion(nil, NetworkResponse.noData.rawValue)
+                        return
+                    }
+                    do {
+                        //let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
+                        //print(jsonData)
+                        let apiResponse = try JSONDecoder().decode(PersonApiResponse.self, from: responseData)
+                        completion(apiResponse.people, nil)
                     } catch {
                         print(error)
                         completion(nil, NetworkResponse.unableToDecode.rawValue)
