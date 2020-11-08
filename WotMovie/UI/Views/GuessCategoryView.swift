@@ -29,6 +29,7 @@ class GuessCategoryView: UIView {
         categoryImageView = UIImageView(image: UIImage(systemName: category.imageName))//UIImage(named: category.imageName))
         categoryLabel = UILabel()
         categoryLabel.text = category.title
+        categoryLabel.font = UIFont.boldSystemFont(ofSize: 16)
         horizontalStack = UIStackView()
         
         // if category is 'stats', don't display numberGuessedLabel
@@ -94,7 +95,6 @@ class GuessCategoryView: UIView {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         setSelected(true)
-        print("touches began")
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {

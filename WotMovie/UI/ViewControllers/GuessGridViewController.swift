@@ -91,6 +91,7 @@ extension GuessGridViewController: UICollectionViewDataSource {
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.backgroundColor = .white
+        collectionView.delaysContentTouches = false
         
         collectionView.register(GuessGridCollectionViewCell.self, forCellWithReuseIdentifier: "ItemCollectionViewCell")
         collectionView.register(GuessGridFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footer")
