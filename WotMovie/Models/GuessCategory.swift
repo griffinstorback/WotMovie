@@ -11,16 +11,11 @@ struct GuessCategory {
     let type: CategoryType
     
     let title: String
+    let shortTitle: String
+    
+    // numberGuessed is nil if category isn't leading to guess grid - e.g. "see stats button"
     let numberGuessed: Int?
     let imageName: String
-    
-    var subtitle: String? {
-        if let numberGuessed = numberGuessed {
-            return "\(numberGuessed) " + "guessed correctly"
-        } else {
-            return nil
-        }
-    }
 }
 
 enum CategoryType {

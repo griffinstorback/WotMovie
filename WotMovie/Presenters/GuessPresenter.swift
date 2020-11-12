@@ -18,34 +18,11 @@ class GuessPresenter {
     weak private var guessViewDelegate: GuessViewDelegate?
     
     let categories: [GuessCategory] = [
-        GuessCategory(type: .movie, title: "Guess the movie", numberGuessed: 0, imageName: "house.fill"),
-        GuessCategory(type: .person, title: "Name the actor/actress", numberGuessed: 0, imageName: "house.fill"),
-        GuessCategory(type: .tvShow, title: "Guess the TV Show", numberGuessed: 0, imageName: "house.fill"),
-        GuessCategory(type: .stats, title: "See all stats", numberGuessed: nil, imageName: "house")
+        GuessCategory(type: .movie, title: "Guess the movie", shortTitle: "Movies", numberGuessed: 7, imageName: "question_mark"),
+        GuessCategory(type: .person, title: "Name the actor/actress", shortTitle: "People", numberGuessed: 0, imageName: "question_mark"),
+        GuessCategory(type: .tvShow, title: "Guess the TV Show", shortTitle: "TV Shows", numberGuessed: 0, imageName: "question_mark"),
+        GuessCategory(type: .stats, title: "See all stats", shortTitle: "Stats", numberGuessed: nil, imageName: "question_mark")
     ]
-    
-    /*private var movieGenres: [Genre] = [] {
-        didSet {
-            movieGenres.insert(MovieGenre(id: -1, name: "All movies"), at: 0)
-            DispatchQueue.main.async {
-                self.guessViewDelegate?.reloadData()
-            }
-        }
-    }
-    var movieGenresCount: Int {
-        return movieGenres.count
-    }
-    private var tvShowGenres: [Genre] = [] {
-        didSet {
-            tvShowGenres.insert(TVShowGenre(id: -1, name: "All TV shows"), at: 0)
-            DispatchQueue.main.async {
-                self.guessViewDelegate?.reloadData()
-            }
-        }
-    }
-    var tvShowGenresCount: Int {
-        return tvShowGenres.count
-    }*/
     
     init(networkManager: NetworkManager) {
         self.networkManager = networkManager
@@ -54,52 +31,4 @@ class GuessPresenter {
     func setViewDelegate(guessViewDelegate: GuessViewDelegate?) {
         self.guessViewDelegate = guessViewDelegate
     }
-    
-    /*func loadGenreList() {
-        // load movie genres
-        networkManager.getMovieGenres { [weak self] genres, error in
-            if let error = error {
-                self?.movieGenres = []
-                DispatchQueue.main.async {
-                    self?.guessViewDelegate?.displayErrorLoadingGenres()
-                }
-            }
-            if let genres = genres {
-                self?.movieGenres = genres
-            }
-        }
-        
-        // load tv show genres
-        networkManager.getTVShowGenres { [weak self] genres, error in
-            if let error = error {
-                self?.tvShowGenres = []
-                DispatchQueue.main.async {
-                    self?.guessViewDelegate?.displayErrorLoadingGenres()
-                }
-            }
-            if let genres = genres {
-                self?.tvShowGenres = genres
-            }
-        }
-    }
-    
-    func genreForMovie(index: Int) -> Genre {
-        return movieGenres[index]
-    }
-    
-    func genreForTVShow(index: Int) -> Genre {
-        return tvShowGenres[index]
-    }
-    
-    func showGenreDetail(index: Int, isMovie: Bool) {
-        let genre: Genre
-        
-        if isMovie {
-            genre = movieGenres[index]
-        } else {
-            genre = tvShowGenres[index]
-        }
-        
-        guessViewDelegate?.presentGuessGridView(for: genre)
-    }*/
 }

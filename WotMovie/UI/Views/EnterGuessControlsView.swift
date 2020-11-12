@@ -22,23 +22,23 @@ class EnterGuessControlsView: UIView {
     // stackview shown when answer is still hidden
     private let currentlyGuessingStackView: UIStackView!
     private let enterGuessField: UISearchBar!
-    private let revealButton: UIButton!
+    private let revealButton: ShrinkOnTouchButton!
     
     // stackview shown when answer has been revealed
     private let answerRevealedStackView: UIStackView!
-    private let nextButton: UIButton!
-    private let addToWatchlistButton: UIButton!
+    private let nextButton: ShrinkOnTouchButton!
+    private let addToWatchlistButton: ShrinkOnTouchButton!
     
     init() {
         containerStackView = UIStackView()
         
         enterGuessField = UISearchBar()
         enterGuessField.delegate = delegate
-        revealButton = UIButton()
+        revealButton = ShrinkOnTouchButton()
         currentlyGuessingStackView = UIStackView()
         
-        nextButton = UIButton()
-        addToWatchlistButton = UIButton()
+        nextButton = ShrinkOnTouchButton()
+        addToWatchlistButton = ShrinkOnTouchButton()
         answerRevealedStackView = UIStackView()
         
         super.init(frame: .zero)
@@ -57,15 +57,16 @@ class EnterGuessControlsView: UIView {
         currentlyGuessingStackView.spacing = 10
         
         enterGuessField.searchBarStyle = .minimal
-        enterGuessField.tintColor = .systemBlue
+        enterGuessField.tintColor = Constants.Colors.defaultBlue
         
         // TODO: Replace with question mark icon
-        let enterGuessFieldIcon = UIImage(systemName: "magnifyingglass.circle.fill")?.withTintColor(.systemBlue, renderingMode: .alwaysOriginal)
+        let enterGuessFieldIcon = UIImage(named: "question_mark")?.withTintColor(Constants.Colors.defaultBlue, renderingMode: .alwaysOriginal)
         enterGuessField.setImage(enterGuessFieldIcon, for: .search, state: .normal)
         
         revealButton.setTitle("Reveal", for: .normal)
         revealButton.setTitleColor(.white, for: .normal)
-        revealButton.backgroundColor = .systemBlue
+        revealButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        revealButton.backgroundColor = Constants.Colors.defaultBlue
         revealButton.layer.cornerRadius = 10
         revealButton.addTarget(self, action: #selector(revealButtonPressed), for: .touchUpInside)
         
@@ -76,12 +77,14 @@ class EnterGuessControlsView: UIView {
         
         nextButton.setTitle("Next", for: .normal)
         nextButton.setTitleColor(.white, for: .normal)
-        nextButton.backgroundColor = .systemBlue
+        nextButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        nextButton.backgroundColor = Constants.Colors.defaultBlue
         nextButton.layer.cornerRadius = 10
         nextButton.addTarget(self, action: #selector(nextButtonPressed), for: .touchUpInside)
         
         addToWatchlistButton.setTitle("Add to Watchlist", for: .normal)
         addToWatchlistButton.setTitleColor(.white, for: .normal)
+        addToWatchlistButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         addToWatchlistButton.backgroundColor = .black
         addToWatchlistButton.layer.cornerRadius = 10
         addToWatchlistButton.addTarget(self, action: #selector(addToWatchlistButtonPressed), for: .touchUpInside)
@@ -129,6 +132,7 @@ class EnterGuessControlsView: UIView {
     
     public func setAnswerWasRevealed() {
         containerStackView.removeArrangedSubview(currentlyGuessingStackView)
+        currentlyGuessingStackView.removeFromSuperview()
         containerStackView.addArrangedSubview(answerRevealedStackView)
     }
     

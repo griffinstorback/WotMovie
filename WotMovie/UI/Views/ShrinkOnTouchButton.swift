@@ -1,15 +1,13 @@
 //
-//  ShrinkOnTouchView.swift
+//  ShrinkOnTouchButton.swift
 //  WotMovie
 //
-//  Created by Griffin Storback on 2020-11-06.
+//  Created by Griffin Storback on 2020-11-09.
 //
 
 import UIKit
 
-// Implement these four methods on a view to allow for scale down when pressed button-like funcitonality
-
-class ShrinkOnTouchView: UIView {
+class ShrinkOnTouchButton: UIButton {
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)

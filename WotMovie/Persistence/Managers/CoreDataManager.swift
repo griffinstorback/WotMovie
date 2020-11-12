@@ -25,8 +25,8 @@ final class CoreDataManager {
     
     func createPageEntityFrom(movieApiResponse: MovieApiResponse) {
         let privateContext = coreDataStack.persistentContainer.newBackgroundContext()
-        let pageMO = PageMO(context: privateContext)
-        pageMO.number = Int64(movieApiResponse.page)
+        let pageMO = MoviePageMO(context: privateContext)
+        pageMO.numberAdded = Int64(movieApiResponse.page)
         
         // create movieMO for each of the apiResponses movies, if they don't already exist
         for movie in movieApiResponse.movies {

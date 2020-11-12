@@ -42,7 +42,7 @@ class GuessViewController: UIViewController {
     
     func setupViews() {
         // navigation view controller
-        title = "?"
+        navigationItem.title = "WotMovie"
         self.navigationController?.navigationBar.prefersLargeTitles = true
         
         scrollView.isUserInteractionEnabled = true
@@ -77,7 +77,7 @@ class GuessViewController: UIViewController {
 }
 
 extension GuessViewController: GuessCategoryViewDelegate {
-    func categoryWasSelected(_ type: CategoryType) {
+    func categoryWasSelected(_ type: GuessCategory) {
         print("SELECTED TYPE \(type)")
         
         let guessGridViewController = GuessGridViewController(for: type)
@@ -100,66 +100,3 @@ extension GuessViewController: GuessViewDelegate {
         //tableView.reloadData()
     }
 }
-
-/*extension GuessViewController: UITableViewDelegate, UITableViewDataSource {
-    func setupTableView() {
-        tableView = UITableView()
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "GenreListTableViewCell")
-        
-        self.view.addSubview(tableView)
-        
-        tableView.anchor(top: nil, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
-    }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
-    }
-    
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 0 {
-            return "Movies"
-        } else if section == 1 {
-            return "TV Shows"
-        }
-        
-        return ""
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.section == 0 {
-            guessViewPresenter.showGenreDetail(index: indexPath.row, isMovie: true)
-        } else if indexPath.section == 1 {
-            guessViewPresenter.showGenreDetail(index: indexPath.row, isMovie: false)
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
-            return guessViewPresenter.movieGenresCount
-        } else if section == 1 {
-            return guessViewPresenter.tvShowGenresCount
-        }
-        
-        return 0
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "GenreListTableViewCell", for: indexPath) as UITableViewCell
-        var genre: Genre
-        
-        if indexPath.section == 0 {
-            genre = guessViewPresenter.genreForMovie(index: indexPath.row)
-            cell.textLabel?.text = genre.name
-            return cell
-        } else if indexPath.section == 1 {
-            genre = guessViewPresenter.genreForTVShow(index: indexPath.row)
-            cell.textLabel?.text = genre.name
-            return cell
-        }
-        
-        return cell
-    }
-}
-*/

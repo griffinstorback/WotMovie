@@ -25,7 +25,7 @@ class GuessDetailViewController: UIViewController {
     
     // needs container because contentstackview.alignment == .fill
     private let showHintButtonContainer: UIView!
-    private let showHintButton: UIButton!
+    private let showHintButton: ShrinkOnTouchButton!
     
     // enter guess field at bottom
     private let enterGuessViewController: EnterGuessViewController!
@@ -41,7 +41,7 @@ class GuessDetailViewController: UIViewController {
         closeButton = UIButton()
         
         showHintButtonContainer = UIView()
-        showHintButton = UIButton()
+        showHintButton = ShrinkOnTouchButton()
         showHintButton.layer.cornerRadius = 10
         
         enterGuessViewController = EnterGuessViewController(item: item)
@@ -79,6 +79,7 @@ class GuessDetailViewController: UIViewController {
     
     private func setupViews() {
         scrollView.isUserInteractionEnabled = true
+        scrollView.delaysContentTouches = false
         
         contentStackView.axis = .vertical
         contentStackView.alignment = .fill
@@ -92,8 +93,9 @@ class GuessDetailViewController: UIViewController {
         closeButton.addTarget(self, action: #selector(closeButtonPressed), for: .touchUpInside)
         
         showHintButton.setTitle("Show hint", for: .normal)
-        showHintButton.backgroundColor = .systemBlue
+        showHintButton.backgroundColor = Constants.Colors.defaultBlue
         showHintButton.titleLabel?.textColor = .white
+        showHintButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         showHintButton.addTarget(self, action: #selector(showHintButtonPressed), for: .touchUpInside)
         
         enterGuessViewController.setDelegate(self)

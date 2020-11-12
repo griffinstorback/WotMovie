@@ -57,51 +57,16 @@ class GuessGridCollectionViewCell: UICollectionViewCell {
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesMoved(touches, with: event)
-        
-        if touchIsWithinBoundsOfView(touches) {
-            setSelected(true)
-        } else {
-            setSelected(false)
-        }
+        setSelectedIfTouchWithinBoundsOfView(touches)
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
-        
-        // if touch ended outside this view, ignore.
-        guard touchIsWithinBoundsOfView(touches) else {
-            return
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            self.setSelected(false)
-        }
+        unselectIfTouchWithinBoundsOfView(touches)
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event)
         setSelected(false)
-    }
-    
-    private func touchIsWithinBoundsOfView(_ touches: Set<UITouch>) -> Bool {
-        if let touchPoint = touches.first?.location(in: self) {
-            if self.bounds.contains(touchPoint) {
-                return true
-            }
-        }
-        
-        return false
-    }
-    
-    private func setSelected(_ selected: Bool) {
-        if selected {
-            UIView.animate(withDuration: 0.2) {
-                self.transform = CGAffineTransform.identity.scaledBy(x: 0.95, y: 0.95)
-            }
-        } else {
-            UIView.animate(withDuration: 0.2) {
-                self.transform = CGAffineTransform.identity.scaledBy(x: 1, y: 1)
-            }
-        }
     }
 }

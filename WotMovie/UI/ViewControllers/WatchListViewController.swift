@@ -21,7 +21,7 @@ class WatchListViewController: UIViewController {
         super.viewDidLoad()
 
         view.backgroundColor = .green
-        title = "Watchlist"
+        navigationItem.title = "Watchlist"
         self.navigationController?.navigationBar.prefersLargeTitles = true
     }
 }

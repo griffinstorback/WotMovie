@@ -21,13 +21,14 @@ class RootTabViewController: UITabBarController {
         super.viewDidLoad()
 
         let guessViewController = UINavigationController(rootViewController: GuessViewController())
-        guessViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "house"), selectedImage: UIImage(systemName: "house.fill"))
+        let questionMarkImage = UIImage(named: "question_mark")
+        guessViewController.tabBarItem = UITabBarItem(title: nil, image: questionMarkImage?.withTintColor(.gray), selectedImage: questionMarkImage?.withTintColor(Constants.Colors.defaultBlue))
         
         let watchListViewController = UINavigationController(rootViewController: WatchListViewController())
-        watchListViewController.tabBarItem = UITabBarItem(title: "Watchlist", image: UIImage(systemName: "list.bullet"), selectedImage: nil)
+        watchListViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "list.bullet")?.withTintColor(.gray), selectedImage: UIImage(systemName: "list.bullet")?.withTintColor(Constants.Colors.defaultBlue))
         
         let settingsViewController = UINavigationController(rootViewController: SettingsViewController())
-        settingsViewController.tabBarItem = UITabBarItem(title: "Settings", image: UIImage(systemName: "gear"), selectedImage: nil)
+        settingsViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "gear")?.withTintColor(.gray), selectedImage: UIImage(systemName: "gear")?.withTintColor(Constants.Colors.defaultBlue))
         
         self.setViewControllers([watchListViewController, guessViewController, settingsViewController], animated: true)
         self.selectedViewController = guessViewController

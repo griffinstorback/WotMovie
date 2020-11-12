@@ -23,6 +23,7 @@
 		8586DF422555CC540066EE65 /* PersonDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8586DF412555CC540066EE65 /* PersonDetailViewController.swift */; };
 		8586DF4A2555DE100066EE65 /* PersonOverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8586DF492555DE100066EE65 /* PersonOverviewView.swift */; };
 		8586DF4F255613360066EE65 /* ShrinkOnTouchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8586DF4E255613360066EE65 /* ShrinkOnTouchView.swift */; };
+		8586DF54255A15970066EE65 /* ShrinkOnTouchButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8586DF53255A15970066EE65 /* ShrinkOnTouchButton.swift */; };
 		85CF3457252D430C00A101C9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF3456252D430C00A101C9 /* AppDelegate.swift */; };
 		85CF3459252D430C00A101C9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF3458252D430C00A101C9 /* SceneDelegate.swift */; };
 		85CF3461252D430C00A101C9 /* WotMovie.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 85CF345F252D430C00A101C9 /* WotMovie.xcdatamodeld */; };
@@ -109,6 +110,7 @@
 		8586DF412555CC540066EE65 /* PersonDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonDetailViewController.swift; sourceTree = "<group>"; };
 		8586DF492555DE100066EE65 /* PersonOverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonOverviewView.swift; sourceTree = "<group>"; };
 		8586DF4E255613360066EE65 /* ShrinkOnTouchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShrinkOnTouchView.swift; sourceTree = "<group>"; };
+		8586DF53255A15970066EE65 /* ShrinkOnTouchButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShrinkOnTouchButton.swift; sourceTree = "<group>"; };
 		85CF3453252D430C00A101C9 /* WotMovie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WotMovie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		85CF3456252D430C00A101C9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		85CF3458252D430C00A101C9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -423,6 +425,7 @@
 				8586DF3225539C3F0066EE65 /* GuessCategoryView.swift */,
 				8586DF492555DE100066EE65 /* PersonOverviewView.swift */,
 				8586DF4E255613360066EE65 /* ShrinkOnTouchView.swift */,
+				8586DF53255A15970066EE65 /* ShrinkOnTouchButton.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -596,6 +599,7 @@
 				8586DF3825547C810066EE65 /* GuessCategory.swift in Sources */,
 				8501403B2544E22F0088FA3E /* GuessGridFooterView.swift in Sources */,
 				85CF34A0252E5EE400A101C9 /* HTTPMethod.swift in Sources */,
+				8586DF54255A15970066EE65 /* ShrinkOnTouchButton.swift in Sources */,
 				85CF354925365D0B00A101C9 /* GuessGridViewController.swift in Sources */,
 				85CF34C4252EB18100A101C9 /* Movie.swift in Sources */,
 				85014048254795660088FA3E /* Constants.swift in Sources */,

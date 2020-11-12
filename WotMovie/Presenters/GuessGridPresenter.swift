@@ -21,7 +21,6 @@ class GuessGridPresenter {
     weak private var guessGridViewDelegate: GuessGridViewDelegate?
     
     private let category: CategoryType
-    //private let genre: Genre
     private var nextPage = 1
     
     private var items: [Entity] = [] {
@@ -35,11 +34,25 @@ class GuessGridPresenter {
         return items.count
     }
     
-    init(networkManager: NetworkManager, imageDownloadManager: ImageDownloadManager, genre: Genre) {
-        self.networkManager = networkManager
-        self.imageDownloadManager = imageDownloadManager
-        //self.genre = genre
-        self.category = .stats
+    // filter out entities user has guessed on already, as well as undesirables (e.g. movie with no overview)
+    private func setItems(_ items: [Entity]) {
+        var newItems = items
+        
+        if let movies = newItems as? [Movie] {
+            newItems = movies.filter { !$0.overview.isEmpty }
+            print("Movie objects with nil overview: ", movies.filter { $0.overview.isEmpty })
+        } else if let tvShows = newItems as? [TVShow] {
+            newItems = tvShows.filter { !$0.overview.isEmpty }
+            print("TV objects with nil posterPath: ", tvShows.filter { $0.overview.isEmpty })
+        } else if let people = newItems as? [Person] {
+            //newItems = people.filter { $0.posterPath != nil }
+            //print("Person objects with nil posterPath: ", people.filter { $0.posterPath == nil })
+        }
+        
+        // remove titles without a poster image
+        newItems = newItems.filter { $0.posterPath != nil }
+        
+        self.items += newItems
     }
     
     init(networkManager: NetworkManager, imageDownloadManager: ImageDownloadManager, category: CategoryType) {
@@ -72,42 +85,7 @@ class GuessGridPresenter {
             }
         }
     }
-    
-    /*func loaditems() {
-        if genre.isMovie {
-            networkManager.getListOfMoviesByGenre(id: genre.id, page: nextPage) { [weak self] movies, error in
-                if let error = error {
-                    print(error)
-                    
-                    // TODO: Error sometimes is just the page not loading for some reason. Got a 500 error once just for one page.
-                    //       Should re-attempt the next page (just once)
-                    //self?.nextPage += 1
-                    
-                    return
-                }
-                if let movies = movies {
-                    self?.items += movies
-                    self?.nextPage += 1
-                }
-            }
-        } else {
-            networkManager.getListOfTVShowsByGenre(id: genre.id, page: nextPage) { [weak self] tvShows, error in
-                if let error = error {
-                    print(error)
-                    
-                    // TODO: Error sometimes is just the page not loading for some reason. Got a 500 error once just for one page.
-                    //       Should re-attempt the next page (just once)
-                    //self?.nextPage += 1
-                    
-                    return
-                }
-                if let tvShows = tvShows {
-                    self?.items += tvShows
-                    self?.nextPage += 1
-                }
-            }
-        }
-    }*/
+
     func loadItems() {
         if category == .movie {
             networkManager.getListOfMoviesByGenre(id: -1, page: nextPage) { [weak self] movies, error in
@@ -121,7 +99,8 @@ class GuessGridPresenter {
                     return
                 }
                 if let movies = movies {
-                    self?.items += movies
+                    self?.setItems(movies)
+                    //self?.items += movies
                     self?.nextPage += 1
                 }
             }
@@ -137,7 +116,8 @@ class GuessGridPresenter {
                     return
                 }
                 if let tvShows = tvShows {
-                    self?.items += tvShows
+                    self?.setItems(tvShows)
+                    //self?.items += tvShows
                     self?.nextPage += 1
                 }
             }
@@ -153,7 +133,8 @@ class GuessGridPresenter {
                     return
                 }
                 if let people = people {
-                    self?.items += people
+                    self?.setItems(people)
+                    //self?.items += people
                     self?.nextPage += 1
                 }
             }

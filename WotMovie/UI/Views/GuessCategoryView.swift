@@ -8,13 +8,13 @@
 import UIKit
 
 protocol GuessCategoryViewDelegate {
-    func categoryWasSelected(_ type: CategoryType)
+    func categoryWasSelected(_ category: GuessCategory)
 }
 
 class GuessCategoryView: UIView {
     private var delegate: GuessCategoryViewDelegate?
     
-    private let type: CategoryType
+    private let category: GuessCategory
     
     private let categoryImageView: UIImageView
     private let categoryLabel: UILabel
@@ -24,19 +24,40 @@ class GuessCategoryView: UIView {
     private let verticalStack: UIStackView
     
     init(category: GuessCategory) {
-        type = category.type
+        self.category = category
         
-        categoryImageView = UIImageView(image: UIImage(systemName: category.imageName))//UIImage(named: category.imageName))
+        let categoryImage = UIImage(named: category.imageName)?.withRenderingMode(.alwaysTemplate)
+        categoryImageView = UIImageView(image: categoryImage?.withTintColor(Constants.Colors.defaultBlue))
+        categoryImageView.tintColor = Constants.Colors.defaultBlue
+        categoryImageView.contentMode = .scaleAspectFit
+        
         categoryLabel = UILabel()
         categoryLabel.text = category.title
         categoryLabel.font = UIFont.boldSystemFont(ofSize: 16)
+        
         horizontalStack = UIStackView()
         
         // if category is 'stats', don't display numberGuessedLabel
-        if let numberGuessedText = category.subtitle {
+        if let numberGuessed = category.numberGuessed {
             numberGuessedLabel = UILabel()
-            numberGuessedLabel?.text = numberGuessedText
+            
+            // if at least one has been guessed, make the number blue instead of black
+            let numberTextAttributes: [NSAttributedString.Key : NSObject]
+            if numberGuessed > 0 {
+                numberTextAttributes = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 18), NSAttributedString.Key.foregroundColor: Constants.Colors.defaultBlue]
+            } else {
+                numberTextAttributes = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 18)]
+            }
+            let numberText = NSMutableAttributedString(string: "\(numberGuessed)", attributes: numberTextAttributes)
+            
+            // keep the text after the number black, and not bold
+            let numberGuessedTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
+            let numberGuessedText = NSMutableAttributedString(string: " guessed correctly", attributes: numberGuessedTextAttributes)
+            
+            numberText.append(numberGuessedText)
+            numberGuessedLabel?.attributedText = numberText
         }
+        
         verticalStack = UIStackView()
         
         super.init(frame: .zero)
@@ -99,52 +120,20 @@ class GuessCategoryView: UIView {
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesMoved(touches, with: event)
-        
-        if touchIsWithinBoundsOfView(touches) {
-            setSelected(true)
-        } else {
-            setSelected(false)
-        }
+        setSelectedIfTouchWithinBoundsOfView(touches)
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
+        unselectIfTouchWithinBoundsOfView(touches)
         
-        // if touch ended outside this view, ignore.
-        guard touchIsWithinBoundsOfView(touches) else {
-            return
+        if touchIsWithinBoundsOfView(touches) {
+            delegate?.categoryWasSelected(category)
         }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            self.setSelected(false)
-        }
-        delegate?.categoryWasSelected(type)
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event)
         setSelected(false)
-    }
-    
-    private func touchIsWithinBoundsOfView(_ touches: Set<UITouch>) -> Bool {
-        if let touchPoint = touches.first?.location(in: self) {
-            if self.bounds.contains(touchPoint) {
-                return true
-            }
-        }
-        
-        return false
-    }
-    
-    private func setSelected(_ selected: Bool) {
-        if selected {
-            UIView.animate(withDuration: 0.2) {
-                self.transform = CGAffineTransform.identity.scaledBy(x: 0.95, y: 0.95)
-            }
-        } else {
-            UIView.animate(withDuration: 0.2) {
-                self.transform = CGAffineTransform.identity.scaledBy(x: 1, y: 1)
-            }
-        }
     }
 }

@@ -58,6 +58,8 @@ class HorizontalCollectionViewController: UIViewController {
     }
     
     private func setupViews() {
+        collectionView.delaysContentTouches = false
+        
         if titleLabel != nil {
             titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
         }

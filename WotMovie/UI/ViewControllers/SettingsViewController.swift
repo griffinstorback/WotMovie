@@ -21,7 +21,7 @@ class SettingsViewController: UIViewController {
         super.viewDidLoad()
 
         view.backgroundColor = .gray
-        title = "Settings"
+        navigationItem.title = "Settings"
         self.navigationController?.navigationBar.prefersLargeTitles = true
     }
 }

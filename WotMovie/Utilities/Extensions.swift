@@ -106,4 +106,45 @@ extension UIView {
         
         insertSubview(blurEffectView, at: 0)
     }
+    
+    // MARK: - "Scale down size" animation
+    
+    func unselectIfTouchWithinBoundsOfView(_ touches: Set<UITouch>) {
+        // if touch ended outside this view, ignore.
+        guard touchIsWithinBoundsOfView(touches) else {
+            return
+        }
+        
+        self.setSelected(false)
+    }
+    
+    func setSelectedIfTouchWithinBoundsOfView(_ touches: Set<UITouch>) {
+        if touchIsWithinBoundsOfView(touches) {
+            setSelected(true)
+        } else {
+            setSelected(false)
+        }
+    }
+    
+    func touchIsWithinBoundsOfView(_ touches: Set<UITouch>) -> Bool {
+        if let touchPoint = touches.first?.location(in: self) {
+            if self.bounds.contains(touchPoint) {
+                return true
+            }
+        }
+        
+        return false
+    }
+    
+    func setSelected(_ selected: Bool) {
+        if selected {
+            UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 2, initialSpringVelocity: 3, options: [.curveEaseOut, .allowUserInteraction]) {
+                self.transform = CGAffineTransform.identity.scaledBy(x: 0.95, y: 0.95)
+            }
+        } else {
+            UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 2, initialSpringVelocity: 3, options: [.curveEaseOut, .allowUserInteraction]) {
+                self.transform = CGAffineTransform.identity.scaledBy(x: 1, y: 1)
+            }
+        }
+    }
 }
