@@ -69,19 +69,26 @@ class GuessGridPresenter {
         return items[index]
     }
     
-    func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?) -> Void) {
+    func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
         let item = items[index]
-        imageDownloadManager.downloadImage(path: item.posterPath ?? "") { image, error in
-            if let error = error {
-                print(error)
-                DispatchQueue.main.async {
-                    completion(nil)
+        
+        if let posterPath = item.posterPath {
+            imageDownloadManager.downloadImage(path: posterPath) { image, error in
+                if let error = error {
+                    print(error)
+                    DispatchQueue.main.async {
+                        completion(nil, nil)
+                    }
+                    return
                 }
-                return
+                
+                DispatchQueue.main.async {
+                    completion(image, posterPath)
+                }
             }
-            
+        } else {
             DispatchQueue.main.async {
-                completion(image)
+                completion(nil, nil)
             }
         }
     }

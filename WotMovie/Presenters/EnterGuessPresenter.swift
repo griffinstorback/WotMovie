@@ -18,13 +18,13 @@ class EnterGuessPresenter {
     weak private var enterGuessViewDelegate: EnterGuessViewDelegate?
     
     private let item: Entity
-    var searchResults: [Entity] = [] {
+    private var searchResults: [Entity] = [] {
         didSet {
             DispatchQueue.main.async {
                 self.enterGuessViewDelegate?.reloadResults()
             }
         }
-    }
+    }    
     var searchResultsCount: Int {
         return searchResults.count
     }
@@ -39,20 +39,28 @@ class EnterGuessPresenter {
         self.enterGuessViewDelegate = delegate
     }
     
-    func loadImage(path: String, completion: @escaping (_ image: UIImage?) -> Void) {
-        imageDownloadManager.downloadImage(path: path) { image, error in
-            if let error = error {
-                print(error)
-                DispatchQueue.main.async {
-                    completion(nil)
+    func loadImage(for index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
+        let item = searchResult(for: index)
+        
+        if let posterPath = item.posterPath {
+            imageDownloadManager.downloadImage(path: posterPath) { image, error in
+                if let error = error {
+                    print(error)
+                    DispatchQueue.main.async {
+                        completion(nil, nil)
+                    }
+                    return
                 }
-                return
-            }
-            
-            DispatchQueue.main.async {
-                completion(image)
+                
+                DispatchQueue.main.async {
+                    completion(image, posterPath)
+                }
             }
         }
+    }
+    
+    func searchResult(for index: Int) -> Entity {
+        return searchResults[index]
     }
     
     func search(searchText: String) {

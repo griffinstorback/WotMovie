@@ -1,5 +1,5 @@
 //
-//  PersonTableSectionHeaderView.swift
+//  EntityTableSectionHeaderView.swift
 //  WotMovie
 //
 //  Created by Griffin Storback on 2020-10-27.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PersonTableSectionHeaderView: UITableViewHeaderFooterView {
+class EntityTableSectionHeaderView: UITableViewHeaderFooterView {
     
     private let title: UILabel!
 

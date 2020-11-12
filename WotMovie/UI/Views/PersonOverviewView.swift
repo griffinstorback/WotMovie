@@ -71,7 +71,8 @@ class PersonOverviewView: UIView {
         nameLabel.text = text
     }
     
-    public func setPosterImage(_ image: UIImage?) {
+    // don't really need to do check with imagePath for this view, as it isn't being reused
+    public func setPosterImage(_ image: UIImage?, _ imagePath: String?) {
         posterImageView.image = image
     }
     

@@ -93,7 +93,11 @@ extension PersonDetailViewController: HorizontalCollectionViewDelegate {
         return guessDetailViewPresenter.getKnownForTitle(for: index)?.name ?? ""
     }
     
-    func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?) -> Void) {
+    func getImagePathFor(index: Int) -> String? {
+        return guessDetailViewPresenter.getKnownForTitle(for: index)?.posterPath
+    }
+    
+    func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
         guessDetailViewPresenter.loadKnownForTitleImage(index: index, completion: completion)
         return
     }

@@ -69,27 +69,27 @@ class GuessDetailPresenter {
         self.guessDetailViewDelegate = guessDetailViewDelegate
     }
     
-    func loadPosterImage(completion: @escaping (_ image: UIImage?) -> Void) {
+    func loadPosterImage(completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
         guard let posterPath = item.posterPath else {
-            completion(nil)
+            completion(nil, nil)
             return
         }
         
         loadImage(path: posterPath, completion: completion)
     }
     
-    func loadImage(path: String, completion: @escaping (_ image: UIImage?) -> Void) {
+    func loadImage(path: String, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
         imageDownloadManager.downloadImage(path: path) { image, error in
             if let error = error {
                 print(error)
                 DispatchQueue.main.async {
-                    completion(nil)
+                    completion(nil, nil)
                 }
                 return
             }
             
             DispatchQueue.main.async {
-                completion(image)
+                completion(image, path)
             }
         }
     }
@@ -122,28 +122,28 @@ class GuessDetailPresenter {
 // MARK: - Movie/TVShow methods
 
 extension GuessDetailPresenter {
-    func loadCastPersonImage(index: Int, completion: @escaping (_ image: UIImage?) -> Void) {
+    func loadCastPersonImage(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
         guard let credits = credits, let profilePath = credits.cast[index].posterPath else {
-            completion(nil)
+            completion(nil, nil)
             return
         }
         
         loadImage(path: profilePath, completion: completion)
     }
     
-    func loadCrewPersonImage(index: Int, section: Int, completion: @escaping (_ image: UIImage?) -> Void) {
+    func loadCrewPersonImage(index: Int, section: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
         guard let crewType = crewTypeForSection[section] else {
-            completion(nil)
+            completion(nil, nil)
             return
         }
         
         guard let crewMember = crewToDisplay[crewType]?[index] else {
-            completion(nil)
+            completion(nil, nil)
             return
         }
         
         guard let profilePath = crewMember.posterPath else {
-            completion(nil)
+            completion(nil, nil)
             return
         }
         
@@ -354,9 +354,9 @@ extension GuessDetailPresenter {
 // MARK: - Person methods
 
 extension GuessDetailPresenter {
-    func loadKnownForTitleImage(index: Int, completion: @escaping (_ image: UIImage?) -> Void) {
+    func loadKnownForTitleImage(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
         guard let profilePath = person?.knownFor[index].posterPath else {
-            completion(nil)
+            completion(nil, nil)
             return
         }
         

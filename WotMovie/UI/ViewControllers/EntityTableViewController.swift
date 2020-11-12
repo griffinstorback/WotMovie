@@ -1,5 +1,5 @@
 //
-//  PeopleTableViewController.swift
+//  EntityTableViewController.swift
 //  WotMovie
 //
 //  Created by Griffin Storback on 2020-10-21.
@@ -7,17 +7,18 @@
 
 import UIKit
 
-protocol PeopleTableViewDelegate {
+protocol EntityTableViewDelegate {
     func getSectionsCount() -> Int
     func getCountForSection(section: Int) -> Int
     func getSectionTitle(for index: Int) -> String?
     func getName(for index: Int, section: Int) -> String?
-    func loadImage(for index: Int, section: Int, completion: @escaping (_ image: UIImage?) -> Void)
+    func getImagePath(for index: Int, section: Int) -> String?
+    func loadImage(for index: Int, section: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
 }
 
-class PeopleTableViewController: UIViewController {
+class EntityTableViewController: UIViewController {
     
-    private var delegate: PeopleTableViewDelegate?
+    private var delegate: EntityTableViewDelegate?
     
     private var tableView: ContentSizedTableView!
     
@@ -38,7 +39,7 @@ class PeopleTableViewController: UIViewController {
         layoutTableView()
     }
     
-    func setDelegate(_ delegate: PeopleTableViewDelegate) {
+    func setDelegate(_ delegate: EntityTableViewDelegate) {
         self.delegate = delegate
     }
     
@@ -47,10 +48,10 @@ class PeopleTableViewController: UIViewController {
     }
 }
 
-extension PeopleTableViewController: UITableViewDelegate, UITableViewDataSource {
+extension EntityTableViewController: UITableViewDelegate, UITableViewDataSource {
     func setupTableView() {
-        tableView.register(PersonTableViewCell.self, forCellReuseIdentifier: "PeopleTableViewCell")
-        tableView.register(PersonTableSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: "PeopleTableViewSectionHeader")
+        tableView.register(EntityTableViewCell.self, forCellReuseIdentifier: "PeopleTableViewCell")
+        tableView.register(EntityTableSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: "PeopleTableViewSectionHeader")
 
         tableView.isUserInteractionEnabled = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -74,7 +75,7 @@ extension PeopleTableViewController: UITableViewDelegate, UITableViewDataSource 
             return nil
         }
         
-        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "PeopleTableViewSectionHeader") as! PersonTableSectionHeaderView
+        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "PeopleTableViewSectionHeader") as! EntityTableSectionHeaderView
         header.setTitle(sectionTitle)
         return header
     }
@@ -93,16 +94,17 @@ extension PeopleTableViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return PersonTableViewCell.cellHeight
+        return EntityTableViewCell.cellHeight
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "PeopleTableViewCell", for: indexPath) as! PersonTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "PeopleTableViewCell", for: indexPath) as! EntityTableViewCell
         let section = indexPath.section
         let index = indexPath.row
         
         cell.setName(text: delegate?.getName(for: index, section: section) ?? "")
-        delegate?.loadImage(for: index, section: section, completion: cell.setImage(image:))
+        cell.setImagePath(imagePath: delegate?.getImagePath(for: index, section: section) ?? "")
+        delegate?.loadImage(for: index, section: section, completion: cell.setImage)
 
         return cell
     }

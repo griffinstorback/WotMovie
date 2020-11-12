@@ -13,6 +13,9 @@ class GuessGridCollectionViewCell: UICollectionViewCell {
     
     private var hasBeenGuessed = true
     
+    // need to keep track of the path for image on this cell, so that cell doesn't receive the wrong image.
+    private var imagePath: String = ""
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -38,8 +41,12 @@ class GuessGridCollectionViewCell: UICollectionViewCell {
         self.posterImageView.image = nil
     }
     
-    func imageDataReceived(image: UIImage?) {
-        guard let image = image else {
+    func setCellImagePath(imagePath: String) {
+        self.imagePath = imagePath
+    }
+    
+    func imageDataReceived(image: UIImage?, imagePath: String?) {
+        guard let image = image, let imagePath = imagePath, self.imagePath == imagePath else {
             // TODO
             //imageView.image = UIImage(named: "N/A")
             print("ERROR: image came back nil")

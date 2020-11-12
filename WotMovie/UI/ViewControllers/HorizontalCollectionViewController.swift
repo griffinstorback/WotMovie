@@ -10,7 +10,8 @@ import UIKit
 protocol HorizontalCollectionViewDelegate {
     func getNumberOfItems() -> Int
     func getTitleFor(index: Int) -> String
-    func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?) -> Void)
+    func getImagePathFor(index: Int) -> String?
+    func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
 }
 
 class HorizontalCollectionViewController: UIViewController {
@@ -113,6 +114,10 @@ extension HorizontalCollectionViewController: UICollectionViewDataSource {
         
         if let name = delegate?.getTitleFor(index: indexPath.row) {
             cell.setName(name)
+        }
+        
+        if let imagePath = delegate?.getImagePathFor(index: indexPath.row) {
+            cell.setImagePath(path: imagePath)
         }
         
         delegate?.loadImageFor(index: indexPath.row, completion: cell.setImage)

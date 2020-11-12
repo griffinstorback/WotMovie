@@ -36,12 +36,12 @@ class TitleDetailViewController: GuessDetailViewController {
     // stackview items
     private let detailOverviewView: DetailOverviewView!
     private let castCollectionView: HorizontalCollectionViewController!
-    private let crewTableView: PeopleTableViewController!
+    private let crewTableView: EntityTableViewController!
     
     override init(item: Entity) {
         detailOverviewView = DetailOverviewView(frame: .zero)
         castCollectionView = HorizontalCollectionViewController(title: "Cast")
-        crewTableView = PeopleTableViewController()
+        crewTableView = EntityTableViewController()
         
         super.init(item: item)
         
@@ -98,13 +98,17 @@ extension TitleDetailViewController: HorizontalCollectionViewDelegate {
         return guessDetailViewPresenter.getCastMember(for: index)?.name ?? ""
     }
     
-    func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?) -> Void) {
+    func getImagePathFor(index: Int) -> String? {
+        return guessDetailViewPresenter.getCastMember(for: index)?.posterPath
+    }
+    
+    func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
         guessDetailViewPresenter.loadCastPersonImage(index: index, completion: completion)
         return
     }
 }
 
-extension TitleDetailViewController: PeopleTableViewDelegate {
+extension TitleDetailViewController: EntityTableViewDelegate {
     
     func getSectionsCount() -> Int {
         return guessDetailViewPresenter.getCrewTypesToDisplayCount()
@@ -122,7 +126,11 @@ extension TitleDetailViewController: PeopleTableViewDelegate {
         return guessDetailViewPresenter.getCrewMember(for: index, section: section)?.name
     }
     
-    func loadImage(for index: Int, section: Int, completion: @escaping (UIImage?) -> Void) {
+    func getImagePath(for index: Int, section: Int) -> String? {
+        return guessDetailViewPresenter.getCrewMember(for: index, section: section)?.posterPath
+    }
+    
+    func loadImage(for index: Int, section: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
         guessDetailViewPresenter.loadCrewPersonImage(index: index, section: section, completion: completion)
     }
 }

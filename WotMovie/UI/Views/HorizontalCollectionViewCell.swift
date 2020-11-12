@@ -11,6 +11,8 @@ class HorizontalCollectionViewCell: UICollectionViewCell {
     
     static let cellHeight: CGFloat = 150
     
+    private var imagePath: String = ""
+    
     private var imageView: UIImageView!
     private var nameLabel: UILabel!
     private var subtitleLabel: UILabel!
@@ -61,8 +63,20 @@ class HorizontalCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func setImage(_ image: UIImage?) {
-        imageView.image = image
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.imageView.image = nil
+        self.imagePath = ""
+    }
+    
+    public func setImagePath(path: String) {
+        self.imagePath = path
+    }
+    
+    public func setImage(_ image: UIImage?, _ imagePath: String?) {
+        if let image = image, let imagePath = imagePath, self.imagePath == imagePath {
+            imageView.image = image
+        }
     }
     
     public func setName(_ text: String) {

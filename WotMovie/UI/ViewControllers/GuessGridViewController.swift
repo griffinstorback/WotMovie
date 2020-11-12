@@ -99,6 +99,7 @@ extension GuessGridViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ItemCollectionViewCell", for: indexPath) as! GuessGridCollectionViewCell
+        cell.setCellImagePath(imagePath: guessGridViewPresenter.itemFor(index: indexPath.row).posterPath ?? "")
         guessGridViewPresenter.loadImageFor(index: indexPath.row, completion: cell.imageDataReceived)
         
         return cell

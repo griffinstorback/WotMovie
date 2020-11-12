@@ -144,24 +144,25 @@ extension EnterGuessViewController: UITableViewDelegate, UITableViewDataSource {
         // removes lines between cells when tableview empty
         resultsTableView.tableFooterView = UIView()
         
-        resultsTableView.register(PersonTableViewCell.self, forCellReuseIdentifier: "ResultsCell")
+        resultsTableView.register(EntityTableViewCell.self, forCellReuseIdentifier: "ResultsCell")
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return PersonTableViewCell.cellHeight
+        return EntityTableViewCell.cellHeight
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return enterGuessPresenter.searchResults.count
+        return enterGuessPresenter.searchResultsCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ResultsCell") as! PersonTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ResultsCell") as! EntityTableViewCell
         
-        let item = enterGuessPresenter.searchResults[indexPath.row]
+        let item = enterGuessPresenter.searchResult(for: indexPath.row)
         
         cell.setName(text: item.name)
-        enterGuessPresenter.loadImage(path: item.posterPath ?? "", completion: cell.setImage)
+        cell.setImagePath(imagePath: item.posterPath ?? "")
+        enterGuessPresenter.loadImage(for: indexPath.row, completion: cell.setImage)
         cell.backgroundColor = .clear
         
         return cell
@@ -202,6 +203,8 @@ extension EnterGuessViewController: EnterGuessControlsDelegate {
     
     @objc func performSearch(_ searchBar: UISearchBar) {
         guard let query = searchBar.text, query.trimmingCharacters(in: .whitespaces) != "" else {
+            // clear any results
+            enterGuessPresenter.search(searchText: "")
             return
         }
         

@@ -1,5 +1,5 @@
 //
-//  PersonTableViewCell.swift
+//  EntityTableViewCell.swift
 //  WotMovie
 //
 //  Created by Griffin Storback on 2020-10-22.
@@ -7,15 +7,18 @@
 
 import UIKit
 
-class PersonTableViewCell: UITableViewCell {
+class EntityTableViewCell: UITableViewCell {
     
     static let cellHeight: CGFloat = 60
     private let profileImageViewSize = CGSize(width: 36, height: 54)
     
+    // stored to compare against incoming images in setImage (make sure they are correct image for path)
+    private var imagePath: String = ""
+    
     private lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.layer.cornerRadius = PersonTableViewCell.cellHeight * Constants.imageCornerRadiusRatio
+        imageView.layer.cornerRadius = EntityTableViewCell.cellHeight * Constants.imageCornerRadiusRatio
         imageView.layer.masksToBounds = true
         return imageView
     }()
@@ -74,11 +77,16 @@ class PersonTableViewCell: UITableViewCell {
     }
     
     override func prepareForReuse() {
-        imageView?.image = nil
+        profileImageView.image = nil
+        imagePath = ""
     }
     
-    func setImage(image: UIImage?) {
-        if let image = image {
+    func setImagePath(imagePath: String) {
+        self.imagePath = imagePath
+    }
+    
+    func setImage(image: UIImage?, imagePath: String?) {
+        if let image = image, let imagePath = imagePath, self.imagePath == imagePath {
             profileImageView.image = image
         }
     }

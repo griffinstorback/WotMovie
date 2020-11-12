@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		8501403B2544E22F0088FA3E /* GuessGridFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8501403A2544E22F0088FA3E /* GuessGridFooterView.swift */; };
 		85014048254795660088FA3E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85014047254795650088FA3E /* Constants.swift */; };
-		8501404D2548BAF10088FA3E /* PersonTableSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8501404C2548BAF10088FA3E /* PersonTableSectionHeaderView.swift */; };
+		8501404D2548BAF10088FA3E /* EntityTableSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8501404C2548BAF10088FA3E /* EntityTableSectionHeaderView.swift */; };
 		850140552549E7350088FA3E /* EnterGuessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850140542549E7350088FA3E /* EnterGuessViewController.swift */; };
 		8501405A254A00830088FA3E /* TouchDelegatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85014059254A00830088FA3E /* TouchDelegatingView.swift */; };
 		8501405F254B50C20088FA3E /* EnterGuessPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8501405E254B50C20088FA3E /* EnterGuessPresenter.swift */; };
@@ -67,11 +67,11 @@
 		85CF3596253CBE1900A101C9 /* GuessDetailPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF3595253CBE1900A101C9 /* GuessDetailPresenter.swift */; };
 		85CF359B253E0CFB00A101C9 /* DetailOverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF359A253E0CFB00A101C9 /* DetailOverviewView.swift */; };
 		85CF35A0253E48A300A101C9 /* PosterImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF359F253E48A300A101C9 /* PosterImageView.swift */; };
-		85CF35AA2540B3F600A101C9 /* PeopleTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF35A92540B3F600A101C9 /* PeopleTableViewController.swift */; };
+		85CF35AA2540B3F600A101C9 /* EntityTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF35A92540B3F600A101C9 /* EntityTableViewController.swift */; };
 		85CF35B22540D92900A101C9 /* ContentSizedTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF35B12540D92900A101C9 /* ContentSizedTableView.swift */; };
 		85CF35B72540E1D000A101C9 /* Credits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF35B62540E1D000A101C9 /* Credits.swift */; };
 		85CF35BC2540E41B00A101C9 /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF35BB2540E41B00A101C9 /* Person.swift */; };
-		85CF35C12541F9DD00A101C9 /* PersonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF35C02541F9DD00A101C9 /* PersonTableViewCell.swift */; };
+		85CF35C12541F9DD00A101C9 /* EntityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF35C02541F9DD00A101C9 /* EntityTableViewCell.swift */; };
 		85CF35D32543912300A101C9 /* HorizontalCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF35D22543912300A101C9 /* HorizontalCollectionViewController.swift */; };
 		85CF35DB2543A8AD00A101C9 /* HorizontalCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF35DA2543A8AD00A101C9 /* HorizontalCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
@@ -96,7 +96,7 @@
 /* Begin PBXFileReference section */
 		8501403A2544E22F0088FA3E /* GuessGridFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessGridFooterView.swift; sourceTree = "<group>"; };
 		85014047254795650088FA3E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		8501404C2548BAF10088FA3E /* PersonTableSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonTableSectionHeaderView.swift; sourceTree = "<group>"; };
+		8501404C2548BAF10088FA3E /* EntityTableSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityTableSectionHeaderView.swift; sourceTree = "<group>"; };
 		850140542549E7350088FA3E /* EnterGuessViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterGuessViewController.swift; sourceTree = "<group>"; };
 		85014059254A00830088FA3E /* TouchDelegatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchDelegatingView.swift; sourceTree = "<group>"; };
 		8501405E254B50C20088FA3E /* EnterGuessPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterGuessPresenter.swift; sourceTree = "<group>"; };
@@ -160,11 +160,11 @@
 		85CF3595253CBE1900A101C9 /* GuessDetailPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessDetailPresenter.swift; sourceTree = "<group>"; };
 		85CF359A253E0CFB00A101C9 /* DetailOverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailOverviewView.swift; sourceTree = "<group>"; };
 		85CF359F253E48A300A101C9 /* PosterImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosterImageView.swift; sourceTree = "<group>"; };
-		85CF35A92540B3F600A101C9 /* PeopleTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleTableViewController.swift; sourceTree = "<group>"; };
+		85CF35A92540B3F600A101C9 /* EntityTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityTableViewController.swift; sourceTree = "<group>"; };
 		85CF35B12540D92900A101C9 /* ContentSizedTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentSizedTableView.swift; sourceTree = "<group>"; };
 		85CF35B62540E1D000A101C9 /* Credits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credits.swift; sourceTree = "<group>"; };
 		85CF35BB2540E41B00A101C9 /* Person.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
-		85CF35C02541F9DD00A101C9 /* PersonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonTableViewCell.swift; sourceTree = "<group>"; };
+		85CF35C02541F9DD00A101C9 /* EntityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityTableViewCell.swift; sourceTree = "<group>"; };
 		85CF35D22543912300A101C9 /* HorizontalCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalCollectionViewController.swift; sourceTree = "<group>"; };
 		85CF35DA2543A8AD00A101C9 /* HorizontalCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -353,7 +353,7 @@
 				85CF353E25365C7900A101C9 /* WatchListViewController.swift */,
 				85CF354325365CBB00A101C9 /* SettingsViewController.swift */,
 				85CF354825365D0B00A101C9 /* GuessGridViewController.swift */,
-				85CF35A92540B3F600A101C9 /* PeopleTableViewController.swift */,
+				85CF35A92540B3F600A101C9 /* EntityTableViewController.swift */,
 				85CF35D22543912300A101C9 /* HorizontalCollectionViewController.swift */,
 				850140542549E7350088FA3E /* EnterGuessViewController.swift */,
 				85CF354D25365D3B00A101C9 /* GuessDetailViewController.swift */,
@@ -416,10 +416,10 @@
 				85CF359A253E0CFB00A101C9 /* DetailOverviewView.swift */,
 				85CF359F253E48A300A101C9 /* PosterImageView.swift */,
 				85CF35B12540D92900A101C9 /* ContentSizedTableView.swift */,
-				85CF35C02541F9DD00A101C9 /* PersonTableViewCell.swift */,
+				85CF35C02541F9DD00A101C9 /* EntityTableViewCell.swift */,
 				85CF35DA2543A8AD00A101C9 /* HorizontalCollectionViewCell.swift */,
 				8501403A2544E22F0088FA3E /* GuessGridFooterView.swift */,
-				8501404C2548BAF10088FA3E /* PersonTableSectionHeaderView.swift */,
+				8501404C2548BAF10088FA3E /* EntityTableSectionHeaderView.swift */,
 				85014059254A00830088FA3E /* TouchDelegatingView.swift */,
 				85014068254C7F1D0088FA3E /* EnterGuessControlsView.swift */,
 				8586DF3225539C3F0066EE65 /* GuessCategoryView.swift */,
@@ -590,7 +590,7 @@
 				85CF35D32543912300A101C9 /* HorizontalCollectionViewController.swift in Sources */,
 				8501405F254B50C20088FA3E /* EnterGuessPresenter.swift in Sources */,
 				85CF353525365B7900A101C9 /* RootTabViewController.swift in Sources */,
-				8501404D2548BAF10088FA3E /* PersonTableSectionHeaderView.swift in Sources */,
+				8501404D2548BAF10088FA3E /* EntityTableSectionHeaderView.swift in Sources */,
 				854B3E912550DDBB003397E0 /* CoreDataManager.swift in Sources */,
 				85CF35DB2543A8AD00A101C9 /* HorizontalCollectionViewCell.swift in Sources */,
 				85CF3457252D430C00A101C9 /* AppDelegate.swift in Sources */,
@@ -612,7 +612,7 @@
 				85CF34CC252EB61500A101C9 /* NetworkManager.swift in Sources */,
 				8586DF4F255613360066EE65 /* ShrinkOnTouchView.swift in Sources */,
 				85CF352825362D5F00A101C9 /* Extensions.swift in Sources */,
-				85CF35AA2540B3F600A101C9 /* PeopleTableViewController.swift in Sources */,
+				85CF35AA2540B3F600A101C9 /* EntityTableViewController.swift in Sources */,
 				85CF3498252E5E1700A101C9 /* EndPointType.swift in Sources */,
 				85CF353A25365C5B00A101C9 /* GuessViewController.swift in Sources */,
 				85CF358C253A32D700A101C9 /* ImageDownloadManager.swift in Sources */,
@@ -626,7 +626,7 @@
 				85CF3587253A306100A101C9 /* GuessGridCollectionViewCell.swift in Sources */,
 				8586DF3D2555CC3F0066EE65 /* TitleDetailViewController.swift in Sources */,
 				850140552549E7350088FA3E /* EnterGuessViewController.swift in Sources */,
-				85CF35C12541F9DD00A101C9 /* PersonTableViewCell.swift in Sources */,
+				85CF35C12541F9DD00A101C9 /* EntityTableViewCell.swift in Sources */,
 				85CF34D1252F97C400A101C9 /* MovieEndPoint.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
