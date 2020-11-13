@@ -26,8 +26,8 @@ class GuessCategoryView: UIView {
     init(category: GuessCategory) {
         self.category = category
         
-        let categoryImage = UIImage(named: category.imageName)?.withRenderingMode(.alwaysTemplate)
-        categoryImageView = UIImageView(image: categoryImage?.withTintColor(Constants.Colors.defaultBlue))
+        let categoryImage = UIImage(named: category.imageName)
+        categoryImageView = UIImageView(image: categoryImage)
         categoryImageView.tintColor = Constants.Colors.defaultBlue
         categoryImageView.contentMode = .scaleAspectFit
         
@@ -87,8 +87,8 @@ class GuessCategoryView: UIView {
         
         verticalStack.addArrangedSubview(horizontalStack)
         horizontalStack.addArrangedSubview(categoryImageView)
-        categoryImageView.widthAnchor.constraint(equalToConstant: 60).isActive = true
-        categoryImageView.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        categoryImageView.widthAnchor.constraint(equalToConstant: 120).isActive = true
+        categoryImageView.heightAnchor.constraint(equalToConstant: 120).isActive = true
         horizontalStack.addArrangedSubview(categoryLabel)
         
         if let numberGuessedLabel = numberGuessedLabel {

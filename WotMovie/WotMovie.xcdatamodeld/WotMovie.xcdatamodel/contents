@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17192" systemVersion="19H15" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17511" systemVersion="19H15" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Genre" representedClassName="GenreMO" syncable="YES" codeGenerationType="class">
         <attribute name="dateAdded" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -9,6 +9,7 @@
     <entity name="Movie" representedClassName="MovieMO" syncable="YES" codeGenerationType="class">
         <attribute name="dateAdded" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="lastViewedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="overview" optional="YES" attributeType="String"/>
         <attribute name="posterImageURL" optional="YES" attributeType="String"/>
         <attribute name="releaseDate" optional="YES" attributeType="String"/>
@@ -24,6 +25,7 @@
     </entity>
     <entity name="Person" representedClassName="PersonMO" syncable="YES" codeGenerationType="class">
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="lastViewedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="posterImageURL" optional="YES" attributeType="String"/>
         <relationship name="knownForMovies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Movie"/>
@@ -39,6 +41,7 @@
     <entity name="TVShow" representedClassName="TVShowMO" syncable="YES" codeGenerationType="class">
         <attribute name="dateAdded" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="lastViewedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="overview" optional="YES" attributeType="String"/>
         <attribute name="posterImageURL" optional="YES" attributeType="String"/>
         <attribute name="releaseDate" optional="YES" attributeType="String"/>
@@ -53,12 +56,12 @@
         <relationship name="tvShows" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TVShow"/>
     </entity>
     <elements>
-        <element name="Movie" positionX="-54" positionY="-9" width="128" height="148"/>
-        <element name="MoviePage" positionX="-36" positionY="9" width="128" height="118"/>
         <element name="Genre" positionX="-45" positionY="45" width="128" height="103"/>
-        <element name="TVShow" positionX="-36" positionY="72" width="128" height="148"/>
-        <element name="Person" positionX="-27" positionY="108" width="128" height="118"/>
-        <element name="TVShowPage" positionX="-18" positionY="126" width="128" height="118"/>
+        <element name="Movie" positionX="-54" positionY="-9" width="128" height="163"/>
+        <element name="MoviePage" positionX="-36" positionY="9" width="128" height="118"/>
+        <element name="Person" positionX="-27" positionY="108" width="128" height="133"/>
         <element name="PersonPage" positionX="0" positionY="135" width="128" height="118"/>
+        <element name="TVShow" positionX="-36" positionY="72" width="128" height="163"/>
+        <element name="TVShowPage" positionX="-18" positionY="126" width="128" height="118"/>
     </elements>
 </model>
