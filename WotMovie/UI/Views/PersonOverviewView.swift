@@ -10,7 +10,7 @@ import UIKit
 
 class PersonOverviewView: UIView {
         
-    private lazy var posterImageView: PosterImageView = {
+    lazy var posterImageView: PosterImageView = {
         let posterImageView = PosterImageView(startHidden: true)
         posterImageView.layer.cornerRadius = Constants.PersonOverviewPosterImage.size.height * Constants.imageCornerRadiusRatio
         posterImageView.layer.masksToBounds = true
@@ -73,7 +73,7 @@ class PersonOverviewView: UIView {
     
     // don't really need to do check with imagePath for this view, as it isn't being reused
     public func setPosterImage(_ image: UIImage?, _ imagePath: String?) {
-        posterImageView.image = image
+        posterImageView.setImage(image)
     }
     
     public func setOverviewText(_ text: String) {

@@ -10,7 +10,7 @@ import UIKit
 
 class DetailOverviewView: UIView {
         
-    private lazy var posterImageView: PosterImageView = {
+    lazy var posterImageView: PosterImageView = {
         let posterImageView = PosterImageView(startHidden: true)
         posterImageView.layer.cornerRadius = Constants.DetailOverviewPosterImage.size.height * Constants.imageCornerRadiusRatio
         posterImageView.layer.masksToBounds = true
@@ -95,7 +95,7 @@ class DetailOverviewView: UIView {
     
     // don't really need to do check with imagePath for this view, as it isn't being reused
     public func setPosterImage(_ image: UIImage?, _ imagePath: String?) {
-        posterImageView.image = image
+        posterImageView.setImage(image)
     }
     
     public func setOverviewText(_ text: String) {

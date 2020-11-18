@@ -7,7 +7,7 @@
 
 import UIKit
 
-class GuessGridViewController: UIViewController {
+class GuessGridViewController: DetailPresenterViewController {
 
     private let guessGridViewPresenter: GuessGridPresenter
     
@@ -52,7 +52,7 @@ extension GuessGridViewController: GuessGridViewDelegate {
         print("displayErrorLoadingitems")
     }
     
-    func presentGuessDetail(for item: Entity) {
+    func presentGuessDetail(for item: Entity, fromCard: CardView, fromView: UIView) {
         let guessDetailViewController: GuessDetailViewController
         
         switch item.type {
@@ -65,8 +65,7 @@ extension GuessGridViewController: GuessGridViewDelegate {
         guessDetailViewController.modalPresentationStyle = .fullScreen
         guessDetailViewController.modalPresentationCapturesStatusBarAppearance = true
         
-        //navigationController?.pushViewController(guessDetailViewController, animated: true)
-        present(guessDetailViewController, animated: true)
+        present(guessDetailViewController, fromCard: fromCard)
     }
     
     func reloadData() {
@@ -106,7 +105,11 @@ extension GuessGridViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guessGridViewPresenter.showGuessDetail(index: indexPath.row)
+        let cell = collectionView.cellForItem(at: indexPath) as! GuessGridCollectionViewCell
+        print("** indexPath.row: \(indexPath.row), fromCard: \(cell.posterImageView.frame), fromView: \(cell.frame)")
+        
+        let item = guessGridViewPresenter.itemFor(index: indexPath.row)
+        presentGuessDetail(for: item, fromCard: cell.posterImageView, fromView: cell)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {

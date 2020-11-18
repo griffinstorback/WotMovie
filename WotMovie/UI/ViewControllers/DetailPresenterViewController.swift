@@ -8,22 +8,76 @@
 import UIKit
 
 class DetailPresenterViewController: UIViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+    
+    private var transition: CardTransition?
+    
+    func present(_ viewController: UIViewController, fromCard: CardView) {
+        
+        // Freeze highlighted state or else it will bounce back??
+        //cell.freezeAnimations()
+        
+        // get current frame on screen
+        let currentCardFrame = fromCard.layer.presentation()!.frame
+        
+        // convert current frame to screen's coordinates
+        let cardPresentationFrameOnScreen = fromCard.superview!.convert(currentCardFrame, to: nil)
+        
+        // get card frame without transform in screen's coordinates (for dismissing back to original location later)
+        let cardFrameWithoutTransform = { () -> CGRect in
+            let center = fromCard.center
+            let size = fromCard.bounds.size
+            let r = CGRect(
+                x: center.x - size.width/2,
+                y: center.y - size.height/2,
+                width: size.width,
+                height: size.height
+            )
+            return fromCard.superview!.convert(r, to: nil)
+        }()
+        print("** cardFrameWithoutTransform: \(cardFrameWithoutTransform), cardPresentationFrameOnScreen: \(cardPresentationFrameOnScreen)")
+        let parameters = CardTransitionParameters(fromCardFrame: cardPresentationFrameOnScreen, fromCardFrameWithoutTransform: cardFrameWithoutTransform, fromView: fromCard)
+        transition = CardTransition(parameters: parameters)
+        viewController.transitioningDelegate = transition
+        //viewController.modalPresentationCapturesStatusBarAppearance = true
+        viewController.modalPresentationStyle = .custom
+        
+        present(viewController, animated: true) { [weak fromCard] in
+            //cell.unfreezeAnimations
+        }
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func present(_ viewController: UIViewController, fromCard: CardView, fromView: UIView) {
+        
+        // Freeze highlighted state or else it will bounce back??
+        //cell.freezeAnimations()
+        
+        // get current frame on screen
+        let currentCardFrame = fromView.layer.presentation()!.frame
+        
+        // convert current frame to screen's coordinates
+        let cardPresentationFrameOnScreen = fromView.superview!.convert(currentCardFrame, to: nil)
+        
+        // get card frame without transform in screen's coordinates (for dismissing back to original location later)
+        let cardFrameWithoutTransform = { () -> CGRect in
+            let center = fromView.center
+            let size = fromView.bounds.size
+            let r = CGRect(
+                x: center.x - size.width/2,
+                y: center.y - size.height/2,
+                width: size.width,
+                height: size.height
+            )
+            return fromView.superview!.convert(r, to: nil)
+        }()
+        print("** cardFrameWithoutTransform: \(cardFrameWithoutTransform), cardPresentationFrameOnScreen: \(cardPresentationFrameOnScreen)")
+        let parameters = CardTransitionParameters(fromCardFrame: cardPresentationFrameOnScreen, fromCardFrameWithoutTransform: cardFrameWithoutTransform, fromView: fromCard)
+        transition = CardTransition(parameters: parameters)
+        viewController.transitioningDelegate = transition
+        //viewController.modalPresentationCapturesStatusBarAppearance = true
+        viewController.modalPresentationStyle = .custom
+        
+        present(viewController, animated: true) { [weak fromCard] in
+            //cell.unfreezeAnimations
+        }
     }
-    */
-
 }

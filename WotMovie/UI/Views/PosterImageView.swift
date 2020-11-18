@@ -7,8 +7,10 @@
 
 import UIKit
 
-class PosterImageView: UIImageView {
+class PosterImageView: CardView {
 
+    private let imageView: UIImageView
+    
     // lazy because they're completely unneeded if the image is never "anonymized" (blurred out)
     private lazy var blurEffectView: UIVisualEffectView = {
         let view = UIVisualEffectView(effect: UIBlurEffect(style: .systemUltraThinMaterialDark))
@@ -27,7 +29,11 @@ class PosterImageView: UIImageView {
     convenience init(startHidden: Bool) {
         self.init(frame: .zero)
         
+        // add the image view (where the poster image will be)
+        addImageView()
+
         if startHidden {
+            
             // Initially starts with blur on. Call removeBlurEffectOverlay when user has guessed it or given up.
             addBlurEffectOverlay(animated: false)
             
@@ -37,33 +43,16 @@ class PosterImageView: UIImageView {
     }
     
     override init(frame: CGRect) {
+        imageView = UIImageView()
+        
         super.init(frame: frame)
         
         backgroundColor = .white
     }
     
-    func addQuestionMarkOverlay(animated: Bool) {
-        if animated {
-            questionMarkImageView.alpha = 0
-            UIView.animate(withDuration: 1.5) {
-                self.questionMarkImageView.alpha = 0.3
-            }
-        }
-        
-        addSubview(questionMarkImageView)
-        questionMarkImageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor, padding: UIEdgeInsets(top: 50, left: 35, bottom: 50, right: 35))
-    }
-    
-    func removeQuestionMarkOverlay(animated: Bool) {
-        if animated {
-            UIView.animate(withDuration: 1.0, animations: {
-                self.questionMarkImageView.alpha = 0
-            }) { _ in
-                self.questionMarkImageView.removeFromSuperview()
-            }
-        } else {
-            questionMarkImageView.removeFromSuperview()
-        }
+    func addImageView() {
+        addSubview(imageView)
+        imageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
     }
     
     func addBlurEffectOverlay(animated: Bool) {
@@ -91,12 +80,45 @@ class PosterImageView: UIImageView {
         
         removeQuestionMarkOverlay(animated: true)
     }
+    
+    func addQuestionMarkOverlay(animated: Bool) {
+        if animated {
+            questionMarkImageView.alpha = 0
+            UIView.animate(withDuration: 1.5) {
+                self.questionMarkImageView.alpha = 0.3
+            }
+        }
+        
+        addSubview(questionMarkImageView)
+        questionMarkImageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor, padding: UIEdgeInsets(top: 50, left: 35, bottom: 50, right: 35))
+    }
+    
+    func removeQuestionMarkOverlay(animated: Bool) {
+        if animated {
+            UIView.animate(withDuration: 1.0, animations: {
+                self.questionMarkImageView.alpha = 0
+            }) { _ in
+                self.questionMarkImageView.removeFromSuperview()
+            }
+        } else {
+            questionMarkImageView.removeFromSuperview()
+        }
+    }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    func setImage(_ image: UIImage?) {
+        imageView.image = image
+    }
+    
+    // for creating copy of posterimageview (specifically, used in dismiss card animator)
+    func getImage() -> UIImage? {
+        return imageView.image
+    }
+    
+    /*override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         print("touch began")
         setSelected(true)
@@ -115,5 +137,5 @@ class PosterImageView: UIImageView {
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event)
         setSelected(false)
-    }
+    }*/
 }

@@ -11,7 +11,6 @@ import UIKit
 protocol GuessGridViewDelegate: NSObjectProtocol {
     func displayItems()
     func displayErrorLoadingItems()
-    func presentGuessDetail(for item: Entity)
     func reloadData()
 }
 
@@ -146,10 +145,5 @@ class GuessGridPresenter {
                 }
             }
         }
-    }
-    
-    func showGuessDetail(index: Int) {
-        let item = items[index]
-        guessGridViewDelegate?.presentGuessDetail(for: item)
     }
 }

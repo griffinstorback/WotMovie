@@ -36,11 +36,11 @@ class PersonDetailViewController: GuessDetailViewController {
     private let personOverviewView: PersonOverviewView!
     private let knownForCollectionView: HorizontalCollectionViewController!
     
-    override init(item: Entity) {
+    init(item: Entity) {
         personOverviewView = PersonOverviewView(frame: .zero)
         knownForCollectionView = HorizontalCollectionViewController(title: "Known for")
         
-        super.init(item: item)
+        super.init(item: item, posterImageView: personOverviewView.posterImageView)
         
         guessDetailViewPresenter.setViewDelegate(guessDetailViewDelegate: self)
     }

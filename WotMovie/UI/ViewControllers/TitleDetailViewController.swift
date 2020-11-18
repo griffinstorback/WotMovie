@@ -38,12 +38,12 @@ class TitleDetailViewController: GuessDetailViewController {
     private let castCollectionView: HorizontalCollectionViewController!
     private let crewTableView: EntityTableViewController!
     
-    override init(item: Entity) {
+    init(item: Entity) {
         detailOverviewView = DetailOverviewView(frame: .zero)
         castCollectionView = HorizontalCollectionViewController(title: "Cast")
         crewTableView = EntityTableViewController()
         
-        super.init(item: item)
+        super.init(item: item, posterImageView: detailOverviewView.posterImageView)
         
         guessDetailViewPresenter.setViewDelegate(guessDetailViewDelegate: self)
     }

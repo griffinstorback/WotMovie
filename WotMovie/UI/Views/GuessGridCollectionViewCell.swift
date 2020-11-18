@@ -7,9 +7,9 @@
 
 import UIKit
 
-class GuessGridCollectionViewCell: UICollectionViewCell {
+class GuessGridCollectionViewCell: CardCollectionViewCell {
     
-    private var posterImageView: PosterImageView!
+    var posterImageView: PosterImageView!
     
     private var hasBeenGuessed = true
     
@@ -38,7 +38,7 @@ class GuessGridCollectionViewCell: UICollectionViewCell {
     }
     
     override func prepareForReuse() {
-        self.posterImageView.image = nil
+        self.posterImageView.setImage(nil)
     }
     
     func setCellImagePath(imagePath: String) {
@@ -54,26 +54,6 @@ class GuessGridCollectionViewCell: UICollectionViewCell {
         }
         
         setCornerRadius()
-        posterImageView.image = image
-    }
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        setSelected(true)
-    }
-    
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesMoved(touches, with: event)
-        setSelectedIfTouchWithinBoundsOfView(touches)
-    }
-    
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesEnded(touches, with: event)
-        unselectIfTouchWithinBoundsOfView(touches)
-    }
-    
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesCancelled(touches, with: event)
-        setSelected(false)
+        posterImageView.setImage(image)
     }
 }
