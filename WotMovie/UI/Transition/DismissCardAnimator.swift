@@ -66,10 +66,9 @@ final class DismissCardTransitionDriver {
         )
         
         cardDetailView = context.view(forKey: .from)!
-        
         cardDetailPosterImageViewCopy = PosterImageView(startHidden: true)
         cardDetailPosterImageViewCopy.setImage(screens.presented.posterImageView.getImage())
-        cardDetailPosterImageViewCopy.frame = screens.presented.posterImageView.frame
+        cardDetailPosterImageViewCopy.frame = screens.presented.posterImageView.convert(screens.presented.posterImageView.frame, to: container)
         cardDetailPosterImageViewCopy.layer.cornerRadius = cardDetailPosterImageViewCopy.frame.height * Constants.imageCornerRadiusRatio
         cardDetailPosterImageViewCopy.layer.masksToBounds = true
         
@@ -102,6 +101,7 @@ final class DismissCardTransitionDriver {
                 
         // add posterimageview copy
         animatedContainerView.addSubview(cardDetailPosterImageViewCopy)
+        //cardDetailPosterImageViewCopy.setSelected(true)
         
         container.layoutIfNeeded()
         

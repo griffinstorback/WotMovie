@@ -9,6 +9,8 @@ import UIKit
 
 class PersonDetailViewController: GuessDetailViewController {
     
+    let personDetailViewPresenter: PersonDetailPresenter
+    
     override var state: GuessDetailViewState {
         didSet {
             switch state {
@@ -26,8 +28,8 @@ class PersonDetailViewController: GuessDetailViewController {
                 // scroll to top of view to show title being revealed
                 scrollToTop()
                 
-                personOverviewView.setName(guessDetailViewPresenter.getTitle())     //   // TODO *** animate this
-                //personOverviewView.setOverviewText(guessDetailViewPresenter.getOverview())
+                personOverviewView.setName(personDetailViewPresenter.getTitle())     //   // TODO *** animate this
+                //personOverviewView.setOverviewText(personDetailViewPresenter.getOverview())
             }
         }
     }
@@ -35,14 +37,31 @@ class PersonDetailViewController: GuessDetailViewController {
     // stackview items
     private let personOverviewView: PersonOverviewView!
     private let knownForCollectionView: HorizontalCollectionViewController!
+
+    private let actorInCollectionView: HorizontalCollectionViewController!
+    private let directedCollectionView: HorizontalCollectionViewController!
+    private let producedCollectionView: HorizontalCollectionViewController!
+    private let wroteCollectionView: HorizontalCollectionViewController!
     
-    init(item: Entity) {
+    init(item: Entity, startHidden: Bool) {
+        personDetailViewPresenter = PersonDetailPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared, item: item)
+        
         personOverviewView = PersonOverviewView(frame: .zero)
         knownForCollectionView = HorizontalCollectionViewController(title: "Known for")
+        knownForCollectionView.restorationIdentifier = "Known for"
         
-        super.init(item: item, posterImageView: personOverviewView.posterImageView)
+        actorInCollectionView = HorizontalCollectionViewController(title: "Actor")
+        actorInCollectionView.restorationIdentifier = "Actor"
+        directedCollectionView = HorizontalCollectionViewController(title: "Director")
+        directedCollectionView.restorationIdentifier = "Director"
+        producedCollectionView = HorizontalCollectionViewController(title: "Producer")
+        producedCollectionView.restorationIdentifier = "Producer"
+        wroteCollectionView = HorizontalCollectionViewController(title: "Writer")
+        wroteCollectionView.restorationIdentifier = "Writer"
         
-        guessDetailViewPresenter.setViewDelegate(guessDetailViewDelegate: self)
+        super.init(item: item, posterImageView: personOverviewView.posterImageView, presenter: personDetailViewPresenter, startHidden: startHidden)
+        
+        personDetailViewPresenter.setViewDelegate(detailViewDelegate: self)
     }
     
     required init?(coder: NSCoder) {
@@ -52,16 +71,22 @@ class PersonDetailViewController: GuessDetailViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        personDetailViewPresenter.loadCredits()
+        
         setupViews()
         layoutViews()
     }
     
     private func setupViews() {
         // set person overview view values
-        guessDetailViewPresenter.loadPosterImage(completion: personOverviewView.setPosterImage)
-        //personOverviewView.setOverviewText(guessDetailViewPresenter.getOverview())
+        personDetailViewPresenter.loadPosterImage(completion: personOverviewView.setPosterImage)
+        //personOverviewView.setOverviewText(personDetailViewPresenter.getOverview())
         
         knownForCollectionView.setDelegate(self)
+        actorInCollectionView.setDelegate(self)
+        directedCollectionView.setDelegate(self)
+        producedCollectionView.setDelegate(self)
+        wroteCollectionView.setDelegate(self)
     }
     
     private func layoutViews() {
@@ -70,8 +95,11 @@ class PersonDetailViewController: GuessDetailViewController {
         switch state {
         case .fullyHidden:
             addShowHintButton()
-        case .hintShown, .revealed:
+        case .hintShown:
             addInfo()
+        case .revealed:
+            addInfo()
+            personOverviewView.setName(personDetailViewPresenter.getTitle())
         }
     }
     
@@ -81,25 +109,63 @@ class PersonDetailViewController: GuessDetailViewController {
     
     private func addInfo() {
         addChildToStackView(knownForCollectionView)
+        addChildToStackView(actorInCollectionView)
+        addChildToStackView(directedCollectionView)
+        addChildToStackView(producedCollectionView)
+        addChildToStackView(wroteCollectionView)
     }
 }
 
 extension PersonDetailViewController: HorizontalCollectionViewDelegate {
-    func getNumberOfItems() -> Int {
-        return guessDetailViewPresenter.getKnownForCount()
+    func getNumberOfItems(_ horizontalCollectionViewController: HorizontalCollectionViewController) -> Int {
+        switch horizontalCollectionViewController.restorationIdentifier {
+        case "Known for":
+            return personDetailViewPresenter.getKnownForCount()
+        case "Actor":
+            return personDetailViewPresenter.getActorInCount()
+        case "Director":
+            return personDetailViewPresenter.getCountForJob(section: 0)
+        case "Producer":
+            return personDetailViewPresenter.getCountForJob(section: 1)
+        case "Writer":
+            return personDetailViewPresenter.getCountForJob(section: 2)
+        default:
+            return 0
+        }
     }
     
-    func getTitleFor(index: Int) -> String {
-        return guessDetailViewPresenter.getKnownForTitle(for: index)?.name ?? ""
+    func getItemFor(_ horizontalCollectionViewController: HorizontalCollectionViewController, index: Int) -> Entity? {
+        switch horizontalCollectionViewController.restorationIdentifier {
+        case "Known for":
+            return personDetailViewPresenter.getKnownForTitle(for: index)
+        case "Actor":
+            return personDetailViewPresenter.getActorInTitle(for: index)
+        case "Director":
+            return personDetailViewPresenter.getJobForTitle(for: index, section: 0)
+        case "Producer":
+            return personDetailViewPresenter.getJobForTitle(for: index, section: 1)
+        case "Writer":
+            return personDetailViewPresenter.getJobForTitle(for: index, section: 2)
+        default:
+            return nil
+        }
     }
     
-    func getImagePathFor(index: Int) -> String? {
-        return guessDetailViewPresenter.getKnownForTitle(for: index)?.posterPath
-    }
-    
-    func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
-        guessDetailViewPresenter.loadKnownForTitleImage(index: index, completion: completion)
-        return
+    func loadImageFor(_ horizontalCollectionViewController: HorizontalCollectionViewController, index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
+        switch horizontalCollectionViewController.restorationIdentifier {
+        case "Known for":
+            personDetailViewPresenter.loadKnownForTitleImage(index: index, completion: completion)
+        case "Actor":
+            personDetailViewPresenter.loadActorInTitleImage(index: index, completion: completion)
+        case "Director":
+            personDetailViewPresenter.loadJobForTitleImage(index: index, section: 0, completion: completion)
+        case "Producer":
+            personDetailViewPresenter.loadJobForTitleImage(index: index, section: 1, completion: completion)
+        case "Writer":
+            personDetailViewPresenter.loadJobForTitleImage(index: index, section: 2, completion: completion)
+        default:
+            return
+        }
     }
 }
 
@@ -110,5 +176,9 @@ extension PersonDetailViewController: GuessDetailViewDelegate {
     
     func reloadData() {
         knownForCollectionView.reloadData()
+        actorInCollectionView.reloadData()
+        directedCollectionView.reloadData()
+        producedCollectionView.reloadData()
+        wroteCollectionView.reloadData()
     }
 }

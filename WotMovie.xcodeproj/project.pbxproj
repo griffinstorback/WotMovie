@@ -32,6 +32,10 @@
 		8588FD1D256059D10054EC17 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8588FD1C256059D10054EC17 /* DetailViewController.swift */; };
 		8588FD222560AAA90054EC17 /* CardCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8588FD212560AAA90054EC17 /* CardCollectionViewCell.swift */; };
 		8588FD272561E1BF0054EC17 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8588FD262561E1BF0054EC17 /* CardView.swift */; };
+		8588FD2C256883800054EC17 /* MovieOrTVShow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8588FD2B2568837F0054EC17 /* MovieOrTVShow.swift */; };
+		8588FD31256884660054EC17 /* Job.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8588FD30256884660054EC17 /* Job.swift */; };
+		8588FD36256887AC0054EC17 /* TitleDetailPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8588FD35256887AC0054EC17 /* TitleDetailPresenter.swift */; };
+		8588FD3B256887BC0054EC17 /* PersonDetailPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8588FD3A256887BC0054EC17 /* PersonDetailPresenter.swift */; };
 		85CF3457252D430C00A101C9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF3456252D430C00A101C9 /* AppDelegate.swift */; };
 		85CF3459252D430C00A101C9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF3458252D430C00A101C9 /* SceneDelegate.swift */; };
 		85CF3461252D430C00A101C9 /* WotMovie.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 85CF345F252D430C00A101C9 /* WotMovie.xcdatamodeld */; };
@@ -127,6 +131,10 @@
 		8588FD1C256059D10054EC17 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		8588FD212560AAA90054EC17 /* CardCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCollectionViewCell.swift; sourceTree = "<group>"; };
 		8588FD262561E1BF0054EC17 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
+		8588FD2B2568837F0054EC17 /* MovieOrTVShow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieOrTVShow.swift; sourceTree = "<group>"; };
+		8588FD30256884660054EC17 /* Job.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Job.swift; sourceTree = "<group>"; };
+		8588FD35256887AC0054EC17 /* TitleDetailPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleDetailPresenter.swift; sourceTree = "<group>"; };
+		8588FD3A256887BC0054EC17 /* PersonDetailPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonDetailPresenter.swift; sourceTree = "<group>"; };
 		85CF3453252D430C00A101C9 /* WotMovie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WotMovie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		85CF3456252D430C00A101C9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		85CF3458252D430C00A101C9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -236,6 +244,16 @@
 				8588FD12255F390F0054EC17 /* DismissCardAnimator.swift */,
 			);
 			path = Transition;
+			sourceTree = "<group>";
+		};
+		8588FD3F2568A9AA0054EC17 /* Detail */ = {
+			isa = PBXGroup;
+			children = (
+				85CF3595253CBE1900A101C9 /* GuessDetailPresenter.swift */,
+				8588FD35256887AC0054EC17 /* TitleDetailPresenter.swift */,
+				8588FD3A256887BC0054EC17 /* PersonDetailPresenter.swift */,
+			);
+			path = Detail;
 			sourceTree = "<group>";
 		};
 		85CF344A252D430C00A101C9 = {
@@ -358,6 +376,8 @@
 				85CF35BB2540E41B00A101C9 /* Person.swift */,
 				85014063254B53AC0088FA3E /* Entity.swift */,
 				8586DF3725547C810066EE65 /* GuessCategory.swift */,
+				8588FD2B2568837F0054EC17 /* MovieOrTVShow.swift */,
+				8588FD30256884660054EC17 /* Job.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -465,9 +485,9 @@
 		85CF355925377C0800A101C9 /* Presenters */ = {
 			isa = PBXGroup;
 			children = (
+				8588FD3F2568A9AA0054EC17 /* Detail */,
 				85CF356525377CBA00A101C9 /* GuessPresenter.swift */,
 				85CF35742538DA5700A101C9 /* GuessGridPresenter.swift */,
-				85CF3595253CBE1900A101C9 /* GuessDetailPresenter.swift */,
 				8501405E254B50C20088FA3E /* EnterGuessPresenter.swift */,
 			);
 			path = Presenters;
@@ -616,6 +636,7 @@
 				85CF34B9252E8CEE00A101C9 /* NetworkRouter.swift in Sources */,
 				85CF354425365CBB00A101C9 /* SettingsViewController.swift in Sources */,
 				85CF34A5252E5F3A00A101C9 /* HTTPTask.swift in Sources */,
+				8588FD2C256883800054EC17 /* MovieOrTVShow.swift in Sources */,
 				85CF3582253A181F00A101C9 /* ImageEndPoint.swift in Sources */,
 				85CF34BE252E8EAB00A101C9 /* Router.swift in Sources */,
 				85CF3591253A346800A101C9 /* NetworkResponse.swift in Sources */,
@@ -632,6 +653,7 @@
 				8588FD0E255F38D30054EC17 /* PresentCardAnimator.swift in Sources */,
 				85CF3457252D430C00A101C9 /* AppDelegate.swift in Sources */,
 				85014064254B53AC0088FA3E /* Entity.swift in Sources */,
+				8588FD31256884660054EC17 /* Job.swift in Sources */,
 				85CF359B253E0CFB00A101C9 /* DetailOverviewView.swift in Sources */,
 				8586DF3825547C810066EE65 /* GuessCategory.swift in Sources */,
 				8501403B2544E22F0088FA3E /* GuessGridFooterView.swift in Sources */,
@@ -640,6 +662,7 @@
 				8586DF54255A15970066EE65 /* ShrinkOnTouchButton.swift in Sources */,
 				85CF354925365D0B00A101C9 /* GuessGridViewController.swift in Sources */,
 				85CF34C4252EB18100A101C9 /* Movie.swift in Sources */,
+				8588FD36256887AC0054EC17 /* TitleDetailPresenter.swift in Sources */,
 				85014048254795660088FA3E /* Constants.swift in Sources */,
 				85CF3459252D430C00A101C9 /* SceneDelegate.swift in Sources */,
 				85CF35A0253E48A300A101C9 /* PosterImageView.swift in Sources */,
@@ -653,6 +676,7 @@
 				85CF35AA2540B3F600A101C9 /* EntityTableViewController.swift in Sources */,
 				85CF3498252E5E1700A101C9 /* EndPointType.swift in Sources */,
 				85CF353A25365C5B00A101C9 /* GuessViewController.swift in Sources */,
+				8588FD3B256887BC0054EC17 /* PersonDetailPresenter.swift in Sources */,
 				85CF358C253A32D700A101C9 /* ImageDownloadManager.swift in Sources */,
 				85CF356B25377D0200A101C9 /* Genre.swift in Sources */,
 				85CF35302536301F00A101C9 /* PropertyWrappers.swift in Sources */,

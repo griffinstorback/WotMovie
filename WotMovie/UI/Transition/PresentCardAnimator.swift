@@ -58,6 +58,8 @@ class PresentCardAnimator: NSObject, UIViewControllerAnimatedTransitioning {
 }
 
 final class PresentCardTransitionDriver {
+    
+    let parameters: CardTransitionParameters
     let animator: UIViewPropertyAnimator
     let context: UIViewControllerContextTransitioning
     let container: UIView
@@ -73,7 +75,10 @@ final class PresentCardTransitionDriver {
     let cardWidthConstraint: NSLayoutConstraint
     let cardHeightConstraint: NSLayoutConstraint
     
+    let cardDetailPosterImageViewCopy: PosterImageView
+    
     init(parameters: CardTransitionParameters, transitionContext: UIViewControllerContextTransitioning, baseAnimator: UIViewPropertyAnimator) {
+        self.parameters = parameters
         context = transitionContext
         container = context.containerView
         
@@ -84,6 +89,12 @@ final class PresentCardTransitionDriver {
         
         //cardDetailView = context.view(forKey: .to)!
         cardDetailView = screens.presented.view
+        cardDetailPosterImageViewCopy = PosterImageView(startHidden: true)
+        cardDetailPosterImageViewCopy.setImage(screens.presented.posterImageView.getImage())
+        cardDetailPosterImageViewCopy.frame = parameters.fromView.frame//.convert(parameters.fromView.frame, to: container)
+        cardDetailPosterImageViewCopy.layer.cornerRadius = cardDetailPosterImageViewCopy.frame.height * Constants.imageCornerRadiusRatio
+        cardDetailPosterImageViewCopy.layer.masksToBounds = true
+        
         fromCardFrame = parameters.fromCardFrame
         
         // temporary container view for animation
@@ -106,11 +117,14 @@ final class PresentCardTransitionDriver {
         let verticalAnchor = cardDetailView.topAnchor.constraint(equalTo: animatedContainerView.topAnchor, constant: 0)
         verticalAnchor.isActive = true
         
+        // add posterimageview copy
+        //animatedContainerView.addSubview(cardDetailPosterImageViewCopy)
+        
         cardDetailView.layer.cornerRadius = 10
         
         // hide and reset Cell in presenting view
         parameters.fromView.isHidden = true
-        parameters.fromView.resetTransform()
+        parameters.fromView.transform = .identity
         
         container.layoutIfNeeded()
         
@@ -135,10 +149,21 @@ final class PresentCardTransitionDriver {
     func animateContainerBouncingUp() {
         animatedContainerVerticalConstraint.constant = 0
         animatedContainerHorizontalConstraint.constant = 0
+        
+        print("***** screens presented poster : \(screens.presented.posterImageView)")
+        print("***** carddetail view: \(cardDetailView)")
+        print("***** container: \(container)")
+        print("***** converrtted: \(screens.presented.posterImageView.convert(screens.presented.posterImageView.frame, to: cardDetailView))")
+        print("***** context view forkey to: \(context.view(forKey: .to)!)")
+        cardDetailPosterImageViewCopy.frame = screens.presented.posterImageView.convert(screens.presented.posterImageView.frame, to: cardDetailView)
+        cardDetailPosterImageViewCopy.layer.cornerRadius = screens.presented.posterImageView.layer.cornerRadius
+        
         container.layoutIfNeeded()
     }
     
     func animateCardDetailViewSizing() {
+        
+        
         cardWidthConstraint.constant = animatedContainerView.bounds.width
         cardHeightConstraint.constant = animatedContainerView.bounds.height
         cardDetailView.layer.cornerRadius = 0

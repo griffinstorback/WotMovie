@@ -8,13 +8,12 @@
 import UIKit
 
 protocol HorizontalCollectionViewDelegate {
-    func getNumberOfItems() -> Int
-    func getTitleFor(index: Int) -> String
-    func getImagePathFor(index: Int) -> String?
-    func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
+    func getNumberOfItems(_ horizontalCollectionViewController: HorizontalCollectionViewController) -> Int
+    func getItemFor(_ horizontalCollectionViewController: HorizontalCollectionViewController, index: Int) -> Entity?
+    func loadImageFor(_ horizontalCollectionViewController: HorizontalCollectionViewController, index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
 }
 
-class HorizontalCollectionViewController: UIViewController {
+class HorizontalCollectionViewController: DetailPresenterViewController {
 
     private var delegate: HorizontalCollectionViewDelegate?
     
@@ -93,9 +92,10 @@ class HorizontalCollectionViewController: UIViewController {
     }
 }
 
-extension HorizontalCollectionViewController: UICollectionViewDataSource {
+extension HorizontalCollectionViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func setupCollectionView() {
         collectionView.dataSource = self
+        collectionView.delegate = self
         collectionView.backgroundColor = .white
         
         collectionView.register(HorizontalCollectionViewCell.self, forCellWithReuseIdentifier: "HorizontalCollectionViewCell")
@@ -106,22 +106,50 @@ extension HorizontalCollectionViewController: UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return delegate?.getNumberOfItems() ?? 0
+        let numberOfItems = delegate?.getNumberOfItems(self) ?? 0
+        
+        // hide this whole view if there are no items to display
+        if numberOfItems == 0 {
+            view.isHidden = true
+        } else {
+            view.isHidden = false
+        }
+        
+        return numberOfItems
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HorizontalCollectionViewCell", for: indexPath) as! HorizontalCollectionViewCell
-        
-        if let name = delegate?.getTitleFor(index: indexPath.row) {
-            cell.setName(name)
+        guard let item = delegate?.getItemFor(self, index: indexPath.row) else {
+            print("ERROR: could not find item for index \(indexPath.row) in horizontal collection view.")
+            return cell
         }
         
-        if let imagePath = delegate?.getImagePathFor(index: indexPath.row) {
+        cell.setName(item.name)
+        
+        if let imagePath = item.posterPath {
             cell.setImagePath(path: imagePath)
         }
         
-        delegate?.loadImageFor(index: indexPath.row, completion: cell.setImage)
-    
+        delegate?.loadImageFor(self, index: indexPath.row, completion: cell.setImage)
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath) as! HorizontalCollectionViewCell
+        guard let item = delegate?.getItemFor(self, index: indexPath.row) else {
+            return
+        }
+        
+        let guessDetailViewController: GuessDetailViewController
+        
+        switch item.type {
+        case .movie, .tvShow:
+            guessDetailViewController = TitleDetailViewController(item: item, startHidden: false)
+        case .person:
+            guessDetailViewController = PersonDetailViewController(item: item, startHidden: false)
+        }
+        
+        present(guessDetailViewController, fromCard: cell.imageView)
     }
 }

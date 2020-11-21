@@ -10,7 +10,7 @@ import UIKit
 struct CardTransitionParameters {
     let fromCardFrame: CGRect
     let fromCardFrameWithoutTransform: CGRect
-    let fromView: CardView
+    let fromView: UIView
 }
 
 class CardTransition: NSObject, UIViewControllerTransitioningDelegate {

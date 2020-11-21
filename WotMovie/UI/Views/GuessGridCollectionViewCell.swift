@@ -7,7 +7,7 @@
 
 import UIKit
 
-class GuessGridCollectionViewCell: CardCollectionViewCell {
+class GuessGridCollectionViewCell: UICollectionViewCell {
     
     var posterImageView: PosterImageView!
     

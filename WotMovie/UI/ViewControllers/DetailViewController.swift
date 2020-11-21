@@ -15,7 +15,7 @@ class DetailViewController: UIViewController {
     
     let scrollView: UIScrollView
     let contentStackView: UIStackView
-    let posterImageView: PosterImageView
+    let posterImageView: PosterImageView // keep reference to poster image, as its different if TitleDetail vs PersonDetail
     
     var cardBottomToRootBottomConstraint: NSLayoutConstraint!
     
@@ -44,7 +44,7 @@ class DetailViewController: UIViewController {
         return edgePan
     }()
     
-    init(posterImageView: PosterImageView) {
+    init(posterImageView: PosterImageView, startHidden: Bool) {
         scrollView = UIScrollView()
         contentStackView = UIStackView()
         self.posterImageView = posterImageView

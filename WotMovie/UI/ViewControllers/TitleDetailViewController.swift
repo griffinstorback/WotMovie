@@ -8,6 +8,8 @@
 import UIKit
 
 class TitleDetailViewController: GuessDetailViewController {
+    
+    let titleDetailViewPresenter: TitleDetailPresenter
 
     override var state: GuessDetailViewState {
         didSet {
@@ -27,8 +29,8 @@ class TitleDetailViewController: GuessDetailViewController {
                 scrollToTop()
                 
                 detailOverviewView.removePosterImageBlurEffectOverlay(animated: true)
-                detailOverviewView.setTitle(guessDetailViewPresenter.getTitle())     //   // TODO *** animate this
-                detailOverviewView.setOverviewText(guessDetailViewPresenter.getOverview()) // uncensor title name from overview
+                detailOverviewView.setTitle(titleDetailViewPresenter.getTitle())     //   // TODO *** animate this
+                detailOverviewView.setOverviewText(titleDetailViewPresenter.getOverview()) // uncensor title name from overview
             }
         }
     }
@@ -38,14 +40,16 @@ class TitleDetailViewController: GuessDetailViewController {
     private let castCollectionView: HorizontalCollectionViewController!
     private let crewTableView: EntityTableViewController!
     
-    init(item: Entity) {
+    init(item: Entity, startHidden: Bool) {
+        titleDetailViewPresenter = TitleDetailPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared, item: item)
+        
         detailOverviewView = DetailOverviewView(frame: .zero)
         castCollectionView = HorizontalCollectionViewController(title: "Cast")
         crewTableView = EntityTableViewController()
         
-        super.init(item: item, posterImageView: detailOverviewView.posterImageView)
+        super.init(item: item, posterImageView: detailOverviewView.posterImageView, presenter: titleDetailViewPresenter, startHidden: startHidden)
         
-        guessDetailViewPresenter.setViewDelegate(guessDetailViewDelegate: self)
+        titleDetailViewPresenter.setViewDelegate(detailViewDelegate: self)
     }
     
     required init?(coder: NSCoder) {
@@ -55,7 +59,7 @@ class TitleDetailViewController: GuessDetailViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        guessDetailViewPresenter.loadCredits()
+        titleDetailViewPresenter.loadCredits()
         
         setupViews()
         layoutViews()
@@ -63,10 +67,10 @@ class TitleDetailViewController: GuessDetailViewController {
     
     private func setupViews() {
         // set detailOverviewView values
-        guessDetailViewPresenter.loadPosterImage(completion: detailOverviewView.setPosterImage)
-        guessDetailViewPresenter.getGenres(completion: detailOverviewView.setGenreList)
-        detailOverviewView.setOverviewText(guessDetailViewPresenter.getOverviewCensored())
-        detailOverviewView.setReleaseDate(dateString: guessDetailViewPresenter.getReleaseDate())
+        titleDetailViewPresenter.loadPosterImage(completion: detailOverviewView.setPosterImage)
+        titleDetailViewPresenter.getGenres(completion: detailOverviewView.setGenreList)
+        detailOverviewView.setOverviewText(titleDetailViewPresenter.getOverviewCensored())
+        detailOverviewView.setReleaseDate(dateString: titleDetailViewPresenter.getReleaseDate())
         
         castCollectionView.setDelegate(self)
         crewTableView.setDelegate(self)
@@ -78,8 +82,13 @@ class TitleDetailViewController: GuessDetailViewController {
         switch state {
         case .fullyHidden:
             addShowHintButton()
-        case .hintShown, .revealed:
+        case .hintShown:
             addInfo()
+        case .revealed:
+            addInfo()
+            detailOverviewView.removePosterImageBlurEffectOverlay(animated: false)
+            detailOverviewView.setTitle(titleDetailViewPresenter.getTitle())
+            detailOverviewView.setOverviewText(titleDetailViewPresenter.getOverview())
         }
     }
     
@@ -89,21 +98,18 @@ class TitleDetailViewController: GuessDetailViewController {
     }
 }
 
+// collectionView for cast of this title
 extension TitleDetailViewController: HorizontalCollectionViewDelegate {
-    func getNumberOfItems() -> Int {
-        return guessDetailViewPresenter.getCastCount()
+    func getNumberOfItems(_ horizontalCollectionViewController: HorizontalCollectionViewController) -> Int {
+        return titleDetailViewPresenter.getCastCount()
     }
     
-    func getTitleFor(index: Int) -> String {
-        return guessDetailViewPresenter.getCastMember(for: index)?.name ?? ""
+    func getItemFor(_ horizontalCollectionViewController: HorizontalCollectionViewController, index: Int) -> Entity? {
+        return titleDetailViewPresenter.getCastMember(for: index)
     }
     
-    func getImagePathFor(index: Int) -> String? {
-        return guessDetailViewPresenter.getCastMember(for: index)?.posterPath
-    }
-    
-    func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
-        guessDetailViewPresenter.loadCastPersonImage(index: index, completion: completion)
+    func loadImageFor(_ horizontalCollectionViewController: HorizontalCollectionViewController, index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
+        titleDetailViewPresenter.loadCastPersonImage(index: index, completion: completion)
         return
     }
 }
@@ -111,27 +117,27 @@ extension TitleDetailViewController: HorizontalCollectionViewDelegate {
 extension TitleDetailViewController: EntityTableViewDelegate {
     
     func getSectionsCount() -> Int {
-        return guessDetailViewPresenter.getCrewTypesToDisplayCount()
+        return titleDetailViewPresenter.getCrewTypesToDisplayCount()
     }
     
     func getCountForSection(section: Int) -> Int {
-        return guessDetailViewPresenter.getCrewCountForType(section: section)
+        return titleDetailViewPresenter.getCrewCountForType(section: section)
     }
 
     func getSectionTitle(for index: Int) -> String? {
-        return guessDetailViewPresenter.getCrewTypeToDisplay(for: index)
+        return titleDetailViewPresenter.getCrewTypeToDisplay(for: index)
     }
     
     func getName(for index: Int, section: Int) -> String? {
-        return guessDetailViewPresenter.getCrewMember(for: index, section: section)?.name
+        return titleDetailViewPresenter.getCrewMember(for: index, section: section)?.name
     }
     
     func getImagePath(for index: Int, section: Int) -> String? {
-        return guessDetailViewPresenter.getCrewMember(for: index, section: section)?.posterPath
+        return titleDetailViewPresenter.getCrewMember(for: index, section: section)?.posterPath
     }
     
     func loadImage(for index: Int, section: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
-        guessDetailViewPresenter.loadCrewPersonImage(index: index, section: section, completion: completion)
+        titleDetailViewPresenter.loadCrewPersonImage(index: index, section: section, completion: completion)
     }
 }
 

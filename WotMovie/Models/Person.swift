@@ -15,6 +15,13 @@ struct Person: Entity {
     let name: String
     let posterPath: String?
     let knownFor: [Title]
+    
+    init(castMember: CastMember) {
+        id = castMember.id
+        name = castMember.name
+        posterPath = castMember.posterPath
+        knownFor = []
+    }
 }
 
 extension Person: Decodable {

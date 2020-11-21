@@ -119,6 +119,37 @@ final class NetworkManager {
         }
     }
     
+    public func getJobsList(completion: @escaping (_ departments: [Department]?, _ error: String?) -> Void) {
+        router.request(.jobs) { data, response, error in
+            if error != nil {
+                completion(nil, NetworkResponse.checkNetworkConnection.rawValue)
+            }
+            
+            if let response = response as? HTTPURLResponse {
+                let result = NetworkResponse.handleNetworkResponse(response)
+                
+                switch result {
+                case .success:
+                    guard let responseData = data else {
+                        completion(nil, NetworkResponse.noData.rawValue)
+                        return
+                    }
+                    do {
+                        //let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
+                        let apiResponse = try JSONDecoder().decode([Department].self, from: responseData)
+                        completion(apiResponse, nil)
+                    } catch {
+                        print(error)
+                        completion(nil, NetworkResponse.unableToDecode.rawValue)
+                    }
+                case .failure(let networkFailureError):
+                    print(networkFailureError)
+                    completion(nil, networkFailureError)
+                }
+            }
+        }
+    }
+    
     public func getListOfMoviesByGenre(id: Int, page: Int, completion: @escaping (_ movies: [Movie]?, _ error: String?) -> ()) {
         
         // check if cache contains a Page(genreID, page). 
@@ -269,6 +300,38 @@ final class NetworkManager {
                         //let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
                         //print(jsonData)
                         let apiResponse = try JSONDecoder().decode(Credits.self, from: responseData)
+                        completion(apiResponse, nil)
+                    } catch {
+                        print(error)
+                        completion(nil, NetworkResponse.unableToDecode.rawValue)
+                    }
+                case .failure(let networkFailureError):
+                    print(networkFailureError)
+                    completion(nil, networkFailureError)
+                }
+            }
+        }
+    }
+    
+    public func getCombinedCreditsForPerson(id: Int, completion: @escaping (_ credits: PersonCredits?, _ error: String?) -> ()) {
+        router.request(.personCredits(id: id)) { data, response, error in
+            if error != nil {
+                completion(nil, NetworkResponse.checkNetworkConnection.rawValue)
+            }
+            
+            if let response = response as? HTTPURLResponse {
+                let result = NetworkResponse.handleNetworkResponse(response)
+                
+                switch result {
+                case .success:
+                    guard let responseData = data else {
+                        completion(nil, NetworkResponse.noData.rawValue)
+                        return
+                    }
+                    do {
+                        //let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
+                        //print(jsonData)
+                        let apiResponse = try JSONDecoder().decode(PersonCredits.self, from: responseData)
                         completion(apiResponse, nil)
                     } catch {
                         print(error)

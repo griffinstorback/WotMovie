@@ -9,10 +9,6 @@ import Foundation
 import UIKit
 
 class CardView: UIView {
-    func resetTransform() {
-        transform = .identity
-    }
-    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         setSelected(true)

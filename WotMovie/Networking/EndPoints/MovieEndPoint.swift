@@ -28,9 +28,11 @@ public enum MovieApi {
         
     case movieGenres
     case tvShowGenres
+    case jobs
     
     case movieCredits(id: Int)
     case tvShowCredits(id: Int)
+    case personCredits(id: Int)
     
     case searchMovies(text: String)
     case searchTVShows(text: String)
@@ -69,9 +71,11 @@ extension MovieApi: EndPointType {
         
         case .movieGenres: return "genre/movie/list"
         case .tvShowGenres: return "genre/tv/list"
+        case .jobs: return "configuration/jobs"
             
         case .movieCredits(let id): return "movie/\(id)/credits"
         case .tvShowCredits(let id): return "tv/\(id)/credits"
+        case .personCredits(let id): return "person/\(id)/combined_credits"
             
         case .searchMovies: return "search/movie"
         case .searchTVShows: return "search/tv"
@@ -89,7 +93,7 @@ extension MovieApi: EndPointType {
             let urlParameters: [String: Any] = ["page": page, "api_key": NetworkManager.MovieAPIKey]
             return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
             
-        case .movieGenres, .tvShowGenres:
+        case .movieGenres, .tvShowGenres, .jobs:
             let urlParameters: [String: Any] = ["api_key": NetworkManager.MovieAPIKey]
             return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
         
@@ -110,6 +114,10 @@ extension MovieApi: EndPointType {
             return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
             
         case .movieCredits, .tvShowCredits:
+            let urlParameters: [String: Any] = ["api_key": NetworkManager.MovieAPIKey]
+            return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
+            
+        case .personCredits:
             let urlParameters: [String: Any] = ["api_key": NetworkManager.MovieAPIKey]
             return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
         

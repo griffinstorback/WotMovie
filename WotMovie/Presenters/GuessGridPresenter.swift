@@ -44,6 +44,9 @@ class GuessGridPresenter {
             newItems = tvShows.filter { !$0.overview.isEmpty }
             print("TV objects with nil posterPath: ", tvShows.filter { $0.overview.isEmpty })
         } else if let people = newItems as? [Person] {
+            
+            // TODO? : Filter out any Person object with undesirable attributes
+            
             //newItems = people.filter { $0.posterPath != nil }
             //print("Person objects with nil posterPath: ", people.filter { $0.posterPath == nil })
         }

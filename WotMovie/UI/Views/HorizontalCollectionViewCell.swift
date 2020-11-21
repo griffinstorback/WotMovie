@@ -13,7 +13,7 @@ class HorizontalCollectionViewCell: CardCollectionViewCell {
     
     private var imagePath: String = ""
     
-    private var imageView: UIImageView!
+    var imageView: UIImageView!
     private var nameLabel: UILabel!
     private var subtitleLabel: UILabel!
     

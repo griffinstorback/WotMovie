@@ -52,14 +52,14 @@ extension GuessGridViewController: GuessGridViewDelegate {
         print("displayErrorLoadingitems")
     }
     
-    func presentGuessDetail(for item: Entity, fromCard: CardView, fromView: UIView) {
+    func presentGuessDetail(for item: Entity, fromCard: UIView) {
         let guessDetailViewController: GuessDetailViewController
         
         switch item.type {
         case .movie, .tvShow:
-            guessDetailViewController = TitleDetailViewController(item: item)
+            guessDetailViewController = TitleDetailViewController(item: item, startHidden: true)
         case .person:
-            guessDetailViewController = PersonDetailViewController(item: item)
+            guessDetailViewController = PersonDetailViewController(item: item, startHidden: true)
         }
         
         guessDetailViewController.modalPresentationStyle = .fullScreen
@@ -106,10 +106,15 @@ extension GuessGridViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath) as! GuessGridCollectionViewCell
-        print("** indexPath.row: \(indexPath.row), fromCard: \(cell.posterImageView.frame), fromView: \(cell.frame)")
+        let cellFrame = cell.frame
         
-        let item = guessGridViewPresenter.itemFor(index: indexPath.row)
-        presentGuessDetail(for: item, fromCard: cell.posterImageView, fromView: cell)
+        // scroll so cell completely visible so doesn't overlap the nav bar or tab bar.
+        UIView.animate(withDuration: 0.2) {
+            collectionView.scrollRectToVisible(cellFrame, animated: false)
+        } completion: { _ in
+            let item = self.guessGridViewPresenter.itemFor(index: indexPath.row)
+            self.presentGuessDetail(for: item, fromCard: cell.posterImageView)
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {

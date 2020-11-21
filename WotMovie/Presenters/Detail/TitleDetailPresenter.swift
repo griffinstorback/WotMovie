@@ -1,48 +1,32 @@
 //
-//  GuessDetailPresenter.swift
+//  TitleDetailPresenter.swift
 //  WotMovie
 //
-//  Created by Griffin Storback on 2020-10-18.
+//  Created by Griffin Storback on 2020-11-20.
 //
 
 import Foundation
 import UIKit
 
-protocol GuessDetailViewDelegate: NSObjectProtocol {
-    func displayError()
-    func reloadData()
-}
-
-class GuessDetailPresenter {
-    private let networkManager: NetworkManager
-    private let imageDownloadManager: ImageDownloadManager
-    weak private var guessDetailViewDelegate: GuessDetailViewDelegate?
-    
-    private let item: Entity
-    private let movie: Movie?
-    private let tvShow: TVShow?
-    private let person: Person?
+class TitleDetailPresenter: GuessDetailPresenter {
+    private var movie: Movie?
+    private var tvShow: TVShow?
     
     private var credits: Credits? {
         didSet {
             setCrewToDisplay()
             
             DispatchQueue.main.async {
-                self.guessDetailViewDelegate?.reloadData()
+                self.detailViewDelegate?.reloadData()
             }
         }
     }
     
-    private let crewTypeForSection: [Int:String] = [
-        0: "Director",
-        1: "Writer",
-        2: "Producer"
-    ]
     private var crewToDisplay: [String:[CrewMember]] = [:]
     private func setCrewToDisplay() {
         if let credits = credits {
             for crewMember in credits.crew {
-                for crewType in crewTypeForSection.values {
+                for crewType in crewTypeForSection {
                     if crewMember.job == crewType {
                         if crewToDisplay[crewType] == nil {
                             crewToDisplay[crewType] = [crewMember]
@@ -55,99 +39,20 @@ class GuessDetailPresenter {
         }
     }
     
-    init(networkManager: NetworkManager, imageDownloadManager: ImageDownloadManager, item: Entity) {
-        self.networkManager = networkManager
-        self.imageDownloadManager = imageDownloadManager
-        self.item = item
-        
+    override init(networkManager: NetworkManager, imageDownloadManager: ImageDownloadManager, item: Entity) {
         movie = item as? Movie
         tvShow = item as? TVShow
-        person = item as? Person
-    }
-    
-    func setViewDelegate(guessDetailViewDelegate: GuessDetailViewDelegate?) {
-        self.guessDetailViewDelegate = guessDetailViewDelegate
-    }
-    
-    func loadPosterImage(completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
-        guard let posterPath = item.posterPath else {
-            completion(nil, nil)
-            return
-        }
         
-        loadImage(path: posterPath, completion: completion)
-    }
-    
-    func loadImage(path: String, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
-        imageDownloadManager.downloadImage(path: path) { image, error in
-            if let error = error {
-                print(error)
-                DispatchQueue.main.async {
-                    completion(nil, nil)
-                }
-                return
-            }
-            
-            DispatchQueue.main.async {
-                completion(image, path)
+        // if item came from a "Known for" section for person, it will be type MovieOrTVShow
+        if let item = item as? MovieOrTVShow {
+            if item.type == .movie {
+                movie = Movie(movieOrTVShow: item)
+            } else if item.type == .tvShow {
+                tvShow = TVShow(movieOrTVShow: item)
             }
         }
-    }
-    
-    func getID() -> Int {
-        switch item.type {
-        case .movie:
-            return movie?.id ?? -1
-        case .tvShow:
-            return tvShow?.id ?? -1
-        case .person:
-            return person?.id ?? -1
-        }
-    }
-    
-    func getTitle() -> String {
-        switch item.type {
-        case .movie:
-            return movie?.name ?? "Error retrieving title"
-        case .tvShow:
-            return tvShow?.name ?? "Error retrieving title"
-        case .person:
-            return person?.name ?? "Error retrieving name"
-        }
-    }
-}
-
-
-
-// MARK: - Movie/TVShow methods
-
-extension GuessDetailPresenter {
-    func loadCastPersonImage(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
-        guard let credits = credits, let profilePath = credits.cast[index].posterPath else {
-            completion(nil, nil)
-            return
-        }
         
-        loadImage(path: profilePath, completion: completion)
-    }
-    
-    func loadCrewPersonImage(index: Int, section: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
-        guard let crewType = crewTypeForSection[section] else {
-            completion(nil, nil)
-            return
-        }
-        
-        guard let crewMember = crewToDisplay[crewType]?[index] else {
-            completion(nil, nil)
-            return
-        }
-        
-        guard let profilePath = crewMember.posterPath else {
-            completion(nil, nil)
-            return
-        }
-        
-        loadImage(path: profilePath, completion: completion)
+        super.init(networkManager: networkManager, imageDownloadManager: imageDownloadManager, item: item)
     }
     
     func loadCredits() {
@@ -157,7 +62,7 @@ extension GuessDetailPresenter {
                 if let error = error {
                     print(error)
                     DispatchQueue.main.async {
-                        self?.guessDetailViewDelegate?.displayError()
+                        self?.detailViewDelegate?.displayError()
                     }
                     return
                 }
@@ -171,7 +76,7 @@ extension GuessDetailPresenter {
                 if let error = error {
                     print(error)
                     DispatchQueue.main.async {
-                        self?.guessDetailViewDelegate?.displayError()
+                        self?.detailViewDelegate?.displayError()
                     }
                     return
                 }
@@ -181,9 +86,35 @@ extension GuessDetailPresenter {
             
         case .person:
             DispatchQueue.main.async {
-                self.guessDetailViewDelegate?.displayError()
+                self.detailViewDelegate?.displayError()
             }
+            return
         }
+    }
+    
+    func loadCastPersonImage(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
+        guard let credits = credits, let profilePath = credits.cast[index].posterPath else {
+            completion(nil, nil)
+            return
+        }
+        
+        loadImage(path: profilePath, completion: completion)
+    }
+    
+    func loadCrewPersonImage(index: Int, section: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
+        let crewType = crewTypeForSection[section]
+        
+        guard let crewMember = crewToDisplay[crewType]?[index] else {
+            completion(nil, nil)
+            return
+        }
+        
+        guard let profilePath = crewMember.posterPath else {
+            completion(nil, nil)
+            return
+        }
+        
+        loadImage(path: profilePath, completion: completion)
     }
     
     func getOverview() -> String {
@@ -314,17 +245,13 @@ extension GuessDetailPresenter {
     }
     
     func getCrewCountForType(section: Int) -> Int {
-        guard let crewType = crewTypeForSection[section] else {
-            return 0
-        }
+        let crewType = crewTypeForSection[section]
         
         return crewToDisplay[crewType]?.count ?? 0
     }
     
     func getCrewTypeToDisplay(for section: Int) -> String? {
-        guard let crewType = crewTypeForSection[section] else {
-            return nil
-        }
+        let crewType = crewTypeForSection[section]
         
         guard let crewTypeCount = crewToDisplay[crewType]?.count else {
             return nil
@@ -341,33 +268,8 @@ extension GuessDetailPresenter {
     }
     
     func getCrewMember(for index: Int, section: Int) -> CrewMember? {
-        guard let crewType = crewTypeForSection[section] else {
-            return nil
-        }
+        let crewType = crewTypeForSection[section]
         
         return crewToDisplay[crewType]?[index]
-    }
-}
-
-
-
-// MARK: - Person methods
-
-extension GuessDetailPresenter {
-    func loadKnownForTitleImage(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
-        guard let profilePath = person?.knownFor[index].posterPath else {
-            completion(nil, nil)
-            return
-        }
-        
-        loadImage(path: profilePath, completion: completion)
-    }
-    
-    func getKnownForCount() -> Int {
-        return person?.knownFor.count ?? 0
-    }
-    
-    func getKnownForTitle(for index: Int) -> Title? {
-        return person?.knownFor[index]
     }
 }

@@ -8,12 +8,7 @@
 import UIKit
 
 class CardCollectionViewCell: UICollectionViewCell {
-    
-    func resetTransform() {
-        transform = .identity
-    }
-    
-    /*override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         setSelected(true)
     }
@@ -31,5 +26,5 @@ class CardCollectionViewCell: UICollectionViewCell {
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event)
         setSelected(false)
-    }*/
+    }
 }

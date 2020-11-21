@@ -14,9 +14,24 @@ struct Movie: Title {
     let backdrop: String?
     let name: String
     let releaseDate: String?
-    let rating: Double
+    let rating: Double?
     let overview: String
     let genreIDs: [Int]
+    
+    init?(movieOrTVShow item: MovieOrTVShow) {
+        guard item.type == .movie else {
+            return nil
+        }
+        
+        id = item.id
+        posterPath = item.posterPath
+        backdrop = nil
+        name = item.name
+        releaseDate = item.releaseDate
+        rating = nil
+        overview = item.overview
+        genreIDs = item.genreIDs
+    }
 }
 
 extension Movie: Decodable {
@@ -39,7 +54,7 @@ extension Movie: Decodable {
         backdrop = try container.decodeIfPresent(String.self, forKey: .backdrop)
         name = try container.decode(String.self, forKey: .name)
         releaseDate = try container.decodeIfPresent(String.self, forKey: .releaseDate)
-        rating = try container.decode(Double.self, forKey: .rating)
+        rating = try container.decodeIfPresent(Double.self, forKey: .rating)
         overview = try container.decode(String.self, forKey: .overview)
         genreIDs = try container.decode([Int].self, forKey: .genreIDs)
     }

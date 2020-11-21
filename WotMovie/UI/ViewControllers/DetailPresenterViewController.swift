@@ -11,7 +11,7 @@ class DetailPresenterViewController: UIViewController {
     
     private var transition: CardTransition?
     
-    func present(_ viewController: UIViewController, fromCard: CardView) {
+    func present(_ viewController: UIViewController, fromCard: UIView) {
         
         // Freeze highlighted state or else it will bounce back??
         //cell.freezeAnimations()
@@ -34,7 +34,7 @@ class DetailPresenterViewController: UIViewController {
             )
             return fromCard.superview!.convert(r, to: nil)
         }()
-        print("** cardFrameWithoutTransform: \(cardFrameWithoutTransform), cardPresentationFrameOnScreen: \(cardPresentationFrameOnScreen)")
+        
         let parameters = CardTransitionParameters(fromCardFrame: cardPresentationFrameOnScreen, fromCardFrameWithoutTransform: cardFrameWithoutTransform, fromView: fromCard)
         transition = CardTransition(parameters: parameters)
         viewController.transitioningDelegate = transition
@@ -46,7 +46,7 @@ class DetailPresenterViewController: UIViewController {
         }
     }
     
-    func present(_ viewController: UIViewController, fromCard: CardView, fromView: UIView) {
+    func present(_ viewController: UIViewController, fromCard: UIView, fromView: UIView) {
         
         // Freeze highlighted state or else it will bounce back??
         //cell.freezeAnimations()
@@ -69,7 +69,7 @@ class DetailPresenterViewController: UIViewController {
             )
             return fromView.superview!.convert(r, to: nil)
         }()
-        print("** cardFrameWithoutTransform: \(cardFrameWithoutTransform), cardPresentationFrameOnScreen: \(cardPresentationFrameOnScreen)")
+        
         let parameters = CardTransitionParameters(fromCardFrame: cardPresentationFrameOnScreen, fromCardFrameWithoutTransform: cardFrameWithoutTransform, fromView: fromCard)
         transition = CardTransition(parameters: parameters)
         viewController.transitioningDelegate = transition
