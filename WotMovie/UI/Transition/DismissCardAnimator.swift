@@ -78,7 +78,7 @@ final class DismissCardTransitionDriver {
         screens.presented.posterImageView.backgroundColor = .white
         
         // take snapshot of view to animate away, and immediately hide original view
-        cardDetailView = container.snapshotView(afterScreenUpdates: true)!
+        cardDetailView = container.snapshotView(afterScreenUpdates: false)!
         //cardDetailView = context.view(forKey: .from)!.snapshotView(afterScreenUpdates: true)!
         context.view(forKey: .from)!.isHidden = true
         

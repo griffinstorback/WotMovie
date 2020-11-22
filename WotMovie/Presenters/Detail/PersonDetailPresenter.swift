@@ -13,7 +13,6 @@ class PersonDetailPresenter: GuessDetailPresenter {
     
     private var personCredits: PersonCredits? {
         didSet {
-            print(personCredits)
             setPersonCrewToDisplay()
             
             DispatchQueue.main.async {

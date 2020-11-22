@@ -5,6 +5,10 @@
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="language" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="moviePages" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MoviePage" inverseName="genre" inverseEntity="MoviePage"/>
+        <relationship name="movies" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Movie" inverseName="genres" inverseEntity="Movie"/>
+        <relationship name="tvShowPages" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TVShowPage" inverseName="genre" inverseEntity="TVShowPage"/>
+        <relationship name="tvShows" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TVShow" inverseName="genres" inverseEntity="TVShow"/>
     </entity>
     <entity name="Movie" representedClassName="MovieMO" syncable="YES" codeGenerationType="class">
         <attribute name="dateAdded" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -14,29 +18,32 @@
         <attribute name="posterImageURL" optional="YES" attributeType="String"/>
         <attribute name="releaseDate" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
-        <relationship name="genres" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Genre"/>
+        <relationship name="genres" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Genre" inverseName="movies" inverseEntity="Genre"/>
+        <relationship name="pages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MoviePage" inverseName="movies" inverseEntity="MoviePage"/>
+        <relationship name="peopleKnownForThis" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Person" inverseName="knownForMovies" inverseEntity="Person"/>
     </entity>
     <entity name="MoviePage" representedClassName="MoviePageMO" syncable="YES" codeGenerationType="class">
         <attribute name="dateAdded" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="numberAdded" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="pageNumber" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="genre" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Genre"/>
-        <relationship name="movies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Movie"/>
+        <relationship name="genre" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Genre" inverseName="moviePages" inverseEntity="Genre"/>
+        <relationship name="movies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Movie" inverseName="pages" inverseEntity="Movie"/>
     </entity>
     <entity name="Person" representedClassName="PersonMO" syncable="YES" codeGenerationType="class">
+        <attribute name="gender" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="lastViewedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="posterImageURL" optional="YES" attributeType="String"/>
-        <relationship name="knownForMovies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Movie"/>
-        <relationship name="knownForTVShows" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TVShow"/>
+        <relationship name="knownForMovies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Movie" inverseName="peopleKnownForThis" inverseEntity="Movie"/>
+        <relationship name="knownForTVShows" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TVShow" inverseName="peopleKnownForThis" inverseEntity="TVShow"/>
+        <relationship name="pages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PersonPage" inverseName="people" inverseEntity="PersonPage"/>
     </entity>
     <entity name="PersonPage" representedClassName="PersonPageMO" syncable="YES" codeGenerationType="class">
         <attribute name="dateAdded" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="numberAdded" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="pageNumber" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="genre" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Genre"/>
-        <relationship name="people" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Person"/>
+        <relationship name="people" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Person" inverseName="pages" inverseEntity="Person"/>
     </entity>
     <entity name="TVShow" representedClassName="TVShowMO" syncable="YES" codeGenerationType="class">
         <attribute name="dateAdded" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -46,22 +53,24 @@
         <attribute name="posterImageURL" optional="YES" attributeType="String"/>
         <attribute name="releaseDate" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
-        <relationship name="genres" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Genre"/>
+        <relationship name="genres" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Genre" inverseName="tvShows" inverseEntity="Genre"/>
+        <relationship name="pages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TVShowPage" inverseName="tvShows" inverseEntity="TVShowPage"/>
+        <relationship name="peopleKnownForThis" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Person" inverseName="knownForTVShows" inverseEntity="Person"/>
     </entity>
     <entity name="TVShowPage" representedClassName="TVShowPageMO" syncable="YES" codeGenerationType="class">
         <attribute name="dateAdded" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="numberAdded" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="pageNumber" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="genre" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Genre"/>
-        <relationship name="tvShows" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TVShow"/>
+        <relationship name="genre" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Genre" inverseName="tvShowPages" inverseEntity="Genre"/>
+        <relationship name="tvShows" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TVShow" inverseName="pages" inverseEntity="TVShow"/>
     </entity>
     <elements>
-        <element name="Genre" positionX="-45" positionY="45" width="128" height="103"/>
-        <element name="Movie" positionX="-54" positionY="-9" width="128" height="163"/>
-        <element name="MoviePage" positionX="-36" positionY="9" width="128" height="118"/>
-        <element name="Person" positionX="-27" positionY="108" width="128" height="133"/>
-        <element name="PersonPage" positionX="0" positionY="135" width="128" height="118"/>
-        <element name="TVShow" positionX="-36" positionY="72" width="128" height="163"/>
-        <element name="TVShowPage" positionX="-18" positionY="126" width="128" height="118"/>
+        <element name="Genre" positionX="31.734375" positionY="29.5625" width="128" height="163"/>
+        <element name="Movie" positionX="-281.3125" positionY="-0.4765625" width="128" height="193"/>
+        <element name="MoviePage" positionX="-119.234375" positionY="-163.359375" width="128" height="118"/>
+        <element name="Person" positionX="30.09375" positionY="223.15625" width="128" height="163"/>
+        <element name="PersonPage" positionX="228.36328125" positionY="418.796875" width="128" height="103"/>
+        <element name="TVShow" positionX="411.35546875" positionY="29.5390625" width="128" height="193"/>
+        <element name="TVShowPage" positionX="231.09765625" positionY="-111.44921875" width="128" height="118"/>
     </elements>
 </model>
