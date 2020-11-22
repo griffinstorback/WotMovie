@@ -30,6 +30,11 @@ class PersonOverviewView: UIView {
     }()
     private lazy var verticalStackView: UIStackView = {
         let stackView = UIStackView()
+        /*let imageContainerView = UIView()
+        imageContainerView.addSubview(posterImageView)
+        posterImageView.anchor(top: posterImageView.topAnchor, leading: nil, bottom: posterImageView.bottomAnchor, trailing: nil)
+        posterImageView.anchorToCenter(yAnchor: nil, xAnchor: posterImageView.centerXAnchor)*/
+        
         stackView.addArrangedSubview(posterImageView)
         stackView.addArrangedSubview(nameLabel)
         stackView.addArrangedSubview(overviewTextView)

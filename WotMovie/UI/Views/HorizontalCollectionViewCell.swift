@@ -7,7 +7,7 @@
 
 import UIKit
 
-class HorizontalCollectionViewCell: CardCollectionViewCell {
+class HorizontalCollectionViewCell: UICollectionViewCell {
     
     static let cellHeight: CGFloat = 150
     

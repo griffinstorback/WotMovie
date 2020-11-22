@@ -51,7 +51,7 @@ final class DismissCardTransitionDriver {
     let animatedContainerHeightConstraint: NSLayoutConstraint
     
     let cardDetailView: UIView
-    let stretchCardToFillBottom: NSLayoutConstraint
+    //let stretchCardToFillBottom: NSLayoutConstraint
     
     let cardDetailPosterImageViewCopy: PosterImageView
     
@@ -65,15 +65,22 @@ final class DismissCardTransitionDriver {
             context.viewController(forKey: .to) as? DetailPresenterViewController
         )
         
-        cardDetailView = context.view(forKey: .from)!
-        cardDetailPosterImageViewCopy = PosterImageView(startHidden: true)
+        cardDetailPosterImageViewCopy = PosterImageView(startHidden: parameters.startHidden)
         cardDetailPosterImageViewCopy.setImage(screens.presented.posterImageView.getImage())
         cardDetailPosterImageViewCopy.frame = screens.presented.posterImageView.convert(screens.presented.posterImageView.frame, to: container)
         cardDetailPosterImageViewCopy.layer.cornerRadius = cardDetailPosterImageViewCopy.frame.height * Constants.imageCornerRadiusRatio
         cardDetailPosterImageViewCopy.layer.masksToBounds = true
         
+        //print("&&& cardDetailPosterImageViewCopy: ", cardDetailPosterImageViewCopy)
+        
         // hide actual image view of modal were dismissing (replaced by copy)
-        screens.presented.posterImageView.isHidden = true
+        screens.presented.posterImageView.setImage(nil)
+        screens.presented.posterImageView.backgroundColor = .white
+        
+        // take snapshot of view to animate away, and immediately hide original view
+        cardDetailView = container.snapshotView(afterScreenUpdates: true)!
+        //cardDetailView = context.view(forKey: .from)!.snapshotView(afterScreenUpdates: true)!
+        context.view(forKey: .from)!.isHidden = true
         
         animatedContainerView = UIView()
         
@@ -101,12 +108,11 @@ final class DismissCardTransitionDriver {
                 
         // add posterimageview copy
         animatedContainerView.addSubview(cardDetailPosterImageViewCopy)
-        //cardDetailPosterImageViewCopy.setSelected(true)
         
         container.layoutIfNeeded()
         
         // force card filling bottom?
-        stretchCardToFillBottom = screens.presented.posterImageView.bottomAnchor.constraint(equalTo: cardDetailView.bottomAnchor)
+        //stretchCardToFillBottom = screens.presented.posterImageView.bottomAnchor.constraint(equalTo: cardDetailView.bottomAnchor)
         
         UIView.animate(withDuration: DismissCardAnimator.dismissalAnimationDuration, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.0, options: []) {
             self.animateCardViewBackToPlace()
@@ -120,11 +126,15 @@ final class DismissCardTransitionDriver {
     }
     
     func animateCardViewBackToPlace() {
-        stretchCardToFillBottom.isActive = true
+        //stretchCardToFillBottom.isActive = true
         //screens.presented.isFontStateHighlighted = false
         
         //cardDetailPosterImageViewCopy.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: parameters.fromView.frame.size)
-        cardDetailPosterImageViewCopy.frame = parameters.fromView.frame
+        
+        /*print("&&& animateCardViewBackToPlace parameters.fromView.frame: \(parameters.fromView.frame)")
+        print("&&& animateCardViewBackToPlace parameters.fromCardFrameWithoutTransform.frame: \(parameters.fromCardFrameWithoutTransform)")*/
+        
+        cardDetailPosterImageViewCopy.frame = CGRect(x: 0, y: 0, width: parameters.fromView.frame.width, height: parameters.fromView.frame.height)
         cardDetailPosterImageViewCopy.layer.cornerRadius = parameters.fromView.layer.cornerRadius
         
         // back to identity
@@ -148,10 +158,10 @@ final class DismissCardTransitionDriver {
             //screens.presented.isFontStateHighlighted = true
             
             //topTemporaryFix.isActive = false
-            stretchCardToFillBottom.isActive = false
+            //stretchCardToFillBottom.isActive = false
             
             //cardDetailView.removeConstraint(topTemporaryFix)
-            cardDetailView.removeConstraint(stretchCardToFillBottom)
+            //cardDetailView.removeConstraint(stretchCardToFillBottom)
             
             // reset container constraints
             container.removeConstraints(container.constraints)

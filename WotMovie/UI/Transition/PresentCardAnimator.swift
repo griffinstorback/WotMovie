@@ -89,7 +89,7 @@ final class PresentCardTransitionDriver {
         
         //cardDetailView = context.view(forKey: .to)!
         cardDetailView = screens.presented.view
-        cardDetailPosterImageViewCopy = PosterImageView(startHidden: true)
+        cardDetailPosterImageViewCopy = PosterImageView(startHidden: parameters.startHidden)
         cardDetailPosterImageViewCopy.setImage(screens.presented.posterImageView.getImage())
         cardDetailPosterImageViewCopy.frame = parameters.fromView.frame//.convert(parameters.fromView.frame, to: container)
         cardDetailPosterImageViewCopy.layer.cornerRadius = cardDetailPosterImageViewCopy.frame.height * Constants.imageCornerRadiusRatio
@@ -150,11 +150,12 @@ final class PresentCardTransitionDriver {
         animatedContainerVerticalConstraint.constant = 0
         animatedContainerHorizontalConstraint.constant = 0
         
-        print("***** screens presented poster : \(screens.presented.posterImageView)")
+        /*print("***** screens presented poster : \(screens.presented.posterImageView)")
         print("***** carddetail view: \(cardDetailView)")
         print("***** container: \(container)")
         print("***** converrtted: \(screens.presented.posterImageView.convert(screens.presented.posterImageView.frame, to: cardDetailView))")
-        print("***** context view forkey to: \(context.view(forKey: .to)!)")
+        print("***** context view forkey to: \(context.view(forKey: .to)!)")*/
+        
         cardDetailPosterImageViewCopy.frame = screens.presented.posterImageView.convert(screens.presented.posterImageView.frame, to: cardDetailView)
         cardDetailPosterImageViewCopy.layer.cornerRadius = screens.presented.posterImageView.layer.cornerRadius
         

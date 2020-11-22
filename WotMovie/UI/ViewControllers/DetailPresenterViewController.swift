@@ -11,7 +11,7 @@ class DetailPresenterViewController: UIViewController {
     
     private var transition: CardTransition?
     
-    func present(_ viewController: UIViewController, fromCard: UIView) {
+    func present(_ viewController: UIViewController, fromCard: UIView, startHidden: Bool) {
         
         // Freeze highlighted state or else it will bounce back??
         //cell.freezeAnimations()
@@ -35,7 +35,7 @@ class DetailPresenterViewController: UIViewController {
             return fromCard.superview!.convert(r, to: nil)
         }()
         
-        let parameters = CardTransitionParameters(fromCardFrame: cardPresentationFrameOnScreen, fromCardFrameWithoutTransform: cardFrameWithoutTransform, fromView: fromCard)
+        let parameters = CardTransitionParameters(fromCardFrame: cardPresentationFrameOnScreen, fromCardFrameWithoutTransform: cardFrameWithoutTransform, fromView: fromCard, startHidden: startHidden)
         transition = CardTransition(parameters: parameters)
         viewController.transitioningDelegate = transition
         //viewController.modalPresentationCapturesStatusBarAppearance = true
@@ -46,7 +46,7 @@ class DetailPresenterViewController: UIViewController {
         }
     }
     
-    func present(_ viewController: UIViewController, fromCard: UIView, fromView: UIView) {
+    func present(_ viewController: UIViewController, fromCard: UIView, fromView: UIView, startHidden: Bool) {
         
         // Freeze highlighted state or else it will bounce back??
         //cell.freezeAnimations()
@@ -70,7 +70,7 @@ class DetailPresenterViewController: UIViewController {
             return fromView.superview!.convert(r, to: nil)
         }()
         
-        let parameters = CardTransitionParameters(fromCardFrame: cardPresentationFrameOnScreen, fromCardFrameWithoutTransform: cardFrameWithoutTransform, fromView: fromCard)
+        let parameters = CardTransitionParameters(fromCardFrame: cardPresentationFrameOnScreen, fromCardFrameWithoutTransform: cardFrameWithoutTransform, fromView: fromCard, startHidden: startHidden)
         transition = CardTransition(parameters: parameters)
         viewController.transitioningDelegate = transition
         //viewController.modalPresentationCapturesStatusBarAppearance = true

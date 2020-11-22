@@ -38,9 +38,9 @@ class CardPresentationController: UIPresentationController {
     
     override func dismissalTransitionWillBegin() {
         presentingViewController.beginAppearanceTransition(true, animated: true)
-        presentedViewController.transitionCoordinator!.animate { context in
+        //presentedViewController.transitionCoordinator!.animate { context in
             self.blurView.alpha = 0
-        }
+        //}
     }
     
     override func dismissalTransitionDidEnd(_ completed: Bool) {

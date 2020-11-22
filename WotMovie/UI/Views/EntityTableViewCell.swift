@@ -9,13 +9,13 @@ import UIKit
 
 class EntityTableViewCell: UITableViewCell {
     
-    static let cellHeight: CGFloat = 60
-    private let profileImageViewSize = CGSize(width: 36, height: 54)
+    static let cellHeight: CGFloat = 80
+    private let profileImageViewSize = CGSize(width: 50, height: 75)
     
     // stored to compare against incoming images in setImage (make sure they are correct image for path)
     private var imagePath: String = ""
     
-    private lazy var profileImageView: UIImageView = {
+    lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = EntityTableViewCell.cellHeight * Constants.imageCornerRadiusRatio

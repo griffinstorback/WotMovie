@@ -11,12 +11,11 @@ protocol EntityTableViewDelegate {
     func getSectionsCount() -> Int
     func getCountForSection(section: Int) -> Int
     func getSectionTitle(for index: Int) -> String?
-    func getName(for index: Int, section: Int) -> String?
-    func getImagePath(for index: Int, section: Int) -> String?
+    func getItem(for index: Int, section: Int) -> Entity?
     func loadImage(for index: Int, section: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
 }
 
-class EntityTableViewController: UIViewController {
+class EntityTableViewController: DetailPresenterViewController {
     
     private var delegate: EntityTableViewDelegate?
     
@@ -50,10 +49,10 @@ class EntityTableViewController: UIViewController {
 
 extension EntityTableViewController: UITableViewDelegate, UITableViewDataSource {
     func setupTableView() {
-        tableView.register(EntityTableViewCell.self, forCellReuseIdentifier: "PeopleTableViewCell")
-        tableView.register(EntityTableSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: "PeopleTableViewSectionHeader")
+        tableView.register(EntityTableViewCell.self, forCellReuseIdentifier: "EntityTableViewCell")
+        tableView.register(EntityTableSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: "EntityTableSectionHeader")
 
-        tableView.isUserInteractionEnabled = false
+        //tableView.isUserInteractionEnabled = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.isScrollEnabled = false
         
@@ -75,7 +74,7 @@ extension EntityTableViewController: UITableViewDelegate, UITableViewDataSource 
             return nil
         }
         
-        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "PeopleTableViewSectionHeader") as! EntityTableSectionHeaderView
+        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "EntityTableSectionHeader") as! EntityTableSectionHeaderView
         header.setTitle(sectionTitle)
         return header
     }
@@ -86,7 +85,7 @@ extension EntityTableViewController: UITableViewDelegate, UITableViewDataSource 
             return 0
         }
         
-        return 50
+        return EntityTableSectionHeaderView.height
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -98,14 +97,40 @@ extension EntityTableViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "PeopleTableViewCell", for: indexPath) as! EntityTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "EntityTableViewCell", for: indexPath) as! EntityTableViewCell
         let section = indexPath.section
         let index = indexPath.row
         
-        cell.setName(text: delegate?.getName(for: index, section: section) ?? "")
-        cell.setImagePath(imagePath: delegate?.getImagePath(for: index, section: section) ?? "")
+        guard let item = delegate?.getItem(for: index, section: section) else {
+            return cell
+        }
+        
+        cell.setName(text: item.name)
+        cell.setImagePath(imagePath: item.posterPath ?? "")
         delegate?.loadImage(for: index, section: section, completion: cell.setImage)
 
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cell = tableView.cellForRow(at: indexPath) as! EntityTableViewCell
+        let section = indexPath.section
+        let index = indexPath.row
+        
+        guard let item = delegate?.getItem(for: index, section: section) else {
+            return
+        }
+        
+        let guessDetailViewController: GuessDetailViewController
+        
+        switch item.type {
+        case .movie, .tvShow:
+            guessDetailViewController = TitleDetailViewController(item: item, startHidden: false)
+        case .person:
+            guessDetailViewController = PersonDetailViewController(item: item, startHidden: false)
+        }
+        
+        present(guessDetailViewController, fromCard: cell.profileImageView, startHidden: false)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }

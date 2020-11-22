@@ -11,6 +11,7 @@ struct CardTransitionParameters {
     let fromCardFrame: CGRect
     let fromCardFrameWithoutTransform: CGRect
     let fromView: UIView
+    let startHidden: Bool
 }
 
 class CardTransition: NSObject, UIViewControllerTransitioningDelegate {

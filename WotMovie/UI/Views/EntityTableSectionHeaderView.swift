@@ -8,6 +8,7 @@
 import UIKit
 
 class EntityTableSectionHeaderView: UITableViewHeaderFooterView {
+    static let height: CGFloat = 50
     
     private let title: UILabel!
 
@@ -33,5 +34,4 @@ class EntityTableSectionHeaderView: UITableViewHeaderFooterView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
 }

@@ -65,7 +65,7 @@ extension GuessGridViewController: GuessGridViewDelegate {
         guessDetailViewController.modalPresentationStyle = .fullScreen
         guessDetailViewController.modalPresentationCapturesStatusBarAppearance = true
         
-        present(guessDetailViewController, fromCard: fromCard)
+        present(guessDetailViewController, fromCard: fromCard, startHidden: true)
     }
     
     func reloadData() {

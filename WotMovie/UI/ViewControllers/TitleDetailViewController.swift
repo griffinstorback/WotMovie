@@ -128,12 +128,8 @@ extension TitleDetailViewController: EntityTableViewDelegate {
         return titleDetailViewPresenter.getCrewTypeToDisplay(for: index)
     }
     
-    func getName(for index: Int, section: Int) -> String? {
-        return titleDetailViewPresenter.getCrewMember(for: index, section: section)?.name
-    }
-    
-    func getImagePath(for index: Int, section: Int) -> String? {
-        return titleDetailViewPresenter.getCrewMember(for: index, section: section)?.posterPath
+    func getItem(for index: Int, section: Int) -> Entity? {
+        return titleDetailViewPresenter.getCrewMember(for: index, section: section)
     }
     
     func loadImage(for index: Int, section: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {

@@ -150,6 +150,6 @@ extension HorizontalCollectionViewController: UICollectionViewDataSource, UIColl
             guessDetailViewController = PersonDetailViewController(item: item, startHidden: false)
         }
         
-        present(guessDetailViewController, fromCard: cell.imageView)
+        present(guessDetailViewController, fromCard: cell.imageView, startHidden: false)
     }
 }
