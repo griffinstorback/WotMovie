@@ -1,7 +1,5 @@
 # WotMovie
 
-
-## Overview
 WotMovie is a movie browsing app, where all titles start off hidden. You have to guess what the movie name is based on the description, cast and crew, or you can give up and reveal the title (but it won't count as a correct guess!).
 
 The goal is to name as many movies as you're able to. The secondary goal is to discover new movies to watch just by playing the game.
