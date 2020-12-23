@@ -12,9 +12,10 @@ The app is written entirely with Swift, and uses the MVP (Model View Presenter) 
 WotMovie currently does not use any 3rd party libraries, though at some point in the future will likely use AdMob, in order to serve banner ads. Networking is done using Swift's URLSession library, and persistence/caching is implemented using Core Data.
 
 ## Architecture
-The model layer consists of the model objects used, networking using URLSession, and persistence using Core Data. The networking and persistence modules are only accessible through presenters, and they return model objects of the data which was requested.
+**Model**: The model layer consists of the model objects used, networking using URLSession, and persistence using Core Data. The networking and persistence modules are only accessible through presenters, and they return model objects of the data which was requested.
 
-The presenters are always accompanied (and are actually owned by) a view controller. Presenters have weak links to their owner VC, in order to prevent retain cycles.
+**View**: The view layer consists of views and view controllers. Each unique screen has at least one view controller, and may contain many component views, depending on how complex the screen is. View controllers which need access to the model layer have a corresponding presenter.
 
-The view layer consists of views and view controllers. Each screen has a root view controller.
+**Presenter**: Presenters are the bridge between model and view. Each presenter is accompanied by (and are actually owned by) a view controller. View controllers instantiate their corresponding presenter (if they have one), and ask for data. Presenters send data back to the view controller through a weak reference (reference must be weak, because a VC has strong reference to its presenter). Presenters have no knowledge of UI structure.
+
 ![Alt text](./wotmovie_arch.svg)
