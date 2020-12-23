@@ -4,7 +4,7 @@ WotMovie is a movie browsing app, where all titles start off hidden. You have to
 
 The goal is to name as many movies as you're able to. The secondary goal is to discover new movies to watch just by playing the game.
 
-You can also guess actor/actress names, and TV shows. When guessing an actor/actress, you are given a picture of them, and which movies/TV shows they appear in. Guessing TV shows fucntions the same as guessing movies.
+You can also guess actor/actress names, and TV shows. When guessing an actor/actress, you are given a picture of them, and which movies/TV shows they appear in. Guessing TV shows functions the same as guessing movies.
 
 The app is written entirely with Swift, and uses the MVP (Model View Presenter) architecture. See the architecture section below for a rough diagram.
 
