@@ -8,7 +8,12 @@
 import Foundation
 import UIKit
 
-final class ImageDownloadManager {
+protocol ImageDownloadManagerProtocol {
+    // find a way to test that images are stored in variable imageCache
+    func downloadImage(path: String, completion: @escaping (_ image: UIImage?, _ error: String?) -> Void)
+}
+
+final class ImageDownloadManager: ImageDownloadManagerProtocol {
     
     static let shared = ImageDownloadManager()
     private init() {}

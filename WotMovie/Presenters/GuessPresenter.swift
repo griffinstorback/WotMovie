@@ -7,13 +7,12 @@
 
 import Foundation
 
-protocol GuessViewDelegate: NSObjectProtocol {
-    func displayErrorLoadingGenres()
-    func presentGuessGridView(for genre: Genre)
-    func reloadData()
+protocol GuessPresenterProtocol {
+    var categories: [GuessCategory] { get }
+    func getGuessedCountForCategory(guessCategory: GuessCategory) -> Int
 }
 
-class GuessPresenter {
+class GuessPresenter: GuessPresenterProtocol {
     private let networkManager: NetworkManager
     weak private var guessViewDelegate: GuessViewDelegate?
     
@@ -30,5 +29,10 @@ class GuessPresenter {
     
     func setViewDelegate(guessViewDelegate: GuessViewDelegate?) {
         self.guessViewDelegate = guessViewDelegate
+    }
+    
+    func getGuessedCountForCategory(guessCategory: GuessCategory) -> Int {
+        // query core data for the correctly guessed count
+        return 3
     }
 }

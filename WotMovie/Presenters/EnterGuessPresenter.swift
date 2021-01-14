@@ -8,11 +8,17 @@
 import Foundation
 import UIKit
 
-protocol EnterGuessViewDelegate: NSObjectProtocol {
-    func reloadResults()
+protocol EnterGuessPresenterProtocol {
+    var searchResultsCount: Int { get }
+    func setViewDelegate(_ delegat: EnterGuessViewDelegate)
+    func loadImage(for index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
+    func searchResult(for index: Int) -> Entity
+    func search(searchText: String)
+    func isCorrect(index: Int) -> Bool
+    func getPlaceholderText() -> String
 }
 
-class EnterGuessPresenter {
+class EnterGuessPresenter: EnterGuessPresenterProtocol {
     private let networkManager: NetworkManager
     private let imageDownloadManager: ImageDownloadManager
     weak private var enterGuessViewDelegate: EnterGuessViewDelegate?

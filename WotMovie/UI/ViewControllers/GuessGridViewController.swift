@@ -7,6 +7,12 @@
 
 import UIKit
 
+protocol GuessGridViewDelegate: NSObjectProtocol {
+    func displayItems()
+    func displayErrorLoadingItems()
+    func reloadData()
+}
+
 class GuessGridViewController: DetailPresenterViewController {
 
     private let guessGridViewPresenter: GuessGridPresenter

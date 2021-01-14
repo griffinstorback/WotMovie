@@ -7,7 +7,24 @@
 
 import Foundation
 
-final class NetworkManager {
+protocol NetworkManagerProtocol {
+    // think about changing closure to be (Result<[Genre], NetworkError>) -> ()
+    func getMovieGenres(completion: @escaping (_ genres: [Genre]?, _ error: String?) -> ())
+    func getTVShowGenres(completion: @escaping (_ genres: [Genre]?, _ error: String?) -> ())
+    func getJobsList(completion: @escaping (_ departments: [Department]?, _ error: String?) -> Void)
+    func getListOfMoviesByGenre(id: Int, page: Int, completion: @escaping (_ movies: [Movie]?, _ error: String?) -> ())
+    func getListOfTVShowsByGenre(id: Int, page: Int, completion: @escaping (_ tvShows: [TVShow]?, _ error: String?) -> ())
+    func getPopularPeople(page: Int, completion: @escaping (_ people: [Person]?, _ error: String?) -> ())
+    func getCreditsForMovie(id: Int, completion: @escaping (_ credits: Credits?, _ error: String?) -> ())
+    func getCreditsForTVShow(id: Int, completion: @escaping (_ credits: Credits?, _ error: String?) -> ())
+    func getPersonDetailAndCredits(id: Int, completion: @escaping (_ credits: PersonCredits?, _ error: String?) -> ())
+    func getCombinedCreditsForPerson(id: Int, completion: @escaping (_ credits: PersonCredits?, _ error: String?) -> ())
+    func searchMovies(searchText: String, completion: @escaping (_ movies: [Movie]?, _ error: String?) -> ())
+    func searchTVShows(searchText: String, completion: @escaping (_ tvShows: [TVShow]?, _ error: String?) -> ())
+    func searchPeople(searchText: String, completion: @escaping (_ people: [Person]?, _ error: String?) -> ())
+}
+
+final class NetworkManager: NetworkManagerProtocol {
     
     static let shared = NetworkManager()
     private init() {}
@@ -19,6 +36,7 @@ final class NetworkManager {
     private let personRouter = Router<PersonApi>()
     
     // get list of newest movies
+    // ---NOT BEING USED---
     public func getNewMovies(page: Int, completion: @escaping (_ movies: [Movie]?, _ error: String?) -> ()) {
         movieRouter.request(.newMovies(page: page)) { data, response, error in
             if error != nil {

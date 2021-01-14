@@ -7,6 +7,12 @@
 
 import UIKit
 
+protocol GuessViewDelegate: NSObjectProtocol {
+    func displayErrorLoadingGenres()
+    func presentGuessGridView(for genre: Genre)
+    func reloadData()
+}
+
 class GuessViewController: UIViewController {
     
     private let guessViewPresenter = GuessPresenter(networkManager: NetworkManager.shared)

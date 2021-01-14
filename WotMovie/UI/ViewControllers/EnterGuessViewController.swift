@@ -7,12 +7,8 @@
 
 import UIKit
 
-protocol EnterGuessProtocol {
-    func showResults()
-    func hideResults()
-    func revealAnswer()
-    func nextQuestion()
-    func checkAnswer(id: Int) -> Bool
+protocol EnterGuessViewDelegate: NSObjectProtocol {
+    func reloadResults()
 }
 
 class EnterGuessViewController: UIViewController {

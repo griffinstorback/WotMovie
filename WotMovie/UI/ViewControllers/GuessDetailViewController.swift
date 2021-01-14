@@ -13,6 +13,14 @@ enum GuessDetailViewState {
     case revealed
 }
 
+protocol EnterGuessProtocol {
+    func showResults()
+    func hideResults()
+    func revealAnswer()
+    func nextQuestion()
+    func checkAnswer(id: Int) -> Bool
+}
+
 class GuessDetailViewController: DetailViewController {
     
     let guessDetailViewPresenter: GuessDetailPresenter

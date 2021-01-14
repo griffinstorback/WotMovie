@@ -82,7 +82,7 @@ class EncodingTests: XCTestCase {
                 XCTAssertTrue(false, "URLRequest.url is nil")
                 return
             }
-            let expectedURL = "https://www.google.com/?Name=Griffin&Email=griffinstorback%2540gmail.com&UserID=1"
+            let expectedURL = "https://www.google.com/?Name=Griffin&Email=griffinstorback@gmail.com&UserID=1"
             
             XCTAssertEqual(fullURL.absoluteString.sorted(), expectedURL.sorted())
         } catch {
