@@ -8,7 +8,23 @@
 import Foundation
 import UIKit
 
-class TitleDetailPresenter: GuessDetailPresenter {
+protocol TitleDetailPresenterProtocol: GuessDetailPresenterProtocol {
+    func loadCredits()
+    func loadCastPersonImage(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
+    func loadCrewPersonImage(index: Int, section: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
+    func getOverview() -> String
+    func getOverviewCensored() -> String
+    func getReleaseDate() -> String
+    func getGenres(completion: @escaping (_ genres: String?) -> Void)
+    func getCastCount() -> Int
+    func getCastMember(for index: Int) -> CastMember?
+    func getCrewTypesToDisplayCount() -> Int
+    func getCrewCountForType(section: Int) -> Int
+    func getCrewTypeToDisplay(for section: Int) -> String?
+    func getCrewMember(for index: Int, section: Int) -> CrewMember?
+}
+
+class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
     private var movie: Movie?
     private var tvShow: TVShow?
     

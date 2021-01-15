@@ -8,14 +8,18 @@
 import Foundation
 import UIKit
 
-protocol GuessDetailViewDelegate: NSObjectProtocol {
-    func displayError()
-    func reloadData()
-}
 
 // MARK: - Base class. implemented by TitleDetailPresenter and PersonDetailPresenter.
 
-class GuessDetailPresenter {
+
+protocol GuessDetailPresenterProtocol {
+    func loadPosterImage(completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
+    func loadCrewTypes()
+    func getID() -> Int
+    func getTitle() -> String // should rename getName()?
+}
+
+class GuessDetailPresenter: GuessDetailPresenterProtocol {
     let networkManager: NetworkManager
     let imageDownloadManager: ImageDownloadManager
     weak var detailViewDelegate: GuessDetailViewDelegate?

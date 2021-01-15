@@ -21,6 +21,11 @@ protocol EnterGuessProtocol {
     func checkAnswer(id: Int) -> Bool
 }
 
+protocol GuessDetailViewDelegate: NSObjectProtocol {
+    func displayError()
+    func reloadData()
+}
+
 class GuessDetailViewController: DetailViewController {
     
     let guessDetailViewPresenter: GuessDetailPresenter

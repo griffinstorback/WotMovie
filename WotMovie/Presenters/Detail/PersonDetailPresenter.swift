@@ -8,7 +8,20 @@
 import Foundation
 import UIKit
 
-class PersonDetailPresenter: GuessDetailPresenter {
+protocol PersonDetailPresenterProtocol: GuessDetailPresenterProtocol {
+    func loadCredits()
+    func loadKnownForTitleImage(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
+    func loadActorInTitleImage(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
+    func loadJobForTitleImage(index: Int, section: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
+    func getKnownForCount() -> Int
+    func getActorInCount() -> Int
+    func getCountForJob(section: Int) -> Int
+    func getKnownForTitle(for index: Int) -> Title?
+    func getActorInTitle(for index: Int) -> Title?
+    func getJobForTitle(for index: Int, section: Int) -> Title?
+}
+
+class PersonDetailPresenter: GuessDetailPresenter, PersonDetailPresenterProtocol {
     private var person: Person?
     
     private var personCredits: PersonCredits? {
