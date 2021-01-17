@@ -15,15 +15,17 @@ protocol GuessGridViewDelegate: NSObjectProtocol {
 
 class GuessGridViewController: DetailPresenterViewController {
 
-    private let guessGridViewPresenter: GuessGridPresenter
+    private let guessGridViewPresenter: GuessGridPresenterProtocol
     
     private var collectionView: UICollectionView!
     
     private let spacingAmount: CGFloat = 5
     private let minimumCellWidth: CGFloat = 120 // max is (2 * minimum)
     
-    init(for category: GuessCategory) {
-        guessGridViewPresenter = GuessGridPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared, category: category.type)
+    init(for category: GuessCategory, presenter: GuessGridPresenterProtocol? = nil) {
+        // use passed in presenter if there was one (should only be passed in in tests),
+        // otherwise use default (with shared managers and passed in category)
+        guessGridViewPresenter = presenter ?? GuessGridPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared, category: category.type)
         
         super.init(nibName: nil, bundle: nil)
         

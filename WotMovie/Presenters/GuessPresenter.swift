@@ -9,6 +9,7 @@ import Foundation
 
 protocol GuessPresenterProtocol {
     var categories: [GuessCategory] { get }
+    func setViewDelegate(guessViewDelegate: GuessViewDelegate?)
     func getGuessedCountForCategory(guessCategory: GuessCategory) -> Int
 }
 

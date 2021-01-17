@@ -13,7 +13,7 @@ protocol EnterGuessViewDelegate: NSObjectProtocol {
 
 class EnterGuessViewController: UIViewController {
     
-    private let enterGuessPresenter: EnterGuessPresenter
+    private let enterGuessPresenter: EnterGuessPresenterProtocol
     private var delegate: EnterGuessProtocol?
     
     private let enterGuessControlsView: EnterGuessControlsView
@@ -21,8 +21,9 @@ class EnterGuessViewController: UIViewController {
     
     private let resultsTableView: UITableView!
 
-    init(item: Entity) {
-        enterGuessPresenter = EnterGuessPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared, item: item)
+    init(item: Entity, presenter: EnterGuessPresenterProtocol? = nil) {
+        // use passed in presenter if not nil (used in tests)
+        enterGuessPresenter = presenter ?? EnterGuessPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared, item: item)
         enterGuessControlsView = EnterGuessControlsView()
         
         resultsTableView = UITableView()

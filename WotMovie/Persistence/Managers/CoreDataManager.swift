@@ -25,6 +25,7 @@ final class CoreDataManager {
             
             // update all values except 'id,' 'dateAdded,' and 'guessed'
             // (in case movie overview in api has changed since last stored).
+            movieMO.lastUpdated = Date()
             movieMO.lastViewedDate = Date()
             movieMO.name = movie.name
             movieMO.overview = movie.overview
@@ -39,18 +40,20 @@ final class CoreDataManager {
     }
     
     func createMovieEntityFrom(movie: Movie) {
-        let privateContext = coreDataStack.persistentContainer.viewContext
-        let movieMO = MovieMO(context: privateContext)
+        let movieMO = MovieMO(context: coreDataStack.persistentContainer.viewContext)
         
-        movieMO.dateAdded = Date()
         movieMO.id = Int64(movie.id)
+        movieMO.isRevealed = false
+        movieMO.isHintShown = false
+        
+        movieMO.lastUpdated = Date()
         movieMO.lastViewedDate = Date()
         movieMO.name = movie.name
         movieMO.overview = movie.overview
         movieMO.posterImageURL = movie.posterPath
         movieMO.releaseDate = movie.releaseDate
         
-        try? privateContext.save()
+        coreDataStack.saveContext()
     }
     
     func readMovie(id: Int) -> [MovieMO] {
@@ -89,6 +92,20 @@ final class CoreDataManager {
     func setEntityAsSeen(entity: Entity) {
         if let movie = entity as? Movie {
             updateOrCreateMovieEntity(movie: movie)
+        }
+    }
+    
+    func deleteAllData(_ entity: String) {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entity)
+        fetchRequest.returnsObjectsAsFaults = false
+        do {
+            let results = try coreDataStack.persistentContainer.viewContext.fetch(fetchRequest)
+            for object in results {
+                guard let objectData = object as? NSManagedObject else {continue}
+                coreDataStack.persistentContainer.viewContext.delete(objectData)
+            }
+        } catch let error {
+            print("Detele all data in \(entity) error :", error)
         }
     }
 }

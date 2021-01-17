@@ -9,7 +9,7 @@ import UIKit
 
 class TitleDetailViewController: GuessDetailViewController {
     
-    let titleDetailViewPresenter: TitleDetailPresenter
+    let titleDetailViewPresenter: TitleDetailPresenterProtocol
 
     override var state: GuessDetailViewState {
         didSet {
@@ -40,14 +40,15 @@ class TitleDetailViewController: GuessDetailViewController {
     private let castCollectionView: HorizontalCollectionViewController!
     private let crewTableView: EntityTableViewController!
     
-    init(item: Entity, startHidden: Bool) {
-        titleDetailViewPresenter = TitleDetailPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared, item: item)
+    init(item: Entity, startHidden: Bool, presenter: TitleDetailPresenterProtocol? = nil) {
+        // use passed in presenter if provided (used in tests)
+        titleDetailViewPresenter = presenter ?? TitleDetailPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared, item: item)
         
         detailOverviewView = DetailOverviewView(frame: .zero)
         castCollectionView = HorizontalCollectionViewController(title: "Cast")
         crewTableView = EntityTableViewController()
         
-        super.init(item: item, posterImageView: detailOverviewView.posterImageView, presenter: titleDetailViewPresenter, startHidden: startHidden)
+        super.init(item: item, posterImageView: detailOverviewView.posterImageView, startHidden: startHidden, presenter: titleDetailViewPresenter)
         
         titleDetailViewPresenter.setViewDelegate(detailViewDelegate: self)
     }

@@ -13,6 +13,7 @@ import UIKit
 
 
 protocol GuessDetailPresenterProtocol {
+    func setViewDelegate(detailViewDelegate: GuessDetailViewDelegate?)
     func loadPosterImage(completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
     func loadCrewTypes()
     func getID() -> Int

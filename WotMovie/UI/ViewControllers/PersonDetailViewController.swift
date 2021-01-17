@@ -9,7 +9,7 @@ import UIKit
 
 class PersonDetailViewController: GuessDetailViewController {
     
-    let personDetailViewPresenter: PersonDetailPresenter
+    let personDetailViewPresenter: PersonDetailPresenterProtocol
     
     override var state: GuessDetailViewState {
         didSet {
@@ -43,8 +43,9 @@ class PersonDetailViewController: GuessDetailViewController {
     private let producedCollectionView: HorizontalCollectionViewController!
     private let wroteCollectionView: HorizontalCollectionViewController!
     
-    init(item: Entity, startHidden: Bool) {
-        personDetailViewPresenter = PersonDetailPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared, item: item)
+    init(item: Entity, startHidden: Bool, presenter: PersonDetailPresenterProtocol? = nil) {
+        // use passed in presenter if provided (used in tests)
+        personDetailViewPresenter = presenter ?? PersonDetailPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared, item: item)
         
         personOverviewView = PersonOverviewView(frame: .zero)
         knownForCollectionView = HorizontalCollectionViewController(title: "Known for")
@@ -59,7 +60,7 @@ class PersonDetailViewController: GuessDetailViewController {
         wroteCollectionView = HorizontalCollectionViewController(title: "Writer")
         wroteCollectionView.restorationIdentifier = "Writer"
         
-        super.init(item: item, posterImageView: personOverviewView.posterImageView, presenter: personDetailViewPresenter, startHidden: startHidden)
+        super.init(item: item, posterImageView: personOverviewView.posterImageView, startHidden: startHidden, presenter: personDetailViewPresenter)
         
         personDetailViewPresenter.setViewDelegate(detailViewDelegate: self)
     }

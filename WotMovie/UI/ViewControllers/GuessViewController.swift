@@ -15,14 +15,15 @@ protocol GuessViewDelegate: NSObjectProtocol {
 
 class GuessViewController: UIViewController {
     
-    private let guessViewPresenter = GuessPresenter(networkManager: NetworkManager.shared)
+    private let guessViewPresenter: GuessPresenterProtocol
     
     private let scrollView: UIScrollView
     
     private let guessCategoryStackView: UIStackView
     private var guessCategoryViews: [GuessCategoryView]
     
-    init() {
+    init(presenter: GuessPresenterProtocol = GuessPresenter(networkManager: NetworkManager.shared)) {
+        guessViewPresenter = presenter
         scrollView = UIScrollView()
         
         guessCategoryStackView = UIStackView()

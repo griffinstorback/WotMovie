@@ -28,7 +28,7 @@ protocol GuessDetailViewDelegate: NSObjectProtocol {
 
 class GuessDetailViewController: DetailViewController {
     
-    let guessDetailViewPresenter: GuessDetailPresenter
+    let guessDetailViewPresenter: GuessDetailPresenterProtocol
     var state: GuessDetailViewState
     
     // needs container because contentstackview.alignment == .fill
@@ -40,7 +40,7 @@ class GuessDetailViewController: DetailViewController {
     private let enterGuessContainerView: UIView!
     private var enterGuessContainerViewTopConstraint: NSLayoutConstraint!
     
-    init(item: Entity, posterImageView: PosterImageView, presenter: GuessDetailPresenter, startHidden: Bool) {
+    init(item: Entity, posterImageView: PosterImageView, startHidden: Bool, presenter: GuessDetailPresenterProtocol) {
         if startHidden {
             state = .fullyHidden
         } else {

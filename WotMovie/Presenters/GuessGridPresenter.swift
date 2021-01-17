@@ -20,13 +20,13 @@ protocol GuessGridPresenterProtocol {
     func loadItems()
 }
 
-class GuessGridPresenter {
+class GuessGridPresenter: GuessGridPresenterProtocol {
     private let networkManager: NetworkManager
     private let imageDownloadManager: ImageDownloadManager
     private let coreDataManager: CoreDataManager
-    weak private var guessGridViewDelegate: GuessGridViewDelegate?
+    weak var guessGridViewDelegate: GuessGridViewDelegate?
     
-    private let category: CategoryType
+    let category: CategoryType
     private var nextPage = 1
     
     private var items: [Entity] = [] {
