@@ -55,7 +55,7 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
         }
     }
     
-    override init(networkManager: NetworkManager, imageDownloadManager: ImageDownloadManager, item: Entity) {
+    override init(networkManager: NetworkManager = .shared, imageDownloadManager: ImageDownloadManager = .shared, coreDataManager: CoreDataManager = .shared, item: Entity) {
         movie = item as? Movie
         tvShow = item as? TVShow
         
@@ -67,8 +67,8 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
                 tvShow = TVShow(movieOrTVShow: item)
             }
         }
-        
-        super.init(networkManager: networkManager, imageDownloadManager: imageDownloadManager, item: item)
+                
+        super.init(networkManager: networkManager, imageDownloadManager: imageDownloadManager, coreDataManager: coreDataManager, item: item)
     }
     
     func loadCredits() {

@@ -15,12 +15,58 @@ final class CoreDataManager {
     private let coreDataStack = CoreDataStack.shared
     private init() {}
     
+    func updateOrCreateMovieEntity(movie: Movie) {
+        let existingMovieEntries = readMovie(id: movie.id)
+        
+        if existingMovieEntries.count > 0 {
+            print("** Found \(existingMovieEntries.count) existing entries for movie \(movie.id)")
+            
+            let movieMO = existingMovieEntries[0]
+            
+            // update all values except 'id,' 'dateAdded,' and 'guessed'
+            // (in case movie overview in api has changed since last stored).
+            movieMO.lastViewedDate = Date()
+            movieMO.name = movie.name
+            movieMO.overview = movie.overview
+            movieMO.posterImageURL = movie.posterPath
+            movieMO.releaseDate = movie.releaseDate
+            
+            coreDataStack.saveContext()
+        } else {
+            print("** Found 0 existing entries for movie \(movie.id). Creating one now.")
+            createMovieEntityFrom(movie: movie)
+        }
+    }
+    
     func createMovieEntityFrom(movie: Movie) {
-        let privateContext = coreDataStack.persistentContainer.newBackgroundContext()
+        let privateContext = coreDataStack.persistentContainer.viewContext
         let movieMO = MovieMO(context: privateContext)
+        
+        movieMO.dateAdded = Date()
         movieMO.id = Int64(movie.id)
+        movieMO.lastViewedDate = Date()
+        movieMO.name = movie.name
+        movieMO.overview = movie.overview
+        movieMO.posterImageURL = movie.posterPath
+        movieMO.releaseDate = movie.releaseDate
         
         try? privateContext.save()
+    }
+    
+    func readMovie(id: Int) -> [MovieMO] {
+        let moc = coreDataStack.persistentContainer.viewContext
+        let movieFetch = NSFetchRequest<MovieMO>(entityName: "Movie")
+        movieFetch.predicate = NSPredicate(format: "id == %ld", id)
+        movieFetch.returnsObjectsAsFaults = false
+        
+        do {
+            let fetchedMovies = try moc.fetch(movieFetch)
+            print("FETCHED MOVIES: \(fetchedMovies)")
+            return fetchedMovies
+        } catch {
+            fatalError("Failed to fetch movie: \(error)")
+            //return []
+        }
     }
     
     func createPageEntityFrom(movieApiResponse: MovieApiResponse) {
@@ -37,5 +83,12 @@ final class CoreDataManager {
         }
         
         try? privateContext.save()
+    }
+    
+    // either create this movie/tv show/person, or just update with current date.
+    func setEntityAsSeen(entity: Entity) {
+        if let movie = entity as? Movie {
+            updateOrCreateMovieEntity(movie: movie)
+        }
     }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17511" systemVersion="19H15" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17709" systemVersion="20C69" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Genre" representedClassName="GenreMO" syncable="YES" codeGenerationType="class">
         <attribute name="dateAdded" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -14,10 +14,10 @@
         <attribute name="dateAdded" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="lastViewedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="overview" optional="YES" attributeType="String"/>
         <attribute name="posterImageURL" optional="YES" attributeType="String"/>
         <attribute name="releaseDate" optional="YES" attributeType="String"/>
-        <attribute name="title" optional="YES" attributeType="String"/>
         <relationship name="genres" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Genre" inverseName="movies" inverseEntity="Genre"/>
         <relationship name="pages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MoviePage" inverseName="movies" inverseEntity="MoviePage"/>
         <relationship name="peopleKnownForThis" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Person" inverseName="knownForMovies" inverseEntity="Person"/>
@@ -49,10 +49,10 @@
         <attribute name="dateAdded" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="lastViewedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="overview" optional="YES" attributeType="String"/>
         <attribute name="posterImageURL" optional="YES" attributeType="String"/>
         <attribute name="releaseDate" optional="YES" attributeType="String"/>
-        <attribute name="title" optional="YES" attributeType="String"/>
         <relationship name="genres" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Genre" inverseName="tvShows" inverseEntity="Genre"/>
         <relationship name="pages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TVShowPage" inverseName="tvShows" inverseEntity="TVShowPage"/>
         <relationship name="peopleKnownForThis" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Person" inverseName="knownForTVShows" inverseEntity="Person"/>

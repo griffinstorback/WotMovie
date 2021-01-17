@@ -21,6 +21,7 @@ protocol EnterGuessPresenterProtocol {
 class EnterGuessPresenter: EnterGuessPresenterProtocol {
     private let networkManager: NetworkManager
     private let imageDownloadManager: ImageDownloadManager
+    private let coreDataManager: CoreDataManager
     weak private var enterGuessViewDelegate: EnterGuessViewDelegate?
     
     private let item: Entity
@@ -35,10 +36,11 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
         return searchResults.count
     }
     
-    init(networkManager: NetworkManager, imageDownloadManager: ImageDownloadManager, item: Entity) {
+    init(networkManager: NetworkManager = .shared, imageDownloadManager: ImageDownloadManager = .shared, coreDataManager: CoreDataManager = .shared, item: Entity) {
         self.item = item
         self.networkManager = networkManager
         self.imageDownloadManager = imageDownloadManager
+        self.coreDataManager = coreDataManager
     }
     
     func setViewDelegate(_ delegate: EnterGuessViewDelegate) {

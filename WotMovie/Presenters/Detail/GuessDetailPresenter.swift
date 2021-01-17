@@ -22,6 +22,7 @@ protocol GuessDetailPresenterProtocol {
 class GuessDetailPresenter: GuessDetailPresenterProtocol {
     let networkManager: NetworkManager
     let imageDownloadManager: ImageDownloadManager
+    let coreDataManager: CoreDataManager
     weak var detailViewDelegate: GuessDetailViewDelegate?
     
     let item: Entity
@@ -37,12 +38,17 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
         "Producer"
     ]
     
-    init(networkManager: NetworkManager, imageDownloadManager: ImageDownloadManager, item: Entity) {
+    init(networkManager: NetworkManager = .shared, imageDownloadManager: ImageDownloadManager = .shared, coreDataManager: CoreDataManager = .shared, item: Entity) {
         self.networkManager = networkManager
         self.imageDownloadManager = imageDownloadManager
+        self.coreDataManager = coreDataManager
         self.item = item
         
         //loadCrewTypes()
+        
+        // LOG THIS ENTITY as OPENED (mainly to update date, aka last seen date) in CORE DATA
+        coreDataManager.setEntityAsSeen(entity: item)
+        coreDataManager.readMovie(id: item.id)
     }
     
     func setViewDelegate(detailViewDelegate: GuessDetailViewDelegate?) {

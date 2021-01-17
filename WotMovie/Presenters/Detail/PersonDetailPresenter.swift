@@ -50,7 +50,7 @@ class PersonDetailPresenter: GuessDetailPresenter, PersonDetailPresenterProtocol
         }
     }
     
-    override init(networkManager: NetworkManager, imageDownloadManager: ImageDownloadManager, item: Entity) {
+    override init(networkManager: NetworkManager = .shared, imageDownloadManager: ImageDownloadManager = .shared, coreDataManager: CoreDataManager = .shared, item: Entity) {
         person = item as? Person
         
         // if item came from a "Cast" or "Crew" section for movie, it will be type CastMember or CrewMember
@@ -61,7 +61,7 @@ class PersonDetailPresenter: GuessDetailPresenter, PersonDetailPresenterProtocol
         //    person = Person(crewMember: item)
         //}
         
-        super.init(networkManager: networkManager, imageDownloadManager: imageDownloadManager, item: item)
+        super.init(networkManager: networkManager, imageDownloadManager: imageDownloadManager, coreDataManager: coreDataManager, item: item)
     }
     
     func loadCredits() {
