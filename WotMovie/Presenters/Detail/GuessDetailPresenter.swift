@@ -21,8 +21,8 @@ protocol GuessDetailPresenterProtocol {
 }
 
 class GuessDetailPresenter: GuessDetailPresenterProtocol {
-    let networkManager: NetworkManager
-    let imageDownloadManager: ImageDownloadManager
+    let networkManager: NetworkManagerProtocol
+    let imageDownloadManager: ImageDownloadManagerProtocol
     let coreDataManager: CoreDataManager
     weak var detailViewDelegate: GuessDetailViewDelegate?
     
@@ -39,7 +39,10 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
         "Producer"
     ]
     
-    init(networkManager: NetworkManager = .shared, imageDownloadManager: ImageDownloadManager = .shared, coreDataManager: CoreDataManager = .shared, item: Entity) {
+    init(networkManager: NetworkManagerProtocol = NetworkManager.shared,
+            imageDownloadManager: ImageDownloadManagerProtocol = ImageDownloadManager.shared,
+            coreDataManager: CoreDataManager = CoreDataManager.shared,
+            item: Entity) {
         self.networkManager = networkManager
         self.imageDownloadManager = imageDownloadManager
         self.coreDataManager = coreDataManager

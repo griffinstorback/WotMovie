@@ -45,7 +45,7 @@ class PersonDetailViewController: GuessDetailViewController {
     
     init(item: Entity, startHidden: Bool, presenter: PersonDetailPresenterProtocol? = nil) {
         // use passed in presenter if provided (used in tests)
-        personDetailViewPresenter = presenter ?? PersonDetailPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared, item: item)
+        personDetailViewPresenter = presenter ?? PersonDetailPresenter(item: item)
         
         personOverviewView = PersonOverviewView(frame: .zero)
         knownForCollectionView = HorizontalCollectionViewController(title: "Known for")

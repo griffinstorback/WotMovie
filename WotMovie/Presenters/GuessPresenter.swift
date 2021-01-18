@@ -14,7 +14,7 @@ protocol GuessPresenterProtocol {
 }
 
 class GuessPresenter: GuessPresenterProtocol {
-    private let networkManager: NetworkManager
+    private let networkManager: NetworkManagerProtocol
     weak private var guessViewDelegate: GuessViewDelegate?
     
     let categories: [GuessCategory] = [
@@ -24,7 +24,7 @@ class GuessPresenter: GuessPresenterProtocol {
         GuessCategory(type: .stats, title: "See all stats", shortTitle: "Stats", numberGuessed: nil, imageName: "question_mark")
     ]
     
-    init(networkManager: NetworkManager) {
+    init(networkManager: NetworkManagerProtocol = NetworkManager.shared, coreDataManager: CoreDataManager = .shared) {
         self.networkManager = networkManager
     }
     

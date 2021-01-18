@@ -55,7 +55,10 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
         }
     }
     
-    override init(networkManager: NetworkManager = .shared, imageDownloadManager: ImageDownloadManager = .shared, coreDataManager: CoreDataManager = .shared, item: Entity) {
+    override init(networkManager: NetworkManagerProtocol = NetworkManager.shared,
+            imageDownloadManager: ImageDownloadManagerProtocol = ImageDownloadManager.shared,
+            coreDataManager: CoreDataManager = CoreDataManager.shared,
+            item: Entity) {
         movie = item as? Movie
         tvShow = item as? TVShow
         

@@ -42,7 +42,7 @@ class TitleDetailViewController: GuessDetailViewController {
     
     init(item: Entity, startHidden: Bool, presenter: TitleDetailPresenterProtocol? = nil) {
         // use passed in presenter if provided (used in tests)
-        titleDetailViewPresenter = presenter ?? TitleDetailPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared, item: item)
+        titleDetailViewPresenter = presenter ?? TitleDetailPresenter(item: item)
         
         detailOverviewView = DetailOverviewView(frame: .zero)
         castCollectionView = HorizontalCollectionViewController(title: "Cast")

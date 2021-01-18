@@ -21,8 +21,8 @@ protocol GuessGridPresenterProtocol {
 }
 
 class GuessGridPresenter: GuessGridPresenterProtocol {
-    private let networkManager: NetworkManager
-    private let imageDownloadManager: ImageDownloadManager
+    private let networkManager: NetworkManagerProtocol
+    private let imageDownloadManager: ImageDownloadManagerProtocol
     private let coreDataManager: CoreDataManager
     weak var guessGridViewDelegate: GuessGridViewDelegate?
     
@@ -64,7 +64,10 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
         self.items += newItems
     }
     
-    init(networkManager: NetworkManager = .shared, imageDownloadManager: ImageDownloadManager = .shared, coreDataManager: CoreDataManager = .shared, category: CategoryType) {
+    init(networkManager: NetworkManagerProtocol = NetworkManager.shared,
+            imageDownloadManager: ImageDownloadManagerProtocol = ImageDownloadManager.shared,
+            coreDataManager: CoreDataManager = CoreDataManager.shared,
+            category: CategoryType) {
         self.networkManager = networkManager
         self.imageDownloadManager = imageDownloadManager
         self.coreDataManager = coreDataManager

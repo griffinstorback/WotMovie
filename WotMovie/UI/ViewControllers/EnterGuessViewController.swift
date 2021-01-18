@@ -22,8 +22,8 @@ class EnterGuessViewController: UIViewController {
     private let resultsTableView: UITableView!
 
     init(item: Entity, presenter: EnterGuessPresenterProtocol? = nil) {
-        // use passed in presenter if not nil (used in tests)
-        enterGuessPresenter = presenter ?? EnterGuessPresenter(networkManager: NetworkManager.shared, imageDownloadManager: ImageDownloadManager.shared, item: item)
+        // use passed in presenter if provided (used in tests)
+        enterGuessPresenter = presenter ?? EnterGuessPresenter(item: item)
         enterGuessControlsView = EnterGuessControlsView()
         
         resultsTableView = UITableView()

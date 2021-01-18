@@ -8,8 +8,6 @@
 import UIKit
 
 protocol GuessViewDelegate: NSObjectProtocol {
-    func displayErrorLoadingGenres()
-    func presentGuessGridView(for genre: Genre)
     func reloadData()
 }
 
@@ -22,8 +20,9 @@ class GuessViewController: UIViewController {
     private let guessCategoryStackView: UIStackView
     private var guessCategoryViews: [GuessCategoryView]
     
-    init(presenter: GuessPresenterProtocol = GuessPresenter(networkManager: NetworkManager.shared)) {
-        guessViewPresenter = presenter
+    init(presenter: GuessPresenterProtocol? = nil) {
+        // use provider if provided, otherwise use default
+        guessViewPresenter = presenter ?? GuessPresenter()
         scrollView = UIScrollView()
         
         guessCategoryStackView = UIStackView()
@@ -93,16 +92,6 @@ extension GuessViewController: GuessCategoryViewDelegate {
 }
 
 extension GuessViewController: GuessViewDelegate {
-    func presentGuessGridView(for genre: Genre) {
-        //let guessGridViewController = GuessGridViewController(for: genre)
-        
-        //navigationController?.pushViewController(guessGridViewController, animated: true)
-    }
-    
-    func displayErrorLoadingGenres() {
-        print("displayErrorLoadingGenres")
-    }
-    
     func reloadData() {
         //tableView.reloadData()
     }
