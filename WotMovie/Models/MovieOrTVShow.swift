@@ -17,6 +17,11 @@ struct MovieOrTVShow: Title {
     let releaseDate: String?
     let genreIDs: [Int]
     let personsJob: Job? // if person wasn't acting but was producer, director or other job
+    
+    // these properties are unused on movieortvshow, because user is never guessing this type.
+    var isRevealed: Bool = false
+    var isHintShown: Bool = false
+    var correctlyGuessed: Bool = false
 }
 
 extension MovieOrTVShow: Decodable {

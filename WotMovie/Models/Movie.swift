@@ -18,6 +18,10 @@ struct Movie: Title {
     let overview: String
     let genreIDs: [Int]
     
+    var isHintShown: Bool = false
+    var isRevealed: Bool = false
+    var correctlyGuessed: Bool = false
+    
     init?(movieOrTVShow item: MovieOrTVShow) {
         guard item.type == .movie else {
             return nil
@@ -31,6 +35,28 @@ struct Movie: Title {
         rating = nil
         overview = item.overview
         genreIDs = item.genreIDs
+    }
+    
+    init(movieMO: MovieMO) {
+        id = Int(movieMO.id)
+        posterPath = movieMO.posterImageURL
+        backdrop = nil
+        name = movieMO.name ?? ""
+        releaseDate = movieMO.releaseDate
+        rating = nil
+        overview = movieMO.overview ?? ""
+        
+        if let genres = movieMO.genres?.allObjects as? [GenreMO] {
+            var genreIDs = [Int]()
+            for genre in genres {
+                genreIDs.append(Int(genre.id))
+            }
+            self.genreIDs = genreIDs
+        } else {
+            genreIDs = []
+        }
+        
+        print("** CREATED Movie (( \(self) )) FROM MovieMO OBJECT: (( \(movieMO) ))")
     }
 }
 

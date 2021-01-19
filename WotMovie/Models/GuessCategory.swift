@@ -14,7 +14,7 @@ struct GuessCategory {
     let shortTitle: String
     
     // numberGuessed is nil if category isn't leading to guess grid - e.g. "see stats button"
-    let numberGuessed: Int?
+    var numberGuessed: Int?
     let imageName: String
 }
 

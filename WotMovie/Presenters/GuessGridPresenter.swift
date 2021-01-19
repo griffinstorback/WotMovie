@@ -107,6 +107,13 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
     }
 
     func loadItems() {
+        // first, try to load the current page from core data
+        if let items = coreDataManager.fetchPageEntity(type: category, pageNumber: nextPage, genre: -1) {
+            self.setItems(items)
+            self.nextPage += 1
+        }
+        
+        
         if category == .movie {
             networkManager.getListOfMoviesByGenre(id: -1, page: nextPage) { [weak self] movies, error in
                 if let error = error {

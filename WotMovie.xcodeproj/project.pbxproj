@@ -239,6 +239,26 @@
 			path = Managers;
 			sourceTree = "<group>";
 		};
+		857B352F25B62367004CC310 /* Detail */ = {
+			isa = PBXGroup;
+			children = (
+				85CF354D25365D3B00A101C9 /* GuessDetailViewController.swift */,
+				8586DF3C2555CC3F0066EE65 /* TitleDetailViewController.swift */,
+				8586DF412555CC540066EE65 /* PersonDetailViewController.swift */,
+			);
+			path = Detail;
+			sourceTree = "<group>";
+		};
+		857B353325B6291D004CC310 /* Detail */ = {
+			isa = PBXGroup;
+			children = (
+				8586DF492555DE100066EE65 /* PersonOverviewView.swift */,
+				85CF359A253E0CFB00A101C9 /* DetailOverviewView.swift */,
+				85014068254C7F1D0088FA3E /* EnterGuessControlsView.swift */,
+			);
+			path = Detail;
+			sourceTree = "<group>";
+		};
 		8588FCFF255F27A60054EC17 /* Transition */ = {
 			isa = PBXGroup;
 			children = (
@@ -246,6 +266,8 @@
 				8588FD08255F2A8E0054EC17 /* CardTransition.swift */,
 				8588FD0D255F38D30054EC17 /* PresentCardAnimator.swift */,
 				8588FD12255F390F0054EC17 /* DismissCardAnimator.swift */,
+				8588FD17255F51670054EC17 /* DetailPresenterViewController.swift */,
+				8588FD1C256059D10054EC17 /* DetailViewController.swift */,
 			);
 			path = Transition;
 			sourceTree = "<group>";
@@ -401,6 +423,7 @@
 		85CF34DC252FCB7500A101C9 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				857B352F25B62367004CC310 /* Detail */,
 				85CF353425365B7900A101C9 /* RootTabViewController.swift */,
 				85CF353925365C5B00A101C9 /* GuessViewController.swift */,
 				85CF353E25365C7900A101C9 /* WatchListViewController.swift */,
@@ -409,11 +432,6 @@
 				85CF35A92540B3F600A101C9 /* EntityTableViewController.swift */,
 				85CF35D22543912300A101C9 /* HorizontalCollectionViewController.swift */,
 				850140542549E7350088FA3E /* EnterGuessViewController.swift */,
-				85CF354D25365D3B00A101C9 /* GuessDetailViewController.swift */,
-				8586DF3C2555CC3F0066EE65 /* TitleDetailViewController.swift */,
-				8586DF412555CC540066EE65 /* PersonDetailViewController.swift */,
-				8588FD17255F51670054EC17 /* DetailPresenterViewController.swift */,
-				8588FD1C256059D10054EC17 /* DetailViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -468,8 +486,8 @@
 		85CF35552536688B00A101C9 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				857B353325B6291D004CC310 /* Detail */,
 				85CF3586253A306100A101C9 /* GuessGridCollectionViewCell.swift */,
-				85CF359A253E0CFB00A101C9 /* DetailOverviewView.swift */,
 				85CF359F253E48A300A101C9 /* PosterImageView.swift */,
 				85CF35B12540D92900A101C9 /* ContentSizedTableView.swift */,
 				85CF35C02541F9DD00A101C9 /* EntityTableViewCell.swift */,
@@ -477,9 +495,7 @@
 				8501403A2544E22F0088FA3E /* GuessGridFooterView.swift */,
 				8501404C2548BAF10088FA3E /* EntityTableSectionHeaderView.swift */,
 				85014059254A00830088FA3E /* TouchDelegatingView.swift */,
-				85014068254C7F1D0088FA3E /* EnterGuessControlsView.swift */,
 				8586DF3225539C3F0066EE65 /* GuessCategoryView.swift */,
-				8586DF492555DE100066EE65 /* PersonOverviewView.swift */,
 				8586DF4E255613360066EE65 /* ShrinkOnTouchView.swift */,
 				8586DF53255A15970066EE65 /* ShrinkOnTouchButton.swift */,
 				8588FD212560AAA90054EC17 /* CardCollectionViewCell.swift */,

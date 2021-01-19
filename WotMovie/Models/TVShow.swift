@@ -18,6 +18,10 @@ struct TVShow: Title {
     let overview: String
     let genreIDs: [Int]
     
+    var isHintShown: Bool = false
+    var isRevealed: Bool = false
+    var correctlyGuessed: Bool = false
+    
     init?(movieOrTVShow item: MovieOrTVShow) {
         guard item.type == .tvShow else {
             return nil

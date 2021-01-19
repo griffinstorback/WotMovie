@@ -14,7 +14,11 @@ protocol GuessCategoryViewDelegate {
 class GuessCategoryView: UIView {
     private var delegate: GuessCategoryViewDelegate?
     
-    private let category: GuessCategory
+    var category: GuessCategory {
+        didSet {
+            setNumberGuessed()
+        }
+    }
     
     private let categoryImageView: UIImageView
     private let categoryLabel: UILabel
@@ -37,25 +41,9 @@ class GuessCategoryView: UIView {
         
         horizontalStack = UIStackView()
         
-        // if category is 'stats', don't display numberGuessedLabel
-        if let numberGuessed = category.numberGuessed {
+        // if category is 'stats' (e.g. numberGuessed is set to nil), don't display numberGuessedLabel
+        if category.numberGuessed != nil {
             numberGuessedLabel = UILabel()
-            
-            // if at least one has been guessed, make the number blue instead of black
-            let numberTextAttributes: [NSAttributedString.Key : NSObject]
-            if numberGuessed > 0 {
-                numberTextAttributes = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 18), NSAttributedString.Key.foregroundColor: Constants.Colors.defaultBlue]
-            } else {
-                numberTextAttributes = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 18)]
-            }
-            let numberText = NSMutableAttributedString(string: "\(numberGuessed)", attributes: numberTextAttributes)
-            
-            // keep the text after the number black, and not bold
-            let numberGuessedTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
-            let numberGuessedText = NSMutableAttributedString(string: " guessed correctly", attributes: numberGuessedTextAttributes)
-            
-            numberText.append(numberGuessedText)
-            numberGuessedLabel?.attributedText = numberText
         }
         
         verticalStack = UIStackView()
@@ -64,6 +52,9 @@ class GuessCategoryView: UIView {
         
         setupViews()
         layoutViews()
+        
+        // need to explicitly call because the 'didSet' of 'category' is not called before super.init().
+        setNumberGuessed()
     }
     
     private func setupViews() {
@@ -105,8 +96,26 @@ class GuessCategoryView: UIView {
         self.delegate = delegate
     }
     
-    func setNumberGuessed(text: String) {
-        numberGuessedLabel?.text = text
+    func setNumberGuessed() {
+        // if category has number to display (e.g. stats doesn't)
+        if let numberGuessed = category.numberGuessed {
+            
+            // if at least one has been guessed, make the number blue instead of black
+            let numberTextAttributes: [NSAttributedString.Key : NSObject]
+            if numberGuessed > 0 {
+                numberTextAttributes = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 18), NSAttributedString.Key.foregroundColor: Constants.Colors.defaultBlue]
+            } else {
+                numberTextAttributes = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 18)]
+            }
+            let numberText = NSMutableAttributedString(string: "\(numberGuessed)", attributes: numberTextAttributes)
+            
+            // keep the text after the number black, and not bold
+            let numberGuessedTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
+            let numberGuessedText = NSMutableAttributedString(string: " guessed correctly", attributes: numberGuessedTextAttributes)
+            
+            numberText.append(numberGuessedText)
+            numberGuessedLabel?.attributedText = numberText
+        }
     }
     
     required init?(coder: NSCoder) {

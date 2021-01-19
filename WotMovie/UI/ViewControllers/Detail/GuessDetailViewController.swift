@@ -75,10 +75,13 @@ class GuessDetailViewController: DetailViewController {
     }
     
     @objc func revealButtonPressed() {
+        print("**** REVEAL BUTTON PRESSED")
+        guessDetailViewPresenter.answerWasRevealed()
         state = .revealed
     }
     
     @objc func showHintButtonPressed() {
+        guessDetailViewPresenter.hintWasShown()
         state = .hintShown
     }
     
@@ -141,6 +144,7 @@ extension GuessDetailViewController: EnterGuessProtocol {
     
     func revealAnswer() {
         state = .revealed
+        guessDetailViewPresenter.answerWasRevealed()
         enterGuessViewController.setAnswerRevealed()
     }
     
@@ -153,6 +157,7 @@ extension GuessDetailViewController: EnterGuessProtocol {
     }
 }
 
+// main stack view methods
 extension GuessDetailViewController {
     func addViewToStackView(_ view: UIView) {
         contentStackView.addArrangedSubview(view)

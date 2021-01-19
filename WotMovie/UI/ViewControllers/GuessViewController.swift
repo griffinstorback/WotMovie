@@ -61,11 +61,33 @@ class GuessViewController: UIViewController {
         guessCategoryStackView.isLayoutMarginsRelativeArrangement = true
         
         // add categories to guessCategoryViews list
-        for category in guessViewPresenter.categories {
-            let categoryView = GuessCategoryView(category: category)
+        var categoryView: GuessCategoryView
+        if let movieCategory = guessViewPresenter.getCategoryFor(type:.movie) {
+            categoryView = GuessCategoryView(category: movieCategory)
             categoryView.setDelegate(self)
             guessCategoryViews.append(categoryView)
         }
+        if let personCategory = guessViewPresenter.getCategoryFor(type: .person) {
+            categoryView = GuessCategoryView(category: personCategory)
+            categoryView.setDelegate(self)
+            guessCategoryViews.append(categoryView)
+        }
+        if let tvShowCategory = guessViewPresenter.getCategoryFor(type:.tvShow) {
+            categoryView = GuessCategoryView(category: tvShowCategory)
+            categoryView.setDelegate(self)
+            guessCategoryViews.append(categoryView)
+        }
+        if let statsCategory = guessViewPresenter.getCategoryFor(type:.stats) {
+            categoryView = GuessCategoryView(category: statsCategory)
+            categoryView.setDelegate(self)
+            guessCategoryViews.append(categoryView)
+        }
+        
+        /*for type, category in guessViewPresenter.categories {
+            let categoryView = GuessCategoryView(category: category)
+            categoryView.setDelegate(self)
+            guessCategoryViews.append(categoryView)
+        }*/
     }
     
     func layoutViews() {
@@ -93,6 +115,11 @@ extension GuessViewController: GuessCategoryViewDelegate {
 
 extension GuessViewController: GuessViewDelegate {
     func reloadData() {
-        //tableView.reloadData()
+        // reload guessed counts for each category
+        for categoryView in guessCategoryViews {
+            if let category = guessViewPresenter.getCategoryFor(type: categoryView.category.type) {
+                categoryView.category = category
+            }
+        }
     }
 }

@@ -18,4 +18,8 @@ protocol Entity {
     var type: EntityType { get }
     var name: String { get }
     var posterPath: String? { get }
+    
+    var isHintShown: Bool { get set }
+    var isRevealed: Bool { get set }
+    var correctlyGuessed: Bool { get set }
 }

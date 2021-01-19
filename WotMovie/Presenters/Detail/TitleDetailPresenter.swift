@@ -72,6 +72,16 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
         }
                 
         super.init(networkManager: networkManager, imageDownloadManager: imageDownloadManager, coreDataManager: coreDataManager, item: item)
+        
+        
+        // read this movie from core data
+        let returned = coreDataManager.readMovie(id: item.id)
+        if returned[0].isHintShown {
+            hintWasShown()
+        }
+        if returned[0].isRevealed {
+            answerWasRevealed()
+        }
     }
     
     func loadCredits() {

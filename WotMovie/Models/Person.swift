@@ -16,6 +16,10 @@ struct Person: Entity {
     let posterPath: String?
     let knownFor: [Title]
     
+    var isHintShown: Bool = false
+    var isRevealed: Bool = false
+    var correctlyGuessed: Bool = false
+    
     init(castMember: CastMember) {
         id = castMember.id
         name = castMember.name
@@ -83,6 +87,11 @@ struct CastMember: BasePerson {
     var name: String
     var posterPath: String?
     var character: String
+    
+    // these properties are unused on castmember, as user is never guessing castmembers.
+    var isRevealed: Bool = false
+    var isHintShown: Bool = false
+    var correctlyGuessed: Bool = false
 }
 
 struct CrewMember: BasePerson {
@@ -92,6 +101,11 @@ struct CrewMember: BasePerson {
     var posterPath: String?
     var department: String
     var job: String
+    
+    // these properties are unused on crewmember, as user is never guessing crewmembers.
+    var isRevealed: Bool = false
+    var isHintShown: Bool = false
+    var correctlyGuessed: Bool = false
 }
 
 extension CastMember: Decodable {

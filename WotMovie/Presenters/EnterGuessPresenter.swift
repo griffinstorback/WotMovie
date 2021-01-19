@@ -24,7 +24,7 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
     private let coreDataManager: CoreDataManager
     weak private var enterGuessViewDelegate: EnterGuessViewDelegate?
     
-    private let item: Entity
+    private var item: Entity
     private var searchResults: [Entity] = [] {
         didSet {
             DispatchQueue.main.async {
@@ -118,7 +118,15 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
     }
     
     func isCorrect(index: Int) -> Bool {
-        return item.id == searchResults[index].id
+        let answer = item.id == searchResults[index].id
+        
+        if answer {
+            item.isRevealed = true
+            item.correctlyGuessed = true
+            coreDataManager.setEntityAsSeen(entity: item)
+        }
+        
+        return answer
     }
     
     func getPlaceholderText() -> String {

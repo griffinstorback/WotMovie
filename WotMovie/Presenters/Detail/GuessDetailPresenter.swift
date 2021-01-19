@@ -18,6 +18,11 @@ protocol GuessDetailPresenterProtocol {
     func loadCrewTypes()
     func getID() -> Int
     func getTitle() -> String // should rename getName()?
+    
+    func isHintShown() -> Bool
+    func isAnswerRevealed() -> Bool
+    func hintWasShown()
+    func answerWasRevealed()
 }
 
 class GuessDetailPresenter: GuessDetailPresenterProtocol {
@@ -26,7 +31,7 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
     let coreDataManager: CoreDataManager
     weak var detailViewDelegate: GuessDetailViewDelegate?
     
-    let item: Entity
+    var item: Entity
     
     var crewTypes: [Department] = [] {
         didSet {
@@ -52,7 +57,6 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
         
         // LOG THIS ENTITY as OPENED (mainly to update date, aka last seen date) in CORE DATA
         coreDataManager.setEntityAsSeen(entity: item)
-        coreDataManager.readMovie(id: item.id)
     }
     
     func setViewDelegate(detailViewDelegate: GuessDetailViewDelegate?) {
@@ -106,5 +110,27 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
     
     func getTitle() -> String {
         return item.name
+    }
+    
+    func isHintShown() -> Bool {
+        return item.isHintShown
+    }
+    
+    func isAnswerRevealed() -> Bool {
+        return item.isRevealed
+    }
+    
+    func hintWasShown() {
+        print("** guess detail presenter: in hintWasShown")
+        item.isHintShown = true
+        coreDataManager.setEntityAsSeen(entity: item)
+        detailViewDelegate?.reloadData()
+    }
+    
+    func answerWasRevealed() {
+        print("** guess detail presenter: in answerWasRevealed")
+        item.isRevealed = true
+        coreDataManager.setEntityAsSeen(entity: item)
+        detailViewDelegate?.reloadData()
     }
 }

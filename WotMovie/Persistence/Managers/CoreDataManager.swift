@@ -9,13 +9,21 @@ import Foundation
 import CoreData
 import UIKit
 
+protocol CoreDataManagerProtocol {
+    func getNumberGuessedFor(category: CategoryType) -> Int
+}
+
 final class CoreDataManager {
     
     static let shared = CoreDataManager()
     private let coreDataStack = CoreDataStack.shared
     private init() {}
     
-    func updateOrCreateMovieEntity(movie: Movie) {
+    func getNumberGuessedFor(category: CategoryType) -> Int {
+        return 4
+    }
+    
+    func updateOrCreateMovie(movie: Movie) {
         let existingMovieEntries = readMovie(id: movie.id)
         
         if existingMovieEntries.count > 0 {
@@ -31,6 +39,18 @@ final class CoreDataManager {
             movieMO.overview = movie.overview
             movieMO.posterImageURL = movie.posterPath
             movieMO.releaseDate = movie.releaseDate
+            
+            // only set as correctly guessed if it wasnt previously revealed.
+            if movie.correctlyGuessed && !movieMO.isRevealed {
+                movieMO.isRevealed = true
+                movieMO.correctlyGuessed = true
+            }
+            if movie.isHintShown {
+                movieMO.isHintShown = true
+            }
+            if movie.isRevealed {
+                movieMO.isRevealed = true
+            }
             
             coreDataStack.saveContext()
         } else {
@@ -67,9 +87,35 @@ final class CoreDataManager {
             print("FETCHED MOVIES: \(fetchedMovies)")
             return fetchedMovies
         } catch {
-            fatalError("Failed to fetch movie: \(error)")
-            //return []
+            print("** Failed to fetch movie: \(error)")
+            return []
         }
+    }
+    
+    func fetchPageEntity(type: CategoryType, pageNumber: Int, genre: Int) -> [Entity]? {
+        let moc = coreDataStack.persistentContainer.viewContext
+        
+        if type == .movie {
+            let pageFetch = NSFetchRequest<MoviePageMO>(entityName: "MoviePage")
+            pageFetch.predicate = NSPredicate(format: "")
+            
+            do {
+                let fetchedPages = try moc.fetch(pageFetch)
+                guard fetchedPages.count > 0 else { return nil }
+                guard let movieMOs = fetchedPages[0].movies?.allObjects as? [MovieMO] else { return nil }
+                
+                return movieMOs.map { Movie(movieMO: $0) }
+            } catch {
+                print("** Failed to fetch movie page: \(error)")
+                return nil
+            }
+        } else if type == .person {
+            // TODO
+        } else if type == .tvShow {
+            // TODO
+        }
+        
+        return nil
     }
     
     func createPageEntityFrom(movieApiResponse: MovieApiResponse) {
@@ -91,9 +137,11 @@ final class CoreDataManager {
     // either create this movie/tv show/person, or just update with current date.
     func setEntityAsSeen(entity: Entity) {
         if let movie = entity as? Movie {
-            updateOrCreateMovieEntity(movie: movie)
+            updateOrCreateMovie(movie: movie)
         }
     }
+    
+    // MARK:- HELPER; PRIVATE METHODS
     
     func deleteAllData(_ entity: String) {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entity)

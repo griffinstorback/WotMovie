@@ -181,5 +181,15 @@ extension PersonDetailViewController: GuessDetailViewDelegate {
         directedCollectionView.reloadData()
         producedCollectionView.reloadData()
         wroteCollectionView.reloadData()
+        
+        if guessDetailViewPresenter.isAnswerRevealed() {
+            print("** guess detail view delegate: setting state to .revealed")
+            state = .revealed
+            return
+        }
+        if guessDetailViewPresenter.isHintShown() {
+            print("** guess detail view delegate: setting state to .hintShown")
+            state = .hintShown
+        }
     }
 }

@@ -8,32 +8,47 @@
 import Foundation
 
 protocol GuessPresenterProtocol {
-    var categories: [GuessCategory] { get }
     func setViewDelegate(guessViewDelegate: GuessViewDelegate?)
-    func getGuessedCountForCategory(guessCategory: GuessCategory) -> Int
+    func getCategoryFor(type: CategoryType) -> GuessCategory?
 }
 
 class GuessPresenter: GuessPresenterProtocol {
     private let networkManager: NetworkManagerProtocol
+    private let coreDataManager: CoreDataManager
     weak private var guessViewDelegate: GuessViewDelegate?
     
-    let categories: [GuessCategory] = [
-        GuessCategory(type: .movie, title: "Guess the movie", shortTitle: "Movies", numberGuessed: 7, imageName: "movie_category_icon"),
-        GuessCategory(type: .person, title: "Name the person", shortTitle: "People", numberGuessed: 0, imageName: "person_category_icon"),
-        GuessCategory(type: .tvShow, title: "Guess the TV Show", shortTitle: "TV Shows", numberGuessed: 0, imageName: "tv_category_icon"),
-        GuessCategory(type: .stats, title: "See all stats", shortTitle: "Stats", numberGuessed: nil, imageName: "question_mark")
+    // categories won't change, except for their 'numberGuessed' property, which changes when a user correctly answers a question somewhere else in app.
+    private var categories: [CategoryType: GuessCategory] = [
+        .movie: GuessCategory(type: .movie, title: "Guess the movie", shortTitle: "Movies", numberGuessed: 0, imageName: "movie_category_icon"),
+        .person: GuessCategory(type: .person, title: "Name the person", shortTitle: "People", numberGuessed: 0, imageName: "person_category_icon"),
+        .tvShow: GuessCategory(type: .tvShow, title: "Guess the TV Show", shortTitle: "TV Shows", numberGuessed: 0, imageName: "tv_category_icon"),
+        .stats: GuessCategory(type: .stats, title: "See all stats", shortTitle: "Stats", numberGuessed: nil, imageName: "question_mark")
     ]
     
     init(networkManager: NetworkManagerProtocol = NetworkManager.shared, coreDataManager: CoreDataManager = .shared) {
         self.networkManager = networkManager
+        self.coreDataManager = coreDataManager
+        
+        // TODO: replace this with listener for when counts change in core data.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            self.updateGuessedCounts()
+        }
     }
     
     func setViewDelegate(guessViewDelegate: GuessViewDelegate?) {
         self.guessViewDelegate = guessViewDelegate
     }
     
-    func getGuessedCountForCategory(guessCategory: GuessCategory) -> Int {
-        // query core data for the correctly guessed count
-        return 3
+    func updateGuessedCounts() {
+        // update the 'numberGuessed' property on the categories which display a number guessed count
+        categories[.movie]?.numberGuessed = coreDataManager.getNumberGuessedFor(category: .movie)
+        categories[.person]?.numberGuessed = coreDataManager.getNumberGuessedFor(category: .person)
+        categories[.tvShow]?.numberGuessed = coreDataManager.getNumberGuessedFor(category: .tvShow)
+        
+        guessViewDelegate?.reloadData()
+    }
+    
+    func getCategoryFor(type: CategoryType) -> GuessCategory? {
+        return categories[type]
     }
 }
