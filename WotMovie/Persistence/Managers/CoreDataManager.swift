@@ -20,11 +20,20 @@ final class CoreDataManager {
     private init() {}
     
     func getNumberGuessedFor(category: CategoryType) -> Int {
-        return 4
+        switch(category) {
+        case .movie:
+            return 7
+        case .person:
+            return 0
+        case .tvShow:
+            return 1
+        default:
+            return 0
+        }
     }
     
     func updateOrCreateMovie(movie: Movie) {
-        let existingMovieEntries = readMovie(id: movie.id)
+        let existingMovieEntries = fetchMovie(id: movie.id)
         
         if existingMovieEntries.count > 0 {
             print("** Found \(existingMovieEntries.count) existing entries for movie \(movie.id)")
@@ -55,11 +64,12 @@ final class CoreDataManager {
             coreDataStack.saveContext()
         } else {
             print("** Found 0 existing entries for movie \(movie.id). Creating one now.")
-            createMovieEntityFrom(movie: movie)
+            createMovie(movie: movie)
         }
     }
     
-    func createMovieEntityFrom(movie: Movie) {
+    @discardableResult
+    func createMovie(movie: Movie) -> MovieMO {
         let movieMO = MovieMO(context: coreDataStack.persistentContainer.viewContext)
         
         movieMO.id = Int64(movie.id)
@@ -74,10 +84,17 @@ final class CoreDataManager {
         movieMO.releaseDate = movie.releaseDate
         
         coreDataStack.saveContext()
+        return movieMO
     }
     
-    func readMovie(id: Int) -> [MovieMO] {
-        let moc = coreDataStack.persistentContainer.viewContext
+    func fetchMovie(id: Int, context: NSManagedObjectContext? = nil) -> [MovieMO] {
+        let moc: NSManagedObjectContext
+        if let providedContext = context {
+            moc = providedContext
+        } else {
+            moc = coreDataStack.persistentContainer.viewContext
+        }
+        
         let movieFetch = NSFetchRequest<MovieMO>(entityName: "Movie")
         movieFetch.predicate = NSPredicate(format: "id == %ld", id)
         movieFetch.returnsObjectsAsFaults = false
@@ -92,16 +109,17 @@ final class CoreDataManager {
         }
     }
     
-    func fetchPageEntity(type: CategoryType, pageNumber: Int, genre: Int) -> [Entity]? {
+    // returns empty list if page doesnt exist. returns nil if there was an error
+    func fetchEntityPage(type: CategoryType, pageNumber: Int, genreID: Int) -> [Entity]? {
         let moc = coreDataStack.persistentContainer.viewContext
         
         if type == .movie {
             let pageFetch = NSFetchRequest<MoviePageMO>(entityName: "MoviePage")
-            pageFetch.predicate = NSPredicate(format: "")
+            pageFetch.predicate = NSPredicate(format: "pageNumber == %ld && genreID == %ld", pageNumber, genreID)
             
             do {
                 let fetchedPages = try moc.fetch(pageFetch)
-                guard fetchedPages.count > 0 else { return nil }
+                guard fetchedPages.count > 0 else { return [] }
                 guard let movieMOs = fetchedPages[0].movies?.allObjects as? [MovieMO] else { return nil }
                 
                 return movieMOs.map { Movie(movieMO: $0) }
@@ -118,20 +136,37 @@ final class CoreDataManager {
         return nil
     }
     
-    func createPageEntityFrom(movieApiResponse: MovieApiResponse) {
-        let privateContext = coreDataStack.persistentContainer.newBackgroundContext()
-        let pageMO = MoviePageMO(context: privateContext)
-        pageMO.numberAdded = Int64(movieApiResponse.page)
+    func createMoviePage(movies: [Movie], pageNumber: Int, genreID: Int) {
+        // this is called by background thread (after the page is fetched from network)
+        let moc = coreDataStack.persistentContainer.viewContext
+        //moc.persistentStoreCoordinator = coreDataStack.persistentContainer.persistentStoreCoordinator
+        let pageMO = MoviePageMO(context: moc)
+        pageMO.genreID = Int64(genreID)
+        pageMO.pageNumber = Int64(pageNumber)
+        pageMO.lastUpdated = Date()
+        
+        print("** in createmoviepage, about to add each movie")
         
         // create movieMO for each of the apiResponses movies, if they don't already exist
-        for movie in movieApiResponse.movies {
-            let movieMO = MovieMO(context: privateContext)
-            movieMO.id = Int64(movie.id)
+        for movie in movies {
             
-            // pageMO.movies.append(movieMO)
+            // first check if movie already in core data
+            let existingMovies = fetchMovie(id: movie.id)
+            if existingMovies.count > 0 {
+                pageMO.addObject(value: existingMovies[0], for: "movies")
+            } else {
+                // none found, create a new movieMO object
+                let newMovie = createMovie(movie: movie)
+                pageMO.addObject(value: newMovie, for: "movies")
+            }
         }
         
-        try? privateContext.save()
+        print("** added movies to core data movie page. (\(movies.count) of them)")
+        
+        try? moc.save()
+        
+        print("** pageMO after calling moc.save(): \(pageMO)")
+        //coreDataStack.saveContext()
     }
     
     // either create this movie/tv show/person, or just update with current date.
@@ -142,6 +177,27 @@ final class CoreDataManager {
     }
     
     // MARK:- HELPER; PRIVATE METHODS
+    
+    func fetchGenre(id: Int) -> GenreMO? {
+        let moc = coreDataStack.persistentContainer.viewContext
+        let genreFetch = NSFetchRequest<GenreMO>(entityName: "Genre")
+        genreFetch.predicate = NSPredicate(format: "id == %ld", id)
+        
+        let fetchedGenres: [GenreMO]
+        do {
+            fetchedGenres = try moc.fetch(genreFetch)
+            print("FETCHED Genres: \(fetchedGenres)")
+        } catch {
+            print("** Failed to fetch genre (id: \(id)): \(error)")
+            return nil
+        }
+        
+        if fetchedGenres.count > 0 {
+            return fetchedGenres[0]
+        } else {
+            return nil
+        }
+    }
     
     func deleteAllData(_ entity: String) {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entity)

@@ -75,7 +75,7 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
         
         
         // read this movie from core data
-        let returned = coreDataManager.readMovie(id: item.id)
+        let returned = coreDataManager.fetchMovie(id: item.id)
         if returned[0].isHintShown {
             hintWasShown()
         }

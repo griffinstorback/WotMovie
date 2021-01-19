@@ -54,9 +54,7 @@ struct Movie: Title {
             self.genreIDs = genreIDs
         } else {
             genreIDs = []
-        }
-        
-        print("** CREATED Movie (( \(self) )) FROM MovieMO OBJECT: (( \(movieMO) ))")
+        }        
     }
 }
 

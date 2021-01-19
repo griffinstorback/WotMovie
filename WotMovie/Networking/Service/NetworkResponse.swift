@@ -18,7 +18,7 @@ public enum NetworkResponse: String {
     case checkNetworkConnection = "Please check your network connection."
     
     static func handleNetworkResponse(_ response: HTTPURLResponse) -> Result<String> {
-        print("** STATUS CODE: ", response.statusCode)
+        print("* STATUS CODE: ", response.statusCode)
         switch response.statusCode {
         case 200...299: return .success
         case 401...500: return .failure(NetworkResponse.authenticationError.rawValue)

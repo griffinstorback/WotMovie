@@ -17,6 +17,7 @@
 		85014069254C7F1D0088FA3E /* EnterGuessControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85014068254C7F1D0088FA3E /* EnterGuessControlsView.swift */; };
 		854B3E912550DDBB003397E0 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854B3E902550DDBA003397E0 /* CoreDataManager.swift */; };
 		854B3E9625537F55003397E0 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854B3E9525537F55003397E0 /* CoreDataStack.swift */; };
+		857B353B25B74BB0004CC310 /* CoreData+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 857B353A25B74BB0004CC310 /* CoreData+Extensions.swift */; };
 		8586DF3325539C3F0066EE65 /* GuessCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8586DF3225539C3F0066EE65 /* GuessCategoryView.swift */; };
 		8586DF3825547C810066EE65 /* GuessCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8586DF3725547C810066EE65 /* GuessCategory.swift */; };
 		8586DF3D2555CC3F0066EE65 /* TitleDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8586DF3C2555CC3F0066EE65 /* TitleDetailViewController.swift */; };
@@ -118,6 +119,7 @@
 		85014068254C7F1D0088FA3E /* EnterGuessControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterGuessControlsView.swift; sourceTree = "<group>"; };
 		854B3E902550DDBA003397E0 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		854B3E9525537F55003397E0 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		857B353A25B74BB0004CC310 /* CoreData+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreData+Extensions.swift"; sourceTree = "<group>"; };
 		8586DF3225539C3F0066EE65 /* GuessCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessCategoryView.swift; sourceTree = "<group>"; };
 		8586DF3725547C810066EE65 /* GuessCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessCategory.swift; sourceTree = "<group>"; };
 		8586DF3C2555CC3F0066EE65 /* TitleDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleDetailViewController.swift; sourceTree = "<group>"; };
@@ -227,6 +229,7 @@
 			children = (
 				854B3E8C2550DD78003397E0 /* Managers */,
 				854B3E9525537F55003397E0 /* CoreDataStack.swift */,
+				857B353A25B74BB0004CC310 /* CoreData+Extensions.swift */,
 			);
 			path = Persistence;
 			sourceTree = "<group>";
@@ -685,6 +688,7 @@
 				8586DF54255A15970066EE65 /* ShrinkOnTouchButton.swift in Sources */,
 				85CF354925365D0B00A101C9 /* GuessGridViewController.swift in Sources */,
 				85CF34C4252EB18100A101C9 /* Movie.swift in Sources */,
+				857B353B25B74BB0004CC310 /* CoreData+Extensions.swift in Sources */,
 				8588FD36256887AC0054EC17 /* TitleDetailPresenter.swift in Sources */,
 				85014048254795660088FA3E /* Constants.swift in Sources */,
 				85CF3459252D430C00A101C9 /* SceneDelegate.swift in Sources */,

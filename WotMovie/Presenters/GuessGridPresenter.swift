@@ -108,12 +108,26 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
 
     func loadItems() {
         // first, try to load the current page from core data
-        if let items = coreDataManager.fetchPageEntity(type: category, pageNumber: nextPage, genre: -1) {
-            self.setItems(items)
-            self.nextPage += 1
+        if let items = coreDataManager.fetchEntityPage(type: category, pageNumber: nextPage, genreID: -1) {
+            
+            // TODO: need to check if lastUpdated > 2 days (or whatever threshold), then update page
+            // either right now or on a background thread.
+            
+            // if empty list was returned, means there is no page entity yet
+            if items.count > 0 {
+                print("** Retrieved grid (p. \(nextPage)) items (\(items.count) movies) from Core Data")
+                self.setItems(items)
+                self.nextPage += 1
+                
+                return
+            } else {
+                print("** fetchEntityPage came back with empty list.")
+            }
+        } else {
+            print("** fetchEntityPage came back nil. something went WRONG.")
         }
         
-        
+        print("** Retrieving grid (p. \(nextPage)) items from network..")
         if category == .movie {
             networkManager.getListOfMoviesByGenre(id: -1, page: nextPage) { [weak self] movies, error in
                 if let error = error {
@@ -126,8 +140,19 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
                     return
                 }
                 if let movies = movies {
-                    self?.setItems(movies)
-                    //self?.items += movies
+                    //self?.setItems(movies)
+                    
+                    // update/create page in core data, then retrieve the newly posted page
+                    if let currentPage = self?.nextPage {
+                        DispatchQueue.main.async {
+                            print("** calling createMoviePage with moviesCount: \(movies.count), page: \(currentPage), genre: -1")
+                            self?.coreDataManager.createMoviePage(movies: movies, pageNumber: currentPage, genreID: -1)
+                            let newlyAddedMovies = self?.coreDataManager.fetchEntityPage(type: .movie, pageNumber: currentPage, genreID: -1)
+                            print("** newlyAddedMovies count: \(newlyAddedMovies?.count ?? -1)")
+                            self?.setItems(newlyAddedMovies ?? [])
+                        }
+                    }
+                    
                     self?.nextPage += 1
                 }
             }
