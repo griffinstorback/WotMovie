@@ -7,6 +7,7 @@
 
 import UIKit
 
+// Detail modal must extend this class
 class DetailViewController: UIViewController {
     
     // amount view will change when dragging down or on screen edge

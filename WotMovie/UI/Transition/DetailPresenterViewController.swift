@@ -7,6 +7,7 @@
 
 import UIKit
 
+// Any class which presents detail modal must extend this class.
 class DetailPresenterViewController: UIViewController {
     
     private var transition: CardTransition?
@@ -46,7 +47,7 @@ class DetailPresenterViewController: UIViewController {
         }
     }
     
-    func present(_ viewController: UIViewController, fromCard: UIView, fromView: UIView, startHidden: Bool) {
+    /*func present(_ viewController: UIViewController, fromCard: UIView, fromView: UIView, startHidden: Bool) {
         
         // Freeze highlighted state or else it will bounce back??
         //cell.freezeAnimations()
@@ -79,5 +80,5 @@ class DetailPresenterViewController: UIViewController {
         present(viewController, animated: true) { [weak fromCard] in
             //cell.unfreezeAnimations
         }
-    }
+    }*/
 }

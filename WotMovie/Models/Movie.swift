@@ -54,7 +54,11 @@ struct Movie: Title {
             self.genreIDs = genreIDs
         } else {
             genreIDs = []
-        }        
+        }
+        
+        isHintShown = movieMO.isHintShown
+        isRevealed = movieMO.isRevealed
+        correctlyGuessed = movieMO.correctlyGuessed
     }
 }
 

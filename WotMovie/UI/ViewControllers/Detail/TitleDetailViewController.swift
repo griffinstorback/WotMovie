@@ -44,7 +44,7 @@ class TitleDetailViewController: GuessDetailViewController {
         // use passed in presenter if provided (used in tests)
         titleDetailViewPresenter = presenter ?? TitleDetailPresenter(item: item)
         
-        detailOverviewView = DetailOverviewView(frame: .zero)
+        detailOverviewView = DetailOverviewView(frame: .zero, startHidden: startHidden)
         castCollectionView = HorizontalCollectionViewController(title: "Cast")
         crewTableView = EntityTableViewController()
         

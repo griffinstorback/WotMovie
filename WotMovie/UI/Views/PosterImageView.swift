@@ -55,10 +55,61 @@ class PosterImageView: CardView {
         imageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
     }
     
-    func addBlurEffectOverlay(animated: Bool) {
+    func reveal(animated: Bool) {
+        hideBlurEffectOverlay(animated: animated)
+        hideQuestionMarkOverlay(animated: animated)
+    }
+    
+    func unreveal(animated: Bool) {
+        unhideBlurEffectOverlay(animated: animated)
+        unhideQuestionMarkOverlay(animated: animated)
+    }
+    
+    func hideBlurEffectOverlay(animated: Bool, duration: Double = 1.0) {
+        hideOverlay(blurEffectView, animated: animated, duration: duration)
+    }
+    
+    func hideQuestionMarkOverlay(animated: Bool, duration: Double = 1.0) {
+        hideOverlay(questionMarkImageView, animated: animated, duration: duration)
+    }
+    
+    func unhideBlurEffectOverlay(animated: Bool, duration: Double = 1.0) {
+        unhideOverlay(blurEffectView, animated: animated, duration: duration)
+    }
+    
+    func unhideQuestionMarkOverlay(animated: Bool, duration: Double = 1.0) {
+        unhideOverlay(questionMarkImageView, animated: animated, duration: duration, toAlpha: 0.3)
+    }
+    
+    func hideOverlay(_ overlay: UIView, animated: Bool, duration: Double = 1.0) {
+        if animated {
+            UIView.animate(withDuration: duration, animations:({
+                overlay.alpha = 0
+            })) { _ in
+                overlay.isHidden = true
+            }
+        } else {
+            overlay.alpha = 0
+            overlay.isHidden = true
+        }
+    }
+    
+    func unhideOverlay(_ overlay: UIView, animated: Bool, duration: Double = 1.0, toAlpha: CGFloat = 1.0) {
+        overlay.isHidden = false
+        
+        if animated {
+            UIView.animate(withDuration: duration) {
+                overlay.alpha = toAlpha
+            }
+        } else {
+            overlay.alpha = toAlpha
+        }
+    }
+    
+    private func addBlurEffectOverlay(animated: Bool, duration: Double = 1.5) {
         if animated {
             blurEffectView.alpha = 0
-            UIView.animate(withDuration: 1.5) {
+            UIView.animate(withDuration: duration) {
                 self.blurEffectView.alpha = 1.0
             }
         }
@@ -67,7 +118,7 @@ class PosterImageView: CardView {
         blurEffectView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
     }
     
-    func removeBlurEffectOverlay(animated: Bool) {
+    private func removeBlurEffectOverlay(animated: Bool) {
         if animated {
             UIView.animate(withDuration: 1.5, animations: {
                 self.blurEffectView.alpha = 0
@@ -81,7 +132,7 @@ class PosterImageView: CardView {
         removeQuestionMarkOverlay(animated: true)
     }
     
-    func addQuestionMarkOverlay(animated: Bool) {
+    private func addQuestionMarkOverlay(animated: Bool) {
         if animated {
             questionMarkImageView.alpha = 0
             UIView.animate(withDuration: 1.5) {
@@ -93,7 +144,7 @@ class PosterImageView: CardView {
         questionMarkImageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor, padding: UIEdgeInsets(top: 50, left: 35, bottom: 50, right: 35))
     }
     
-    func removeQuestionMarkOverlay(animated: Bool) {
+    private func removeQuestionMarkOverlay(animated: Bool) {
         if animated {
             UIView.animate(withDuration: 1.0, animations: {
                 self.questionMarkImageView.alpha = 0

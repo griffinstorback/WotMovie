@@ -47,7 +47,7 @@ class PersonDetailViewController: GuessDetailViewController {
         // use passed in presenter if provided (used in tests)
         personDetailViewPresenter = presenter ?? PersonDetailPresenter(item: item)
         
-        personOverviewView = PersonOverviewView(frame: .zero)
+        personOverviewView = PersonOverviewView(frame: .zero, startHidden: startHidden)
         knownForCollectionView = HorizontalCollectionViewController(title: "Known for")
         knownForCollectionView.restorationIdentifier = "Known for"
         

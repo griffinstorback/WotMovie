@@ -64,15 +64,15 @@ extension GuessGridViewController: GuessGridViewDelegate {
         
         switch item.type {
         case .movie, .tvShow:
-            guessDetailViewController = TitleDetailViewController(item: item, startHidden: true)
+            guessDetailViewController = TitleDetailViewController(item: item, startHidden: !item.isRevealed)
         case .person:
-            guessDetailViewController = PersonDetailViewController(item: item, startHidden: true)
+            guessDetailViewController = PersonDetailViewController(item: item, startHidden: !item.isRevealed)
         }
         
         guessDetailViewController.modalPresentationStyle = .fullScreen
         guessDetailViewController.modalPresentationCapturesStatusBarAppearance = true
         
-        present(guessDetailViewController, fromCard: fromCard, startHidden: true)
+        present(guessDetailViewController, fromCard: fromCard, startHidden: !item.isRevealed)
     }
     
     func reloadData() {
@@ -105,8 +105,14 @@ extension GuessGridViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ItemCollectionViewCell", for: indexPath) as! GuessGridCollectionViewCell
-        cell.setCellImagePath(imagePath: guessGridViewPresenter.itemFor(index: indexPath.row).posterPath ?? "")
+        let item = guessGridViewPresenter.itemFor(index: indexPath.row)
+        
+        cell.setCellImagePath(imagePath: item.posterPath ?? "")
         guessGridViewPresenter.loadImageFor(index: indexPath.row, completion: cell.imageDataReceived)
+        
+        if item.isRevealed {
+            cell.reveal(animated: false)
+        }
         
         return cell
     }

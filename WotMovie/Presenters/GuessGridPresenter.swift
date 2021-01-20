@@ -107,7 +107,17 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
     }
 
     func loadItems() {
+        
         // first, try to load the current page from core data
+        if tryToGetNextPageFromCoreData() {
+            return
+        }
+        
+        getNextPageFromNetworkAndCacheInCoreData()
+    }
+    
+    // returns true if successful
+    private func tryToGetNextPageFromCoreData() -> Bool {
         if let items = coreDataManager.fetchEntityPage(type: category, pageNumber: nextPage, genreID: -1) {
             
             // TODO: need to check if lastUpdated > 2 days (or whatever threshold), then update page
@@ -116,10 +126,11 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
             // if empty list was returned, means there is no page entity yet
             if items.count > 0 {
                 print("** Retrieved grid (p. \(nextPage)) items (\(items.count) movies) from Core Data")
+                print("** avatar: \(items.filter { $0.name == "Avatar" })")
                 self.setItems(items)
                 self.nextPage += 1
                 
-                return
+                return true
             } else {
                 print("** fetchEntityPage came back with empty list.")
             }
@@ -127,6 +138,11 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
             print("** fetchEntityPage came back nil. something went WRONG.")
         }
         
+        return false
+    }
+    
+    // returns true if successful
+    private func getNextPageFromNetworkAndCacheInCoreData() {
         print("** Retrieving grid (p. \(nextPage)) items from network..")
         if category == .movie {
             networkManager.getListOfMoviesByGenre(id: -1, page: nextPage) { [weak self] movies, error in

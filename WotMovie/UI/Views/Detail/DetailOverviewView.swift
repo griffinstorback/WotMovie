@@ -10,12 +10,8 @@ import UIKit
 
 class DetailOverviewView: UIView {
         
-    lazy var posterImageView: PosterImageView = {
-        let posterImageView = PosterImageView(startHidden: true)
-        posterImageView.layer.cornerRadius = Constants.DetailOverviewPosterImage.size.height * Constants.imageCornerRadiusRatio
-        posterImageView.layer.masksToBounds = true
-        return posterImageView
-    }()
+    let posterImageView: PosterImageView
+    
     private lazy var genreListView: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
@@ -57,9 +53,15 @@ class DetailOverviewView: UIView {
         return stackView
     }()
     
-    override init(frame: CGRect) {
+    init(frame: CGRect, startHidden: Bool) {
+        posterImageView = PosterImageView(startHidden: startHidden)
+        posterImageView.layer.cornerRadius = Constants.DetailOverviewPosterImage.size.height * Constants.imageCornerRadiusRatio
+        posterImageView.layer.masksToBounds = true
+        
         super.init(frame: frame)
+        
         setupView()
+        setupLayout()
     }
     
     required init?(coder: NSCoder) {
@@ -77,7 +79,6 @@ class DetailOverviewView: UIView {
         verticalStackView.backgroundColor = .white
         
         addSubview(verticalStackView)
-        setupLayout()
     }
     
     private func setupLayout() {
@@ -107,10 +108,10 @@ class DetailOverviewView: UIView {
     }
     
     public func removePosterImageBlurEffectOverlay(animated: Bool) {
-        posterImageView.removeBlurEffectOverlay(animated: animated)
+        posterImageView.reveal(animated: animated)
     }
     
     public func addPosterImageBlurEffectOverlay(animated: Bool) {
-        posterImageView.addBlurEffectOverlay(animated: animated)
+        posterImageView.unreveal(animated: animated)
     }
 }

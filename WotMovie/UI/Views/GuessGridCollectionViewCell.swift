@@ -10,10 +10,8 @@ import UIKit
 class GuessGridCollectionViewCell: UICollectionViewCell {
     
     var posterImageView: PosterImageView!
-    
-    private var hasBeenGuessed = true
-    
-    // need to keep track of the path for image on this cell, so that cell doesn't receive the wrong image.
+        
+    // need to keep track of the path for image on this cell, so that cell doesn't receive the wrong image (reusable).
     private var imagePath: String = ""
     
     override init(frame: CGRect) {
@@ -22,10 +20,6 @@ class GuessGridCollectionViewCell: UICollectionViewCell {
         posterImageView = PosterImageView(startHidden: true)        
         addSubview(posterImageView)
         posterImageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
-        
-        if !hasBeenGuessed {
-            posterImageView.removeBlurEffectOverlay(animated: true)
-        }
     }
     
     func setCornerRadius() {
@@ -39,6 +33,9 @@ class GuessGridCollectionViewCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         self.posterImageView.setImage(nil)
+        self.posterImageView.unhideBlurEffectOverlay(animated: false)
+        self.posterImageView.unhideQuestionMarkOverlay(animated: false)
+        self.imagePath = ""
     }
     
     func setCellImagePath(imagePath: String) {
@@ -55,5 +52,9 @@ class GuessGridCollectionViewCell: UICollectionViewCell {
         
         setCornerRadius()
         posterImageView.setImage(image)
+    }
+    
+    func reveal(animated: Bool) {
+        posterImageView.reveal(animated: animated)
     }
 }

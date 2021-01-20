@@ -38,9 +38,11 @@ class CardPresentationController: UIPresentationController {
     
     override func dismissalTransitionWillBegin() {
         presentingViewController.beginAppearanceTransition(true, animated: true)
-        //presentedViewController.transitionCoordinator!.animate { context in
+        
+        // does this do anything? doesnt seem like it.
+        presentedViewController.transitionCoordinator!.animate { context in
             self.blurView.alpha = 0
-        //}
+        }
     }
     
     override func dismissalTransitionDidEnd(_ completed: Bool) {

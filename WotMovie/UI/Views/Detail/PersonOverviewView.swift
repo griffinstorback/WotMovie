@@ -10,12 +10,7 @@ import UIKit
 
 class PersonOverviewView: UIView {
         
-    lazy var posterImageView: PosterImageView = {
-        let posterImageView = PosterImageView(startHidden: true)
-        posterImageView.layer.cornerRadius = Constants.PersonOverviewPosterImage.size.height * Constants.imageCornerRadiusRatio
-        posterImageView.layer.masksToBounds = true
-        return posterImageView
-    }()
+    let posterImageView: PosterImageView
     
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
@@ -43,9 +38,15 @@ class PersonOverviewView: UIView {
         return stackView
     }()
     
-    override init(frame: CGRect) {
+    init(frame: CGRect, startHidden: Bool) {
+        posterImageView = PosterImageView(startHidden: startHidden)
+        posterImageView.layer.cornerRadius = Constants.PersonOverviewPosterImage.size.height * Constants.imageCornerRadiusRatio
+        posterImageView.layer.masksToBounds = true
+        
         super.init(frame: frame)
+        
         setupView()
+        setupLayout()
     }
     
     required init?(coder: NSCoder) {
@@ -64,7 +65,6 @@ class PersonOverviewView: UIView {
         verticalStackView.alignment = .center
         
         addSubview(verticalStackView)
-        setupLayout()
     }
     
     private func setupLayout() {
@@ -86,11 +86,11 @@ class PersonOverviewView: UIView {
     }
     
     public func removePosterImageBlurEffectOverlay(animated: Bool) {
-        posterImageView.removeBlurEffectOverlay(animated: animated)
+        posterImageView.reveal(animated: animated)
     }
     
     public func addPosterImageBlurEffectOverlay(animated: Bool) {
-        posterImageView.addBlurEffectOverlay(animated: animated)
+        posterImageView.unreveal(animated: animated)
     }
 }
 
