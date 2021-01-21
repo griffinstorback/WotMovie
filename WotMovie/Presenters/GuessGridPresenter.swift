@@ -126,7 +126,6 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
             // if empty list was returned, means there is no page entity yet
             if items.count > 0 {
                 print("** Retrieved grid (p. \(nextPage)) items (\(items.count) movies) from Core Data")
-                print("** avatar: \(items.filter { $0.name == "Avatar" })")
                 self.setItems(items)
                 self.nextPage += 1
                 

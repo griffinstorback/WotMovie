@@ -15,7 +15,7 @@ struct Constants {
     struct DetailOverviewPosterImage {
         
         // TODO: return larger if running ipad?
-        static let size: CGSize = CGSize(width: 140, height: 210)
+        static let size: CGSize = CGSize(width: 160, height: 240)
     }
     
     struct PersonOverviewPosterImage {

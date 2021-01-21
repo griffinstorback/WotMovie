@@ -25,10 +25,11 @@ class PersonOverviewView: UIView {
     }()
     private lazy var verticalStackView: UIStackView = {
         let stackView = UIStackView()
-        /*let imageContainerView = UIView()
-        imageContainerView.addSubview(posterImageView)
-        posterImageView.anchor(top: posterImageView.topAnchor, leading: nil, bottom: posterImageView.bottomAnchor, trailing: nil)
-        posterImageView.anchorToCenter(yAnchor: nil, xAnchor: posterImageView.centerXAnchor)*/
+        //let imageContainerView = UIView()
+        //imageContainerView.addSubview(posterImageView)
+        //imageContainerView.heightAnchor.constraint(equalToConstant: 220).isActive = true
+        //posterImageView.anchor(top: posterImageView.topAnchor, leading: nil, bottom: posterImageView.bottomAnchor, trailing: nil)
+        //posterImageView.anchorToCenter(yAnchor: nil, xAnchor: posterImageView.centerXAnchor)
         
         stackView.addArrangedSubview(posterImageView)
         stackView.addArrangedSubview(nameLabel)
@@ -68,7 +69,9 @@ class PersonOverviewView: UIView {
     }
     
     private func setupLayout() {
-        posterImageView.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: Constants.PersonOverviewPosterImage.size)
+        //posterImageView.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: Constants.PersonOverviewPosterImage.size)
+        //posterImageView.heightAnchor.constraint(lessThanOrEqualToConstant: 500).isActive = true
+        posterImageView.widthAnchor.constraint(equalTo: posterImageView.heightAnchor, multiplier: 2/3).isActive = true
         verticalStackView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor, padding: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10))
     }
     

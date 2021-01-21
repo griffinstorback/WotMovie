@@ -75,7 +75,7 @@ final class PresentCardTransitionDriver {
     let cardWidthConstraint: NSLayoutConstraint
     let cardHeightConstraint: NSLayoutConstraint
     
-    let cardDetailPosterImageViewCopy: PosterImageView
+    let cardDetailPosterImageViewCopy: UIView
     
     init(parameters: CardTransitionParameters, transitionContext: UIViewControllerContextTransitioning, baseAnimator: UIViewPropertyAnimator) {
         self.parameters = parameters
@@ -89,16 +89,20 @@ final class PresentCardTransitionDriver {
         
         //cardDetailView = context.view(forKey: .to)!
         cardDetailView = screens.presented.view
-        cardDetailPosterImageViewCopy = PosterImageView(startHidden: parameters.startHidden)
-        cardDetailPosterImageViewCopy.setImage(screens.presented.posterImageView.getImage())
-        cardDetailPosterImageViewCopy.frame = parameters.fromView.frame//.convert(parameters.fromView.frame, to: container)
+        cardDetailPosterImageViewCopy = cardDetailView//PosterImageView(startHidden: parameters.startHidden)
+        //cardDetailPosterImageViewCopy.setImage(screens.presented.posterImageView.getImage())
+        cardDetailPosterImageViewCopy.frame = parameters.fromView.convert(parameters.fromView.frame, to: container)
         cardDetailPosterImageViewCopy.layer.cornerRadius = cardDetailPosterImageViewCopy.frame.height * Constants.imageCornerRadiusRatio
         cardDetailPosterImageViewCopy.layer.masksToBounds = true
+        //cardDetailPosterImageViewCopy.layer.borderWidth = 4
+        //cardDetailPosterImageViewCopy.layer.borderColor = UIColor.yellow.cgColor
         
         fromCardFrame = parameters.fromCardFrame
         
         // temporary container view for animation
         animatedContainerView = UIView()
+        //animatedContainerView.layer.borderWidth = 4
+        //animatedContainerView.layer.borderColor = UIColor.red.cgColor
         
         container.addSubview(animatedContainerView)
         animatedContainerView.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: container.bounds.size)
@@ -106,6 +110,7 @@ final class PresentCardTransitionDriver {
         animatedContainerHorizontalConstraint = animatedContainerView.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: fromCardFrame.minX)
         NSLayoutConstraint.activate([animatedContainerVerticalConstraint, animatedContainerHorizontalConstraint])
         
+        container.addSubview(cardDetailPosterImageViewCopy)
         
         // Layout cardDetailView
         animatedContainerView.addSubview(cardDetailView)
@@ -155,8 +160,8 @@ final class PresentCardTransitionDriver {
         print("***** container: \(container)")
         print("***** converrtted: \(screens.presented.posterImageView.convert(screens.presented.posterImageView.frame, to: cardDetailView))")
         print("***** context view forkey to: \(context.view(forKey: .to)!)")*/
-        
-        cardDetailPosterImageViewCopy.frame = screens.presented.posterImageView.convert(screens.presented.posterImageView.frame, to: cardDetailView)
+        //parameters.fromView.convert(parameters.fromView.frame, to: container)
+        cardDetailPosterImageViewCopy.frame = container.frame//screens.presented.posterImageView.convert(screens.presented.posterImageView.frame, to: container)
         cardDetailPosterImageViewCopy.layer.cornerRadius = screens.presented.posterImageView.layer.cornerRadius
         
         container.layoutIfNeeded()

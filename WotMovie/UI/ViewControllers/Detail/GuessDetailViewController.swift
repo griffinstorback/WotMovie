@@ -164,6 +164,10 @@ extension GuessDetailViewController {
     }
     
     func addChildToStackView(_ child: UIViewController) {
+        guard !children.contains(child) else {
+            return
+        }
+        
         addChild(child)
         contentStackView.addArrangedSubview(child.view)
         child.didMove(toParent: self)

@@ -13,6 +13,11 @@ class TitleDetailViewController: GuessDetailViewController {
 
     override var state: GuessDetailViewState {
         didSet {
+            // don't re-run didSet operations if they've already been run
+            guard state != oldValue else {
+                 return
+            }
+            
             switch state {
             case .fullyHidden:
                 addShowHintButton()
@@ -89,7 +94,6 @@ class TitleDetailViewController: GuessDetailViewController {
             addInfo()
             detailOverviewView.removePosterImageBlurEffectOverlay(animated: false)
             detailOverviewView.setTitle(titleDetailViewPresenter.getTitle())
-            detailOverviewView.setOverviewText(titleDetailViewPresenter.getOverview())
         }
     }
     

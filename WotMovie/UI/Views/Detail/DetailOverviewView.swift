@@ -82,12 +82,14 @@ class DetailOverviewView: UIView {
     }
     
     private func setupLayout() {
-        posterImageView.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: Constants.DetailOverviewPosterImage.size)
+        //posterImageView.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: Constants.DetailOverviewPosterImage.size)
+        posterImageView.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.DetailOverviewPosterImage.size.width).isActive = true
+        posterImageView.widthAnchor.constraint(equalTo: posterImageView.heightAnchor, multiplier: 2/3).isActive = true
         verticalStackView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor, padding: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10))
     }
     
     public func setTitle(_ text: String) {
-        titleLabel.text = text
+        titleLabel.text = "Harry Potter and the Philosopher's stone"
     }
     
     public func setReleaseDate(dateString: String) {
@@ -100,7 +102,7 @@ class DetailOverviewView: UIView {
     }
     
     public func setOverviewText(_ text: String) {
-        overviewTextView.text = text
+        overviewTextView.text = "Harry Potter has lived under the stairs at his aunt and uncle's house his whole life. But on his 11th birthday, he learns he's a powerful wizard -- with a place waiting for him at the Hogwarts School of Witchcraft and Wizardry. As he learns to harness his newfound powers with the help of the school's kindly headmaster, Harry uncovers the truth about his parents' deaths -- and about the villain who's to blame."
     }
     
     public func setGenreList(_ commaSeparatedList: String?) {

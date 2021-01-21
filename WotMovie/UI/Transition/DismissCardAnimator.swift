@@ -12,7 +12,7 @@ class DismissCardAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     static let relativeDurationBeforeNonInteractive: TimeInterval = 0.5
     static let minimumScaleBeforeNonInteractive: CGFloat = 0.8
     
-    static let dismissalAnimationDuration: TimeInterval = 0.5
+    static let dismissalAnimationDuration: TimeInterval = 5
     
     private let parameters: CardTransitionParameters
     
@@ -76,7 +76,7 @@ final class DismissCardTransitionDriver {
         // hide actual image view of modal were dismissing (replaced by copy)
         screens.presented.posterImageView.setImage(nil)
         screens.presented.posterImageView.backgroundColor = .white
-        
+                
         // take snapshot of view to animate away, and immediately hide original view
         cardDetailView = container.snapshotView(afterScreenUpdates: false)!
         //cardDetailView = context.view(forKey: .from)!.snapshotView(afterScreenUpdates: true)!
