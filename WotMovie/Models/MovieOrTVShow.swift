@@ -22,6 +22,7 @@ struct MovieOrTVShow: Title {
     var isRevealed: Bool = false
     var isHintShown: Bool = false
     var correctlyGuessed: Bool = false
+    var isFavorite: Bool = false
 }
 
 extension MovieOrTVShow: Decodable {

@@ -19,6 +19,7 @@ struct Person: Entity {
     var isHintShown: Bool = false
     var isRevealed: Bool = false
     var correctlyGuessed: Bool = false
+    var isFavorite: Bool = false
     
     init(castMember: CastMember) {
         id = castMember.id
@@ -92,6 +93,7 @@ struct CastMember: BasePerson {
     var isRevealed: Bool = false
     var isHintShown: Bool = false
     var correctlyGuessed: Bool = false
+    var isFavorite: Bool = false
 }
 
 struct CrewMember: BasePerson {
@@ -106,6 +108,7 @@ struct CrewMember: BasePerson {
     var isRevealed: Bool = false
     var isHintShown: Bool = false
     var correctlyGuessed: Bool = false
+    var isFavorite: Bool = false
 }
 
 extension CastMember: Decodable {

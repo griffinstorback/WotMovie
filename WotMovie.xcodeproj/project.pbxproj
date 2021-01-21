@@ -224,6 +224,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		852904A925BA442B00731918 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				85CF35D22543912300A101C9 /* HorizontalCollectionViewController.swift */,
+				850140542549E7350088FA3E /* EnterGuessViewController.swift */,
+				85CF35A92540B3F600A101C9 /* EntityTableViewController.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		854B3E8B2550D7BC003397E0 /* Persistence */ = {
 			isa = PBXGroup;
 			children = (
@@ -426,15 +436,13 @@
 		85CF34DC252FCB7500A101C9 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				852904A925BA442B00731918 /* Components */,
 				857B352F25B62367004CC310 /* Detail */,
 				85CF353425365B7900A101C9 /* RootTabViewController.swift */,
 				85CF353925365C5B00A101C9 /* GuessViewController.swift */,
 				85CF353E25365C7900A101C9 /* WatchListViewController.swift */,
 				85CF354325365CBB00A101C9 /* SettingsViewController.swift */,
 				85CF354825365D0B00A101C9 /* GuessGridViewController.swift */,
-				85CF35A92540B3F600A101C9 /* EntityTableViewController.swift */,
-				85CF35D22543912300A101C9 /* HorizontalCollectionViewController.swift */,
-				850140542549E7350088FA3E /* EnterGuessViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";

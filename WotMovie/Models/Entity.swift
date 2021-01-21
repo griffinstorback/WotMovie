@@ -22,4 +22,5 @@ protocol Entity {
     var isHintShown: Bool { get set }
     var isRevealed: Bool { get set }
     var correctlyGuessed: Bool { get set }
+    var isFavorite: Bool { get set }
 }

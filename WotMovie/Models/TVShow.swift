@@ -21,6 +21,7 @@ struct TVShow: Title {
     var isHintShown: Bool = false
     var isRevealed: Bool = false
     var correctlyGuessed: Bool = false
+    var isFavorite: Bool = false
     
     init?(movieOrTVShow item: MovieOrTVShow) {
         guard item.type == .tvShow else {
