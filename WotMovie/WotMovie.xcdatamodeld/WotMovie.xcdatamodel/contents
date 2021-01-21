@@ -22,12 +22,17 @@
         <relationship name="genres" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Genre" inverseName="movies" inverseEntity="Genre"/>
         <relationship name="pages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MoviePage" inverseName="movies" inverseEntity="MoviePage"/>
         <relationship name="peopleKnownForThis" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Person" inverseName="knownForMovies" inverseEntity="Person"/>
+        <relationship name="watchlist" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MovieWatchlist" inverseName="movie" inverseEntity="MovieWatchlist"/>
     </entity>
     <entity name="MoviePage" representedClassName="MoviePageMO" syncable="YES" codeGenerationType="class">
         <attribute name="genreID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="lastUpdated" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="pageNumber" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="movies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Movie" inverseName="pages" inverseEntity="Movie"/>
+    </entity>
+    <entity name="MovieWatchlist" representedClassName="MovieWatchlist" syncable="YES" codeGenerationType="class">
+        <attribute name="dateAdded" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="movie" maxCount="1" deletionRule="Nullify" destinationEntity="Movie" inverseName="watchlist" inverseEntity="Movie"/>
     </entity>
     <entity name="Person" representedClassName="PersonMO" syncable="YES" codeGenerationType="class">
         <attribute name="correctlyGuessed" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -73,11 +78,12 @@
     </entity>
     <elements>
         <element name="Genre" positionX="31.734375" positionY="29.5625" width="128" height="133"/>
-        <element name="Movie" positionX="-281.3125" positionY="-0.4765625" width="128" height="238"/>
+        <element name="Movie" positionX="-281.3125" positionY="-0.4765625" width="128" height="253"/>
         <element name="MoviePage" positionX="-119.234375" positionY="-163.359375" width="128" height="103"/>
         <element name="Person" positionX="30.09375" positionY="223.15625" width="128" height="209"/>
         <element name="PersonPage" positionX="228.36328125" positionY="418.796875" width="128" height="103"/>
         <element name="TVShow" positionX="411.35546875" positionY="29.5390625" width="128" height="238"/>
         <element name="TVShowPage" positionX="231.09765625" positionY="-111.44921875" width="128" height="118"/>
+        <element name="MovieWatchlist" positionX="-285.08203125" positionY="287.3984375" width="128" height="73"/>
     </elements>
 </model>

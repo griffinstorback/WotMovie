@@ -15,6 +15,7 @@ class DetailViewController: UIViewController {
     static let targetCornerRadius: CGFloat = 15
     
     let scrollView: UIScrollView
+    let statusBarCoverView: UIView
     let contentStackView: UIStackView
     let posterImageView: PosterImageView // keep reference to poster image, as its different if TitleDetail vs PersonDetail
     
@@ -47,6 +48,7 @@ class DetailViewController: UIViewController {
     
     init(posterImageView: PosterImageView, startHidden: Bool) {
         scrollView = UIScrollView()
+        statusBarCoverView = UIView()
         contentStackView = UIStackView()
         self.posterImageView = posterImageView
         
@@ -73,6 +75,9 @@ class DetailViewController: UIViewController {
         scrollView.isUserInteractionEnabled = true
         scrollView.delaysContentTouches = false
         scrollView.alwaysBounceVertical = true
+        
+        statusBarCoverView.giveBlurredBackground(style: .systemThickMaterialLight)
+        statusBarCoverView.alpha = 0
         
         contentStackView.axis = .vertical
         contentStackView.alignment = .fill
@@ -110,6 +115,9 @@ class DetailViewController: UIViewController {
         scrollView.addSubview(contentStackView)
         contentStackView.anchor(top: scrollView.topAnchor, leading: scrollView.leadingAnchor, bottom: scrollView.bottomAnchor, trailing: scrollView.trailingAnchor)
         contentStackView.anchorSize(height: nil, width: scrollView.widthAnchor)
+        
+        scrollView.addSubview(statusBarCoverView)
+        statusBarCoverView.anchor(top: scrollView.topAnchor, leading: scrollView.leadingAnchor, bottom: view.safeAreaLayoutGuide.topAnchor, trailing: scrollView.trailingAnchor)
         
         // add close button to top right corner
         view.addSubview(closeButton)
@@ -198,11 +206,20 @@ class DetailViewController: UIViewController {
 
 extension DetailViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if isDraggingDownToDismiss || (scrollView.isTracking && scrollView.contentOffset.y < 0) {
+        let contentOffset = scrollView.contentOffset.y
+        
+        if isDraggingDownToDismiss || (scrollView.isTracking && contentOffset < 0) {
             isDraggingDownToDismiss = true
             scrollView.contentOffset = .zero
         }
         
+        // hide or unhide the opaque view under status bar, depending on if scrolled to top or not.
+        if contentOffset <= 20 {
+            statusBarCoverView.alpha = max(min(contentOffset/20, 1), 0)
+        } else {
+            statusBarCoverView.alpha = 1
+        }
+                
         scrollView.showsVerticalScrollIndicator = !isDraggingDownToDismiss
     }
     

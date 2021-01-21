@@ -12,7 +12,7 @@ class DismissCardAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     static let relativeDurationBeforeNonInteractive: TimeInterval = 0.5
     static let minimumScaleBeforeNonInteractive: CGFloat = 0.8
     
-    static let dismissalAnimationDuration: TimeInterval = 5
+    static let dismissalAnimationDuration: TimeInterval = 0.5
     
     private let parameters: CardTransitionParameters
     

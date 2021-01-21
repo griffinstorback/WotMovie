@@ -41,7 +41,7 @@ class CardPresentationController: UIPresentationController {
         
         // does this do anything? doesnt seem like it.
         //presentedViewController.transitionCoordinator!.animate { context in
-            //self.blurView.alpha = 0
+            self.blurView.alpha = 0
         //}
     }
     
