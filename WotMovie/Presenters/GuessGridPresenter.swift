@@ -109,15 +109,15 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
     func loadItems() {
         
         // first, try to load the current page from core data
-        if tryToGetNextPageFromCoreData() {
+        if getNextPageFromCoreData() {
             return
         }
         
-        getNextPageFromNetworkAndCacheInCoreData()
+        getNextPageFromNetworkThenCacheInCoreData()
     }
     
     // returns true if successful
-    private func tryToGetNextPageFromCoreData() -> Bool {
+    private func getNextPageFromCoreData() -> Bool {
         if let items = coreDataManager.fetchEntityPage(type: category, pageNumber: nextPage, genreID: -1) {
             
             // TODO: need to check if lastUpdated > 2 days (or whatever threshold), then update page
@@ -141,7 +141,7 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
     }
     
     // returns true if successful
-    private func getNextPageFromNetworkAndCacheInCoreData() {
+    private func getNextPageFromNetworkThenCacheInCoreData() {
         print("** Retrieving grid (p. \(nextPage)) items from network..")
         if category == .movie {
             networkManager.getListOfMoviesByGenre(id: -1, page: nextPage) { [weak self] movies, error in

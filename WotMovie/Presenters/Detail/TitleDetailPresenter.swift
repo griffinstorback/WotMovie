@@ -176,10 +176,6 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
         }
     }
     
-    private func getOverviewWithTitleCensored(title: String, overview: String) -> String {
-        return overview.replacingOccurrences(of: title, with: String(repeating: "?", count: title.count))
-    }
-    
     func getReleaseDate() -> String {
         switch item.type {
         case .movie:
@@ -189,76 +185,6 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
         case .person:
             return "Error - no release date for type .person"
         }
-    }
-    
-    // genres appear as comma separated list
-    func getGenres(completion: @escaping (_ genres: String?) -> Void) {
-        switch item.type {
-        case .movie:
-            networkManager.getMovieGenres { genres, error in
-                if let error = error {
-                    print(error)
-                    DispatchQueue.main.async {
-                        completion(nil)
-                    }
-                    return
-                }
-                
-                if let genres = genres {
-                    DispatchQueue.main.async {
-                        completion(self.getGenresStringFor(genres: genres))
-                    }
-                }
-            }
-        
-        
-        case .tvShow:
-            networkManager.getTVShowGenres { genres, error in
-                if let error = error {
-                    print(error)
-                    DispatchQueue.main.async {
-                        completion(nil)
-                    }
-                    return
-                }
-                
-                if let genres = genres {
-                    DispatchQueue.main.async {
-                        completion(self.getGenresStringFor(genres: genres))
-                    }
-                }
-            }
-        
-        case .person:
-            DispatchQueue.main.async {
-                completion("Error - no genres for type .person")
-            }
-        }
-    }
-    private func getGenresStringFor(genres: [Genre]) -> String {
-        guard item.type == .movie || item.type == .tvShow else {
-            return "Error - can't get genre string for type .person"
-        }
-        
-        let title: Title
-        if item.type == .movie {
-            if let movie = movie {
-                title = movie
-            } else {
-                return "Error - no movie found to get genres for"
-            }
-        } else {
-            if let tvShow = tvShow {
-                title = tvShow
-            } else {
-                return "Error - no tv show found to get genres for"
-            }
-        }
-        
-        let titleGenres = genres.filter { title.genreIDs.contains($0.id) }
-        let titleGenresStringList = titleGenres.map { $0.name }
-        let titleGenresString = titleGenresStringList.joined(separator: ", ")
-        return titleGenresString
     }
     
     func getCastCount() -> Int {
@@ -300,5 +226,115 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
         let crewType = crewTypeForSection[section]
         
         return crewToDisplay[crewType]?[index]
+    }
+    
+    // genres appear as comma separated list
+    func getGenres(completion: @escaping (_ genres: String?) -> Void) {
+        // first, try to load the genres from core data
+        if let genresString = getGenresFromCoreData() {
+            print("*** Got genres from core data, string: \(genresString)")
+            completion(genresString)
+            return
+        }
+        
+        print("*** No genres found in core data, fetching from network")
+        getGenresFromNetworkThenCacheInCoreData(completion: completion)
+    }
+    
+    
+    // MARK: - Private
+    
+    private func getGenresFromCoreData() -> String? {
+        let genres = coreDataManager.fetchGenres()
+            
+        // TODO: need to check if lastUpdated > 2 days (or whatever threshold), then update genres
+        // either right now or on a background thread.
+        
+        // if empty list was returned, means there is no genres in core data
+        if genres.count > 0 {
+            return getGenresStringFor(genres: genres)
+        } else {
+            print("** got no genres from core data")
+        }
+        
+        return nil
+    }
+    
+    private func getGenresFromNetworkThenCacheInCoreData(completion: @escaping (_ genres: String?) -> Void) {
+        switch item.type {
+        case .movie:
+            networkManager.getMovieGenres { genres, error in
+                if let error = error {
+                    print(error)
+                    DispatchQueue.main.async {
+                        completion(nil)
+                    }
+                    return
+                }
+                
+                if let genres = genres {
+                    DispatchQueue.main.async {
+                        self.coreDataManager.updateOrCreateGenreList(genres: genres)
+                    }
+                    
+                    DispatchQueue.main.async {
+                        completion(self.getGenresStringFor(genres: genres))
+                    }
+                }
+            }
+        
+        
+        case .tvShow:
+            networkManager.getTVShowGenres { genres, error in
+                if let error = error {
+                    print(error)
+                    DispatchQueue.main.async {
+                        completion(nil)
+                    }
+                    return
+                }
+                
+                if let genres = genres {
+                    DispatchQueue.main.async {
+                        completion(self.getGenresStringFor(genres: genres))
+                    }
+                }
+            }
+        
+        case .person:
+            DispatchQueue.main.async {
+                completion("Error - no genres for type .person")
+            }
+        }
+    }
+    
+    private func getGenresStringFor(genres: [Genre]) -> String {
+        guard item.type == .movie || item.type == .tvShow else {
+            return "Error - can't get genre string for type .person"
+        }
+        
+        let title: Title
+        if item.type == .movie {
+            if let movie = movie {
+                title = movie
+            } else {
+                return "Error - no movie found to get genres for"
+            }
+        } else {
+            if let tvShow = tvShow {
+                title = tvShow
+            } else {
+                return "Error - no tv show found to get genres for"
+            }
+        }
+        
+        let titleGenres = genres.filter { title.genreIDs.contains($0.id) }
+        let titleGenresStringList = titleGenres.map { $0.name }
+        let titleGenresString = titleGenresStringList.joined(separator: ", ")
+        return titleGenresString
+    }
+    
+    private func getOverviewWithTitleCensored(title: String, overview: String) -> String {
+        return overview.replacingOccurrences(of: title, with: String(repeating: "?", count: title.count))
     }
 }

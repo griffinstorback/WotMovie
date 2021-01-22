@@ -20,9 +20,20 @@ final class CoreDataManager {
     private init() {}
     
     func getNumberGuessedFor(category: CategoryType) -> Int {
+        let context = coreDataStack.persistentContainer.viewContext
+        
         switch(category) {
         case .movie:
-            return 7
+            let movieFetch = NSFetchRequest<MovieMO>(entityName: "Movie")
+            movieFetch.predicate = NSPredicate(format: "correctlyGuessed == %@", NSNumber(value: true))
+            
+            do {
+                let fetchedMoviesCount = try context.count(for: movieFetch)
+                return fetchedMoviesCount
+            } catch {
+                print("** Failed to fetch movie count: \(error)")
+                return -1
+            }
         case .person:
             return 0
         case .tvShow:
@@ -61,6 +72,22 @@ final class CoreDataManager {
                 movieMO.isRevealed = true
             }
             
+            // attach genre mo objects, either by fetching or by creating them.
+            for genreID in movie.genreIDs {
+                if let genreMO = fetchGenre(id: genreID) {
+                    // only add genre if it doesnt already exist on movie object
+                    if !(movieMO.genres?.contains(genreMO) ?? false) {
+                        print("** UPDATE MOVIE - adding EXISTING genreMO: \(genreMO)")
+                        movieMO.addObject(value: genreMO, for: "genres")
+                    }
+                } else {
+                    let genreMO = GenreMO(context: coreDataStack.persistentContainer.viewContext)
+                    genreMO.id = Int64(genreID)
+                    print("** UPDATE MOVIE - adding NEW genreMO: \(genreMO)")
+                    movieMO.addObject(value: genreMO, for: "genres")
+                }
+            }
+            
             coreDataStack.saveContext()
         } else {
             print("** Found 0 existing entries for movie \(movie.id). Creating one now.")
@@ -73,8 +100,9 @@ final class CoreDataManager {
         let movieMO = MovieMO(context: coreDataStack.persistentContainer.viewContext)
         
         movieMO.id = Int64(movie.id)
-        movieMO.isRevealed = false
-        movieMO.isHintShown = false
+        movieMO.isRevealed = movie.isRevealed
+        movieMO.isHintShown = movie.isHintShown
+        movieMO.correctlyGuessed = movie.correctlyGuessed
         
         movieMO.lastUpdated = Date()
         movieMO.lastViewedDate = Date()
@@ -82,6 +110,22 @@ final class CoreDataManager {
         movieMO.overview = movie.overview
         movieMO.posterImageURL = movie.posterPath
         movieMO.releaseDate = movie.releaseDate
+        
+        // attach genre mo objects, either by fetching or by creating them.
+        for genreID in movie.genreIDs {
+            if let genreMO = fetchGenre(id: genreID) {
+                genreMO.addObject(value: movieMO, for: "movies")
+                print("** CREATED MOVIE - adding EXISTING genreMO: \(genreMO)")
+                //movieMO.addObject(value: genreMO, for: "genres")
+            } else {
+                let genreMO = GenreMO(context: coreDataStack.persistentContainer.viewContext)
+                genreMO.id = Int64(genreID)
+                genreMO.addObject(value: movieMO, for: "movies")
+                print("** CREATED MOVIE - adding NEW genreMO: \(genreMO)")
+                //movieMO.addObject(value: genreMO, for: "genres")
+                print("** MOVIE MO AFTER CREATING MOVIE: \(movieMO)")
+            }
+        }
         
         coreDataStack.saveContext()
         return movieMO
@@ -137,9 +181,7 @@ final class CoreDataManager {
     }
     
     func createMoviePage(movies: [Movie], pageNumber: Int, genreID: Int) {
-        // this is called by background thread (after the page is fetched from network)
         let moc = coreDataStack.persistentContainer.viewContext
-        //moc.persistentStoreCoordinator = coreDataStack.persistentContainer.persistentStoreCoordinator
         let pageMO = MoviePageMO(context: moc)
         pageMO.genreID = Int64(genreID)
         pageMO.pageNumber = Int64(pageNumber)
@@ -175,6 +217,99 @@ final class CoreDataManager {
             updateOrCreateMovie(movie: movie)
         }
     }
+    
+    func setEntityAsFavorite(entity: Entity) {
+        if let movie = entity as? Movie {
+            // add to watchlist if isFavorited is set to true
+            let existingMovieEntries = fetchMovie(id: movie.id)
+            
+            if existingMovieEntries.count > 0 {
+                print("** Found \(existingMovieEntries.count) existing entries for movie \(movie.id)")
+                
+                let movieMO = existingMovieEntries[0]
+                
+                // add movie to watchlist (if watchlist prop doesnt exist yet)
+                if movieMO.watchlist == nil {
+                    print("** WATCHLIST - NEED TO CREATE NEW WATCHLISTMO FOR MOVIE: \(movie.name)")
+                    let movieWatchlistItem = MovieWatchlistMO(context: coreDataStack.persistentContainer.viewContext)
+                    movieWatchlistItem.dateAdded = Date()
+                    movieWatchlistItem.movie = movieMO
+                } else {
+                    print("** WATCHLIST - MOVIE IS ALREADY IN WATCHLIST: \(movie.name)")
+                }
+                
+                coreDataStack.saveContext()
+            } else {
+                print("** Found 0 existing entries for movie \(movie.id). Creating one now.")
+                createMovie(movie: movie)
+            }
+        }
+    }
+    
+    func removeEntityFromFavorites(entity: Entity) {
+        if let movie = entity as? Movie {
+            // add to watchlist if isFavorited is set to true
+            let existingMovieEntries = fetchMovie(id: movie.id)
+            
+            if existingMovieEntries.count > 0 {
+                print("** Found \(existingMovieEntries.count) existing entries for movie \(movie.id)")
+                
+                let movieMO = existingMovieEntries[0]
+                
+                // remove from watchlist
+                if let movieWatchlist = movieMO.watchlist {
+                    print("** WATCHLIST - REMOVING MOVIE: \(movie.name)")
+                    coreDataStack.persistentContainer.viewContext.delete(movieWatchlist)
+                }
+                
+                coreDataStack.saveContext()
+            } else {
+                print("** Found 0 existing entries for movie \(movie.id). Creating one now.")
+                createMovie(movie: movie)
+            }
+        }
+    }
+    
+    // should always be called after a network request is performed for this info.
+    func updateOrCreateGenreList(genres: [Genre]) {
+        for genre in genres {
+            if let genreMO = fetchGenre(id: genre.id) {
+                // update existing genre managed object
+                genreMO.name = genre.name
+                genreMO.lastUpdated = Date()
+            } else {
+                // create a genre for this id
+                let genreMO = GenreMO(context: coreDataStack.persistentContainer.viewContext)
+                genreMO.id = Int64(genre.id)
+                genreMO.name = genre.name
+                genreMO.lastUpdated = Date()
+            }
+        }
+        
+        coreDataStack.saveContext()
+    }
+    
+    func fetchGenres() -> [Genre] {
+        let moc = coreDataStack.persistentContainer.viewContext
+        let genreFetch = NSFetchRequest<GenreMO>(entityName: "Genre")
+        
+        do {
+            let fetched = try moc.fetch(genreFetch)
+            let genreObjects = fetched.map { MovieGenre(genreMO: $0) }
+            
+            // if any of the returned genres have no name, we return [] to signify
+            // genres need to be updated from network.
+            for genre in genreObjects {
+                if genre.name.isEmpty { return [] }
+            }
+            
+            return genreObjects
+        } catch {
+            print("** Failed to perforn fetch for all genres.")
+            return []
+        }
+    }
+
     
     // MARK:- HELPER; PRIVATE METHODS
     

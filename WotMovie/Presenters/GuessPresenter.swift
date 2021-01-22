@@ -33,6 +33,10 @@ class GuessPresenter: GuessPresenterProtocol {
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
             self.updateGuessedCounts()
         }
+        
+        coreDataManager.deleteAllData("Movie")
+        coreDataManager.deleteAllData("MoviePage")
+        coreDataManager.deleteAllData("MovieWatchlist")
     }
     
     func setViewDelegate(guessViewDelegate: GuessViewDelegate?) {

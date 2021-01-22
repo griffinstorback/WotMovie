@@ -47,8 +47,6 @@ class EnterGuessControlsView: UIView {
     }
     
     private func setupViews() {
-        //backgroundColor = .white
-        //giveBlurredBackground(style: .systemThickMaterialLight)
         backgroundColor = .clear
         containerStackView.axis = .vertical
         
@@ -59,7 +57,6 @@ class EnterGuessControlsView: UIView {
         enterGuessField.searchBarStyle = .minimal
         enterGuessField.tintColor = Constants.Colors.defaultBlue
         
-        // TODO: Replace with question mark icon
         let enterGuessFieldIcon = UIImage(named: "question_mark")?.withTintColor(Constants.Colors.defaultBlue, renderingMode: .alwaysOriginal)
         enterGuessField.setImage(enterGuessFieldIcon, for: .search, state: .normal)
         
@@ -138,6 +135,10 @@ class EnterGuessControlsView: UIView {
     
     public func setEnterGuessFieldPlaceholder(text: String) {
         enterGuessField.placeholder = text
+    }
+    
+    public func setWatchlistButtonText(text: String) {
+        addToWatchlistButton.setTitle(text, for: .normal)
     }
     
     public func setShowsEnterGuessFieldCancelButton(_ showsCancelButton: Bool, animated: Bool) {

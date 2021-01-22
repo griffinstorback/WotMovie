@@ -47,6 +47,7 @@ class EnterGuessViewController: UIViewController {
         super.viewDidLoad()
         
         enterGuessControlsView.setEnterGuessFieldPlaceholder(text: enterGuessPresenter.getPlaceholderText())
+        enterGuessControlsView.setWatchlistButtonText(text: enterGuessPresenter.getWatchlistButtonText())
         
         setupTableView()
         
@@ -186,7 +187,7 @@ extension EnterGuessViewController: EnterGuessControlsDelegate {
     }
     
     func addToWatchlistButtonPressed() {
-        print("add to watchlist!")
+        enterGuessPresenter.addItemToWatchlist()
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
@@ -212,6 +213,7 @@ extension EnterGuessViewController: EnterGuessControlsDelegate {
 extension EnterGuessViewController: EnterGuessViewDelegate {
     func reloadResults() {
         resultsTableView.reloadData()
+        enterGuessControlsView.setWatchlistButtonText(text: enterGuessPresenter.getWatchlistButtonText())
         scrollToBottom()
     }
     

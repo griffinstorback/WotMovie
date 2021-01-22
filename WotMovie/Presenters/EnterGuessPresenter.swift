@@ -16,6 +16,8 @@ protocol EnterGuessPresenterProtocol {
     func search(searchText: String)
     func isCorrect(index: Int) -> Bool
     func getPlaceholderText() -> String
+    func addItemToWatchlist()
+    func getWatchlistButtonText() -> String
 }
 
 class EnterGuessPresenter: EnterGuessPresenterProtocol {
@@ -137,6 +139,35 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
             return "Enter TV show name"
         case .person:
             return "Enter name of person"
+        }
+    }
+    
+    func addItemToWatchlist() {
+        if item.isFavorite {
+            coreDataManager.removeEntityFromFavorites(entity: item)
+            item.isFavorite = false
+        } else {
+            coreDataManager.setEntityAsFavorite(entity: item)
+            item.isFavorite = true
+        }
+        
+        enterGuessViewDelegate?.reloadResults()
+    }
+    
+    func getWatchlistButtonText() -> String {
+        switch item.type {
+        case .movie, .tvShow:
+            if item.isFavorite {
+                return "Remove from Watchlist"
+            } else {
+                return "Add to Watchlist"
+            }
+        case .person:
+            if item.isFavorite {
+                return "Remove from Favorites"
+            } else {
+                return "Add to Favorites"
+            }
         }
     }
 }
