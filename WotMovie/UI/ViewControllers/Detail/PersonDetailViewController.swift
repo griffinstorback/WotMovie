@@ -152,6 +152,17 @@ extension PersonDetailViewController: HorizontalCollectionViewDelegate {
         }
     }
     
+    func getSubtitleFor(_ horizontalCollectionViewController: HorizontalCollectionViewController, index: Int) -> String? {
+        switch horizontalCollectionViewController.restorationIdentifier {
+        case "Actor":
+            return personDetailViewPresenter.getActorInSubtitle(for: index)
+        case "Known for", "Director", "Producer", "Writer":
+            return nil
+        default:
+            return nil
+        }
+    }
+    
     func loadImageFor(_ horizontalCollectionViewController: HorizontalCollectionViewController, index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
         switch horizontalCollectionViewController.restorationIdentifier {
         case "Known for":

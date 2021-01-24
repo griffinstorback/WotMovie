@@ -10,6 +10,7 @@ import UIKit
 protocol HorizontalCollectionViewDelegate {
     func getNumberOfItems(_ horizontalCollectionViewController: HorizontalCollectionViewController) -> Int
     func getItemFor(_ horizontalCollectionViewController: HorizontalCollectionViewController, index: Int) -> Entity?
+    func getSubtitleFor(_ horizontalCollectionViewController: HorizontalCollectionViewController, index: Int) -> String?
     func loadImageFor(_ horizontalCollectionViewController: HorizontalCollectionViewController, index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
 }
 
@@ -126,6 +127,11 @@ extension HorizontalCollectionViewController: UICollectionViewDataSource, UIColl
         }
         
         cell.setName(item.name)
+        
+        // set the subtitle if one exists for this item
+        if let subtitle = delegate?.getSubtitleFor(self, index: indexPath.row) {
+            cell.setSubtitle(subtitle)
+        }
         
         if let imagePath = item.posterPath {
             cell.setImagePath(path: imagePath)

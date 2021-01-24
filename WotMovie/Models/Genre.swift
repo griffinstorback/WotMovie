@@ -24,7 +24,7 @@ struct MovieGenre: Genre {
     let name: String
     let correctlyGuessedCount: Int = 0
     
-    init(genreMO: GenreMO) {
+    init(genreMO: MovieGenreMO) {
         id = Int(genreMO.id)
         name = genreMO.name ?? ""
     }

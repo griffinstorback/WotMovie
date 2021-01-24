@@ -113,6 +113,10 @@ extension TitleDetailViewController: HorizontalCollectionViewDelegate {
         return titleDetailViewPresenter.getCastMember(for: index)
     }
     
+    func getSubtitleFor(_ horizontalCollectionViewController: HorizontalCollectionViewController, index: Int) -> String? {
+        return titleDetailViewPresenter.getCharacterForCastMember(for: index)
+    }
+    
     func loadImageFor(_ horizontalCollectionViewController: HorizontalCollectionViewController, index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
         titleDetailViewPresenter.loadCastPersonImage(index: index, completion: completion)
         return

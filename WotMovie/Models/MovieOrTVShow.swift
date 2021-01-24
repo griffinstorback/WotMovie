@@ -17,6 +17,7 @@ struct MovieOrTVShow: Title {
     let releaseDate: String?
     let genreIDs: [Int]
     let personsJob: Job? // if person wasn't acting but was producer, director or other job
+    let character: String? // non-nil when person is actor in this movie/show
     
     // these properties are unused on movieortvshow, because user is never guessing this type.
     var isRevealed: Bool = false
@@ -41,6 +42,7 @@ extension MovieOrTVShow: Decodable {
         case overview
         case releaseDate = "release_date"
         case personsJob = "job"
+        case character = "character"
     }
     
     init(from decoder: Decoder) throws {
@@ -60,6 +62,7 @@ extension MovieOrTVShow: Decodable {
             name = try container.decode(String.self, forKey: .name)
         } else {
             // this case should never be hit
+            print("*** WARNING: decoding a MovieOrTVShow object; mediaType came back null from api. Setting to type .person.")
             type = .person
             name = ""
         }
@@ -67,5 +70,7 @@ extension MovieOrTVShow: Decodable {
         overview = try container.decode(String.self, forKey: .overview)
         releaseDate = try container.decodeIfPresent(String.self, forKey: .releaseDate)
         personsJob = try container.decodeIfPresent(String.self, forKey: .personsJob)
+        character = try container.decodeIfPresent(String.self, forKey: .character)
+        print("*** Found: (character '\(character)'  -  job '\(personsJob)') for name: '\(name)'")
     }
 }

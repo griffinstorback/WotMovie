@@ -19,6 +19,7 @@ protocol PersonDetailPresenterProtocol: GuessDetailPresenterProtocol {
     func getKnownForTitle(for index: Int) -> Title?
     func getActorInTitle(for index: Int) -> Title?
     func getJobForTitle(for index: Int, section: Int) -> Title?
+    func getActorInSubtitle(for index: Int) -> String?
 }
 
 class PersonDetailPresenter: GuessDetailPresenter, PersonDetailPresenterProtocol {
@@ -182,5 +183,9 @@ class PersonDetailPresenter: GuessDetailPresenter, PersonDetailPresenterProtocol
         }
         
         return nil
+    }
+    
+    func getActorInSubtitle(for index: Int) -> String? {
+        return personCredits?.cast[index].character
     }
 }

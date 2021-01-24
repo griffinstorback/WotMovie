@@ -81,7 +81,7 @@ final class CoreDataManager {
                         movieMO.addObject(value: genreMO, for: "genres")
                     }
                 } else {
-                    let genreMO = GenreMO(context: coreDataStack.persistentContainer.viewContext)
+                    let genreMO = MovieGenreMO(context: coreDataStack.persistentContainer.viewContext)
                     genreMO.id = Int64(genreID)
                     print("** UPDATE MOVIE - adding NEW genreMO: \(genreMO)")
                     movieMO.addObject(value: genreMO, for: "genres")
@@ -118,7 +118,7 @@ final class CoreDataManager {
                 print("** CREATED MOVIE - adding EXISTING genreMO: \(genreMO)")
                 //movieMO.addObject(value: genreMO, for: "genres")
             } else {
-                let genreMO = GenreMO(context: coreDataStack.persistentContainer.viewContext)
+                let genreMO = MovieGenreMO(context: coreDataStack.persistentContainer.viewContext)
                 genreMO.id = Int64(genreID)
                 genreMO.addObject(value: movieMO, for: "movies")
                 print("** CREATED MOVIE - adding NEW genreMO: \(genreMO)")
@@ -129,6 +129,47 @@ final class CoreDataManager {
         
         coreDataStack.saveContext()
         return movieMO
+    }
+    
+    @discardableResult
+    func createPerson(person: BasePerson) -> PersonMO {
+        let personMO = PersonMO(context: coreDataStack.persistentContainer.viewContext)
+        
+        personMO.id = Int64(person.id)
+        personMO.name = person.name
+        personMO.posterImageURL = person.posterPath
+        
+        coreDataStack.saveContext()
+        return personMO
+    }
+    
+    @discardableResult
+    func createPerson(person: Person) -> PersonMO {
+        let personMO = PersonMO(context: coreDataStack.persistentContainer.viewContext)
+        
+        personMO.id = Int64(person.id)
+        personMO.name = person.name
+        personMO.posterImageURL = person.posterPath
+        
+        personMO.isRevealed = person.isRevealed
+        personMO.isHintShown = person.isHintShown
+        personMO.correctlyGuessed = person.correctlyGuessed
+        
+        // fetch/create the movies in the persons knownFor array, then attach to personMO
+        for title in person.knownFor {
+            if title.type == .movie {
+                /*if let movieMO = fetchMovie(id: title.id) {
+                    
+                } else {
+                    let movieMO = createMovie(movie: Movie(movieOrTVShow: title))
+                }*/
+            } else if title.type == .tvShow {
+                
+            }
+        }
+        
+        coreDataStack.saveContext()
+        return personMO
     }
     
     func fetchMovie(id: Int, context: NSManagedObjectContext? = nil) -> [MovieMO] {
@@ -150,6 +191,36 @@ final class CoreDataManager {
         } catch {
             print("** Failed to fetch movie: \(error)")
             return []
+        }
+    }
+    
+    func fetchPerson(id: Int, context: NSManagedObjectContext? = nil) -> PersonMO? {
+        let moc: NSManagedObjectContext
+        if let providedContext = context {
+            moc = providedContext
+        } else {
+            moc = coreDataStack.persistentContainer.viewContext
+        }
+        
+        let personFetch = NSFetchRequest<PersonMO>(entityName: "Person")
+        personFetch.predicate = NSPredicate(format: "id == %ld", id)
+        
+        do {
+            let fetchedPersons = try moc.fetch(personFetch)
+            
+            if fetchedPersons.count > 0 {
+                
+                if fetchedPersons.count > 1 {
+                    print("*** WARNING: fetch for person with id \(id) returned \(fetchedPersons.count) PersonMOs.")
+                }
+                
+                return fetchedPersons[0]
+            } else {
+                return nil
+            }
+        } catch {
+            print("* ERROR: fetch Person by id failed. returning nil")
+            return nil
         }
     }
     
@@ -279,7 +350,7 @@ final class CoreDataManager {
                 genreMO.lastUpdated = Date()
             } else {
                 // create a genre for this id
-                let genreMO = GenreMO(context: coreDataStack.persistentContainer.viewContext)
+                let genreMO = MovieGenreMO(context: coreDataStack.persistentContainer.viewContext)
                 genreMO.id = Int64(genre.id)
                 genreMO.name = genre.name
                 genreMO.lastUpdated = Date()
@@ -291,7 +362,7 @@ final class CoreDataManager {
     
     func fetchGenres() -> [Genre] {
         let moc = coreDataStack.persistentContainer.viewContext
-        let genreFetch = NSFetchRequest<GenreMO>(entityName: "Genre")
+        let genreFetch = NSFetchRequest<MovieGenreMO>(entityName: "MovieGenre")
         
         do {
             let fetched = try moc.fetch(genreFetch)
@@ -309,16 +380,68 @@ final class CoreDataManager {
             return []
         }
     }
+    func updateOrCreateCredits(type: EntityType, credits: Credits) {
+        switch type {
+    
+        case .movie:
+            updateOrCreateMovieCredits(credits: credits)
+        case .tvShow:
+            return
+        default:
+            return
+        }
+    }
+    
+    func updateOrCreateMovieCredits(credits: Credits) {
+        let moc = coreDataStack.persistentContainer.viewContext
+        let movieCreditsMO = MovieCreditsMO(context: moc)
+        movieCreditsMO.id = Int64(credits.id)
+        
+        // fetch/create person objects, then attach them to cast/crew
+        for castMember in credits.cast {
+            if let existingPersonMO = fetchPerson(id: castMember.id) {
+                movieCreditsMO.addObject(value: existingPersonMO, for: "cast")
+            } else {
+                let newPersonMO = createPerson(person: castMember)
+                movieCreditsMO.addObject(value: newPersonMO, for: "cast")
+            }
+        }
+        for crewMember in credits.crew {
+            if let existingPersonMO = fetchPerson(id: crewMember.id) {
+                movieCreditsMO.addObject(value: existingPersonMO, for: "crew")
+            } else {
+                let newPersonMO = createPerson(person: crewMember)
+                movieCreditsMO.addObject(value: newPersonMO, for: "crew")
+            }
+        }
+        
+        coreDataStack.saveContext()
+    }
+    
+    func updateOrCreateTVShowCredits(credits: Credits) {
+        
+    }
+    
+    func getCreditsFor(type: EntityType, id: Int) -> Credits? {
+        
+        
+        return nil
+    }
+    
+    func getPersonCreditsFor(id: Int) -> PersonCredits? {
+        
+        return nil
+    }
 
     
     // MARK:- HELPER; PRIVATE METHODS
     
-    func fetchGenre(id: Int) -> GenreMO? {
+    func fetchGenre(id: Int) -> MovieGenreMO? {
         let moc = coreDataStack.persistentContainer.viewContext
-        let genreFetch = NSFetchRequest<GenreMO>(entityName: "Genre")
+        let genreFetch = NSFetchRequest<MovieGenreMO>(entityName: "MovieGenre")
         genreFetch.predicate = NSPredicate(format: "id == %ld", id)
         
-        let fetchedGenres: [GenreMO]
+        let fetchedGenres: [MovieGenreMO]
         do {
             fetchedGenres = try moc.fetch(genreFetch)
             print("FETCHED Genres: \(fetchedGenres)")

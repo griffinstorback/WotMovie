@@ -18,6 +18,7 @@ protocol TitleDetailPresenterProtocol: GuessDetailPresenterProtocol {
     func getGenres(completion: @escaping (_ genres: String?) -> Void)
     func getCastCount() -> Int
     func getCastMember(for index: Int) -> CastMember?
+    func getCharacterForCastMember(for index: Int) -> String?
     func getCrewTypesToDisplayCount() -> Int
     func getCrewCountForType(section: Int) -> Int
     func getCrewTypeToDisplay(for section: Int) -> String?
@@ -85,40 +86,13 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
     }
     
     func loadCredits() {
-        switch item.type {
-        case .movie:
-            networkManager.getCreditsForMovie(id: item.id) { [weak self] credits, error in
-                if let error = error {
-                    print(error)
-                    DispatchQueue.main.async {
-                        self?.detailViewDelegate?.displayError()
-                    }
-                    return
-                }
-                
-                self?.credits = credits
-            }
-        
-        
-        case .tvShow:
-            networkManager.getCreditsForTVShow(id: item.id) { [weak self] credits, error in
-                if let error = error {
-                    print(error)
-                    DispatchQueue.main.async {
-                        self?.detailViewDelegate?.displayError()
-                    }
-                    return
-                }
-                
-                self?.credits = credits
-            }
-            
-        case .person:
-            DispatchQueue.main.async {
-                self.detailViewDelegate?.displayError()
-            }
+        // first try to get credits from core data
+        if let credits = getCreditsFromCoreData() {
+            self.credits = credits
             return
         }
+        
+        getCreditsFromNetworkThenCacheInCoreData()
     }
     
     func loadCastPersonImage(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
@@ -195,6 +169,10 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
         return credits?.cast[index]
     }
     
+    func getCharacterForCastMember(for index: Int) -> String? {
+        return credits?.cast[index].character
+    }
+    
     func getCrewTypesToDisplayCount() -> Int {
         return crewTypeForSection.count
     }
@@ -243,6 +221,57 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
     
     
     // MARK: - Private
+    
+    private func getCreditsFromCoreData() -> Credits? {
+        let credits = coreDataManager.getCreditsFor(type: item.type, id: item.id)
+        return credits
+    }
+    
+    private func getCreditsFromNetworkThenCacheInCoreData() {
+        switch item.type {
+        case .movie:
+            networkManager.getCreditsForMovie(id: item.id) { [weak self] credits, error in
+                if let error = error {
+                    print(error)
+                    DispatchQueue.main.async {
+                        self?.detailViewDelegate?.displayError()
+                    }
+                    return
+                }
+                
+                if let credits = credits {
+                    if let strongSelf = self {
+                        DispatchQueue.main.async {
+                            //strongSelf.coreDataManager.updateOrCreateCredits(type: strongSelf.item.type, credits: credits)
+                        }
+                    }
+                    
+                    
+                    self?.credits = credits
+                }
+            }
+        
+        
+        case .tvShow:
+            networkManager.getCreditsForTVShow(id: item.id) { [weak self] credits, error in
+                if let error = error {
+                    print(error)
+                    DispatchQueue.main.async {
+                        self?.detailViewDelegate?.displayError()
+                    }
+                    return
+                }
+                
+                self?.credits = credits
+            }
+            
+        case .person:
+            DispatchQueue.main.async {
+                self.detailViewDelegate?.displayError()
+            }
+            return
+        }
+    }
     
     private func getGenresFromCoreData() -> String? {
         let genres = coreDataManager.fetchGenres()

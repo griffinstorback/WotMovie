@@ -34,9 +34,12 @@ class GuessPresenter: GuessPresenterProtocol {
             self.updateGuessedCounts()
         }
         
+        /*
+        coreDataManager.deleteAllData("Genre")
         coreDataManager.deleteAllData("Movie")
         coreDataManager.deleteAllData("MoviePage")
         coreDataManager.deleteAllData("MovieWatchlist")
+         */
     }
     
     func setViewDelegate(guessViewDelegate: GuessViewDelegate?) {

@@ -47,7 +47,7 @@ struct Movie: Title {
         rating = nil
         overview = movieMO.overview ?? ""
         
-        if let genres = movieMO.genres?.allObjects as? [GenreMO] {
+        if let genres = movieMO.genres?.allObjects as? [MovieGenreMO] {
             var genreIDs = [Int]()
             for genre in genres {
                 genreIDs.append(Int(genre.id))

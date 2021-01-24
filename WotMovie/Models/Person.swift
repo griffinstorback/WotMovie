@@ -7,7 +7,7 @@
 
 import Foundation
 
-// MARK: - "Person" is used for full person object (like when getting popular people, or searching people)
+// MARK: - "Person" is used for full person object (like when guessing people, getting popular people, searching people, etc.)
 
 struct Person: Entity {
     let id: Int

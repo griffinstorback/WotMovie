@@ -141,7 +141,9 @@ class PosterImageView: CardView {
         }
         
         addSubview(questionMarkImageView)
-        questionMarkImageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor, padding: UIEdgeInsets(top: 50, left: 35, bottom: 50, right: 35))
+        questionMarkImageView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.5).isActive = true
+        questionMarkImageView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.5).isActive = true
+        questionMarkImageView.anchorToCenter(yAnchor: centerYAnchor, xAnchor: centerXAnchor)
     }
     
     private func removeQuestionMarkOverlay(animated: Bool) {

@@ -14,6 +14,8 @@ class HorizontalCollectionViewCell: UICollectionViewCell {
     private var imagePath: String = ""
     
     var imageView: UIImageView!
+    
+    private var labelStackView: UIStackView!
     private var nameLabel: UILabel!
     private var subtitleLabel: UILabel!
     
@@ -37,11 +39,17 @@ class HorizontalCollectionViewCell: UICollectionViewCell {
         subtitleLabel.textAlignment = .center
         subtitleLabel.textColor = .gray
         
-        if Bool.random() {
-            subtitleLabel.text = "Character blah akjg oiwi wpopw qllkf jg oioif  nbbvbv dhhe ytyytyt shbg ytaoo ppppooppppp wkejhkjh po  o oooooooooo poopp po po po pOOP"
+        let emptySpacingView = UIView()
+        emptySpacingView.backgroundColor = .clear
+        labelStackView = UIStackView(arrangedSubviews: [nameLabel, subtitleLabel, emptySpacingView])
+        labelStackView.axis = .vertical
+        
+        // for testing multiple line support of labels.
+        /*if Bool.random() {
+            subtitleLabel.text = "Super long text because character name could be long, but likely won't be this long - really just testing what happens when subtitle label is too long"
         } else {
             subtitleLabel.text = "Character blah"
-        }
+        }*/
         layoutViews()
     }
     
@@ -49,14 +57,16 @@ class HorizontalCollectionViewCell: UICollectionViewCell {
         addSubview(imageView)
         imageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor, size: CGSize(width: 0, height: HorizontalCollectionViewCell.cellHeight))
         
-        addSubview(nameLabel)
+        addSubview(labelStackView)
+        labelStackView.anchor(top: imageView.bottomAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
+        /*addSubview(nameLabel)
         nameLabel.anchor(top: imageView.bottomAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor)
-        
         addSubview(subtitleLabel)
-        subtitleLabel.anchor(top: nameLabel.bottomAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor)
+        subtitleLabel.anchor(top: nameLabel.bottomAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor)*/
         
         // bottom constraint is less than or equal to so that label text appears at top (instead of being centered)
-        subtitleLabel.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -5).isActive = true
+        //subtitleLabel.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -5).isActive = true
+        //subtitleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5).isActive = true
     }
     
     required init?(coder: NSCoder) {

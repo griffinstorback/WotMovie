@@ -16,7 +16,12 @@
         <relationship name="peopleKnownForThis" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Person" inverseName="knownForMovies" inverseEntity="Person"/>
         <relationship name="watchlist" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MovieWatchlist" inverseName="movie" inverseEntity="MovieWatchlist"/>
     </entity>
-    <entity name="MovieGenre" representedClassName="MovieGenre" syncable="YES" codeGenerationType="class">
+    <entity name="MovieCredits" representedClassName="MovieCreditsMO" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="cast" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Person" inverseName="moviesCast" inverseEntity="Person"/>
+        <relationship name="crew" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Person" inverseName="moviesCrew" inverseEntity="Person"/>
+    </entity>
+    <entity name="MovieGenre" representedClassName="MovieGenreMO" syncable="YES" codeGenerationType="class">
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="language" optional="YES" attributeType="String"/>
         <attribute name="lastUpdated" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -46,9 +51,12 @@
         <relationship name="favorite" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PersonFavorites" inverseName="person" inverseEntity="PersonFavorites"/>
         <relationship name="knownForMovies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Movie" inverseName="peopleKnownForThis" inverseEntity="Movie"/>
         <relationship name="knownForTVShows" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TVShow" inverseName="peopleKnownForThis" inverseEntity="TVShow"/>
+        <relationship name="moviesCast" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MovieCredits" inverseName="cast" inverseEntity="MovieCredits"/>
+        <relationship name="moviesCrew" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MovieCredits" inverseName="crew" inverseEntity="MovieCredits"/>
         <relationship name="pages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PersonPage" inverseName="people" inverseEntity="PersonPage"/>
     </entity>
-    <entity name="PersonFavorites" representedClassName="PersonFavorites" syncable="YES" codeGenerationType="class">
+    <entity name="PersonCredits" representedClassName="PersonCreditsMO" syncable="YES" codeGenerationType="class"/>
+    <entity name="PersonFavorites" representedClassName="PersonFavoritesMO" syncable="YES" codeGenerationType="class">
         <attribute name="dateAdded" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="person" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Person" inverseName="favorite" inverseEntity="Person"/>
     </entity>
@@ -74,7 +82,8 @@
         <relationship name="peopleKnownForThis" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Person" inverseName="knownForTVShows" inverseEntity="Person"/>
         <relationship name="watchlist" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TVShowWatchlist" inverseName="tvShow" inverseEntity="TVShowWatchlist"/>
     </entity>
-    <entity name="TVShowGenre" representedClassName="GenreMO" syncable="YES" codeGenerationType="class">
+    <entity name="TVShowCredits" representedClassName="TVShowCreditsMO" syncable="YES" codeGenerationType="class"/>
+    <entity name="TVShowGenre" representedClassName="TVShowGenreMO" syncable="YES" codeGenerationType="class">
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="language" optional="YES" attributeType="String"/>
         <attribute name="lastUpdated" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -87,21 +96,24 @@
         <attribute name="pageNumber" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="tvShows" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TVShow" inverseName="pages" inverseEntity="TVShow"/>
     </entity>
-    <entity name="TVShowWatchlist" representedClassName="TVShowWatchlist" syncable="YES" codeGenerationType="class">
+    <entity name="TVShowWatchlist" representedClassName="TVShowWatchlistMO" syncable="YES" codeGenerationType="class">
         <attribute name="dateAdded" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="tvShow" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TVShow" inverseName="watchlist" inverseEntity="TVShow"/>
     </entity>
     <elements>
-        <element name="TVShowGenre" positionX="31.734375" positionY="29.5625" width="128" height="104"/>
         <element name="Movie" positionX="-281.3125" positionY="-0.4765625" width="128" height="239"/>
+        <element name="MovieGenre" positionX="-99" positionY="-9" width="128" height="104"/>
         <element name="MoviePage" positionX="-119.234375" positionY="-163.359375" width="128" height="89"/>
         <element name="MovieWatchlist" positionX="-285.08203125" positionY="287.3984375" width="128" height="59"/>
-        <element name="Person" positionX="30.09375" positionY="223.15625" width="128" height="224"/>
+        <element name="Person" positionX="30.09375" positionY="223.15625" width="128" height="254"/>
+        <element name="PersonFavorites" positionX="-81" positionY="9" width="128" height="59"/>
         <element name="PersonPage" positionX="228.36328125" positionY="418.796875" width="128" height="89"/>
         <element name="TVShow" positionX="411.35546875" positionY="29.5390625" width="128" height="239"/>
+        <element name="TVShowGenre" positionX="31.734375" positionY="29.5625" width="128" height="104"/>
         <element name="TVShowPage" positionX="231.09765625" positionY="-111.44921875" width="128" height="89"/>
-        <element name="MovieGenre" positionX="-99" positionY="-9" width="128" height="104"/>
         <element name="TVShowWatchlist" positionX="-90" positionY="0" width="128" height="59"/>
-        <element name="PersonFavorites" positionX="-81" positionY="9" width="128" height="59"/>
+        <element name="MovieCredits" positionX="-99" positionY="-9" width="128" height="74"/>
+        <element name="TVShowCredits" positionX="-90" positionY="0" width="128" height="29"/>
+        <element name="PersonCredits" positionX="-81" positionY="9" width="128" height="29"/>
     </elements>
 </model>
