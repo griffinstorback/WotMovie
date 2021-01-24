@@ -1,13 +1,17 @@
 //
-//  WatchListViewController.swift
+//  WatchlistViewController.swift
 //  WotMovie
 //
-//  Created by Griffin Storback on 2020-10-13.
+//  Created by Griffin Storback on 2021-01-23.
 //
 
 import UIKit
 
-class WatchListViewController: UIViewController {
+protocol WatchlistViewDelegate {
+    func reloadData()
+}
+
+class WatchlistViewController: UIViewController {
 
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -23,5 +27,11 @@ class WatchListViewController: UIViewController {
         view.backgroundColor = .green
         navigationItem.title = "Watchlist"
         self.navigationController?.navigationBar.prefersLargeTitles = true
+    }
+}
+
+extension WatchlistViewController: WatchlistViewDelegate {
+    func reloadData() {
+        print("Reload data in watchlist vc")
     }
 }

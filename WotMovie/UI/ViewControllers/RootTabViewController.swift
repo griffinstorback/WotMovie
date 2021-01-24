@@ -24,7 +24,7 @@ class RootTabViewController: UITabBarController {
         let questionMarkImage = UIImage(named: "question_mark")
         guessViewController.tabBarItem = UITabBarItem(title: nil, image: questionMarkImage?.withTintColor(.gray), selectedImage: questionMarkImage?.withTintColor(Constants.Colors.defaultBlue))
         
-        let watchListViewController = UINavigationController(rootViewController: WatchListViewController())
+        let watchListViewController = UINavigationController(rootViewController: WatchlistViewController())
         watchListViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "list.bullet")?.withTintColor(.gray), selectedImage: UIImage(systemName: "list.bullet")?.withTintColor(Constants.Colors.defaultBlue))
         
         let settingsViewController = UINavigationController(rootViewController: SettingsViewController())

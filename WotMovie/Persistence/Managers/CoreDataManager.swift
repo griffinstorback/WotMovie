@@ -13,7 +13,7 @@ protocol CoreDataManagerProtocol {
     func getNumberGuessedFor(category: CategoryType) -> Int
 }
 
-final class CoreDataManager {
+final class CoreDataManager: CoreDataManagerProtocol {
     
     static let shared = CoreDataManager()
     private let coreDataStack = CoreDataStack.shared
