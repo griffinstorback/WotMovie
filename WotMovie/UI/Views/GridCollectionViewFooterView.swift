@@ -1,5 +1,5 @@
 //
-//  GuessGridFooterView.swift
+//  GridCollectionViewFooterView.swift
 //  WotMovie
 //
 //  Created by Griffin Storback on 2020-10-24.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class GuessGridFooterView: UICollectionReusableView {
+class GridCollectionViewFooterView: UICollectionReusableView {
     
     private let loadingView: UIActivityIndicatorView!
     

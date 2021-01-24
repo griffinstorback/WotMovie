@@ -17,7 +17,7 @@ class GuessGridViewController: DetailPresenterViewController {
 
     private let guessGridViewPresenter: GuessGridPresenterProtocol
     
-    private var collectionView: UICollectionView!
+    private let gridView: LoadMoreGridViewController
     
     private let spacingAmount: CGFloat = 5
     private let minimumCellWidth: CGFloat = 120 // max is (2 * minimum)
@@ -26,9 +26,9 @@ class GuessGridViewController: DetailPresenterViewController {
         // use passed in presenter if provided (used in tests)
         guessGridViewPresenter = presenter ?? GuessGridPresenter(category: category.type)
         
+        gridView = LoadMoreGridViewController(showsAlphabeticalLabels: false)
+
         super.init(nibName: nil, bundle: nil)
-        
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         
         navigationItem.largeTitleDisplayMode = .never
         title = "\(category.shortTitle)"
@@ -43,7 +43,7 @@ class GuessGridViewController: DetailPresenterViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupCollectionView()
+        setupGridView()
         
         // load first page of movies/tv shows
         guessGridViewPresenter.loadItems()
@@ -76,96 +76,34 @@ extension GuessGridViewController: GuessGridViewDelegate {
     }
     
     func reloadData() {
-        collectionView.reloadData()
+        gridView.reloadData()
     }
 }
 
-extension GuessGridViewController: UICollectionViewDataSource {
-    func setupCollectionView() {
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        collectionView.backgroundColor = .white
-        collectionView.delaysContentTouches = false
+extension GuessGridViewController: LoadMoreGridViewDelegate {
+    func setupGridView() {
+        gridView.setupCollectionView()
+        gridView.delegate = self
         
-        collectionView.register(GuessGridCollectionViewCell.self, forCellWithReuseIdentifier: "ItemCollectionViewCell")
-        collectionView.register(GuessGridFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footer")
+        addChildViewController(gridView)
         
-        view.addSubview(collectionView)
-        
-        collectionView.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
+        gridView.view.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if section == 0 {
-            return guessGridViewPresenter.itemsCount
-        }
-        
-        return 0
+    func getNumberOfItems(_ loadMoreGridViewController: LoadMoreGridViewController) -> Int {
+        return guessGridViewPresenter.itemsCount
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ItemCollectionViewCell", for: indexPath) as! GuessGridCollectionViewCell
-        let item = guessGridViewPresenter.itemFor(index: indexPath.row)
-        
-        cell.setCellImagePath(imagePath: item.posterPath ?? "")
-        guessGridViewPresenter.loadImageFor(index: indexPath.row, completion: cell.imageDataReceived)
-        
-        if item.isRevealed {
-            cell.reveal(animated: false)
-        }
-        
-        return cell
+    func getItemFor(_ loadMoreGridViewController: LoadMoreGridViewController, index: Int) -> Entity? {
+        return guessGridViewPresenter.itemFor(index: index)
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let cell = collectionView.cellForItem(at: indexPath) as! GuessGridCollectionViewCell
-        let cellFrame = cell.frame
-        
-        // scroll so cell completely visible so doesn't overlap the nav bar or tab bar.
-        UIView.animate(withDuration: 0.2) {
-            collectionView.scrollRectToVisible(cellFrame, animated: false)
-        } completion: { _ in
-            let item = self.guessGridViewPresenter.itemFor(index: indexPath.row)
-            self.presentGuessDetail(for: item, fromCard: cell.posterImageView)
-        }
+    func loadMoreItems(_ loadMoreGridViewController: LoadMoreGridViewController) {
+        guessGridViewPresenter.loadItems()
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        if guessGridViewPresenter.itemsCount > 0 {
-            return CGSize(width: collectionView.frame.width, height: 100)
-        }
-        return .zero
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        if kind == UICollectionView.elementKindSectionFooter {
-            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footer", for: indexPath) as! GuessGridFooterView
-            
-            return footerView
-        }
-        
-        return UICollectionReusableView()
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
-        if elementKind == UICollectionView.elementKindSectionFooter {
-            if let footerView = view as? GuessGridFooterView {
-                if guessGridViewPresenter.itemsCount > 0 {
-                    footerView.startLoadingAnimation()
-                    guessGridViewPresenter.loadItems()
-                } else {
-                    print("nothing more to load?")
-                }
-            }
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath) {
-        if elementKind == UICollectionView.elementKindSectionFooter {
-            if let footerView = view as? GuessGridFooterView {
-                footerView.stopLoadingAnimation()
-            }
-        }
+    func loadImageFor(index: Int, completion: @escaping (UIImage?, String?) -> Void) {
+        guessGridViewPresenter.loadImageFor(index: index, completion: completion)
     }
 }
 

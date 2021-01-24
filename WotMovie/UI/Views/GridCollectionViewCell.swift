@@ -1,5 +1,5 @@
 //
-//  GuessGridCollectionViewCell.swift
+//  GridCollectionViewCell.swift
 //  WotMovie
 //
 //  Created by Griffin Storback on 2020-10-16.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class GuessGridCollectionViewCell: UICollectionViewCell {
+class GridCollectionViewCell: UICollectionViewCell {
     
     var posterImageView: PosterImageView!
         

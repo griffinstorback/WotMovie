@@ -8,7 +8,10 @@
 import Foundation
 
 protocol WatchlistPresenterProtocol {
-    
+    // func GET_CATEGORY_ROW_FOR e.g "Favorites" with favorites.png as img.
+    // func GET_RECENTLY_VIEWED_TITLE (just returns localized version of "Recently viewed")
+    // func GET_RECENTLY_VIEWED_ITEM_FOR index - pagination with core data for recently viewed items.
+    func setViewDelegate(_ viewDelegate: WatchlistViewDelegate)
 }
 
 class WatchlistPresenter: WatchlistPresenterProtocol {
