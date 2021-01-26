@@ -8,14 +8,15 @@
 import Foundation
 import UIKit
 
+// Collection view displaying a grid of PosterImageView's, number of columns depending on screen width
 class GridViewController: DetailPresenterViewController {
-    let collectionView: UICollectionView
+    let collectionView: ContentSizedCollectionView
     
     private let spacingAmount: CGFloat = 5
     private let minimumCellWidth: CGFloat = 120 // max is (2 * minimum)
     
     init(showsAlphabeticalLabels: Bool) {
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        collectionView = ContentSizedCollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         
         super.init(nibName: nil, bundle: nil)
         
@@ -41,7 +42,15 @@ class GridViewController: DetailPresenterViewController {
         collectionView.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
     }
     
-    func reloadData() {
+    // CHECK customHeaderClass before deqeueing a header (need to call registerClassAsCollectionViewHeader before)
+    var customHeaderClass: AnyClass?
+    public func registerClassAsCollectionViewHeader(customClass: AnyClass) {
+        collectionView.register(customClass.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
+        customHeaderClass = customClass
+        reloadData()
+    }
+    
+    public func reloadData() {
         collectionView.reloadData()
     }
     

@@ -19,9 +19,6 @@ class GuessGridViewController: DetailPresenterViewController {
     
     private let gridView: LoadMoreGridViewController
     
-    private let spacingAmount: CGFloat = 5
-    private let minimumCellWidth: CGFloat = 120 // max is (2 * minimum)
-    
     init(for category: GuessCategory, presenter: GuessGridPresenterProtocol? = nil) {
         // use passed in presenter if provided (used in tests)
         guessGridViewPresenter = presenter ?? GuessGridPresenter(category: category.type)
@@ -34,6 +31,10 @@ class GuessGridViewController: DetailPresenterViewController {
         title = "\(category.shortTitle)"
         
         guessGridViewPresenter.setViewDelegate(guessGridViewDelegate: self)
+        
+        gridView.delegate = self
+        addChildViewController(gridView)
+        gridView.view.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
     }
     
     required init?(coder: NSCoder) {
@@ -42,9 +43,7 @@ class GuessGridViewController: DetailPresenterViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        setupGridView()
-        
+                
         // load first page of movies/tv shows
         guessGridViewPresenter.loadItems()
     }
@@ -81,13 +80,16 @@ extension GuessGridViewController: GuessGridViewDelegate {
 }
 
 extension GuessGridViewController: LoadMoreGridViewDelegate {
-    func setupGridView() {
-        gridView.setupCollectionView()
-        gridView.delegate = self
-        
-        addChildViewController(gridView)
-        
-        gridView.view.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
+    func viewForHeader(_ loadMoreGridViewController: LoadMoreGridViewController, indexPath: IndexPath) -> UICollectionReusableView? {
+        return nil
+    }
+    
+    func willDisplayHeader(_ loadMoreGridViewController: LoadMoreGridViewController) {
+        // nothing
+    }
+    
+    func didEndDisplayingHeader(_ loadMoreGridViewController: LoadMoreGridViewController) {
+        // nothing
     }
     
     func getNumberOfItems(_ loadMoreGridViewController: LoadMoreGridViewController) -> Int {
@@ -102,25 +104,11 @@ extension GuessGridViewController: LoadMoreGridViewDelegate {
         guessGridViewPresenter.loadItems()
     }
     
-    func loadImageFor(index: Int, completion: @escaping (UIImage?, String?) -> Void) {
+    func loadImageFor(_ loadMoreGridViewController: LoadMoreGridViewController, index: Int, completion: @escaping (UIImage?, String?) -> Void) {
         guessGridViewPresenter.loadImageFor(index: index, completion: completion)
     }
-}
-
-extension GuessGridViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let screenWidth = collectionView.bounds.width
-        let numberOfCellsPerRow = Int(screenWidth/minimumCellWidth)
-        let spacing = spacingAmount - spacingAmount/CGFloat(numberOfCellsPerRow)
-        
-        return CGSize(width: screenWidth/CGFloat(numberOfCellsPerRow) - spacing, height: (screenWidth/CGFloat(numberOfCellsPerRow))*1.5)
-    }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 5
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 5
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // nothing
     }
 }

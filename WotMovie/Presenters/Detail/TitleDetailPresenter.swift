@@ -242,6 +242,7 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
                 if let credits = credits {
                     if let strongSelf = self {
                         DispatchQueue.main.async {
+                            //self?
                             //strongSelf.coreDataManager.updateOrCreateCredits(type: strongSelf.item.type, credits: credits)
                         }
                     }

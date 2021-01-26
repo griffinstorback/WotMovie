@@ -432,6 +432,22 @@ final class CoreDataManager: CoreDataManagerProtocol {
         
         return nil
     }
+    
+    func fetchPageOfRecentlyViewed() -> [Entity] {
+        let moc = coreDataStack.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<MovieMO>(entityName: "Movie")
+        fetchRequest.fetchLimit = 20
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "lastViewedDate", ascending: false)]
+        //fetchRequest.predicate = NSPredicate(format: "", Date())
+        
+        do {
+            let fetchedMovies: [MovieMO] = try moc.fetch(fetchRequest)
+            return fetchedMovies.map { Movie(movieMO: $0) }
+        } catch {
+            print("** Failed to fetch recently viewed.")
+            return []
+        }
+    }
 
     
     // MARK:- HELPER; PRIVATE METHODS

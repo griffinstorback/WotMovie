@@ -15,20 +15,39 @@ class WatchlistViewController: UIViewController {
     
     let watchlistPresenter: WatchlistPresenterProtocol
     
-    let categoryTableView: ContentSizedTableView
-    let recentlyViewedCollectionView: UICollectionView
+    let statusBarCoverView: UIView
+    // recentlyViewedCollectionView contains header with category table view inside
+    let recentlyViewedCollectionView: LoadMoreGridViewController
     
     init(presenter: WatchlistPresenterProtocol? = nil) {
         // use passed in presenter if provided (used in tests)
         watchlistPresenter = presenter ?? WatchlistPresenter()
-        categoryTableView = ContentSizedTableView()
-        recentlyViewedCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        
+        statusBarCoverView = UIView()
+        recentlyViewedCollectionView = LoadMoreGridViewController(showsAlphabeticalLabels: false)
         
         super.init(nibName: nil, bundle: nil)
         
-        categoryTableView.delegate = self
-        recentlyViewedCollectionView.delegate = self
+        setupViews()
+        layoutViews()
+    }
+    
+    private func setupViews() {
         watchlistPresenter.setViewDelegate(self)
+        
+        statusBarCoverView.giveBlurredBackground(style: .systemThickMaterialLight)
+        statusBarCoverView.alpha = 0
+        
+        recentlyViewedCollectionView.delegate = self
+        recentlyViewedCollectionView.registerClassAsCollectionViewHeader(customClass: RecentlyViewedCollectionViewHeader.self)
+    }
+    
+    private func layoutViews() {
+        addChildViewController(recentlyViewedCollectionView)
+        recentlyViewedCollectionView.view.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
+        
+        view.addSubview(statusBarCoverView)
+        statusBarCoverView.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.safeAreaLayoutGuide.topAnchor, trailing: view.trailingAnchor)
     }
     
     required init?(coder: NSCoder) {
@@ -37,28 +56,98 @@ class WatchlistViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        view.backgroundColor = .green
-        self.navigationController?.navigationBar.prefersLargeTitles = true
+        
+        watchlistPresenter.loadRecentlyViewed()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        //recentlyViewedCollectionView.collectionView.contentSize = CGSize(width: 100, height: 1000)
+        print("*** contentSize of collection view layout: \(recentlyViewedCollectionView.collectionView.collectionViewLayout.collectionViewContentSize)")
+        
+        
+        //recentlyViewedCollectionView.collectionView.contentSize = CGSize(width: 100, height: 1000000000)
+        //print("*** contentSize of collection view: \(recentlyViewedCollectionView.collectionView.contentSize)")
+        
+        
+        // hide nav bar on this view controller
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        // unhide the nav bar for other view controllers (detail view)
+        //self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        
+        super.viewWillDisappear(animated)
     }
 }
 
+// table view at top of screen, providing categories e.g. "Watchlist, Favorites, Guessed"
 extension WatchlistViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 0
+        return watchlistPresenter.getWatchlistCategoriesCount()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        let cell = UITableViewCell()
+        let category = watchlistPresenter.getWatchlistCategoryFor(index: indexPath.row)
+        cell.textLabel?.text = category.title
+        cell.imageView?.image = UIImage(named: category.imageName)
+        
+        return cell
     }
 }
 
-extension WatchlistViewController: UICollectionViewDelegateFlowLayout {
+extension WatchlistViewController: LoadMoreGridViewDelegate {
+    func viewForHeader(_ loadMoreGridViewController: LoadMoreGridViewController, indexPath: IndexPath) -> UICollectionReusableView? {
+        let headerView = loadMoreGridViewController.collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header", for: indexPath) as! RecentlyViewedCollectionViewHeader
+        
+        // set this VC as delegate & data source for table view in the header
+        headerView.categoryTableView.delegate = self
+        headerView.categoryTableView.dataSource = self
+        
+        return headerView
+    }
     
+    func willDisplayHeader(_ loadMoreGridViewController: LoadMoreGridViewController) {
+        // nothing
+    }
+    
+    func didEndDisplayingHeader(_ loadMoreGridViewController: LoadMoreGridViewController) {
+        // nothing
+    }
+    
+    func getNumberOfItems(_ loadMoreGridViewController: LoadMoreGridViewController) -> Int {
+        return watchlistPresenter.getNumberOfRecentlyViewed()
+    }
+    
+    func getItemFor(_ loadMoreGridViewController: LoadMoreGridViewController, index: Int) -> Entity? {
+        return watchlistPresenter.getRecentlyViewedFor(index: index)
+    }
+    
+    func loadMoreItems(_ loadMoreGridViewController: LoadMoreGridViewController) {
+        print("*** LOAD NEXT PAGE...")
+    }
+    
+    func loadImageFor(_ loadMoreGridViewController: LoadMoreGridViewController, index: Int, completion: @escaping (UIImage?, String?) -> Void) {
+        watchlistPresenter.loadImageFor(index: index, completion: completion)
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let contentOffset = scrollView.contentOffset.y
+        
+        // hide or unhide the opaque view under status bar, depending on if scrolled to top or not.
+        if contentOffset <= 20 {
+            statusBarCoverView.alpha = max(min(contentOffset/20, 1), 0)
+        } else {
+            statusBarCoverView.alpha = 1
+        }
+    }
 }
 
 extension WatchlistViewController: WatchlistViewDelegate {
     func reloadData() {
-        print("Reload data in watchlist vc")
+        recentlyViewedCollectionView.reloadData()
     }
 }

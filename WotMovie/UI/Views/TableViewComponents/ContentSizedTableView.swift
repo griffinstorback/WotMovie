@@ -9,7 +9,7 @@ import UIKit
 
 // use this instead of tableview when you want tableview to resize its height according to its cells
 
-final class ContentSizedTableView: UITableView {
+class ContentSizedTableView: UITableView {
     
     override var contentSize: CGSize {
         didSet {
@@ -24,5 +24,19 @@ final class ContentSizedTableView: UITableView {
     
     override var style: UITableView.Style {
         return .plain
+    }
+}
+
+class ContentSizedCollectionView: UICollectionView {
+    
+    override var contentSize: CGSize {
+        didSet {
+            invalidateIntrinsicContentSize()
+        }
+    }
+    
+    override var intrinsicContentSize: CGSize {
+        layoutIfNeeded()
+        return CGSize(width: UIView.noIntrinsicMetric, height: contentSize.height)
     }
 }

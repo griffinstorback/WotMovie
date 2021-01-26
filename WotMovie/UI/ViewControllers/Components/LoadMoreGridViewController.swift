@@ -12,24 +12,32 @@ protocol LoadMoreGridViewDelegate {
     func getNumberOfItems(_ loadMoreGridViewController: LoadMoreGridViewController) -> Int
     func getItemFor(_ loadMoreGridViewController: LoadMoreGridViewController, index: Int) -> Entity?
     func loadMoreItems(_ loadMoreGridViewController: LoadMoreGridViewController)
-    func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
+    func loadImageFor(_ loadMoreGridViewController: LoadMoreGridViewController, index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
+    
+    // methods for providing this grid view with a header - return nil if none to show.
+    func viewForHeader(_ loadMoreGridViewController: LoadMoreGridViewController, indexPath: IndexPath) -> UICollectionReusableView?
+    func willDisplayHeader(_ loadMoreGridViewController: LoadMoreGridViewController)
+    func didEndDisplayingHeader(_ loadMoreGridViewController: LoadMoreGridViewController)
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView)
 }
 
+// Builds on GridViewController to provide a footer view which loads more items when in view.
 class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource {
     var delegate: LoadMoreGridViewDelegate?
     
+    override init(showsAlphabeticalLabels: Bool) {
+        super.init(showsAlphabeticalLabels: showsAlphabeticalLabels)
+        setupCollectionView()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     func setupCollectionView() {
         collectionView.dataSource = self
-        
         collectionView.backgroundColor = .white
-        collectionView.delaysContentTouches = false
-        
-        collectionView.register(GridCollectionViewCell.self, forCellWithReuseIdentifier: "GridCollectionViewCell")
-        collectionView.register(GridCollectionViewFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footer")
-        
-        view.addSubview(collectionView)
-        
-        collectionView.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -47,7 +55,7 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
         }
         
         cell.setCellImagePath(imagePath: item.posterPath ?? "")
-        delegate?.loadImageFor(index: indexPath.row, completion: cell.imageDataReceived)
+        delegate?.loadImageFor(self, index: indexPath.row, completion: cell.imageDataReceived)
         
         if item.isRevealed {
             cell.reveal(animated: false)
@@ -77,8 +85,31 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
         return .zero
     }
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        // return zero if no custom header class was supplied (customHeaderClass is a property on base class GridViewController)
+        if self.customHeaderClass == nil {
+            return .zero
+        } else {
+            return CGSize(width: 400, height: 300)
+        }
+    }
+    
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        if kind == UICollectionView.elementKindSectionFooter {
+        if kind == UICollectionView.elementKindSectionHeader {
+            
+            // first, check that the delegate actually registered a header.
+            // (customHeaderClass is property of superview GridViewController)
+            if self.customHeaderClass != nil {
+                
+                // ask delegate to provide the view for the header it registered.
+                // THIS WILL THROW AN ERROR IF NIL IS RETURNED.
+                // DON'T REGISTER A CLASS AS HEADER UNLESS THIS IS IMPLEMENTED PROPERLY.
+                let headerView = delegate?.viewForHeader(self, indexPath: indexPath)
+                
+                return headerView ?? UICollectionReusableView()
+            }
+        } else if kind == UICollectionView.elementKindSectionFooter {
+            print("*** kind == UICollectionView.elementKindSectionFooter")
             let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footer", for: indexPath) as! GridCollectionViewFooterView
             
             return footerView
@@ -88,23 +119,31 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
-        if elementKind == UICollectionView.elementKindSectionFooter {
+        if elementKind == UICollectionView.elementKindSectionHeader {
+            delegate?.willDisplayHeader(self)
+        } else if elementKind == UICollectionView.elementKindSectionFooter {
             if let footerView = view as? GridCollectionViewFooterView {
                 if delegate?.getNumberOfItems(self) ?? 0 > 0 {
                     footerView.startLoadingAnimation()
                     delegate?.loadMoreItems(self)
                 } else {
-                    print("nothing more to load?")
+                    print("**** nothing more to load?")
                 }
             }
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath) {
-        if elementKind == UICollectionView.elementKindSectionFooter {
+        if elementKind == UICollectionView.elementKindSectionHeader {
+            delegate?.didEndDisplayingHeader(self)
+        } else if elementKind == UICollectionView.elementKindSectionFooter {
             if let footerView = view as? GridCollectionViewFooterView {
                 footerView.stopLoadingAnimation()
             }
         }
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        delegate?.scrollViewDidScroll(scrollView)
     }
 }

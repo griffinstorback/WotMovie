@@ -12,12 +12,12 @@ class DetailViewController: UIViewController {
     
     // amount view will change when dragging down or on screen edge
     static let targetShrinkScale: CGFloat = 0.85
-    static let targetCornerRadius: CGFloat = 15
+    static let targetCornerRadius: CGFloat = 20
     
     let scrollView: UIScrollView
     let statusBarCoverView: UIView
     let contentStackView: UIStackView
-    let posterImageView: PosterImageView // keep reference to poster image, as its different if TitleDetail vs PersonDetail
+    let posterImageView: PosterImageView // keep reference to poster image, as its different if TitleDetail vs PersonDetail (so we can animate dismissal where the poster image returns to where it was on parent)
     
     var cardBottomToRootBottomConstraint: NSLayoutConstraint!
     
