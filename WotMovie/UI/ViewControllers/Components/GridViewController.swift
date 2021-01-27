@@ -15,7 +15,7 @@ class GridViewController: DetailPresenterViewController {
     private let spacingAmount: CGFloat = 5
     private let minimumCellWidth: CGFloat = 120 // max is (2 * minimum)
     
-    init(showsAlphabeticalLabels: Bool) {
+    init() {
         collectionView = ContentSizedCollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         
         super.init(nibName: nil, bundle: nil)

@@ -16,6 +16,7 @@ protocol LoadMoreGridViewDelegate {
     
     // methods for providing this grid view with a header - return nil if none to show.
     func viewForHeader(_ loadMoreGridViewController: LoadMoreGridViewController, indexPath: IndexPath) -> UICollectionReusableView?
+    func sizeForHeader(_ loadMoreGridViewController: LoadMoreGridViewController) -> CGSize
     func willDisplayHeader(_ loadMoreGridViewController: LoadMoreGridViewController)
     func didEndDisplayingHeader(_ loadMoreGridViewController: LoadMoreGridViewController)
     
@@ -26,8 +27,8 @@ protocol LoadMoreGridViewDelegate {
 class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource {
     var delegate: LoadMoreGridViewDelegate?
     
-    override init(showsAlphabeticalLabels: Bool) {
-        super.init(showsAlphabeticalLabels: showsAlphabeticalLabels)
+    override init() {
+        super.init()
         setupCollectionView()
     }
     
@@ -90,7 +91,7 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
         if self.customHeaderClass == nil {
             return .zero
         } else {
-            return CGSize(width: 400, height: 300)
+            return delegate?.sizeForHeader(self) ?? .zero
         }
     }
     

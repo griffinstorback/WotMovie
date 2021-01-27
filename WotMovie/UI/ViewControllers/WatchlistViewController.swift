@@ -24,7 +24,7 @@ class WatchlistViewController: UIViewController {
         watchlistPresenter = presenter ?? WatchlistPresenter()
         
         statusBarCoverView = UIView()
-        recentlyViewedCollectionView = LoadMoreGridViewController(showsAlphabeticalLabels: false)
+        recentlyViewedCollectionView = LoadMoreGridViewController()
         
         super.init(nibName: nil, bundle: nil)
         
@@ -63,14 +63,6 @@ class WatchlistViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        //recentlyViewedCollectionView.collectionView.contentSize = CGSize(width: 100, height: 1000)
-        print("*** contentSize of collection view layout: \(recentlyViewedCollectionView.collectionView.collectionViewLayout.collectionViewContentSize)")
-        
-        
-        //recentlyViewedCollectionView.collectionView.contentSize = CGSize(width: 100, height: 1000000000)
-        //print("*** contentSize of collection view: \(recentlyViewedCollectionView.collectionView.contentSize)")
-        
-        
         // hide nav bar on this view controller
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
@@ -89,13 +81,24 @@ extension WatchlistViewController: UITableViewDelegate, UITableViewDataSource {
         return watchlistPresenter.getWatchlistCategoriesCount()
     }
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return RecentlyViewedCollectionViewHeader.categoryTableViewCellHeight
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
         let category = watchlistPresenter.getWatchlistCategoryFor(index: indexPath.row)
         cell.textLabel?.text = category.title
+        cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         cell.imageView?.image = UIImage(named: category.imageName)
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let category = watchlistPresenter.getWatchlistCategoryFor(index: indexPath.row)
+        let watchlistCategoryGridViewController = WatchlistCategoryGridViewController(watchlistCategory: category)
+        navigationController?.pushViewController(watchlistCategoryGridViewController, animated: true)
     }
 }
 
@@ -108,6 +111,15 @@ extension WatchlistViewController: LoadMoreGridViewDelegate {
         headerView.categoryTableView.dataSource = self
         
         return headerView
+    }
+    
+    func sizeForHeader(_ loadMoreGridViewController: LoadMoreGridViewController) -> CGSize {
+        let categoryTableViewHeight = CGFloat(watchlistPresenter.getWatchlistCategoriesCount()) * RecentlyViewedCollectionViewHeader.categoryTableViewCellHeight
+        let recentlyViewedTitleLabelHeight = RecentlyViewedCollectionViewHeader.recentlyViewedTitleHeight
+        let spaceFromTop = RecentlyViewedCollectionViewHeader.spaceFromTop
+        
+        let headerHeight = spaceFromTop + categoryTableViewHeight + recentlyViewedTitleLabelHeight
+        return CGSize(width: 1, height: headerHeight)
     }
     
     func willDisplayHeader(_ loadMoreGridViewController: LoadMoreGridViewController) {

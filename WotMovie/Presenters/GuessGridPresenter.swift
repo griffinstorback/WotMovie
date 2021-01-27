@@ -13,7 +13,7 @@ protocol GuessGridPresenterProtocol {
     var category: CategoryType { get }
     var itemsCount: Int { get }
 
-    func setViewDelegate(guessGridViewDelegate: GuessGridViewDelegate?)
+    func setViewDelegate(_ guessGridViewDelegate: GuessGridViewDelegate?)
     func itemFor(index: Int) -> Entity
     func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) // this is used in multiple files - extractable?
 
@@ -74,7 +74,7 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
         self.category = category
     }
     
-    func setViewDelegate(guessGridViewDelegate: GuessGridViewDelegate?) {
+    func setViewDelegate(_ guessGridViewDelegate: GuessGridViewDelegate?) {
         self.guessGridViewDelegate = guessGridViewDelegate
     }
     

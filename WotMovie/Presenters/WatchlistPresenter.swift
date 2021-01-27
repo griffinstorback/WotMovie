@@ -9,9 +9,6 @@ import Foundation
 import UIKit
 
 protocol WatchlistPresenterProtocol {
-    // func GET_CATEGORY_ROW_FOR e.g "Favorites" with favorites.png as img.
-    // func GET_RECENTLY_VIEWED_TITLE (just returns localized version of "Recently viewed")
-    // func GET_RECENTLY_VIEWED_ITEM_FOR index - pagination with core data for recently viewed items.
     func setViewDelegate(_ viewDelegate: WatchlistViewDelegate)
     func getWatchlistCategoriesCount() -> Int
     func getWatchlistCategoryFor(index: Int) -> WatchlistCategory
@@ -27,10 +24,14 @@ class WatchlistPresenter: WatchlistPresenterProtocol {
     weak var watchlistViewDelegate: WatchlistViewDelegate?
     
     private let categoryTableViewRows: [WatchlistCategory] = [
-        WatchlistCategory(title: "Guessed", imageName: "question_mark"),
-        WatchlistCategory(title: "Watchlist", imageName: "question_mark"),
-        WatchlistCategory(title: "Favorites", imageName: "question_mark"),
-        WatchlistCategory(title: "Search Movies, TV Shows, and people", imageName: "question_mark")
+        WatchlistCategory(type: .movieOrTvShowWatchlist, title: "Watchlist", imageName: "question_mark"),
+        WatchlistCategory(type: .personFavorites, title: "Favorites", imageName: "question_mark"),
+        WatchlistCategory(type: .allGuessed, title: "Guessed", imageName: "question_mark"),
+        
+        // TODO: Decide if search should be allowed. Because it would easily allow for cheating,
+        //       though of course people could cheat anyways, but this would make it a lot easier,
+        //       and might even serve to promote it.
+        //WatchlistCategory(title: "Search Movies, TV Shows, and people", imageName: "question_mark")
     ]
     
     private var recentlyViewedNextPage = 1

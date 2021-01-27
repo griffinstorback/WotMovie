@@ -82,12 +82,6 @@ class GuessViewController: UIViewController {
             categoryView.setDelegate(self)
             guessCategoryViews.append(categoryView)
         }
-        
-        /*for type, category in guessViewPresenter.categories {
-            let categoryView = GuessCategoryView(category: category)
-            categoryView.setDelegate(self)
-            guessCategoryViews.append(categoryView)
-        }*/
     }
     
     func layoutViews() {
@@ -105,9 +99,7 @@ class GuessViewController: UIViewController {
 }
 
 extension GuessViewController: GuessCategoryViewDelegate {
-    func categoryWasSelected(_ type: GuessCategory) {
-        print("SELECTED TYPE \(type)")
-        
+    func categoryWasSelected(_ type: GuessCategory) {        
         let guessGridViewController = GuessGridViewController(for: type)
         navigationController?.pushViewController(guessGridViewController, animated: true)
     }

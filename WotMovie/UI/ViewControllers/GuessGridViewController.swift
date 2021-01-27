@@ -23,16 +23,24 @@ class GuessGridViewController: DetailPresenterViewController {
         // use passed in presenter if provided (used in tests)
         guessGridViewPresenter = presenter ?? GuessGridPresenter(category: category.type)
         
-        gridView = LoadMoreGridViewController(showsAlphabeticalLabels: false)
+        gridView = LoadMoreGridViewController()
 
         super.init(nibName: nil, bundle: nil)
         
-        navigationItem.largeTitleDisplayMode = .never
         title = "\(category.shortTitle)"
+        setupViews()
+        layoutViews()
+    }
+    
+    private func setupViews() {
+        navigationItem.largeTitleDisplayMode = .never
         
-        guessGridViewPresenter.setViewDelegate(guessGridViewDelegate: self)
+        guessGridViewPresenter.setViewDelegate(self)
         
         gridView.delegate = self
+    }
+    
+    private func layoutViews() {
         addChildViewController(gridView)
         gridView.view.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
     }
@@ -82,6 +90,10 @@ extension GuessGridViewController: GuessGridViewDelegate {
 extension GuessGridViewController: LoadMoreGridViewDelegate {
     func viewForHeader(_ loadMoreGridViewController: LoadMoreGridViewController, indexPath: IndexPath) -> UICollectionReusableView? {
         return nil
+    }
+    
+    func sizeForHeader(_ loadMoreGridViewController: LoadMoreGridViewController) -> CGSize {
+        return .zero
     }
     
     func willDisplayHeader(_ loadMoreGridViewController: LoadMoreGridViewController) {
