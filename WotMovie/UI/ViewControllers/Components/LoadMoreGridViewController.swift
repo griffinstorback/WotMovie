@@ -23,7 +23,7 @@ protocol LoadMoreGridViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView)
 }
 
-// Builds on GridViewController to provide a footer view which loads more items when in view.
+// Builds on GridViewController to provide a footer view which loads more items when in view. Also has optional header
 class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource {
     var delegate: LoadMoreGridViewDelegate?
     
@@ -110,7 +110,6 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
                 return headerView ?? UICollectionReusableView()
             }
         } else if kind == UICollectionView.elementKindSectionFooter {
-            print("*** kind == UICollectionView.elementKindSectionFooter")
             let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footer", for: indexPath) as! GridCollectionViewFooterView
             
             return footerView

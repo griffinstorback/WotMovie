@@ -60,18 +60,11 @@ class WatchlistViewController: UIViewController {
         watchlistPresenter.loadRecentlyViewed()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
         // hide nav bar on this view controller
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        // unhide the nav bar for other view controllers (detail view)
-        //self.navigationController?.setNavigationBarHidden(false, animated: animated)
-        
-        super.viewWillDisappear(animated)
     }
 }
 
@@ -89,7 +82,7 @@ extension WatchlistViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = UITableViewCell()
         let category = watchlistPresenter.getWatchlistCategoryFor(index: indexPath.row)
         cell.textLabel?.text = category.title
-        cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 20)
         cell.imageView?.image = UIImage(named: category.imageName)
         
         return cell

@@ -44,15 +44,20 @@ class WatchlistCategoryGridViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        
+        watchlistCategoryGridPresenter.loadItems()
+        
+        //self.navigationController?.setNavigationBarHidden(false, animated: false)
         
         addChildViewController(gridView)
         gridView.view.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        self.navigationController?.setNavigationBarHidden(true, animated: false)
-        super.viewDidDisappear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // unhide nav bar (it was hidden in viewWillAppear of parent, WatchlistVC)
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
     required init?(coder: NSCoder) {
@@ -70,8 +75,7 @@ extension WatchlistCategoryGridViewController: LoadMoreGridViewDelegate {
     }
     
     func loadMoreItems(_ loadMoreGridViewController: LoadMoreGridViewController) {
-        // load next page of items
-        watchlistCategoryGridPresenter.loadItems()
+        // nothing
     }
     
     func loadImageFor(_ loadMoreGridViewController: LoadMoreGridViewController, index: Int, completion: @escaping (UIImage?, String?) -> Void) {

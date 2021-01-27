@@ -102,18 +102,18 @@
     </entity>
     <elements>
         <element name="Movie" positionX="-281.3125" positionY="-0.4765625" width="128" height="239"/>
+        <element name="MovieCredits" positionX="-99" positionY="-9" width="128" height="74"/>
         <element name="MovieGenre" positionX="-99" positionY="-9" width="128" height="104"/>
         <element name="MoviePage" positionX="-119.234375" positionY="-163.359375" width="128" height="89"/>
         <element name="MovieWatchlist" positionX="-285.08203125" positionY="287.3984375" width="128" height="59"/>
         <element name="Person" positionX="30.09375" positionY="223.15625" width="128" height="254"/>
+        <element name="PersonCredits" positionX="-81" positionY="9" width="128" height="29"/>
         <element name="PersonFavorites" positionX="-81" positionY="9" width="128" height="59"/>
         <element name="PersonPage" positionX="228.36328125" positionY="418.796875" width="128" height="89"/>
         <element name="TVShow" positionX="411.35546875" positionY="29.5390625" width="128" height="239"/>
+        <element name="TVShowCredits" positionX="-90" positionY="0" width="128" height="29"/>
         <element name="TVShowGenre" positionX="31.734375" positionY="29.5625" width="128" height="104"/>
         <element name="TVShowPage" positionX="231.09765625" positionY="-111.44921875" width="128" height="89"/>
         <element name="TVShowWatchlist" positionX="-90" positionY="0" width="128" height="59"/>
-        <element name="MovieCredits" positionX="-99" positionY="-9" width="128" height="74"/>
-        <element name="TVShowCredits" positionX="-90" positionY="0" width="128" height="29"/>
-        <element name="PersonCredits" positionX="-81" positionY="9" width="128" height="29"/>
     </elements>
 </model>

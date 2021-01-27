@@ -251,6 +251,32 @@ final class CoreDataManager: CoreDataManagerProtocol {
         return nil
     }
     
+    func fetchWatchlistPage(genreID: Int) -> [Entity] {
+        let moc = coreDataStack.persistentContainer.viewContext
+        
+        let fetchRequest = NSFetchRequest<MovieWatchlistMO>(entityName: "MovieWatchlist")
+        fetchRequest.fetchLimit = 20
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "dateAdded", ascending: false)]
+        //fetchRequest.predicate = NSPredicate(format: "correctlyGuessed == %@", NSNumber(value: true))
+        
+        do {
+            let watchlistResults: [MovieWatchlistMO] = try moc.fetch(fetchRequest)
+            
+            var movieMOs = [MovieMO]()
+            for watchlistResult in watchlistResults {
+                if let movieMO = watchlistResult.movie {
+                    movieMOs.append(movieMO)
+                }
+            }
+            
+            return movieMOs.map { Movie(movieMO: $0) }
+        } catch {
+            print("** Failed to fetch watchlist page.")
+        }
+        
+        return []
+    }
+    
     func createMoviePage(movies: [Movie], pageNumber: Int, genreID: Int) {
         let moc = coreDataStack.persistentContainer.viewContext
         let pageMO = MoviePageMO(context: moc)

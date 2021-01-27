@@ -24,7 +24,6 @@ class WatchlistCategoryGridPresenter: WatchlistCategoryGridPresenterProtocol {
     weak var watchlistCategoryGridViewDelegate: WatchlistCategoryGridViewDelegate?
     
     let watchlistCategoryType: WatchlistCategoryType
-    private var nextPage = 1
     
     private var items: [Entity] = [] {
         didSet {
@@ -86,7 +85,9 @@ class WatchlistCategoryGridPresenter: WatchlistCategoryGridPresenterProtocol {
     private func getNextPageFromCoreData() {
         switch watchlistCategoryType {
         case .movieOrTvShowWatchlist:
-            break
+            let items = coreDataManager.fetchWatchlistPage(genreID: -1)
+            print("*** items returned from fetchWatchlistPage: \(items)")
+            self.items = items
         case .personFavorites:
             break
         case .allGuessed:
