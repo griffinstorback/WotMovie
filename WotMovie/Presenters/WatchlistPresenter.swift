@@ -15,6 +15,7 @@ protocol WatchlistPresenterProtocol {
     func loadRecentlyViewed()
     func getNumberOfRecentlyViewed() -> Int
     func getRecentlyViewedFor(index: Int) -> Entity
+    func getItemCountForCategory(category: WatchlistCategoryType) -> Int
     func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
 }
 
@@ -27,6 +28,7 @@ class WatchlistPresenter: WatchlistPresenterProtocol {
         WatchlistCategory(type: .movieOrTvShowWatchlist, title: "Watchlist", imageName: "question_mark"),
         WatchlistCategory(type: .personFavorites, title: "Favorites", imageName: "question_mark"),
         WatchlistCategory(type: .allGuessed, title: "Guessed", imageName: "question_mark"),
+        WatchlistCategory(type: .allGuessed, title: "Revealed", imageName: "question_mark"),
         
         // TODO: Decide if search should be allowed. Because it would easily allow for cheating,
         //       though of course people could cheat anyways, but this would make it a lot easier,
@@ -61,10 +63,25 @@ class WatchlistPresenter: WatchlistPresenterProtocol {
         return categoryTableViewRows[index]
     }
     
+    func getItemCountForCategory(category: WatchlistCategoryType) -> Int {
+        switch category {
+        case .movieOrTvShowWatchlist:
+            return coreDataManager.fetchWatchlistCount()
+        case .personFavorites:
+            break
+        case .allGuessed:
+            break
+        }
+        
+        return 0
+    }
+    
     func loadRecentlyViewed() {
         let items = coreDataManager.fetchPageOfRecentlyViewed()
         recentlyViewedItems += items
         recentlyViewedNextPage += 1
+        
+        print("*** number on watchlist: \(getItemCountForCategory(category: .movieOrTvShowWatchlist))")
     }
     
     func getNumberOfRecentlyViewed() -> Int {

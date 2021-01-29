@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 
 protocol WatchlistCategoryGridPresenterProtocol {
+    var watchlistCategoryType: WatchlistCategoryType { get }
     var itemsCount: Int { get }
     func loadItems()
     func setViewDelegate(_ watchlistCategoryGridViewDelegate: WatchlistCategoryGridViewDelegate?)

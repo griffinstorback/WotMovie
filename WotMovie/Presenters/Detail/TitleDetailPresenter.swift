@@ -80,7 +80,7 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
         if returned[0].isHintShown {
             hintWasShown()
         }
-        if returned[0].isRevealed {
+        if returned[0].revealed != nil {
             answerWasRevealed()
         }
     }

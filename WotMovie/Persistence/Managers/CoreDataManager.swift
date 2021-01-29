@@ -24,14 +24,13 @@ final class CoreDataManager: CoreDataManagerProtocol {
         
         switch(category) {
         case .movie:
-            let movieFetch = NSFetchRequest<MovieMO>(entityName: "Movie")
-            movieFetch.predicate = NSPredicate(format: "correctlyGuessed == %@", NSNumber(value: true))
+            let fetchRequest = NSFetchRequest<MovieGuessedMO>(entityName: "MovieGuessed")
             
             do {
-                let fetchedMoviesCount = try context.count(for: movieFetch)
-                return fetchedMoviesCount
+                let watchlistResultsCount = try context.count(for: fetchRequest)
+                return watchlistResultsCount
             } catch {
-                print("** Failed to fetch movie count: \(error)")
+                print("** Failed to fetch movie guessed count: \(error)")
                 return -1
             }
         case .person:
@@ -41,6 +40,20 @@ final class CoreDataManager: CoreDataManagerProtocol {
         default:
             return 0
         }
+    }
+    
+    func fetchWatchlistCount() -> Int {
+        let context = coreDataStack.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<MovieWatchlistMO>(entityName: "MovieWatchlist")
+        
+        do {
+            let watchlistResultsCount = try context.count(for: fetchRequest)
+            return watchlistResultsCount
+        } catch {
+            print("** Failed to fetch watchlist count: \(error)")
+        }
+        
+        return -1
     }
     
     func updateOrCreateMovie(movie: Movie) {
@@ -60,16 +73,22 @@ final class CoreDataManager: CoreDataManagerProtocol {
             movieMO.posterImageURL = movie.posterPath
             movieMO.releaseDate = movie.releaseDate
             
-            // only set as correctly guessed if it wasnt previously revealed.
-            if movie.correctlyGuessed && !movieMO.isRevealed {
-                movieMO.isRevealed = true
-                movieMO.correctlyGuessed = true
-            }
-            if movie.isHintShown {
+            if movie.isHintShown && !movieMO.isHintShown {
                 movieMO.isHintShown = true
             }
-            if movie.isRevealed {
-                movieMO.isRevealed = true
+            
+            // set either as "guessed" or "revealed", or neither. Cannot be both.
+            if movie.correctlyGuessed && movieMO.revealed == nil && movieMO.guessed == nil {
+                let movieGuessedMO = MovieGuessedMO(context: coreDataStack.persistentContainer.viewContext)
+                movieGuessedMO.dateAdded = Date()
+                movieMO.guessed = movieGuessedMO
+                movieMO.isHintShown = true
+            }
+            if movie.isRevealed && movieMO.revealed == nil && movieMO.guessed == nil {
+                let movieRevealedMO = MovieRevealedMO(context: coreDataStack.persistentContainer.viewContext)
+                movieRevealedMO.dateAdded = Date()
+                movieMO.revealed = movieRevealedMO
+                movieMO.isHintShown = true
             }
             
             // attach genre mo objects, either by fetching or by creating them.
@@ -100,9 +119,22 @@ final class CoreDataManager: CoreDataManagerProtocol {
         let movieMO = MovieMO(context: coreDataStack.persistentContainer.viewContext)
         
         movieMO.id = Int64(movie.id)
-        movieMO.isRevealed = movie.isRevealed
         movieMO.isHintShown = movie.isHintShown
-        movieMO.correctlyGuessed = movie.correctlyGuessed
+        
+        if movie.isRevealed {
+            if movieMO.revealed == nil && movieMO.guessed == nil {
+                let movieRevealedMO = MovieRevealedMO(context: coreDataStack.persistentContainer.viewContext)
+                movieRevealedMO.dateAdded = Date()
+                movieMO.revealed = movieRevealedMO
+            }
+        }
+        if movie.correctlyGuessed {
+            if movieMO.guessed == nil && movieMO.revealed == nil {
+                let movieGuessedMO = MovieGuessedMO(context: coreDataStack.persistentContainer.viewContext)
+                movieGuessedMO.dateAdded = Date()
+                movieMO.guessed = movieGuessedMO
+            }
+        }
         
         movieMO.lastUpdated = Date()
         movieMO.lastViewedDate = Date()
@@ -148,12 +180,13 @@ final class CoreDataManager: CoreDataManagerProtocol {
         let personMO = PersonMO(context: coreDataStack.persistentContainer.viewContext)
         
         personMO.id = Int64(person.id)
+        personMO.isHintShown = person.isHintShown
+        
         personMO.name = person.name
         personMO.posterImageURL = person.posterPath
         
-        personMO.isRevealed = person.isRevealed
-        personMO.isHintShown = person.isHintShown
-        personMO.correctlyGuessed = person.correctlyGuessed
+        //personMO.isRevealed = person.isRevealed
+        //personMO.correctlyGuessed = person.correctlyGuessed
         
         // fetch/create the movies in the persons knownFor array, then attach to personMO
         for title in person.knownFor {
@@ -252,10 +285,17 @@ final class CoreDataManager: CoreDataManagerProtocol {
     }
     
     func fetchWatchlistPage(genreID: Int) -> [Entity] {
+        let moviesWatching = fetchMovieWatchlist(genreID: genreID)
+        let tvShowsWatching = fetchTVShowWatchlist(genreID: genreID)
+        
+        return moviesWatching + tvShowsWatching
+    }
+    
+    func fetchMovieWatchlist(genreID: Int) -> [Movie] {
         let moc = coreDataStack.persistentContainer.viewContext
         
         let fetchRequest = NSFetchRequest<MovieWatchlistMO>(entityName: "MovieWatchlist")
-        fetchRequest.fetchLimit = 20
+        //fetchRequest.fetchLimit = 20
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "dateAdded", ascending: false)]
         //fetchRequest.predicate = NSPredicate(format: "correctlyGuessed == %@", NSNumber(value: true))
         
@@ -274,6 +314,21 @@ final class CoreDataManager: CoreDataManagerProtocol {
             print("** Failed to fetch watchlist page.")
         }
         
+        return []
+    }
+    
+    func fetchTVShowWatchlist(genreID: Int) -> [TVShow] {
+        // TODO
+        return []
+    }
+    
+    func fetchFavoritePeople() -> [Person] {
+        // TODO
+        return []
+    }
+    
+    func fetchGuessedEntities() -> [Entity] {
+        // TODO
         return []
     }
     

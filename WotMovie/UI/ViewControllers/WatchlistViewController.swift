@@ -92,6 +92,7 @@ extension WatchlistViewController: UITableViewDelegate, UITableViewDataSource {
         let category = watchlistPresenter.getWatchlistCategoryFor(index: indexPath.row)
         let watchlistCategoryGridViewController = WatchlistCategoryGridViewController(watchlistCategory: category)
         navigationController?.pushViewController(watchlistCategoryGridViewController, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 

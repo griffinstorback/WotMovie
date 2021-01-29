@@ -58,8 +58,8 @@ struct Movie: Title {
         }
         
         isHintShown = movieMO.isHintShown
-        isRevealed = movieMO.isRevealed
-        correctlyGuessed = movieMO.correctlyGuessed
+        isRevealed = movieMO.revealed != nil
+        correctlyGuessed = movieMO.guessed != nil
     }
 }
 
