@@ -118,7 +118,7 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
     
     // returns true if successful
     private func getNextPageFromCoreData() -> Bool {
-        if let items = coreDataManager.fetchEntityPage(type: category, pageNumber: nextPage, genreID: -1) {
+        if let items = coreDataManager.fetchEntityPage(category: category, pageNumber: nextPage, genreID: -1) {
             
             // TODO: need to check if lastUpdated > 2 days (or whatever threshold), then update page
             // either right now or on a background thread.
@@ -162,7 +162,7 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
                         DispatchQueue.main.async {
                             print("** calling createMoviePage with moviesCount: \(movies.count), page: \(currentPage), genre: -1")
                             self?.coreDataManager.createMoviePage(movies: movies, pageNumber: currentPage, genreID: -1)
-                            let newlyAddedMovies = self?.coreDataManager.fetchEntityPage(type: .movie, pageNumber: currentPage, genreID: -1)
+                            let newlyAddedMovies = self?.coreDataManager.fetchEntityPage(category: .movie, pageNumber: currentPage, genreID: -1)
                             print("** newlyAddedMovies count: \(newlyAddedMovies?.count ?? -1)")
                             self?.setItems(newlyAddedMovies ?? [])
                         }

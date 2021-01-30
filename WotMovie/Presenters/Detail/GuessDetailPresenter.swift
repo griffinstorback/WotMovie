@@ -56,7 +56,7 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
         //loadCrewTypes()
         
         // LOG THIS ENTITY as OPENED (mainly to update date, aka last seen date) in CORE DATA
-        coreDataManager.setEntityAsSeen(entity: item)
+        coreDataManager.updateOrCreateEntity(entity: item)
     }
     
     func setViewDelegate(detailViewDelegate: GuessDetailViewDelegate?) {
@@ -123,14 +123,14 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
     func hintWasShown() {
         print("** guess detail presenter: in hintWasShown")
         item.isHintShown = true
-        coreDataManager.setEntityAsSeen(entity: item)
+        coreDataManager.updateOrCreateEntity(entity: item)
         detailViewDelegate?.reloadData()
     }
     
     func answerWasRevealed() {
         print("** guess detail presenter: in answerWasRevealed")
         item.isRevealed = true
-        coreDataManager.setEntityAsSeen(entity: item)
+        coreDataManager.updateOrCreateEntity(entity: item)
         detailViewDelegate?.reloadData()
     }
 }

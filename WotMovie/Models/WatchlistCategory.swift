@@ -18,4 +18,5 @@ enum WatchlistCategoryType {
     case movieOrTvShowWatchlist
     case personFavorites
     case allGuessed
+    case allRevealed
 }

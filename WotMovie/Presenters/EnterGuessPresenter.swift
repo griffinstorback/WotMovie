@@ -125,7 +125,7 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
         if answer {
             item.isRevealed = true
             item.correctlyGuessed = true
-            coreDataManager.setEntityAsSeen(entity: item)
+            coreDataManager.updateOrCreateEntity(entity: item)
         }
         
         return answer
@@ -144,10 +144,10 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
     
     func addItemToWatchlist() {
         if item.isFavorite {
-            coreDataManager.removeEntityFromFavorites(entity: item)
+            coreDataManager.removeEntityFromWatchlistOrFavorites(entity: item)
             item.isFavorite = false
         } else {
-            coreDataManager.setEntityAsFavorite(entity: item)
+            coreDataManager.addEntityToWatchlistOrFavorites(entity: item)
             item.isFavorite = true
         }
         

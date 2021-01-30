@@ -79,7 +79,7 @@ class WatchlistCategoryGridViewController: UIViewController {
         // unhide serach bar after it has been shown initially.
         if isInitialLoad {
             isInitialLoad = false
-            navigationItem.hidesSearchBarWhenScrolling = true
+            //navigationItem.hidesSearchBarWhenScrolling = true
         }
     }
     
@@ -97,7 +97,7 @@ class WatchlistCategoryGridViewController: UIViewController {
             //searchController.searchBar.scopeButtonTitles = ["All", "Movies", "TV Shows"]
             //searchController.searchBar.showsScopeBar = true
             
-            let genreSelectionButton = UIBarButtonItem(title: "All types", style: .plain, target: self, action: nil)
+            let genreSelectionButton = UIBarButtonItem(title: "Movies & TV", style: .plain, target: self, action: nil)
             navigationItem.rightBarButtonItem = genreSelectionButton
         case .personFavorites:
             // Maybe instead of "All genres" in top right, have "All job types" with a drop down
@@ -110,6 +110,9 @@ class WatchlistCategoryGridViewController: UIViewController {
             
             // TODO: only show all genres button if movies or tv shows only are selected,
             //       as genres for people makes no sense? (also could have "all jobs" for person)
+            let genreSelectionButton = UIBarButtonItem(title: "All types", style: .plain, target: self, action: nil)
+            navigationItem.rightBarButtonItem = genreSelectionButton
+        case .allRevealed:
             let genreSelectionButton = UIBarButtonItem(title: "All types", style: .plain, target: self, action: nil)
             navigationItem.rightBarButtonItem = genreSelectionButton
         }

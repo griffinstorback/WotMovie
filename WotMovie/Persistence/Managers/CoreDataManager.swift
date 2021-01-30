@@ -18,43 +18,246 @@ final class CoreDataManager: CoreDataManagerProtocol {
     static let shared = CoreDataManager()
     private let coreDataStack = CoreDataStack.shared
     private init() {}
+
+
+// MARK: -- GENERIC METHODS
+
+    func getTotalNumberGuessed() -> Int {
+        return fetchMovieGuessedCount() + fetchPersonGuessedCount() + fetchTVShowGuessedCount()
+    }
     
     func getNumberGuessedFor(category: CategoryType) -> Int {
-        let context = coreDataStack.persistentContainer.viewContext
-        
-        switch(category) {
+        switch category {
         case .movie:
-            let fetchRequest = NSFetchRequest<MovieGuessedMO>(entityName: "MovieGuessed")
-            
-            do {
-                let watchlistResultsCount = try context.count(for: fetchRequest)
-                return watchlistResultsCount
-            } catch {
-                print("** Failed to fetch movie guessed count: \(error)")
-                return -1
-            }
+            return fetchMovieGuessedCount()
         case .person:
-            return 0
+            return fetchPersonGuessedCount()
         case .tvShow:
-            return 1
+            return fetchTVShowGuessedCount()
         default:
-            return 0
+            // if category type was "stats", nothing to return.
+            return -1
         }
     }
     
+    func getTotalNumberRevealed() -> Int {
+        return fetchMovieRevealedCount() + fetchPersonRevealedCount() + fetchTVShowRevealedCount()
+    }
+    
+    func getNumberRevealedFor(category: CategoryType) -> Int {
+        switch category {
+        case .movie:
+            return fetchMovieRevealedCount()
+        case .person:
+            return fetchPersonRevealedCount()
+        case .tvShow:
+            return fetchTVShowRevealedCount()
+        default:
+            // if category type was "stats", nothing to return.
+            return -1
+        }
+    }
+    
+    // Either: Creates this movie/tv show/person, or
+    // Updates the existing info from api, as well as meta info regarding if its been guessed correctly, revealed, hint shown, etc.
+    func updateOrCreateEntity(entity: Entity) {
+        switch entity.type {
+        case .movie:
+            if let movie = entity as? Movie {
+                updateOrCreateMovie(movie: movie)
+            }
+        case .tvShow:
+            if let tvShow = entity as? TVShow {
+                //updateOrCreateTVShow(tvShow: tvShow)
+            }
+        case .person:
+            if let person = entity as? Person {
+                //updateOrCreatePerson(person: person)
+            }
+        }
+    }
+    
+    // returns empty list if page doesnt exist. returns nil if there was an error
+    func fetchEntityPage(category: CategoryType, pageNumber: Int, genreID: Int) -> [Entity]? {
+        switch category {
+        case .movie:
+            return fetchMoviePage(pageNumber, genreID)
+        case .person:
+            return nil
+        case .tvShow:
+            return nil
+        default:
+            // if category type was "stats", nothing to return.
+            return nil
+        }
+    }
+
+    func addEntityToWatchlistOrFavorites(entity: Entity) {
+        switch entity.type {
+        case .movie:
+            if let movie = entity as? Movie {
+                addMovieToWatchlist(movie: movie)
+            }
+        case .tvShow:
+            if let tvShow = entity as? TVShow {
+                addTVShowToWatchlist(tvShow: tvShow)
+            }
+        case .person:
+            if let person = entity as? Person {
+                addPersonToFavorites(person: person)
+            }
+        }
+    }
+    
+    func removeEntityFromWatchlistOrFavorites(entity: Entity) {
+        switch entity.type {
+        case .movie:
+            if let movie = entity as? Movie {
+                removeMovieFromWatchlist(movie: movie)
+            }
+        case .tvShow:
+            if let tvShow = entity as? TVShow {
+                removeTVShowFromWatchlist(tvShow: tvShow)
+            }
+        case .person:
+            if let person = entity as? Person {
+                removePersonFromFavorites(person: person)
+            }
+        }
+    }
+    
+    
+    
+    
+    
+// MARK: -- COUNT QUERIES
+    
     func fetchWatchlistCount() -> Int {
+        return fetchMovieWatchlistCount() + fetchTVShowWatchlistCount()
+    }
+    
+    func fetchMovieWatchlistCount() -> Int {
         let context = coreDataStack.persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<MovieWatchlistMO>(entityName: "MovieWatchlist")
         
         do {
-            let watchlistResultsCount = try context.count(for: fetchRequest)
-            return watchlistResultsCount
+            let movieWatchlistResultsCount = try context.count(for: fetchRequest)
+            return movieWatchlistResultsCount
         } catch {
-            print("** Failed to fetch watchlist count: \(error)")
+            print("** Failed to fetch (movie) watchlist count: \(error)")
+            return 0
         }
-        
-        return -1
     }
+    
+    func fetchTVShowWatchlistCount() -> Int {
+        let context = coreDataStack.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<TVShowWatchlistMO>(entityName: "TVShowWatchlist")
+        
+        do {
+            let tvShowWatchlistResultsCount = try context.count(for: fetchRequest)
+            return tvShowWatchlistResultsCount
+        } catch {
+            print("** Failed to fetch (tv show) watchlist count: \(error)")
+            return 0
+        }
+    }
+    
+    func fetchFavoritesCount() -> Int {
+        let context = coreDataStack.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<PersonFavoritesMO>(entityName: "PersonFavorites")
+        
+        do {
+            let favoritesResultsCount = try context.count(for: fetchRequest)
+            return favoritesResultsCount
+        } catch {
+            print("** Failed to fetch favorites count: \(error)")
+            return 0
+        }
+    }
+    
+    func fetchMovieGuessedCount() -> Int {
+        let context = coreDataStack.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<MovieGuessedMO>(entityName: "MovieGuessed")
+        
+        do {
+            let movieGuessedCount = try context.count(for: fetchRequest)
+            return movieGuessedCount
+        } catch {
+            print("** Failed to fetch movie guessed count: \(error)")
+            return 0
+        }
+    }
+    
+    func fetchTVShowGuessedCount() -> Int {
+        let context = coreDataStack.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<TVShowGuessedMO>(entityName: "TVShowGuessed")
+        
+        do {
+            let tvShowGuessedCount = try context.count(for: fetchRequest)
+            return tvShowGuessedCount
+        } catch {
+            print("** Failed to fetch tv show guessed count: \(error)")
+            return 0
+        }
+    }
+    
+    func fetchPersonGuessedCount() -> Int {
+        let context = coreDataStack.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<PersonGuessedMO>(entityName: "PersonGuessed")
+        
+        do {
+            let peopleGuessedCount = try context.count(for: fetchRequest)
+            return peopleGuessedCount
+        } catch {
+            print("** Failed to fetch person guessed count: \(error)")
+            return 0
+        }
+    }
+    
+    func fetchMovieRevealedCount() -> Int {
+        let context = coreDataStack.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<MovieRevealedMO>(entityName: "MovieRevealed")
+        
+        do {
+            let movieRevealedCount = try context.count(for: fetchRequest)
+            return movieRevealedCount
+        } catch {
+            print("** Failed to fetch movie revealed count: \(error)")
+            return 0
+        }
+    }
+    
+    func fetchTVShowRevealedCount() -> Int {
+        let context = coreDataStack.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<TVShowRevealedMO>(entityName: "TVShowRevealed")
+        
+        do {
+            let tvShowRevealedCount = try context.count(for: fetchRequest)
+            return tvShowRevealedCount
+        } catch {
+            print("** Failed to fetch tv show revealed count: \(error)")
+            return 0
+        }
+    }
+    
+    func fetchPersonRevealedCount() -> Int {
+        let context = coreDataStack.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<PersonRevealedMO>(entityName: "PersonRevealed")
+        
+        do {
+            let personRevealedCount = try context.count(for: fetchRequest)
+            return personRevealedCount
+        } catch {
+            print("** Failed to fetch person revealed count: \(error)")
+            return 0
+        }
+    }
+    
+    
+
+    
+    
+// MARK: -- MOVIES
     
     func updateOrCreateMovie(movie: Movie) {
         let existingMovieEntries = fetchMovie(id: movie.id)
@@ -163,6 +366,40 @@ final class CoreDataManager: CoreDataManagerProtocol {
         return movieMO
     }
     
+    func fetchMovie(id: Int, context: NSManagedObjectContext? = nil) -> [MovieMO] {
+        let moc: NSManagedObjectContext
+        if let providedContext = context {
+            moc = providedContext
+        } else {
+            moc = coreDataStack.persistentContainer.viewContext
+        }
+        
+        let movieFetch = NSFetchRequest<MovieMO>(entityName: "Movie")
+        movieFetch.predicate = NSPredicate(format: "id == %ld", id)
+        movieFetch.returnsObjectsAsFaults = false
+        
+        do {
+            let fetchedMovies = try moc.fetch(movieFetch)
+            print("FETCHED MOVIES: \(fetchedMovies)")
+            return fetchedMovies
+        } catch {
+            print("** Failed to fetch movie: \(error)")
+            return []
+        }
+    }
+    
+    
+    
+    
+
+// MARK: -- TV SHOWS
+    
+    
+    
+    
+    
+// MARK: -- PERSONS
+
     @discardableResult
     func createPerson(person: BasePerson) -> PersonMO {
         let personMO = PersonMO(context: coreDataStack.persistentContainer.viewContext)
@@ -205,28 +442,6 @@ final class CoreDataManager: CoreDataManagerProtocol {
         return personMO
     }
     
-    func fetchMovie(id: Int, context: NSManagedObjectContext? = nil) -> [MovieMO] {
-        let moc: NSManagedObjectContext
-        if let providedContext = context {
-            moc = providedContext
-        } else {
-            moc = coreDataStack.persistentContainer.viewContext
-        }
-        
-        let movieFetch = NSFetchRequest<MovieMO>(entityName: "Movie")
-        movieFetch.predicate = NSPredicate(format: "id == %ld", id)
-        movieFetch.returnsObjectsAsFaults = false
-        
-        do {
-            let fetchedMovies = try moc.fetch(movieFetch)
-            print("FETCHED MOVIES: \(fetchedMovies)")
-            return fetchedMovies
-        } catch {
-            print("** Failed to fetch movie: \(error)")
-            return []
-        }
-    }
-    
     func fetchPerson(id: Int, context: NSManagedObjectContext? = nil) -> PersonMO? {
         let moc: NSManagedObjectContext
         if let providedContext = context {
@@ -257,34 +472,154 @@ final class CoreDataManager: CoreDataManagerProtocol {
         }
     }
     
-    // returns empty list if page doesnt exist. returns nil if there was an error
-    func fetchEntityPage(type: CategoryType, pageNumber: Int, genreID: Int) -> [Entity]? {
+    
+    
+    
+    
+// MARK: -- GUESS GRID
+    
+    func fetchMoviePage(_ pageNumber: Int, _ genreID: Int) -> [Movie]? {
         let moc = coreDataStack.persistentContainer.viewContext
         
-        if type == .movie {
-            let pageFetch = NSFetchRequest<MoviePageMO>(entityName: "MoviePage")
-            pageFetch.predicate = NSPredicate(format: "pageNumber == %ld && genreID == %ld", pageNumber, genreID)
-            
-            do {
-                let fetchedPages = try moc.fetch(pageFetch)
-                guard fetchedPages.count > 0 else { return [] }
-                guard let movieMOs = fetchedPages[0].movies?.allObjects as? [MovieMO] else { return nil }
-                
-                return movieMOs.map { Movie(movieMO: $0) }
-            } catch {
-                print("** Failed to fetch movie page: \(error)")
-                return nil
-            }
-        } else if type == .person {
-            // TODO
-        } else if type == .tvShow {
-            // TODO
-        }
+        let pageFetch = NSFetchRequest<MoviePageMO>(entityName: "MoviePage")
+        pageFetch.predicate = NSPredicate(format: "pageNumber == %ld && genreID == %ld", pageNumber, genreID)
         
-        return nil
+        do {
+            let fetchedPages = try moc.fetch(pageFetch)
+            guard fetchedPages.count > 0 else { return [] }
+            guard let movieMOs = fetchedPages[0].movies?.allObjects as? [MovieMO] else { return nil }
+            
+            return movieMOs.map { Movie(movieMO: $0) }
+        } catch {
+            print("** Failed to fetch movie page: \(error)")
+            return nil
+        }
     }
     
-    func fetchWatchlistPage(genreID: Int) -> [Entity] {
+    func createMoviePage(movies: [Movie], pageNumber: Int, genreID: Int) {
+        let moc = coreDataStack.persistentContainer.viewContext
+        let pageMO = MoviePageMO(context: moc)
+        pageMO.genreID = Int64(genreID)
+        pageMO.pageNumber = Int64(pageNumber)
+        pageMO.lastUpdated = Date()
+        
+        print("** in createmoviepage, about to add each movie")
+        
+        // create movieMO for each of the apiResponses movies, if they don't already exist
+        for movie in movies {
+            
+            // first check if movie already in core data
+            let existingMovies = fetchMovie(id: movie.id)
+            if existingMovies.count > 0 {
+                pageMO.addObject(value: existingMovies[0], for: "movies")
+            } else {
+                // none found, create a new movieMO object
+                let newMovie = createMovie(movie: movie)
+                pageMO.addObject(value: newMovie, for: "movies")
+            }
+        }
+        
+        print("** added movies to core data movie page. (\(movies.count) of them)")
+        
+        try? moc.save()
+        
+        print("** pageMO after calling moc.save(): \(pageMO)")
+        //coreDataStack.saveContext()
+    }
+    
+    
+    
+    
+    
+// MARK: -- RECENTLY VIEWED
+    
+    func fetchPageOfRecentlyViewed() -> [Entity] {
+        let moc = coreDataStack.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<MovieMO>(entityName: "Movie")
+        fetchRequest.fetchLimit = 20
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "lastViewedDate", ascending: false)]
+        //fetchRequest.predicate = NSPredicate(format: "", Date())
+        
+        do {
+            let fetchedMovies: [MovieMO] = try moc.fetch(fetchRequest)
+            return fetchedMovies.map { Movie(movieMO: $0) }
+        } catch {
+            print("** Failed to fetch recently viewed.")
+            return []
+        }
+    }
+    
+    
+
+    
+    
+// MARK: -- WATCHLIST & FAVORITES
+    
+    func addMovieToWatchlist(movie: Movie) {
+        // add to watchlist if isFavorited is set to true
+        let existingMovieEntries = fetchMovie(id: movie.id)
+        
+        if existingMovieEntries.count > 0 {
+            print("** Found \(existingMovieEntries.count) existing entries for movie \(movie.id)")
+            
+            let movieMO = existingMovieEntries[0]
+            
+            // add movie to watchlist (if watchlist prop doesnt exist yet)
+            if movieMO.watchlist == nil {
+                print("** WATCHLIST - NEED TO CREATE NEW WATCHLISTMO FOR MOVIE: \(movie.name)")
+                let movieWatchlistItem = MovieWatchlistMO(context: coreDataStack.persistentContainer.viewContext)
+                movieWatchlistItem.dateAdded = Date()
+                movieWatchlistItem.movie = movieMO
+            } else {
+                print("** WATCHLIST - MOVIE IS ALREADY IN WATCHLIST: \(movie.name)")
+            }
+            
+            coreDataStack.saveContext()
+        } else {
+            print("** Found 0 existing entries for movie \(movie.id). Creating one now.")
+            createMovie(movie: movie)
+        }
+    }
+    
+    func addTVShowToWatchlist(tvShow: TVShow) {
+        
+    }
+    
+    func addPersonToFavorites(person: Person) {
+        
+    }
+    
+    func removeMovieFromWatchlist(movie: Movie) {
+        // add to watchlist if isFavorited is set to true
+        let existingMovieEntries = fetchMovie(id: movie.id)
+        
+        if existingMovieEntries.count > 0 {
+            print("** Found \(existingMovieEntries.count) existing entries for movie \(movie.id)")
+            
+            let movieMO = existingMovieEntries[0]
+            
+            // remove from watchlist
+            if let movieWatchlist = movieMO.watchlist {
+                print("** WATCHLIST - REMOVING MOVIE: \(movie.name)")
+                coreDataStack.persistentContainer.viewContext.delete(movieWatchlist)
+            }
+            
+            coreDataStack.saveContext()
+        } else {
+            print("** Found 0 existing entries for movie \(movie.id). Creating one now.")
+            createMovie(movie: movie)
+        }
+    }
+    
+    func removeTVShowFromWatchlist(tvShow: TVShow) {
+        
+    }
+    
+    func removePersonFromFavorites(person: Person) {
+        
+    }
+    
+    func fetchWatchlist(genreID: Int) -> [Entity] {
         let moviesWatching = fetchMovieWatchlist(genreID: genreID)
         let tvShowsWatching = fetchTVShowWatchlist(genreID: genreID)
         
@@ -327,100 +662,94 @@ final class CoreDataManager: CoreDataManagerProtocol {
         return []
     }
     
+    
+    
+    
+    
+// MARK: -- GUESSED
+    
     func fetchGuessedEntities() -> [Entity] {
-        // TODO
+        return fetchGuessedMovies()
+    }
+    
+    func fetchGuessedMovies() -> [Movie] {
+        let context = coreDataStack.persistentContainer.viewContext
+        
+        let fetchRequest = NSFetchRequest<MovieGuessedMO>(entityName: "MovieGuessed")
+        fetchRequest.fetchLimit = 100000
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "dateAdded", ascending: false)]
+        
+        do {
+            let guessedResults: [MovieGuessedMO] = try context.fetch(fetchRequest)
+            
+            var movieMOs = [MovieMO]()
+            for guessed in guessedResults {
+                if let movieMO = guessed.movie {
+                    movieMOs.append(movieMO)
+                }
+            }
+            
+            return movieMOs.map { Movie(movieMO: $0) }
+        } catch {
+            print("** Failed to fetch guessed page.")
+            return []
+        }
+    }
+    
+    func fetchGuessedTVShows() -> [TVShow] {
         return []
     }
     
-    func createMoviePage(movies: [Movie], pageNumber: Int, genreID: Int) {
-        let moc = coreDataStack.persistentContainer.viewContext
-        let pageMO = MoviePageMO(context: moc)
-        pageMO.genreID = Int64(genreID)
-        pageMO.pageNumber = Int64(pageNumber)
-        pageMO.lastUpdated = Date()
-        
-        print("** in createmoviepage, about to add each movie")
-        
-        // create movieMO for each of the apiResponses movies, if they don't already exist
-        for movie in movies {
-            
-            // first check if movie already in core data
-            let existingMovies = fetchMovie(id: movie.id)
-            if existingMovies.count > 0 {
-                pageMO.addObject(value: existingMovies[0], for: "movies")
-            } else {
-                // none found, create a new movieMO object
-                let newMovie = createMovie(movie: movie)
-                pageMO.addObject(value: newMovie, for: "movies")
-            }
-        }
-        
-        print("** added movies to core data movie page. (\(movies.count) of them)")
-        
-        try? moc.save()
-        
-        print("** pageMO after calling moc.save(): \(pageMO)")
-        //coreDataStack.saveContext()
+    func fetchGuessedPeople() -> [Person] {
+        return []
     }
     
-    // either create this movie/tv show/person, or just update with current date.
-    func setEntityAsSeen(entity: Entity) {
-        if let movie = entity as? Movie {
-            updateOrCreateMovie(movie: movie)
-        }
+    
+    
+    
+    
+// MARK: -- REVEALED
+    
+    func fetchRevealedEntities() -> [Entity] {
+        return fetchRevealedMovies()
     }
     
-    func setEntityAsFavorite(entity: Entity) {
-        if let movie = entity as? Movie {
-            // add to watchlist if isFavorited is set to true
-            let existingMovieEntries = fetchMovie(id: movie.id)
+    func fetchRevealedMovies() -> [Movie] {
+        let context = coreDataStack.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<MovieRevealedMO>(entityName: "MovieRevealed")
+        fetchRequest.fetchLimit = 100000
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "dateAdded", ascending: false)]
+        
+        do {
+            let revealedResults: [MovieRevealedMO] = try context.fetch(fetchRequest)
             
-            if existingMovieEntries.count > 0 {
-                print("** Found \(existingMovieEntries.count) existing entries for movie \(movie.id)")
-                
-                let movieMO = existingMovieEntries[0]
-                
-                // add movie to watchlist (if watchlist prop doesnt exist yet)
-                if movieMO.watchlist == nil {
-                    print("** WATCHLIST - NEED TO CREATE NEW WATCHLISTMO FOR MOVIE: \(movie.name)")
-                    let movieWatchlistItem = MovieWatchlistMO(context: coreDataStack.persistentContainer.viewContext)
-                    movieWatchlistItem.dateAdded = Date()
-                    movieWatchlistItem.movie = movieMO
-                } else {
-                    print("** WATCHLIST - MOVIE IS ALREADY IN WATCHLIST: \(movie.name)")
+            var movieMOs = [MovieMO]()
+            for revealed in revealedResults {
+                if let movieMO = revealed.movie {
+                    movieMOs.append(movieMO)
                 }
-                
-                coreDataStack.saveContext()
-            } else {
-                print("** Found 0 existing entries for movie \(movie.id). Creating one now.")
-                createMovie(movie: movie)
             }
+            
+            return movieMOs.map { Movie(movieMO: $0) }
+        } catch {
+            print("** Failed to fetch revealed page.")
+            return []
         }
     }
     
-    func removeEntityFromFavorites(entity: Entity) {
-        if let movie = entity as? Movie {
-            // add to watchlist if isFavorited is set to true
-            let existingMovieEntries = fetchMovie(id: movie.id)
-            
-            if existingMovieEntries.count > 0 {
-                print("** Found \(existingMovieEntries.count) existing entries for movie \(movie.id)")
-                
-                let movieMO = existingMovieEntries[0]
-                
-                // remove from watchlist
-                if let movieWatchlist = movieMO.watchlist {
-                    print("** WATCHLIST - REMOVING MOVIE: \(movie.name)")
-                    coreDataStack.persistentContainer.viewContext.delete(movieWatchlist)
-                }
-                
-                coreDataStack.saveContext()
-            } else {
-                print("** Found 0 existing entries for movie \(movie.id). Creating one now.")
-                createMovie(movie: movie)
-            }
-        }
+    func fetchRevealedTVShows() -> [TVShow] {
+        return []
     }
+    
+    func fetchRevealedPeople() -> [Person] {
+        return []
+    }
+    
+    
+    
+    
+    
+// MARK: -- GENRES
     
     // should always be called after a network request is performed for this info.
     func updateOrCreateGenreList(genres: [Genre]) {
@@ -461,6 +790,34 @@ final class CoreDataManager: CoreDataManagerProtocol {
             return []
         }
     }
+    
+    func fetchGenre(id: Int) -> MovieGenreMO? {
+        let moc = coreDataStack.persistentContainer.viewContext
+        let genreFetch = NSFetchRequest<MovieGenreMO>(entityName: "MovieGenre")
+        genreFetch.predicate = NSPredicate(format: "id == %ld", id)
+        
+        let fetchedGenres: [MovieGenreMO]
+        do {
+            fetchedGenres = try moc.fetch(genreFetch)
+            print("FETCHED Genres: \(fetchedGenres)")
+        } catch {
+            print("** Failed to fetch genre (id: \(id)): \(error)")
+            return nil
+        }
+        
+        if fetchedGenres.count > 0 {
+            return fetchedGenres[0]
+        } else {
+            return nil
+        }
+    }
+    
+    
+    
+
+    
+// MARK: -- CREDITS
+    
     func updateOrCreateCredits(type: EntityType, credits: Credits) {
         switch type {
     
@@ -514,45 +871,11 @@ final class CoreDataManager: CoreDataManagerProtocol {
         return nil
     }
     
-    func fetchPageOfRecentlyViewed() -> [Entity] {
-        let moc = coreDataStack.persistentContainer.viewContext
-        let fetchRequest = NSFetchRequest<MovieMO>(entityName: "Movie")
-        fetchRequest.fetchLimit = 20
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "lastViewedDate", ascending: false)]
-        //fetchRequest.predicate = NSPredicate(format: "", Date())
-        
-        do {
-            let fetchedMovies: [MovieMO] = try moc.fetch(fetchRequest)
-            return fetchedMovies.map { Movie(movieMO: $0) }
-        } catch {
-            print("** Failed to fetch recently viewed.")
-            return []
-        }
-    }
 
     
-    // MARK:- HELPER; PRIVATE METHODS
     
-    func fetchGenre(id: Int) -> MovieGenreMO? {
-        let moc = coreDataStack.persistentContainer.viewContext
-        let genreFetch = NSFetchRequest<MovieGenreMO>(entityName: "MovieGenre")
-        genreFetch.predicate = NSPredicate(format: "id == %ld", id)
-        
-        let fetchedGenres: [MovieGenreMO]
-        do {
-            fetchedGenres = try moc.fetch(genreFetch)
-            print("FETCHED Genres: \(fetchedGenres)")
-        } catch {
-            print("** Failed to fetch genre (id: \(id)): \(error)")
-            return nil
-        }
-        
-        if fetchedGenres.count > 0 {
-            return fetchedGenres[0]
-        } else {
-            return nil
-        }
-    }
+    
+    // MARK:- HELPER METHODS
     
     func deleteAllData(_ entity: String) {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entity)

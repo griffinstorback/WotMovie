@@ -28,7 +28,7 @@ class WatchlistPresenter: WatchlistPresenterProtocol {
         WatchlistCategory(type: .movieOrTvShowWatchlist, title: "Watchlist", imageName: "question_mark"),
         WatchlistCategory(type: .personFavorites, title: "Favorites", imageName: "question_mark"),
         WatchlistCategory(type: .allGuessed, title: "Guessed", imageName: "question_mark"),
-        WatchlistCategory(type: .allGuessed, title: "Revealed", imageName: "question_mark"),
+        WatchlistCategory(type: .allRevealed, title: "Revealed", imageName: "question_mark"),
         
         // TODO: Decide if search should be allowed. Because it would easily allow for cheating,
         //       though of course people could cheat anyways, but this would make it a lot easier,
@@ -71,9 +71,11 @@ class WatchlistPresenter: WatchlistPresenterProtocol {
             break
         case .allGuessed:
             break
+        case .allRevealed:
+            break
         }
         
-        return 0
+        return -1
     }
     
     func loadRecentlyViewed() {

@@ -86,13 +86,17 @@ class WatchlistCategoryGridPresenter: WatchlistCategoryGridPresenterProtocol {
     private func getNextPageFromCoreData() {
         switch watchlistCategoryType {
         case .movieOrTvShowWatchlist:
-            let items = coreDataManager.fetchWatchlistPage(genreID: -1)
-            print("*** items returned from fetchWatchlistPage: \(items)")
+            let items = coreDataManager.fetchWatchlist(genreID: -1)
             self.items = items
         case .personFavorites:
-            break
+            let items = coreDataManager.fetchFavoritePeople()
+            self.items = items
         case .allGuessed:
-            break
+            let items = coreDataManager.fetchGuessedEntities()
+            self.items = items
+        case .allRevealed:
+            let items = coreDataManager.fetchRevealedEntities()
+            self.items = items
         }
     }
 }
