@@ -19,6 +19,7 @@ protocol Entity {
     var name: String { get }
     var posterPath: String? { get }
     
+    var lastViewedDate: Date? { get set }
     var isHintShown: Bool { get set }
     var isRevealed: Bool { get set }
     var correctlyGuessed: Bool { get set }

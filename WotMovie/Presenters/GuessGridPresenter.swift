@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-protocol GuessGridPresenterProtocol {
+protocol GuessGridPresenterProtocol: TransitionPresenterProtocol {
     var guessGridViewDelegate: GuessGridViewDelegate? { get set }
     var category: CategoryType { get }
     var itemsCount: Int { get }
@@ -31,6 +31,15 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
     
     private var items: [Entity] = [] {
         didSet {
+            //let changedIndices = Array.differentIndices(items, oldValue)
+            //print("**** CHANGED INDICES: \(changedIndices)")
+            
+            // for now, don't do any updates in this observer unless there are new elements to add/remove.
+            guard items.count != oldValue.count else {
+                print("*** didSet items.count is same as oldValue.count - not reloading.")
+                return
+            }
+            
             DispatchQueue.main.async {
                 self.guessGridViewDelegate?.reloadData()
             }
@@ -61,6 +70,16 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
         // remove titles without a poster image
         newItems = newItems.filter { $0.posterPath != nil }
         
+        // remove items guessed
+        newItems = newItems.filter { !$0.correctlyGuessed }
+        
+        // remove items revealed (unless they were revealed awhile ago)
+        newItems = newItems.filter { !$0.isRevealed }//&& $0.lastViewedDate ?? Date() > Date() }
+        
+        // prune last couple items off the end of items if number isn't divisable by row count
+        // (we want full rows, no half/partially filled rows)
+        // TODO
+        
         self.items += newItems
     }
     
@@ -76,6 +95,21 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
     
     func setViewDelegate(_ guessGridViewDelegate: GuessGridViewDelegate?) {
         self.guessGridViewDelegate = guessGridViewDelegate
+    }
+    
+    // TransitionPresenterProtocol - called when dismissing modal detail (if item was revealed while modal was up)
+    func setEntityAsRevealed(id: Int, isRevealed: Bool) {
+        print("*** GuessGridPresenter: setEntity with id \(id) as \(isRevealed ? "revealed" : "NOT revealed")")
+        
+        if let index = items.firstIndex(where: { $0.id == id }) {
+            if items[index].isRevealed != isRevealed {
+                // there is a change
+                items[index].isRevealed = isRevealed
+                DispatchQueue.main.async {
+                    self.guessGridViewDelegate?.reloadItems(at: [index])
+                }
+            }
+        }
     }
     
     func itemFor(index: Int) -> Entity {
@@ -110,6 +144,7 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
         
         // first, try to load the current page from core data
         if getNextPageFromCoreData() {
+            
             return
         }
         
@@ -129,7 +164,12 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
                 self.setItems(items)
                 self.nextPage += 1
                 
-                return true
+                // recursive call if all those entities we just got had already been revealed.
+                if self.itemsCount < 20 {
+                    return getNextPageFromCoreData()
+                } else {
+                    return true
+                }
             } else {
                 print("** fetchEntityPage came back with empty list.")
             }

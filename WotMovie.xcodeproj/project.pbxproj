@@ -21,6 +21,7 @@
 		8527827A25BD403F00FC257A /* GridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8527827925BD403F00FC257A /* GridViewController.swift */; };
 		8527827F25BF5AB300FC257A /* WatchlistCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8527827E25BF5AB300FC257A /* WatchlistCategory.swift */; };
 		8527828C25C0A96100FC257A /* RecentlyViewedCollectionViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8527828B25C0A96100FC257A /* RecentlyViewedCollectionViewHeader.swift */; };
+		853C679A25C5FBA500EBEFBE /* TransitionPresenterProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853C679925C5FBA500EBEFBE /* TransitionPresenterProtocol.swift */; };
 		854B3E912550DDBB003397E0 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854B3E902550DDBA003397E0 /* CoreDataManager.swift */; };
 		854B3E9625537F55003397E0 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854B3E9525537F55003397E0 /* CoreDataStack.swift */; };
 		85791AD125C0FC2B00F8FE75 /* WatchlistCategoryGridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85791AD025C0FC2B00F8FE75 /* WatchlistCategoryGridViewController.swift */; };
@@ -130,6 +131,7 @@
 		8527827925BD403F00FC257A /* GridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridViewController.swift; sourceTree = "<group>"; };
 		8527827E25BF5AB300FC257A /* WatchlistCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchlistCategory.swift; sourceTree = "<group>"; };
 		8527828B25C0A96100FC257A /* RecentlyViewedCollectionViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentlyViewedCollectionViewHeader.swift; sourceTree = "<group>"; };
+		853C679925C5FBA500EBEFBE /* TransitionPresenterProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionPresenterProtocol.swift; sourceTree = "<group>"; };
 		854B3E902550DDBA003397E0 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		854B3E9525537F55003397E0 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		85791AD025C0FC2B00F8FE75 /* WatchlistCategoryGridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchlistCategoryGridViewController.swift; sourceTree = "<group>"; };
@@ -318,6 +320,7 @@
 				8588FD12255F390F0054EC17 /* DismissCardAnimator.swift */,
 				8588FD17255F51670054EC17 /* DetailPresenterViewController.swift */,
 				8588FD1C256059D10054EC17 /* DetailViewController.swift */,
+				853C679925C5FBA500EBEFBE /* TransitionPresenterProtocol.swift */,
 			);
 			path = Transition;
 			sourceTree = "<group>";
@@ -755,6 +758,7 @@
 				85CF3498252E5E1700A101C9 /* EndPointType.swift in Sources */,
 				8527828C25C0A96100FC257A /* RecentlyViewedCollectionViewHeader.swift in Sources */,
 				85CF353A25365C5B00A101C9 /* GuessViewController.swift in Sources */,
+				853C679A25C5FBA500EBEFBE /* TransitionPresenterProtocol.swift in Sources */,
 				8588FD3B256887BC0054EC17 /* PersonDetailPresenter.swift in Sources */,
 				85CF358C253A32D700A101C9 /* ImageDownloadManager.swift in Sources */,
 				85CF356B25377D0200A101C9 /* Genre.swift in Sources */,

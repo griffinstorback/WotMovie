@@ -18,6 +18,7 @@ struct TVShow: Title {
     let overview: String
     let genreIDs: [Int]
     
+    var lastViewedDate: Date?
     var isHintShown: Bool = false
     var isRevealed: Bool = false
     var correctlyGuessed: Bool = false

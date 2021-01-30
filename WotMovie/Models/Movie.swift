@@ -18,6 +18,8 @@ struct Movie: Title {
     let overview: String
     let genreIDs: [Int]
     
+    // lastViewedDate should be set when coming from a MovieMO, so GuessGrid knows when it should filter it out
+    var lastViewedDate: Date?
     var isHintShown: Bool = false
     var isRevealed: Bool = false
     var correctlyGuessed: Bool = false
@@ -57,9 +59,11 @@ struct Movie: Title {
             genreIDs = []
         }
         
+        lastViewedDate = movieMO.lastViewedDate
         isHintShown = movieMO.isHintShown
         isRevealed = movieMO.revealed != nil || movieMO.guessed != nil
         correctlyGuessed = movieMO.guessed != nil
+        isFavorite = movieMO.watchlist != nil
     }
 }
 

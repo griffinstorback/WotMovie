@@ -68,11 +68,11 @@ final class CoreDataManager: CoreDataManagerProtocol {
             }
         case .tvShow:
             if let tvShow = entity as? TVShow {
-                //updateOrCreateTVShow(tvShow: tvShow)
+                updateOrCreateTVShow(tvShow: tvShow)
             }
         case .person:
             if let person = entity as? Person {
-                //updateOrCreatePerson(person: person)
+                updateOrCreatePerson(person: person)
             }
         }
     }
@@ -83,9 +83,9 @@ final class CoreDataManager: CoreDataManagerProtocol {
         case .movie:
             return fetchMoviePage(pageNumber, genreID)
         case .person:
-            return nil
+            return fetchPersonPage(pageNumber, genreID)
         case .tvShow:
-            return nil
+            return fetchTVShowPage(pageNumber, genreID)
         default:
             // if category type was "stats", nothing to return.
             return nil
@@ -124,6 +124,14 @@ final class CoreDataManager: CoreDataManagerProtocol {
                 removePersonFromFavorites(person: person)
             }
         }
+    }
+    
+    func fetchGuessedEntities() -> [Entity] {
+        return fetchGuessedMovies() + fetchGuessedTVShows() + fetchGuessedPeople()
+    }
+    
+    func fetchRevealedEntities() -> [Entity] {
+        return fetchRevealedMovies() + fetchRevealedTVShows() + fetchRevealedPeople()
     }
     
     
@@ -394,12 +402,20 @@ final class CoreDataManager: CoreDataManagerProtocol {
 
 // MARK: -- TV SHOWS
     
+    func updateOrCreateTVShow(tvShow: TVShow) {
+        
+    }
+    
     
     
     
     
 // MARK: -- PERSONS
 
+    func updateOrCreatePerson(person: Person) {
+        
+    }
+    
     @discardableResult
     func createPerson(person: BasePerson) -> PersonMO {
         let personMO = PersonMO(context: coreDataStack.persistentContainer.viewContext)
@@ -496,6 +512,14 @@ final class CoreDataManager: CoreDataManagerProtocol {
         }
     }
     
+    func fetchPersonPage(_ pageNumber: Int, _ genreID: Int) -> [Person]? {
+        return []
+    }
+    
+    func fetchTVShowPage(_ pageNumber: Int, _ genreID: Int) -> [TVShow]? {
+        return []
+    }
+    
     func createMoviePage(movies: [Movie], pageNumber: Int, genreID: Int) {
         let moc = coreDataStack.persistentContainer.viewContext
         let pageMO = MoviePageMO(context: moc)
@@ -520,11 +544,15 @@ final class CoreDataManager: CoreDataManagerProtocol {
         }
         
         print("** added movies to core data movie page. (\(movies.count) of them)")
+        coreDataStack.saveContext()
+    }
+    
+    func createPersonPage(people: [Person], pageNumber: Int, genreID: Int) {
         
-        try? moc.save()
+    }
+    
+    func createTVShowPage(tvShows: [TVShow], pageNumber: Int, genreID: Int) {
         
-        print("** pageMO after calling moc.save(): \(pageMO)")
-        //coreDataStack.saveContext()
     }
     
     
@@ -647,9 +675,8 @@ final class CoreDataManager: CoreDataManagerProtocol {
             return movieMOs.map { Movie(movieMO: $0) }
         } catch {
             print("** Failed to fetch watchlist page.")
+            return []
         }
-        
-        return []
     }
     
     func fetchTVShowWatchlist(genreID: Int) -> [TVShow] {
@@ -667,10 +694,6 @@ final class CoreDataManager: CoreDataManagerProtocol {
     
     
 // MARK: -- GUESSED
-    
-    func fetchGuessedEntities() -> [Entity] {
-        return fetchGuessedMovies()
-    }
     
     func fetchGuessedMovies() -> [Movie] {
         let context = coreDataStack.persistentContainer.viewContext
@@ -709,10 +732,6 @@ final class CoreDataManager: CoreDataManagerProtocol {
     
     
 // MARK: -- REVEALED
-    
-    func fetchRevealedEntities() -> [Entity] {
-        return fetchRevealedMovies()
-    }
     
     func fetchRevealedMovies() -> [Movie] {
         let context = coreDataStack.persistentContainer.viewContext
@@ -887,7 +906,36 @@ final class CoreDataManager: CoreDataManagerProtocol {
                 coreDataStack.persistentContainer.viewContext.delete(objectData)
             }
         } catch let error {
-            print("Detele all data in \(entity) error :", error)
+            print("**** Detele all data in \(entity) error :", error)
         }
+    }
+    
+    func deleteAllDataFromAllEntities() {
+        deleteAllData("Movie")
+        deleteAllData("TVShow")
+        deleteAllData("Person")
+        
+        deleteAllData("MovieWatchlist")
+        deleteAllData("TVShowWatchlist")
+        deleteAllData("PersonFavorites")
+        
+        deleteAllData("MoviePage")
+        deleteAllData("TVShowPage")
+        deleteAllData("PersonPage")
+        
+        deleteAllData("MovieGuessed")
+        deleteAllData("TVShowGuessed")
+        deleteAllData("PersonGuessed")
+        
+        deleteAllData("MovieRevealed")
+        deleteAllData("TVShowRevealed")
+        deleteAllData("PersonRevealed")
+        
+        deleteAllData("MovieCredits")
+        deleteAllData("TVShowCredits")
+        deleteAllData("PersonCredits")
+        
+        deleteAllData("MovieGenre")
+        deleteAllData("TVShowGenre")
     }
 }

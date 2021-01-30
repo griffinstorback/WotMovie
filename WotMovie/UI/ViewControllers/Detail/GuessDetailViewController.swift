@@ -75,7 +75,6 @@ class GuessDetailViewController: DetailViewController {
     }
     
     @objc func revealButtonPressed() {
-        print("**** REVEAL BUTTON PRESSED")
         guessDetailViewPresenter.answerWasRevealed()
         state = .revealed
     }

@@ -11,6 +11,7 @@ import UIKit
 // Collection view displaying a grid of PosterImageView's, number of columns depending on screen width
 class GridViewController: DetailPresenterViewController {
     let collectionView: ContentSizedCollectionView
+    var transitionPresenter: TransitionPresenterProtocol?
     
     private let spacingAmount: CGFloat = 5
     private let minimumCellWidth: CGFloat = 120 // max is (2 * minimum)
@@ -54,6 +55,10 @@ class GridViewController: DetailPresenterViewController {
         collectionView.reloadData()
     }
     
+    public func reloadItems(at indexPaths: [IndexPath]) {
+        collectionView.reloadItems(at: indexPaths)
+    }
+    
     func presentGuessDetail(for item: Entity, fromCard: UIView) {
         let guessDetailViewController: GuessDetailViewController
         
@@ -67,7 +72,7 @@ class GridViewController: DetailPresenterViewController {
         guessDetailViewController.modalPresentationStyle = .fullScreen
         guessDetailViewController.modalPresentationCapturesStatusBarAppearance = true
         
-        present(guessDetailViewController, fromCard: fromCard, startHidden: !item.isRevealed)
+        present(guessDetailViewController, fromCard: fromCard, startHidden: !item.isRevealed, presenter: transitionPresenter, entityID: item.id)
     }
 }
 

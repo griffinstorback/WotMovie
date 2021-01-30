@@ -169,3 +169,20 @@ extension UIViewController {
         child.removeFromParent()
     }
 }
+
+// TODO: Trying to compare two arrays, returning indices where they differ, for reloading collection views (like in GuessGridPresenter)
+/*extension Array<T> {
+    func differentIndices<T>(_ array1: [T], _ array2: [T]) where T:Comparable {
+        var changedIndices: [Int] = []
+        for index in 0..<count {
+            if index + 1 > array2.count {
+                changedIndices.append(index)
+                continue
+            }
+            if self.[index] != array2[index] {
+                changedIndices.append(index)
+            }
+        }
+    }
+}
+*/

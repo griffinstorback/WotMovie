@@ -11,6 +11,7 @@ protocol GuessGridViewDelegate: NSObjectProtocol {
     func displayItems()
     func displayErrorLoadingItems()
     func reloadData()
+    func reloadItems(at indices: [Int])
 }
 
 class GuessGridViewController: DetailPresenterViewController {
@@ -38,6 +39,7 @@ class GuessGridViewController: DetailPresenterViewController {
         guessGridViewPresenter.setViewDelegate(self)
         
         gridView.delegate = self
+        gridView.transitionPresenter = guessGridViewPresenter
     }
     
     private func layoutViews() {
@@ -66,24 +68,20 @@ extension GuessGridViewController: GuessGridViewDelegate {
         print("displayErrorLoadingitems")
     }
     
-    func presentGuessDetail(for item: Entity, fromCard: UIView) {
-        let guessDetailViewController: GuessDetailViewController
-        
-        switch item.type {
-        case .movie, .tvShow:
-            guessDetailViewController = TitleDetailViewController(item: item, startHidden: !item.isRevealed)
-        case .person:
-            guessDetailViewController = PersonDetailViewController(item: item, startHidden: !item.isRevealed)
-        }
-        
-        guessDetailViewController.modalPresentationStyle = .fullScreen
-        guessDetailViewController.modalPresentationCapturesStatusBarAppearance = true
-        
-        present(guessDetailViewController, fromCard: fromCard, startHidden: !item.isRevealed)
-    }
-    
     func reloadData() {
         gridView.reloadData()
+    }
+    
+    func reloadItems(at indices: [Int]) {
+        guard indices.count > 0 else {
+            return
+        }
+        
+        var indexPaths: [IndexPath] = []
+        for index in indices {
+            indexPaths.append(IndexPath(item: index, section: 0))
+        }
+        gridView.reloadItems(at: indexPaths)
     }
 }
 

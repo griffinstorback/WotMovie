@@ -20,6 +20,7 @@ struct MovieOrTVShow: Title {
     let character: String? // non-nil when person is actor in this movie/show
     
     // these properties are unused on movieortvshow, because user is never guessing this type.
+    var lastViewedDate: Date?
     var isRevealed: Bool = false
     var isHintShown: Bool = false
     var correctlyGuessed: Bool = false

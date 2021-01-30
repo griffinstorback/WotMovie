@@ -130,7 +130,9 @@ extension EntityTableViewController: UITableViewDelegate, UITableViewDataSource 
             guessDetailViewController = PersonDetailViewController(item: item, startHidden: false)
         }
         
-        present(guessDetailViewController, fromCard: cell.profileImageView, startHidden: false)
+        // Presenter nil because no entity presented from this VC will start hidden, therefore will never need
+        // to call setRevealed() to update posterimage.
+        present(guessDetailViewController, fromCard: cell.profileImageView, startHidden: false, presenter: nil, entityID: item.id)
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }

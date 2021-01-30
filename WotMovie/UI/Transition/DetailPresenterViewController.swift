@@ -12,7 +12,7 @@ class DetailPresenterViewController: UIViewController {
     
     private var transition: CardTransition?
     
-    func present(_ viewController: UIViewController, fromCard: UIView, startHidden: Bool) {
+    func present(_ viewController: UIViewController, fromCard: UIView, startHidden: Bool, presenter: TransitionPresenterProtocol?, entityID: Int) {
         
         // Freeze highlighted state or else it will bounce back??
         //cell.freezeAnimations()
@@ -36,7 +36,7 @@ class DetailPresenterViewController: UIViewController {
             return fromCard.superview!.convert(r, to: nil)
         }()
         
-        let parameters = CardTransitionParameters(fromCardFrame: cardPresentationFrameOnScreen, fromCardFrameWithoutTransform: cardFrameWithoutTransform, fromView: fromCard, startHidden: startHidden)
+        let parameters = CardTransitionParameters(fromCardFrame: cardPresentationFrameOnScreen, fromCardFrameWithoutTransform: cardFrameWithoutTransform, fromView: fromCard, startHidden: startHidden, presenter: presenter, entityID: entityID)
         transition = CardTransition(parameters: parameters)
         viewController.transitioningDelegate = transition
         //viewController.modalPresentationCapturesStatusBarAppearance = true
@@ -46,6 +46,11 @@ class DetailPresenterViewController: UIViewController {
             //cell.unfreezeAnimations
         }
     }
+    
+    // should be overriden and implemented in calling VC, so that if card is revealed in detail, presenter will show changes too.
+    /*func setEntityAsRevealed(id: Int, isRevealed: Bool) {
+        print("*** DetailPresenterVC: setEntity with id \(id) as \(isRevealed ? "revealed" : "NOT revealed")")
+    }*/
     
     /*func present(_ viewController: UIViewController, fromCard: UIView, fromView: UIView, startHidden: Bool) {
         

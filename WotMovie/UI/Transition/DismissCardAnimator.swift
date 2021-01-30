@@ -65,7 +65,7 @@ final class DismissCardTransitionDriver {
             context.viewController(forKey: .to) as? DetailPresenterViewController
         )
         
-        cardDetailPosterImageViewCopy = PosterImageView(startHidden: parameters.startHidden)
+        cardDetailPosterImageViewCopy = PosterImageView(startHidden: !screens.presented.posterImageView.isRevealed)
         cardDetailPosterImageViewCopy.setImage(screens.presented.posterImageView.getImage())
         cardDetailPosterImageViewCopy.frame = screens.presented.posterImageView.convert(screens.presented.posterImageView.frame, to: container)
         cardDetailPosterImageViewCopy.layer.cornerRadius = cardDetailPosterImageViewCopy.frame.height * Constants.imageCornerRadiusRatio
@@ -147,6 +147,9 @@ final class DismissCardTransitionDriver {
     }
     
     func completion() {
+        // update image revealed on presenter
+        parameters.presenter?.setEntityAsRevealed(id: parameters.entityID, isRevealed: screens.presented.posterImageView.isRevealed)
+
         animatedContainerView.removeFromSuperview()
 
         let success = !context.transitionWasCancelled

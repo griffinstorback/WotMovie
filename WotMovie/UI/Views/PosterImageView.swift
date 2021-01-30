@@ -9,6 +9,7 @@ import UIKit
 
 class PosterImageView: CardView {
 
+    var isRevealed: Bool = false
     private let imageView: UIImageView
     
     // lazy because they're completely unneeded if the image is never "anonymized" (blurred out)
@@ -33,6 +34,7 @@ class PosterImageView: CardView {
         addImageView()
 
         if startHidden {
+            isRevealed = false
             
             // Initially starts with blur on. Call removeBlurEffectOverlay when user has guessed it or given up.
             addBlurEffectOverlay(animated: false)
@@ -58,11 +60,13 @@ class PosterImageView: CardView {
     func reveal(animated: Bool) {
         hideBlurEffectOverlay(animated: animated)
         hideQuestionMarkOverlay(animated: animated)
+        isRevealed = true
     }
     
     func unreveal(animated: Bool) {
         unhideBlurEffectOverlay(animated: animated)
         unhideQuestionMarkOverlay(animated: animated)
+        isRevealed = false
     }
     
     func hideBlurEffectOverlay(animated: Bool, duration: Double = 1.0) {

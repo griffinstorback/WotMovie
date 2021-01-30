@@ -16,6 +16,7 @@ struct Person: Entity {
     let posterPath: String?
     let knownFor: [Title]
     
+    var lastViewedDate: Date?
     var isHintShown: Bool = false
     var isRevealed: Bool = false
     var correctlyGuessed: Bool = false
@@ -90,6 +91,7 @@ struct CastMember: BasePerson {
     var character: String
     
     // these properties are unused on castmember, as user is never guessing castmembers.
+    var lastViewedDate: Date?
     var isRevealed: Bool = false
     var isHintShown: Bool = false
     var correctlyGuessed: Bool = false
@@ -105,6 +107,7 @@ struct CrewMember: BasePerson {
     var job: String
     
     // these properties are unused on crewmember, as user is never guessing crewmembers.
+    var lastViewedDate: Date?
     var isRevealed: Bool = false
     var isHintShown: Bool = false
     var correctlyGuessed: Bool = false
