@@ -25,10 +25,12 @@ class RootTabViewController: UITabBarController {
         guessViewController.tabBarItem = UITabBarItem(title: nil, image: questionMarkImage?.withTintColor(.gray), selectedImage: questionMarkImage?.withTintColor(Constants.Colors.defaultBlue))
         
         let watchListViewController = UINavigationController(rootViewController: WatchlistViewController())
-        watchListViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "list.bullet")?.withTintColor(.gray), selectedImage: UIImage(systemName: "list.bullet")?.withTintColor(Constants.Colors.defaultBlue))
+        let listImage = UIImage(named: "list_icon")
+        watchListViewController.tabBarItem = UITabBarItem(title: nil, image: listImage?.withTintColor(.gray), selectedImage: listImage?.withTintColor(Constants.Colors.defaultBlue))
         
         let settingsViewController = UINavigationController(rootViewController: SettingsViewController())
-        settingsViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "gear")?.withTintColor(.gray), selectedImage: UIImage(systemName: "gear")?.withTintColor(Constants.Colors.defaultBlue))
+        let settingsImage = UIImage(named: "settings_icon")
+        settingsViewController.tabBarItem = UITabBarItem(title: nil, image: settingsImage?.withTintColor(.gray), selectedImage: settingsImage?.withTintColor(Constants.Colors.defaultBlue))
         
         self.setViewControllers([watchListViewController, guessViewController, settingsViewController], animated: true)
         self.selectedViewController = guessViewController

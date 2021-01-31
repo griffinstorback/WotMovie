@@ -55,8 +55,22 @@ class GridViewController: DetailPresenterViewController {
         collectionView.reloadData()
     }
     
-    public func reloadItems(at indexPaths: [IndexPath]) {
-        collectionView.reloadItems(at: indexPaths)
+    public func revealEntities(at indices: [Int]) {
+        //collectionView.reloadItems(at: indexPaths)
+        for index in indices {
+            let indexPath = IndexPath(item: index, section: 0)
+            let cell = collectionView.cellForItem(at: indexPath) as! GridCollectionViewCell
+            cell.reveal(animated: false)
+        }
+    }
+    
+    public func revealCorrectlyGuessedEntities(at indices: [Int]) {
+        for index in indices {
+            let indexPath = IndexPath(item: index, section: 0)
+            let cell = collectionView.cellForItem(at: indexPath) as! GridCollectionViewCell
+            cell.reveal(animated: false)
+            // TODO: Reveal small checkmark icon to show entity was correctly guessed on grid.
+        }
     }
     
     func presentGuessDetail(for item: Entity, fromCard: UIView) {
@@ -72,7 +86,11 @@ class GridViewController: DetailPresenterViewController {
         guessDetailViewController.modalPresentationStyle = .fullScreen
         guessDetailViewController.modalPresentationCapturesStatusBarAppearance = true
         
-        present(guessDetailViewController, fromCard: fromCard, startHidden: !item.isRevealed, presenter: transitionPresenter, entityID: item.id)
+        if transitionPresenter == nil {
+            print("** WARNING: about to present guessDetailViewController but transitionPresenter is nil. This will mean if an entity is revealed while modal is presented, the grid its being presented from will not reflect the changes.")
+        }
+        
+        present(guessDetailViewController, fromCard: fromCard, startHidden: !item.isRevealed, transitionPresenter: transitionPresenter)
     }
 }
 

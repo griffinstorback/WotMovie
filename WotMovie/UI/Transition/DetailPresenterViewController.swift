@@ -12,7 +12,7 @@ class DetailPresenterViewController: UIViewController {
     
     private var transition: CardTransition?
     
-    func present(_ viewController: UIViewController, fromCard: UIView, startHidden: Bool, presenter: TransitionPresenterProtocol?, entityID: Int) {
+    func present(_ viewController: DetailViewController, fromCard: UIView, startHidden: Bool, transitionPresenter: TransitionPresenterProtocol?) {
         
         // Freeze highlighted state or else it will bounce back??
         //cell.freezeAnimations()
@@ -36,11 +36,13 @@ class DetailPresenterViewController: UIViewController {
             return fromCard.superview!.convert(r, to: nil)
         }()
         
-        let parameters = CardTransitionParameters(fromCardFrame: cardPresentationFrameOnScreen, fromCardFrameWithoutTransform: cardFrameWithoutTransform, fromView: fromCard, startHidden: startHidden, presenter: presenter, entityID: entityID)
+        let parameters = CardTransitionParameters(fromCardFrame: cardPresentationFrameOnScreen, fromCardFrameWithoutTransform: cardFrameWithoutTransform, fromView: fromCard, startHidden: startHidden)
         transition = CardTransition(parameters: parameters)
         viewController.transitioningDelegate = transition
-        //viewController.modalPresentationCapturesStatusBarAppearance = true
         viewController.modalPresentationStyle = .custom
+        
+        // set transition presenter so detail can update page it came from
+        viewController.transitionPresenter = transitionPresenter
         
         present(viewController, animated: true) { [weak fromCard] in
             //cell.unfreezeAnimations

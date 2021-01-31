@@ -132,7 +132,7 @@ extension EntityTableViewController: UITableViewDelegate, UITableViewDataSource 
         
         // Presenter nil because no entity presented from this VC will start hidden, therefore will never need
         // to call setRevealed() to update posterimage.
-        present(guessDetailViewController, fromCard: cell.profileImageView, startHidden: false, presenter: nil, entityID: item.id)
+        present(guessDetailViewController, fromCard: cell.profileImageView, startHidden: false, transitionPresenter: nil)
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }

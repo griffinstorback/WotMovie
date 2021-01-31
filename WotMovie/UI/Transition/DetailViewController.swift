@@ -10,6 +10,8 @@ import UIKit
 // Detail modal must extend this class
 class DetailViewController: UIViewController {
     
+    var transitionPresenter: TransitionPresenterProtocol?
+    
     // amount view will change when dragging down or on screen edge
     static let targetShrinkScale: CGFloat = 0.85
     static let targetCornerRadius: CGFloat = 20

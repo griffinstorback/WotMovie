@@ -11,7 +11,9 @@ protocol GuessGridViewDelegate: NSObjectProtocol {
     func displayItems()
     func displayErrorLoadingItems()
     func reloadData()
-    func reloadItems(at indices: [Int])
+    
+    func revealEntities(at indices: [Int])
+    func revealCorrectlyGuessedEntities(at indices: [Int])
 }
 
 class GuessGridViewController: DetailPresenterViewController {
@@ -72,16 +74,12 @@ extension GuessGridViewController: GuessGridViewDelegate {
         gridView.reloadData()
     }
     
-    func reloadItems(at indices: [Int]) {
-        guard indices.count > 0 else {
-            return
-        }
-        
-        var indexPaths: [IndexPath] = []
-        for index in indices {
-            indexPaths.append(IndexPath(item: index, section: 0))
-        }
-        gridView.reloadItems(at: indexPaths)
+    func revealEntities(at indices: [Int]) {
+        gridView.revealEntities(at: indices)
+    }
+    
+    func revealCorrectlyGuessedEntities(at indices: [Int]) {
+        gridView.revealCorrectlyGuessedEntities(at: indices)
     }
 }
 

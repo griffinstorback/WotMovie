@@ -147,9 +147,6 @@ final class DismissCardTransitionDriver {
     }
     
     func completion() {
-        // update image revealed on presenter
-        parameters.presenter?.setEntityAsRevealed(id: parameters.entityID, isRevealed: screens.presented.posterImageView.isRevealed)
-
         animatedContainerView.removeFromSuperview()
 
         let success = !context.transitionWasCancelled

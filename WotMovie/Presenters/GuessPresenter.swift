@@ -22,7 +22,7 @@ class GuessPresenter: GuessPresenterProtocol {
         .movie: GuessCategory(type: .movie, title: "Guess the movie", shortTitle: "Movies", numberGuessed: 0, imageName: "movie_category_icon"),
         .person: GuessCategory(type: .person, title: "Name the person", shortTitle: "People", numberGuessed: 0, imageName: "person_category_icon"),
         .tvShow: GuessCategory(type: .tvShow, title: "Guess the TV Show", shortTitle: "TV Shows", numberGuessed: 0, imageName: "tv_category_icon"),
-        .stats: GuessCategory(type: .stats, title: "See all stats", shortTitle: "Stats", numberGuessed: nil, imageName: "question_mark")
+        .stats: GuessCategory(type: .stats, title: "See all stats", shortTitle: "Stats", numberGuessed: nil, imageName: "stats_icon")
     ]
     
     init(networkManager: NetworkManagerProtocol = NetworkManager.shared, coreDataManager: CoreDataManager = .shared) {

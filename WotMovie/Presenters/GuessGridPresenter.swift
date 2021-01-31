@@ -98,15 +98,23 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
     }
     
     // TransitionPresenterProtocol - called when dismissing modal detail (if item was revealed while modal was up)
-    func setEntityAsRevealed(id: Int, isRevealed: Bool) {
-        print("*** GuessGridPresenter: setEntity with id \(id) as \(isRevealed ? "revealed" : "NOT revealed")")
+    func setEntityAsRevealed(id: Int, isCorrect: Bool) {
+        print("*** GuessGridPresenter: setEntity with id \(id) as \(isCorrect ? "revealed" : "NOT revealed")")
         
         if let index = items.firstIndex(where: { $0.id == id }) {
-            if items[index].isRevealed != isRevealed {
-                // there is a change
-                items[index].isRevealed = isRevealed
-                DispatchQueue.main.async {
-                    self.guessGridViewDelegate?.reloadItems(at: [index])
+            if isCorrect { // if entity was correctly guessed
+                if !items[index].correctlyGuessed {
+                    items[index].correctlyGuessed = true
+                    DispatchQueue.main.async {
+                        self.guessGridViewDelegate?.revealEntities(at: [index])
+                    }
+                }
+            } else { // if entity was revealed (user gave up)
+                if !items[index].isRevealed {
+                    items[index].isRevealed = true
+                    DispatchQueue.main.async {
+                        self.guessGridViewDelegate?.revealCorrectlyGuessedEntities(at: [index])
+                    }
                 }
             }
         }

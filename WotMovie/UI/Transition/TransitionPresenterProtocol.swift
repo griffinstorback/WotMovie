@@ -8,5 +8,5 @@
 import Foundation
 
 protocol TransitionPresenterProtocol {
-    func setEntityAsRevealed(id: Int, isRevealed: Bool)
+    func setEntityAsRevealed(id: Int, isCorrect: Bool)
 }

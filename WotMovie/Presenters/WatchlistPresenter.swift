@@ -25,9 +25,9 @@ class WatchlistPresenter: WatchlistPresenterProtocol {
     weak var watchlistViewDelegate: WatchlistViewDelegate?
     
     private let categoryTableViewRows: [WatchlistCategory] = [
-        WatchlistCategory(type: .movieOrTvShowWatchlist, title: "Watchlist", imageName: "question_mark"),
-        WatchlistCategory(type: .personFavorites, title: "Favorites", imageName: "question_mark"),
-        WatchlistCategory(type: .allGuessed, title: "Guessed", imageName: "question_mark"),
+        WatchlistCategory(type: .movieOrTvShowWatchlist, title: "Watchlist", imageName: "watchlist_icon"),
+        WatchlistCategory(type: .personFavorites, title: "Favorites", imageName: "favorites_icon"),
+        WatchlistCategory(type: .allGuessed, title: "Guessed", imageName: "guessed_correct_icon"),
         WatchlistCategory(type: .allRevealed, title: "Revealed", imageName: "question_mark"),
         
         // TODO: Decide if search should be allowed. Because it would easily allow for cheating,

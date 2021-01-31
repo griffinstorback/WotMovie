@@ -564,7 +564,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
     func fetchPageOfRecentlyViewed() -> [Entity] {
         let moc = coreDataStack.persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<MovieMO>(entityName: "Movie")
-        fetchRequest.fetchLimit = 20
+        fetchRequest.fetchLimit = 60
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "lastViewedDate", ascending: false)]
         //fetchRequest.predicate = NSPredicate(format: "", Date())
         

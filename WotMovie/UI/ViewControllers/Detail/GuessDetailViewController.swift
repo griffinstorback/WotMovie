@@ -31,6 +31,8 @@ class GuessDetailViewController: DetailViewController {
     let guessDetailViewPresenter: GuessDetailPresenterProtocol
     var state: GuessDetailViewState
     
+    var parentPresenter: TransitionPresenterProtocol?
+    
     // needs container because contentstackview.alignment == .fill
     private let showHintButtonContainer: UIView!
     private let showHintButton: ShrinkOnTouchButton!
@@ -74,10 +76,10 @@ class GuessDetailViewController: DetailViewController {
         layoutViews()
     }
     
-    @objc func revealButtonPressed() {
+    /*@objc func revealButtonPressed() {
         guessDetailViewPresenter.answerWasRevealed()
         state = .revealed
-    }
+    }*/
     
     @objc func showHintButtonPressed() {
         guessDetailViewPresenter.hintWasShown()
@@ -145,6 +147,9 @@ extension GuessDetailViewController: EnterGuessProtocol {
         state = .revealed
         guessDetailViewPresenter.answerWasRevealed()
         enterGuessViewController.setAnswerRevealed()
+        
+        print("**** revealButtonPressed() - calling presenter method..")
+        transitionPresenter?.setEntityAsRevealed(id: guessDetailViewPresenter.getID(), isCorrect: true)
     }
     
     func nextQuestion() {

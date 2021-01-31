@@ -157,7 +157,7 @@ extension HorizontalCollectionViewController: UICollectionViewDataSource, UIColl
         }
         
         // Presenter nil because no entity presented from this VC will start hidden, therefore will never need
-        // to call setRevealed() to update posterimage.
-        present(guessDetailViewController, fromCard: cell.imageView, startHidden: false, presenter: nil, entityID: item.id)
+        // to update posterimage hidden status.
+        present(guessDetailViewController, fromCard: cell.imageView, startHidden: false, transitionPresenter: nil)
     }
 }
