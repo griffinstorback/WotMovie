@@ -7,9 +7,16 @@
 
 import UIKit
 
+enum PosterImageViewState {
+    case hidden
+    case revealed
+    case correctlyGuessed
+}
+
 class PosterImageView: CardView {
 
-    var isRevealed: Bool = false
+    var state: PosterImageViewState = .hidden
+    
     private let imageView: UIImageView
     
     // lazy because they're completely unneeded if the image is never "anonymized" (blurred out)
@@ -24,24 +31,25 @@ class PosterImageView: CardView {
         imageView.contentMode = .scaleAspectFit
         imageView.alpha = 0.3
         imageView.isUserInteractionEnabled = false
+        
+        // make question mark always on top of blur view
+        imageView.layer.zPosition = 1
+        return imageView
+    }()
+    private lazy var checkMarkImageView: UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: "guessed_correct_icon"))
+        imageView.contentMode = .scaleAspectFit
+        imageView.isUserInteractionEnabled = false
         return imageView
     }()
     
-    convenience init(startHidden: Bool) {
+    convenience init(state: PosterImageViewState) {
         self.init(frame: .zero)
         
         // add the image view (where the poster image will be)
         addImageView()
-
-        if startHidden {
-            isRevealed = false
-            
-            // Initially starts with blur on. Call removeBlurEffectOverlay when user has guessed it or given up.
-            addBlurEffectOverlay(animated: false)
-            
-            // But animate the question mark on.
-            addQuestionMarkOverlay(animated: false)
-        }
+        
+        setState(state, animated: false)
     }
     
     override init(frame: CGRect) {
@@ -52,65 +60,52 @@ class PosterImageView: CardView {
         backgroundColor = .white
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setImage(_ image: UIImage?) {
+        imageView.image = image
+    }
+    
+    // for creating copy of posterimageview (specifically, used in dismiss card animator)
+    func getImage() -> UIImage? {
+        return imageView.image
+    }
+    
     func addImageView() {
         addSubview(imageView)
         imageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
     }
     
-    func reveal(animated: Bool) {
-        hideBlurEffectOverlay(animated: animated)
-        hideQuestionMarkOverlay(animated: animated)
-        isRevealed = true
-    }
-    
-    func unreveal(animated: Bool) {
-        unhideBlurEffectOverlay(animated: animated)
-        unhideQuestionMarkOverlay(animated: animated)
-        isRevealed = false
-    }
-    
-    func hideBlurEffectOverlay(animated: Bool, duration: Double = 1.0) {
-        hideOverlay(blurEffectView, animated: animated, duration: duration)
-    }
-    
-    func hideQuestionMarkOverlay(animated: Bool, duration: Double = 1.0) {
-        hideOverlay(questionMarkImageView, animated: animated, duration: duration)
-    }
-    
-    func unhideBlurEffectOverlay(animated: Bool, duration: Double = 1.0) {
-        unhideOverlay(blurEffectView, animated: animated, duration: duration)
-    }
-    
-    func unhideQuestionMarkOverlay(animated: Bool, duration: Double = 1.0) {
-        unhideOverlay(questionMarkImageView, animated: animated, duration: duration, toAlpha: 0.3)
-    }
-    
-    func hideOverlay(_ overlay: UIView, animated: Bool, duration: Double = 1.0) {
-        if animated {
-            UIView.animate(withDuration: duration, animations:({
-                overlay.alpha = 0
-            })) { _ in
-                overlay.isHidden = true
-            }
-        } else {
-            overlay.alpha = 0
-            overlay.isHidden = true
+    func setState(_ state: PosterImageViewState, animated: Bool) {
+        // NOTE: order of add/removal matters. add question mark AFTER blur effect, but remove it BEFORE.
+        switch state {
+        case .hidden:
+            addBlurEffectOverlay(animated: animated)
+            addQuestionMarkOverlay(animated: animated)
+            removeCheckMarkOverlay(animated: animated)
+            
+        case .revealed:
+            removeQuestionMarkOverlay(animated: animated)
+            removeBlurEffectOverlay(animated: animated)
+            removeCheckMarkOverlay(animated: animated)
+            
+        case .correctlyGuessed:
+            removeQuestionMarkOverlay(animated: animated)
+            removeBlurEffectOverlay(animated: animated)
+            addCheckMarkOverlay(animated: animated)
         }
-    }
-    
-    func unhideOverlay(_ overlay: UIView, animated: Bool, duration: Double = 1.0, toAlpha: CGFloat = 1.0) {
-        overlay.isHidden = false
         
-        if animated {
-            UIView.animate(withDuration: duration) {
-                overlay.alpha = toAlpha
-            }
-        } else {
-            overlay.alpha = toAlpha
-        }
+        self.state = state
     }
     
     private func addBlurEffectOverlay(animated: Bool, duration: Double = 1.5) {
+        guard !subviews.contains(blurEffectView) else {
+            unhideOverlay(blurEffectView, animated: animated, duration: duration)
+            return
+        }
+        
         if animated {
             blurEffectView.alpha = 0
             UIView.animate(withDuration: duration) {
@@ -123,6 +118,10 @@ class PosterImageView: CardView {
     }
     
     private func removeBlurEffectOverlay(animated: Bool) {
+        guard subviews.contains(blurEffectView) else {
+            return
+        }
+        
         if animated {
             UIView.animate(withDuration: 1.5, animations: {
                 self.blurEffectView.alpha = 0
@@ -132,11 +131,14 @@ class PosterImageView: CardView {
         } else {
             blurEffectView.removeFromSuperview()
         }
-        
-        removeQuestionMarkOverlay(animated: true)
     }
     
     private func addQuestionMarkOverlay(animated: Bool) {
+        guard !subviews.contains(questionMarkImageView) else {
+            unhideOverlay(questionMarkImageView, animated: animated, toAlpha: 0.3)
+            return
+        }
+        
         if animated {
             questionMarkImageView.alpha = 0
             UIView.animate(withDuration: 1.5) {
@@ -151,6 +153,10 @@ class PosterImageView: CardView {
     }
     
     private func removeQuestionMarkOverlay(animated: Bool) {
+        guard subviews.contains(questionMarkImageView) else {
+            return
+        }
+        
         if animated {
             UIView.animate(withDuration: 1.0, animations: {
                 self.questionMarkImageView.alpha = 0
@@ -161,20 +167,81 @@ class PosterImageView: CardView {
             questionMarkImageView.removeFromSuperview()
         }
     }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    
+    private func addCheckMarkOverlay(animated: Bool) {
+        guard !subviews.contains(checkMarkImageView) else {
+            unhideOverlay(checkMarkImageView, animated: animated)
+            return
+        }
+        
+        if animated {
+            checkMarkImageView.alpha = 0
+            UIView.animate(withDuration: 1.0) {
+                self.checkMarkImageView.alpha = 1
+            }
+        }
+        
+        addSubview(checkMarkImageView)
+        
+        // width equal to a third of views width
+        checkMarkImageView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.33).isActive = true
+        
+        // height equal to width
+        NSLayoutConstraint(item: checkMarkImageView, attribute: .height, relatedBy: .equal, toItem: checkMarkImageView, attribute: .width, multiplier: 1, constant: 0).isActive = true
+        
+        // 10 away from top left
+        checkMarkImageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: nil, trailing: nil, padding: UIEdgeInsets(top: 8, left: 8, bottom: 0, right: 0))
+        
+        
+        // (NOT NECESSARY?) together, these two constraints hold view in top left.
+        /*let aboveYAxisConstraint = NSLayoutConstraint(item: checkMarkImageView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 0.33, constant: 0)
+        let leftOfXAxisConstraint = NSLayoutConstraint(item: checkMarkImageView, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 0.5, constant: 0)
+        NSLayoutConstraint.activate([aboveYAxisConstraint, leftOfXAxisConstraint])*/
     }
     
-    func setImage(_ image: UIImage?) {
-        imageView.image = image
+    private func removeCheckMarkOverlay(animated: Bool) {
+        guard subviews.contains(checkMarkImageView) else {
+            return
+        }
+        
+        if animated {
+            UIView.animate(withDuration: 1.0, animations: {
+                self.checkMarkImageView.alpha = 0
+            }) { _ in
+                self.checkMarkImageView.removeFromSuperview()
+            }
+        } else {
+            checkMarkImageView.removeFromSuperview()
+        }
     }
     
-    // for creating copy of posterimageview (specifically, used in dismiss card animator)
-    func getImage() -> UIImage? {
-        return imageView.image
+    private func hideOverlay(_ overlay: UIView, animated: Bool, duration: Double = 1.0) {
+        if animated {
+            UIView.animate(withDuration: duration, animations:({
+                overlay.alpha = 0
+            })) { _ in
+                overlay.isHidden = true
+            }
+        } else {
+            overlay.alpha = 0
+            overlay.isHidden = true
+        }
     }
     
+    private func unhideOverlay(_ overlay: UIView, animated: Bool, duration: Double = 1.0, toAlpha: CGFloat = 1.0) {
+        overlay.isHidden = false
+        
+        if animated {
+            UIView.animate(withDuration: duration) {
+                overlay.alpha = toAlpha
+            }
+        } else {
+            overlay.alpha = toAlpha
+        }
+    }
+    
+    // Decided against having posterimageview be the one to shrink when pressed - it was messing
+    // with the collectionview cells.
     /*override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         print("touch began")

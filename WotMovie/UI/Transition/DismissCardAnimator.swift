@@ -65,7 +65,7 @@ final class DismissCardTransitionDriver {
             context.viewController(forKey: .to) as? DetailPresenterViewController
         )
         
-        cardDetailPosterImageViewCopy = PosterImageView(startHidden: !screens.presented.posterImageView.isRevealed)
+        cardDetailPosterImageViewCopy = PosterImageView(state: screens.presented.posterImageView.state)
         cardDetailPosterImageViewCopy.setImage(screens.presented.posterImageView.getImage())
         cardDetailPosterImageViewCopy.frame = screens.presented.posterImageView.convert(screens.presented.posterImageView.frame, to: container)
         cardDetailPosterImageViewCopy.layer.cornerRadius = cardDetailPosterImageViewCopy.frame.height * Constants.imageCornerRadiusRatio

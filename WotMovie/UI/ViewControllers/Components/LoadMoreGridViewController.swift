@@ -62,6 +62,10 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
             cell.reveal(animated: false)
         }
         
+        if item.correctlyGuessed {
+            cell.revealAsCorrect(animated: false)
+        }
+        
         return cell
     }
     

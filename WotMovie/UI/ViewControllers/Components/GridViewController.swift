@@ -68,8 +68,7 @@ class GridViewController: DetailPresenterViewController {
         for index in indices {
             let indexPath = IndexPath(item: index, section: 0)
             let cell = collectionView.cellForItem(at: indexPath) as! GridCollectionViewCell
-            cell.reveal(animated: false)
-            // TODO: Reveal small checkmark icon to show entity was correctly guessed on grid.
+            cell.revealAsCorrect(animated: false)
         }
     }
     

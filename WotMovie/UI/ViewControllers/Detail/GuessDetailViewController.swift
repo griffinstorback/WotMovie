@@ -17,8 +17,8 @@ protocol EnterGuessProtocol {
     func showResults()
     func hideResults()
     func revealAnswer()
+    func revealAsCorrect()
     func nextQuestion()
-    func checkAnswer(id: Int) -> Bool
 }
 
 protocol GuessDetailViewDelegate: NSObjectProtocol {
@@ -148,16 +148,19 @@ extension GuessDetailViewController: EnterGuessProtocol {
         guessDetailViewPresenter.answerWasRevealed()
         enterGuessViewController.setAnswerRevealed()
         
-        print("**** revealButtonPressed() - calling presenter method..")
+        transitionPresenter?.setEntityAsRevealed(id: guessDetailViewPresenter.getID(), isCorrect: false)
+    }
+    
+    func revealAsCorrect() {
+        state = .revealed
+        guessDetailViewPresenter.answerWasRevealedAsCorrect()
+        enterGuessViewController.setAnswerRevealed()
+        
         transitionPresenter?.setEntityAsRevealed(id: guessDetailViewPresenter.getID(), isCorrect: true)
     }
     
     func nextQuestion() {
         self.dismiss(animated: true)
-    }
-    
-    func checkAnswer(id: Int) -> Bool {
-        return id == guessDetailViewPresenter.getID()
     }
 }
 

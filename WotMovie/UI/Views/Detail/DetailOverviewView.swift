@@ -54,7 +54,7 @@ class DetailOverviewView: UIView {
     }()
     
     init(frame: CGRect, startHidden: Bool) {
-        posterImageView = PosterImageView(startHidden: startHidden)
+        posterImageView = PosterImageView(state: startHidden ? .hidden : .revealed)
         posterImageView.layer.cornerRadius = Constants.DetailOverviewPosterImage.size.height * Constants.imageCornerRadiusRatio
         posterImageView.layer.masksToBounds = true
         
@@ -110,10 +110,10 @@ class DetailOverviewView: UIView {
     }
     
     public func removePosterImageBlurEffectOverlay(animated: Bool) {
-        posterImageView.reveal(animated: animated)
+        posterImageView.setState(.revealed, animated: animated)
     }
     
     public func addPosterImageBlurEffectOverlay(animated: Bool) {
-        posterImageView.unreveal(animated: animated)
+        posterImageView.setState(.hidden, animated: animated)
     }
 }

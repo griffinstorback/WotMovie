@@ -168,7 +168,7 @@ extension EnterGuessViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if enterGuessPresenter.isCorrect(index: indexPath.row) {
-            revealButtonPressed()
+            delegate?.revealAsCorrect()
             enterGuessControlsView.shouldResignFirstReponder()
             print("Correct!")
         } else {

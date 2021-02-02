@@ -21,8 +21,10 @@ protocol GuessDetailPresenterProtocol {
     
     func isHintShown() -> Bool
     func isAnswerRevealed() -> Bool
+    func isAnswerCorrectlyGuessed() -> Bool
     func hintWasShown()
     func answerWasRevealed()
+    func answerWasRevealedAsCorrect()
 }
 
 class GuessDetailPresenter: GuessDetailPresenterProtocol {
@@ -120,6 +122,10 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
         return item.isRevealed
     }
     
+    func isAnswerCorrectlyGuessed() -> Bool {
+        return item.correctlyGuessed
+    }
+    
     func hintWasShown() {
         print("** guess detail presenter: in hintWasShown")
         item.isHintShown = true
@@ -130,6 +136,12 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
     func answerWasRevealed() {
         print("** guess detail presenter: in answerWasRevealed")
         item.isRevealed = true
+        coreDataManager.updateOrCreateEntity(entity: item)
+        detailViewDelegate?.reloadData()
+    }
+    
+    func answerWasRevealedAsCorrect() {
+        item.correctlyGuessed = true
         coreDataManager.updateOrCreateEntity(entity: item)
         detailViewDelegate?.reloadData()
     }

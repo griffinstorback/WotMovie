@@ -155,7 +155,7 @@ extension TitleDetailViewController: GuessDetailViewDelegate {
         castCollectionView.reloadData()
         crewTableView.reloadData()
         
-        if guessDetailViewPresenter.isAnswerRevealed() {
+        if guessDetailViewPresenter.isAnswerRevealed() || guessDetailViewPresenter.isAnswerCorrectlyGuessed() {
             print("** guess detail view delegate: setting state to .revealed")
             state = .revealed
             return

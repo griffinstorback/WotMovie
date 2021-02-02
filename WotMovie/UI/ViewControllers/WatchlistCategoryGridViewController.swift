@@ -105,8 +105,8 @@ class WatchlistCategoryGridViewController: UIViewController {
             // --- prob not now that types are in top right instead of genre.
             break
         case .allGuessed:
-            searchController.searchBar.scopeButtonTitles = ["All", "Without hint", "With hint"]
-            searchController.searchBar.showsScopeBar = true
+            //searchController.searchBar.scopeButtonTitles = ["All", "Without hint", "With hint"]
+            //searchController.searchBar.showsScopeBar = true
             
             // TODO: only show all genres button if movies or tv shows only are selected,
             //       as genres for people makes no sense? (also could have "all jobs" for person)
@@ -118,8 +118,8 @@ class WatchlistCategoryGridViewController: UIViewController {
         }
         
         // bookmark button is actually the sort button.
+        searchController.searchBar.setImage(UIImage(named: "sort_icon"), for: .bookmark, state: .normal)
         searchController.searchBar.showsBookmarkButton = true
-        // TODO: set bookmark button icon as three line icon for "sort"
     }
 }
 

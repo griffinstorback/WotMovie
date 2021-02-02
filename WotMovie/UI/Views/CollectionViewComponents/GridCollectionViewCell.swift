@@ -17,7 +17,7 @@ class GridCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        posterImageView = PosterImageView(startHidden: true)        
+        posterImageView = PosterImageView(state: .hidden)
         addSubview(posterImageView)
         posterImageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
     }
@@ -33,8 +33,7 @@ class GridCollectionViewCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         self.posterImageView.setImage(nil)
-        self.posterImageView.unhideBlurEffectOverlay(animated: false)
-        self.posterImageView.unhideQuestionMarkOverlay(animated: false)
+        self.posterImageView.setState(.hidden, animated: false)
         self.imagePath = ""
     }
     
@@ -55,6 +54,10 @@ class GridCollectionViewCell: UICollectionViewCell {
     }
     
     func reveal(animated: Bool) {
-        posterImageView.reveal(animated: animated)
+        posterImageView.setState(.revealed, animated: animated)
+    }
+    
+    func revealAsCorrect(animated: Bool) {
+        posterImageView.setState(.correctlyGuessed, animated: animated)
     }
 }
