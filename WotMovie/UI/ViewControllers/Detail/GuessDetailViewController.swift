@@ -11,6 +11,7 @@ enum GuessDetailViewState {
     case fullyHidden
     case hintShown
     case revealed
+    case revealedWithNoNextButton
 }
 
 protocol EnterGuessProtocol {
@@ -33,23 +34,34 @@ class GuessDetailViewController: DetailViewController {
     
     var parentPresenter: TransitionPresenterProtocol?
     
+    // checkmark icon that is shown when correctly guessed
+    private let checkMarkIconImageView: UIImageView
+    
     // needs container because contentstackview.alignment == .fill
-    private let showHintButtonContainer: UIView!
-    private let showHintButton: ShrinkOnTouchButton!
+    private let showHintButtonContainer: UIView
+    private let showHintButton: ShrinkOnTouchButton
     
     // enter guess field at bottom
-    private let enterGuessViewController: EnterGuessViewController!
-    private let enterGuessContainerView: UIView!
+    private let enterGuessViewController: EnterGuessViewController
+    private let enterGuessContainerView: UIView
     private var enterGuessContainerViewTopConstraint: NSLayoutConstraint!
     
-    init(item: Entity, posterImageView: PosterImageView, startHidden: Bool, presenter: GuessDetailPresenterProtocol) {
+    init(item: Entity, posterImageView: PosterImageView, startHidden: Bool, fromGuessGrid: Bool, presenter: GuessDetailPresenterProtocol) {
         if startHidden {
             state = .fullyHidden
         } else {
-            state = .revealed
+            
+            // only show next button if being presented from guess grid view
+            if fromGuessGrid {
+                state = .revealed
+            } else {
+                state = .revealedWithNoNextButton
+            }
         }
         
         guessDetailViewPresenter = presenter
+        
+        checkMarkIconImageView = UIImageView(image: UIImage(named: "guessed_correct_icon"))
         
         showHintButtonContainer = UIView()
         showHintButton = ShrinkOnTouchButton()
@@ -76,17 +88,16 @@ class GuessDetailViewController: DetailViewController {
         layoutViews()
     }
     
-    /*@objc func revealButtonPressed() {
-        guessDetailViewPresenter.answerWasRevealed()
-        state = .revealed
-    }*/
-    
     @objc func showHintButtonPressed() {
         guessDetailViewPresenter.hintWasShown()
         state = .hintShown
     }
     
     private func setupViews() {
+        checkMarkIconImageView.contentMode = .scaleAspectFit
+        checkMarkIconImageView.isHidden = true
+        checkMarkIconImageView.alpha = 0
+        
         showHintButton.setTitle("Show hint", for: .normal)
         showHintButton.backgroundColor = Constants.Colors.defaultBlue
         showHintButton.titleLabel?.textColor = .white
@@ -98,12 +109,21 @@ class GuessDetailViewController: DetailViewController {
     }
     
     private func layoutViews() {
+        addCheckMarkIconView()
+        
         addEnterGuessView()
         
         // if state starts as revealed don't show "Enter movie name" field
         if state == .revealed {
             enterGuessViewController.setAnswerRevealed()
+        } else if state == .revealedWithNoNextButton {
+            enterGuessViewController.setNoNextButton()
         }
+    }
+    
+    private func addCheckMarkIconView() {
+        view.addSubview(checkMarkIconImageView)
+        checkMarkIconImageView.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: nil, trailing: nil, padding: UIEdgeInsets(top: 10, left: 10, bottom: 0, right: 0), size: CGSize(width: 40, height: 40))
     }
     
     private func addEnterGuessView() {
@@ -130,6 +150,32 @@ class GuessDetailViewController: DetailViewController {
         if contentStackView.subviews.contains(showHintButtonContainer) {
             contentStackView.removeArrangedSubview(showHintButtonContainer)
             showHintButtonContainer.removeFromSuperview()
+        }
+    }
+    
+    func addCheckMarkIcon(animated: Bool, duration: Double = 0.5) {
+        if animated {
+            checkMarkIconImageView.isHidden = false
+            UIView.animate(withDuration: duration, animations:({
+                self.checkMarkIconImageView.alpha = 1
+            }))
+        } else {
+            checkMarkIconImageView.isHidden = false
+            checkMarkIconImageView.alpha = 1
+        }
+    }
+    
+    // this generally shouldn't have to be used, but created it just in case
+    func removeCheckMarkIcon(animated: Bool, duration: Double = 0.5) {
+        if animated {
+            UIView.animate(withDuration: duration, animations:({
+                self.checkMarkIconImageView.alpha = 0
+            })) { _ in
+                self.checkMarkIconImageView.isHidden = true
+            }
+        } else {
+            checkMarkIconImageView.alpha = 0
+            checkMarkIconImageView.isHidden = true
         }
     }
 }

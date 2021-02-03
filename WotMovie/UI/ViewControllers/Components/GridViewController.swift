@@ -77,9 +77,9 @@ class GridViewController: DetailPresenterViewController {
         
         switch item.type {
         case .movie, .tvShow:
-            guessDetailViewController = TitleDetailViewController(item: item, startHidden: !item.isRevealed)
+            guessDetailViewController = TitleDetailViewController(item: item, startHidden: !item.isRevealed && !item.correctlyGuessed, fromGuessGrid: true)
         case .person:
-            guessDetailViewController = PersonDetailViewController(item: item, startHidden: !item.isRevealed)
+            guessDetailViewController = PersonDetailViewController(item: item, startHidden: !item.isRevealed && !item.correctlyGuessed, fromGuessGrid: true)
         }
         
         guessDetailViewController.modalPresentationStyle = .fullScreen
@@ -89,7 +89,7 @@ class GridViewController: DetailPresenterViewController {
             print("** WARNING: about to present guessDetailViewController but transitionPresenter is nil. This will mean if an entity is revealed while modal is presented, the grid its being presented from will not reflect the changes.")
         }
         
-        present(guessDetailViewController, fromCard: fromCard, startHidden: !item.isRevealed, transitionPresenter: transitionPresenter)
+        present(guessDetailViewController, fromCard: fromCard, startHidden: !item.isRevealed && !item.correctlyGuessed, transitionPresenter: transitionPresenter)
     }
 }
 

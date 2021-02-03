@@ -26,7 +26,7 @@ class TitleDetailViewController: GuessDetailViewController {
                 removeShowHintButton()
                 addInfo()
                 
-            case .revealed:
+            case .revealed, .revealedWithNoNextButton:
                 removeShowHintButton()
                 addInfo()
                 
@@ -36,6 +36,11 @@ class TitleDetailViewController: GuessDetailViewController {
                 detailOverviewView.removePosterImageBlurEffectOverlay(animated: true)
                 detailOverviewView.setTitle(titleDetailViewPresenter.getTitle())     //   // TODO *** animate this
                 detailOverviewView.setOverviewText(titleDetailViewPresenter.getOverview()) // uncensor title name from overview
+            
+                // if item was correctly guessed, show check at top left
+                if titleDetailViewPresenter.item.correctlyGuessed {
+                    addCheckMarkIcon(animated: true)
+                }
             }
         }
     }
@@ -45,7 +50,7 @@ class TitleDetailViewController: GuessDetailViewController {
     private let castCollectionView: HorizontalCollectionViewController!
     private let crewTableView: EntityTableViewController!
     
-    init(item: Entity, startHidden: Bool, presenter: TitleDetailPresenterProtocol? = nil) {
+    init(item: Entity, startHidden: Bool, fromGuessGrid: Bool, presenter: TitleDetailPresenterProtocol? = nil) {
         // use passed in presenter if provided (used in tests)
         titleDetailViewPresenter = presenter ?? TitleDetailPresenter(item: item)
         
@@ -53,7 +58,7 @@ class TitleDetailViewController: GuessDetailViewController {
         castCollectionView = HorizontalCollectionViewController(title: "Cast")
         crewTableView = EntityTableViewController()
         
-        super.init(item: item, posterImageView: detailOverviewView.posterImageView, startHidden: startHidden, presenter: titleDetailViewPresenter)
+        super.init(item: item, posterImageView: detailOverviewView.posterImageView, startHidden: startHidden, fromGuessGrid: false, presenter: titleDetailViewPresenter)
         
         titleDetailViewPresenter.setViewDelegate(detailViewDelegate: self)
     }
@@ -90,10 +95,13 @@ class TitleDetailViewController: GuessDetailViewController {
             addShowHintButton()
         case .hintShown:
             addInfo()
-        case .revealed:
+        case .revealed, .revealedWithNoNextButton:
             addInfo()
             detailOverviewView.removePosterImageBlurEffectOverlay(animated: false)
             detailOverviewView.setTitle(titleDetailViewPresenter.getTitle())
+            
+            // if item was correctly guessed, show check at top left
+            addCheckMarkIcon(animated: false)
         }
     }
     

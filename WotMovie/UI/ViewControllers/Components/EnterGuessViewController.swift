@@ -48,6 +48,7 @@ class EnterGuessViewController: UIViewController {
         
         enterGuessControlsView.setEnterGuessFieldPlaceholder(text: enterGuessPresenter.getPlaceholderText())
         enterGuessControlsView.setWatchlistButtonText(text: enterGuessPresenter.getWatchlistButtonText())
+        enterGuessControlsView.setWatchlistButtonImage(imageName: enterGuessPresenter.getWatchlistImageName())
         
         setupTableView()
         
@@ -89,6 +90,11 @@ class EnterGuessViewController: UIViewController {
     
     public func setAnswerRevealed() {
         enterGuessControlsView.setAnswerWasRevealed()
+    }
+    
+    public func setNoNextButton() {
+        enterGuessControlsView.setAnswerWasRevealed()
+        enterGuessControlsView.removeNextButton()
     }
     
     @objc func keyboardWillAppear(notification: Notification) {
@@ -214,6 +220,7 @@ extension EnterGuessViewController: EnterGuessViewDelegate {
     func reloadResults() {
         resultsTableView.reloadData()
         enterGuessControlsView.setWatchlistButtonText(text: enterGuessPresenter.getWatchlistButtonText())
+        enterGuessControlsView.setWatchlistButtonImage(imageName: enterGuessPresenter.getWatchlistImageName())
         scrollToBottom()
     }
     

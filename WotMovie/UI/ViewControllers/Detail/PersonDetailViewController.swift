@@ -21,7 +21,7 @@ class PersonDetailViewController: GuessDetailViewController {
                 removeShowHintButton()
                 addInfo()
                 
-            case .revealed:
+            case .revealed, .revealedWithNoNextButton:
                 removeShowHintButton()
                 addInfo()
                 
@@ -30,6 +30,9 @@ class PersonDetailViewController: GuessDetailViewController {
                 
                 personOverviewView.setName(personDetailViewPresenter.getTitle())     //   // TODO *** animate this
                 //personOverviewView.setOverviewText(personDetailViewPresenter.getOverview())
+            
+                // if item was correctly guessed, show check at top left
+                addCheckMarkIcon(animated: true)
             }
         }
     }
@@ -43,7 +46,7 @@ class PersonDetailViewController: GuessDetailViewController {
     private let producedCollectionView: HorizontalCollectionViewController!
     private let wroteCollectionView: HorizontalCollectionViewController!
     
-    init(item: Entity, startHidden: Bool, presenter: PersonDetailPresenterProtocol? = nil) {
+    init(item: Entity, startHidden: Bool, fromGuessGrid: Bool, presenter: PersonDetailPresenterProtocol? = nil) {
         // use passed in presenter if provided (used in tests)
         personDetailViewPresenter = presenter ?? PersonDetailPresenter(item: item)
         
@@ -60,7 +63,7 @@ class PersonDetailViewController: GuessDetailViewController {
         wroteCollectionView = HorizontalCollectionViewController(title: "Writer")
         wroteCollectionView.restorationIdentifier = "Writer"
         
-        super.init(item: item, posterImageView: personOverviewView.posterImageView, startHidden: startHidden, presenter: personDetailViewPresenter)
+        super.init(item: item, posterImageView: personOverviewView.posterImageView, startHidden: startHidden, fromGuessGrid: false, presenter: personDetailViewPresenter)
         
         personDetailViewPresenter.setViewDelegate(detailViewDelegate: self)
     }
@@ -98,9 +101,14 @@ class PersonDetailViewController: GuessDetailViewController {
             addShowHintButton()
         case .hintShown:
             addInfo()
-        case .revealed:
+        case .revealed, .revealedWithNoNextButton:
             addInfo()
             personOverviewView.setName(personDetailViewPresenter.getTitle())
+            
+            // if item was correctly guessed, show check at top left
+            if personDetailViewPresenter.item.correctlyGuessed {
+                addCheckMarkIcon(animated: false)
+            }
         }
     }
     

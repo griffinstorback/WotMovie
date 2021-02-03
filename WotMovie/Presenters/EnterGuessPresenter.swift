@@ -18,6 +18,7 @@ protocol EnterGuessPresenterProtocol {
     func getPlaceholderText() -> String
     func addItemToWatchlist()
     func getWatchlistButtonText() -> String
+    func getWatchlistImageName() -> String
 }
 
 class EnterGuessPresenter: EnterGuessPresenterProtocol {
@@ -168,6 +169,15 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
             } else {
                 return "Add to Favorites"
             }
+        }
+    }
+    
+    func getWatchlistImageName() -> String {
+        switch item.type {
+        case .movie, .tvShow:
+            return "watchlist_icon"
+        case .person:
+            return "favorites_icon"
         }
     }
 }

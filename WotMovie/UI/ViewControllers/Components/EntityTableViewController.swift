@@ -125,9 +125,9 @@ extension EntityTableViewController: UITableViewDelegate, UITableViewDataSource 
         
         switch item.type {
         case .movie, .tvShow:
-            guessDetailViewController = TitleDetailViewController(item: item, startHidden: false)
+            guessDetailViewController = TitleDetailViewController(item: item, startHidden: false, fromGuessGrid: false)
         case .person:
-            guessDetailViewController = PersonDetailViewController(item: item, startHidden: false)
+            guessDetailViewController = PersonDetailViewController(item: item, startHidden: false, fromGuessGrid: false)
         }
         
         // Presenter nil because no entity presented from this VC will start hidden, therefore will never need

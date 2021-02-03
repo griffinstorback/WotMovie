@@ -82,6 +82,9 @@ class EnterGuessControlsView: UIView {
         addToWatchlistButton.setTitle("Add to Watchlist", for: .normal)
         addToWatchlistButton.setTitleColor(.white, for: .normal)
         addToWatchlistButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        addToWatchlistButton.titleLabel?.numberOfLines = 2
+        addToWatchlistButton.titleEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 5)
+        addToWatchlistButton.imageEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 10)
         addToWatchlistButton.backgroundColor = .black
         addToWatchlistButton.layer.cornerRadius = 10
         addToWatchlistButton.addTarget(self, action: #selector(addToWatchlistButtonPressed), for: .touchUpInside)
@@ -128,9 +131,12 @@ class EnterGuessControlsView: UIView {
     }
     
     public func setAnswerWasRevealed() {
-        containerStackView.removeArrangedSubview(currentlyGuessingStackView)
         currentlyGuessingStackView.removeFromSuperview()
         containerStackView.addArrangedSubview(answerRevealedStackView)
+    }
+    
+    public func removeNextButton() {
+        nextButton.removeFromSuperview()
     }
     
     public func setEnterGuessFieldPlaceholder(text: String) {
@@ -139,6 +145,11 @@ class EnterGuessControlsView: UIView {
     
     public func setWatchlistButtonText(text: String) {
         addToWatchlistButton.setTitle(text, for: .normal)
+    }
+    
+    public func setWatchlistButtonImage(imageName: String) {
+        addToWatchlistButton.setImage(UIImage(named: imageName)?.withTintColor(.white), for: .normal)
+        addToWatchlistButton.setImage(UIImage(named: imageName)?.withTintColor(.white), for: .selected)
     }
     
     public func setShowsEnterGuessFieldCancelButton(_ showsCancelButton: Bool, animated: Bool) {

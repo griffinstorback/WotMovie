@@ -111,8 +111,7 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
                 if !items[index].isRevealed {
                     items[index].isRevealed = true
                     DispatchQueue.main.async {
-                        self.guessGridViewDelegate?.revealCorrectlyGuessedEntities(at: [index])
-                        //self.guessGridViewDelegate?.revealEntities(at: [index])
+                        self.guessGridViewDelegate?.revealEntities(at: [index])
                     }
                 }
             }
