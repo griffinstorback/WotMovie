@@ -35,6 +35,7 @@ class RecentlyViewedCollectionViewHeader: UICollectionReusableView {
         categoryTableView.delaysContentTouches = false
         categoryTableView.isScrollEnabled = false
         categoryTableView.tableFooterView = UIView()
+        categoryTableView.register(ListCategoryTableViewCell.self, forCellReuseIdentifier: "ListCategoryTableViewCell")
         
         recentlyViewedTitle.text = "Recently viewed"
         //recentlyViewedTitle.font = UIFont.preferredFont(forTextStyle: .largeTitle)

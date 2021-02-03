@@ -46,16 +46,16 @@ class EntityTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        setupViews()
+        layoutViews()
         
         // TODO replace image with N/A image
         //setImage(image: UIImage(systemName: "x.circle.fill"))
         profileImageView.backgroundColor = .lightGray
     }
     
-    func setupViews() {
+    func layoutViews() {
         contentView.addSubview(profileImageView)
-        profileImageView.anchor(top: nil, leading: contentView.leadingAnchor, bottom: nil, trailing: nil, padding: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0), size: CGSize(width: profileImageViewSize.width, height: profileImageViewSize.height))
+        profileImageView.anchor(top: nil, leading: contentView.leadingAnchor, bottom: nil, trailing: nil, padding: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0), size: profileImageViewSize)
         profileImageView.anchorToCenter(yAnchor: contentView.centerYAnchor, xAnchor: nil)
         
         contentView.addSubview(containerView)

@@ -79,11 +79,10 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ListCategoryTableViewCell") as! ListCategoryTableViewCell
         let category = listPresenter.getListCategoryFor(index: indexPath.row)
-        cell.textLabel?.text = category.title
-        cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 20)
-        cell.imageView?.image = UIImage(named: category.imageName)
+        cell.setCategoryLabelText(text: category.title)
+        cell.setIconImage(imageName: category.imageName)
         
         return cell
     }
