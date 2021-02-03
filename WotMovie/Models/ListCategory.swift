@@ -1,5 +1,5 @@
 //
-//  WatchlistCategory.swift
+//  ListCategory.swift
 //  WotMovie
 //
 //  Created by Griffin Storback on 2021-01-25.
@@ -7,14 +7,14 @@
 
 import Foundation
 
-// Used for table view at top of Watchlist (see WatchlistPresenter)
-struct WatchlistCategory {
-    let type: WatchlistCategoryType
+// Used for table view at top of List (see ListPresenter)
+struct ListCategory {
+    let type: ListCategoryType
     let title: String
     let imageName: String
 }
 
-enum WatchlistCategoryType {
+enum ListCategoryType {
     case movieOrTvShowWatchlist
     case personFavorites
     case allGuessed

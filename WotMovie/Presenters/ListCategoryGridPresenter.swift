@@ -1,5 +1,5 @@
 //
-//  WatchlistCategoryGridPresenter.swift
+//  ListCategoryGridPresenter.swift
 //  WotMovie
 //
 //  Created by Griffin Storback on 2021-01-26.
@@ -8,28 +8,28 @@
 import Foundation
 import UIKit
 
-protocol WatchlistCategoryGridPresenterProtocol {
-    var watchlistCategoryType: WatchlistCategoryType { get }
+protocol ListCategoryGridPresenterProtocol {
+    var listCategoryType: ListCategoryType { get }
     var itemsCount: Int { get }
     func loadItems()
-    func setViewDelegate(_ watchlistCategoryGridViewDelegate: WatchlistCategoryGridViewDelegate?)
+    func setViewDelegate(_ listCategoryGridViewDelegate: ListCategoryGridViewDelegate?)
     func itemFor(index: Int) -> Entity
     func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
 }
 
 // TODO: Should make all presenters conform to a BasePresenter class, which should contain
 //       methods all presenters (or most) use like loadImageFor(index).
-class WatchlistCategoryGridPresenter: WatchlistCategoryGridPresenterProtocol {
+class ListCategoryGridPresenter: ListCategoryGridPresenterProtocol {
     private let imageDownloadManager: ImageDownloadManagerProtocol
     private let coreDataManager: CoreDataManager
-    weak var watchlistCategoryGridViewDelegate: WatchlistCategoryGridViewDelegate?
+    weak var listCategoryGridViewDelegate: ListCategoryGridViewDelegate?
     
-    let watchlistCategoryType: WatchlistCategoryType
+    let listCategoryType: ListCategoryType
     
     private var items: [Entity] = [] {
         didSet {
             DispatchQueue.main.async {
-                self.watchlistCategoryGridViewDelegate?.reloadData()
+                self.listCategoryGridViewDelegate?.reloadData()
             }
         }
     }
@@ -39,11 +39,11 @@ class WatchlistCategoryGridPresenter: WatchlistCategoryGridPresenterProtocol {
     
     init(imageDownloadManager: ImageDownloadManagerProtocol = ImageDownloadManager.shared,
          coreDataManager: CoreDataManager = CoreDataManager.shared,
-         watchlistCategoryType: WatchlistCategoryType) {
+         listCategoryType: ListCategoryType) {
         self.imageDownloadManager = imageDownloadManager
         self.coreDataManager = coreDataManager
         
-        self.watchlistCategoryType = watchlistCategoryType
+        self.listCategoryType = listCategoryType
         
     }
     
@@ -51,8 +51,8 @@ class WatchlistCategoryGridPresenter: WatchlistCategoryGridPresenterProtocol {
         getNextPageFromCoreData()
     }
     
-    func setViewDelegate(_ watchlistCategoryGridViewDelegate: WatchlistCategoryGridViewDelegate?) {
-        self.watchlistCategoryGridViewDelegate = watchlistCategoryGridViewDelegate
+    func setViewDelegate(_ listCategoryGridViewDelegate: ListCategoryGridViewDelegate?) {
+        self.listCategoryGridViewDelegate = listCategoryGridViewDelegate
     }
     
     func itemFor(index: Int) -> Entity {
@@ -84,7 +84,7 @@ class WatchlistCategoryGridPresenter: WatchlistCategoryGridPresenterProtocol {
     }
     
     private func getNextPageFromCoreData() {
-        switch watchlistCategoryType {
+        switch listCategoryType {
         case .movieOrTvShowWatchlist:
             let items = coreDataManager.fetchWatchlist(genreID: -1)
             self.items = items

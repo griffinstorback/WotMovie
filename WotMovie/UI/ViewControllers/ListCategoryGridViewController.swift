@@ -1,5 +1,5 @@
 //
-//  WatchlistCategoryGridViewController.swift
+//  ListCategoryGridViewController.swift
 //  WotMovie
 //
 //  Created by Griffin Storback on 2021-01-26.
@@ -8,25 +8,25 @@
 import Foundation
 import UIKit
 
-protocol WatchlistCategoryGridViewDelegate: NSObjectProtocol {
+protocol ListCategoryGridViewDelegate: NSObjectProtocol {
     func reloadData()
 }
 
-class WatchlistCategoryGridViewController: UIViewController {
-    let watchlistCategoryGridPresenter: WatchlistCategoryGridPresenterProtocol
+class ListCategoryGridViewController: UIViewController {
+    let listCategoryGridPresenter: ListCategoryGridPresenterProtocol
     
     private let gridView: LoadMoreGridViewController
     private let searchController: UISearchController
     
-    init(watchlistCategory: WatchlistCategory) {
-        watchlistCategoryGridPresenter = WatchlistCategoryGridPresenter(watchlistCategoryType: watchlistCategory.type)
+    init(listCategory: ListCategory) {
+        listCategoryGridPresenter = ListCategoryGridPresenter(listCategoryType: listCategory.type)
         
         gridView = LoadMoreGridViewController()
         searchController = UISearchController()
         
         super.init(nibName: nil, bundle: nil)
         
-        self.title = watchlistCategory.title
+        self.title = listCategory.title
         setupViews()
         layoutViews()
     }
@@ -40,7 +40,7 @@ class WatchlistCategoryGridViewController: UIViewController {
         navigationItem.searchController = searchController
         searchController.isActive = true
         
-        watchlistCategoryGridPresenter.setViewDelegate(self)
+        listCategoryGridPresenter.setViewDelegate(self)
         
         gridView.delegate = self
     }
@@ -53,7 +53,7 @@ class WatchlistCategoryGridViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        watchlistCategoryGridPresenter.loadItems()
+        listCategoryGridPresenter.loadItems()
         
         
         
@@ -66,7 +66,7 @@ class WatchlistCategoryGridViewController: UIViewController {
         
         setupNavBarAndSearchBar()
         
-        // unhide nav bar (it was hidden in viewWillAppear of parent, WatchlistVC)
+        // unhide nav bar (it was hidden in viewWillAppear of parent, ListVC)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
@@ -90,7 +90,7 @@ class WatchlistCategoryGridViewController: UIViewController {
             navigationItem.hidesSearchBarWhenScrolling = false
         }
         
-        let category = watchlistCategoryGridPresenter.watchlistCategoryType
+        let category = listCategoryGridPresenter.listCategoryType
         
         switch category {
         case .movieOrTvShowWatchlist:
@@ -123,13 +123,13 @@ class WatchlistCategoryGridViewController: UIViewController {
     }
 }
 
-extension WatchlistCategoryGridViewController: LoadMoreGridViewDelegate {
+extension ListCategoryGridViewController: LoadMoreGridViewDelegate {
     func getNumberOfItems(_ loadMoreGridViewController: LoadMoreGridViewController) -> Int {
-        return watchlistCategoryGridPresenter.itemsCount
+        return listCategoryGridPresenter.itemsCount
     }
     
     func getItemFor(_ loadMoreGridViewController: LoadMoreGridViewController, index: Int) -> Entity? {
-        return watchlistCategoryGridPresenter.itemFor(index: index)
+        return listCategoryGridPresenter.itemFor(index: index)
     }
     
     func loadMoreItems(_ loadMoreGridViewController: LoadMoreGridViewController) {
@@ -137,7 +137,7 @@ extension WatchlistCategoryGridViewController: LoadMoreGridViewDelegate {
     }
     
     func loadImageFor(_ loadMoreGridViewController: LoadMoreGridViewController, index: Int, completion: @escaping (UIImage?, String?) -> Void) {
-        watchlistCategoryGridPresenter.loadImageFor(index: index, completion: completion)
+        listCategoryGridPresenter.loadImageFor(index: index, completion: completion)
     }
     
     func viewForHeader(_ loadMoreGridViewController: LoadMoreGridViewController, indexPath: IndexPath) -> UICollectionReusableView? {
@@ -161,7 +161,7 @@ extension WatchlistCategoryGridViewController: LoadMoreGridViewDelegate {
     }
 }
 
-extension WatchlistCategoryGridViewController: WatchlistCategoryGridViewDelegate {
+extension ListCategoryGridViewController: ListCategoryGridViewDelegate {
     func reloadData() {
         gridView.reloadData()
     }

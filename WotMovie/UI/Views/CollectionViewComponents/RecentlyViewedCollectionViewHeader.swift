@@ -8,10 +8,10 @@
 import Foundation
 import UIKit
 
-// used in WatchlistViewController
+// used in ListViewController
 class RecentlyViewedCollectionViewHeader: UICollectionReusableView {
     
-    // These are static so they can be used in other classes (specifically WatchlistViewController) to
+    // These are static so they can be used in other classes (specifically ListViewController) to
     // calculate header height.
     static let categoryTableViewCellHeight: CGFloat = 80 // multiply this by # cells to get tableview height
     static let recentlyViewedTitleHeight: CGFloat = 80

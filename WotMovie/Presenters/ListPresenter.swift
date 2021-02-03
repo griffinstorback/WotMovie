@@ -1,5 +1,5 @@
 //
-//  WatchlistPresenter.swift
+//  ListPresenter.swift
 //  WotMovie
 //
 //  Created by Griffin Storback on 2021-01-23.
@@ -8,39 +8,39 @@
 import Foundation
 import UIKit
 
-protocol WatchlistPresenterProtocol {
-    func setViewDelegate(_ viewDelegate: WatchlistViewDelegate)
-    func getWatchlistCategoriesCount() -> Int
-    func getWatchlistCategoryFor(index: Int) -> WatchlistCategory
+protocol ListPresenterProtocol {
+    func setViewDelegate(_ viewDelegate: ListViewDelegate)
+    func getListCategoriesCount() -> Int
+    func getListCategoryFor(index: Int) -> ListCategory
     func loadRecentlyViewed()
     func getNumberOfRecentlyViewed() -> Int
     func getRecentlyViewedFor(index: Int) -> Entity
-    func getItemCountForCategory(category: WatchlistCategoryType) -> Int
+    func getItemCountForCategory(category: ListCategoryType) -> Int
     func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
 }
 
-class WatchlistPresenter: WatchlistPresenterProtocol {
+class ListPresenter: ListPresenterProtocol {
     private let imageDownloadManager: ImageDownloadManagerProtocol
     private let coreDataManager: CoreDataManager
-    weak var watchlistViewDelegate: WatchlistViewDelegate?
+    weak var listViewDelegate: ListViewDelegate?
     
-    private let categoryTableViewRows: [WatchlistCategory] = [
-        WatchlistCategory(type: .movieOrTvShowWatchlist, title: "Watchlist", imageName: "watchlist_icon"),
-        WatchlistCategory(type: .personFavorites, title: "Favorites", imageName: "favorites_icon"),
-        WatchlistCategory(type: .allGuessed, title: "Guessed", imageName: "guessed_correct_icon"),
-        WatchlistCategory(type: .allRevealed, title: "Revealed", imageName: "question_mark"),
+    private let categoryTableViewRows: [ListCategory] = [
+        ListCategory(type: .movieOrTvShowWatchlist, title: "Watchlist", imageName: "watchlist_icon"),
+        ListCategory(type: .personFavorites, title: "Favorites", imageName: "favorites_icon"),
+        ListCategory(type: .allGuessed, title: "Guessed", imageName: "guessed_correct_icon"),
+        ListCategory(type: .allRevealed, title: "Revealed", imageName: "question_mark"),
         
         // TODO: Decide if search should be allowed. Because it would easily allow for cheating,
         //       though of course people could cheat anyways, but this would make it a lot easier,
         //       and might even serve to promote it.
-        //WatchlistCategory(title: "Search Movies, TV Shows, and people", imageName: "question_mark")
+        //ListCategory(title: "Search Movies, TV Shows, and people", imageName: "question_mark")
     ]
     
     private var recentlyViewedNextPage = 1
     private var recentlyViewedItems: [Entity] = [] {
         didSet {
             DispatchQueue.main.async {
-                self.watchlistViewDelegate?.reloadData()
+                self.listViewDelegate?.reloadData()
             }
         }
     }
@@ -51,19 +51,19 @@ class WatchlistPresenter: WatchlistPresenterProtocol {
         self.coreDataManager = coreDataManager
     }
     
-    func setViewDelegate(_ viewDelegate: WatchlistViewDelegate) {
-        self.watchlistViewDelegate = viewDelegate
+    func setViewDelegate(_ viewDelegate: ListViewDelegate) {
+        self.listViewDelegate = viewDelegate
     }
     
-    func getWatchlistCategoriesCount() -> Int {
+    func getListCategoriesCount() -> Int {
         return categoryTableViewRows.count
     }
     
-    func getWatchlistCategoryFor(index: Int) -> WatchlistCategory {
+    func getListCategoryFor(index: Int) -> ListCategory {
         return categoryTableViewRows[index]
     }
     
-    func getItemCountForCategory(category: WatchlistCategoryType) -> Int {
+    func getItemCountForCategory(category: ListCategoryType) -> Int {
         switch category {
         case .movieOrTvShowWatchlist:
             return coreDataManager.fetchWatchlistCount()

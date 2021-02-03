@@ -1,5 +1,5 @@
 //
-//  WatchlistViewController.swift
+//  ListViewController.swift
 //  WotMovie
 //
 //  Created by Griffin Storback on 2021-01-23.
@@ -7,21 +7,21 @@
 
 import UIKit
 
-protocol WatchlistViewDelegate: NSObjectProtocol {
+protocol ListViewDelegate: NSObjectProtocol {
     func reloadData()
 }
 
-class WatchlistViewController: UIViewController {
+class ListViewController: UIViewController {
     
-    let watchlistPresenter: WatchlistPresenterProtocol
+    let listPresenter: ListPresenterProtocol
     
     let statusBarCoverView: UIView
     // recentlyViewedCollectionView contains header with category table view inside
     let recentlyViewedCollectionView: LoadMoreGridViewController
     
-    init(presenter: WatchlistPresenterProtocol? = nil) {
+    init(presenter: ListPresenterProtocol? = nil) {
         // use passed in presenter if provided (used in tests)
-        watchlistPresenter = presenter ?? WatchlistPresenter()
+        listPresenter = presenter ?? ListPresenter()
         
         statusBarCoverView = UIView()
         recentlyViewedCollectionView = LoadMoreGridViewController()
@@ -33,7 +33,7 @@ class WatchlistViewController: UIViewController {
     }
     
     private func setupViews() {
-        watchlistPresenter.setViewDelegate(self)
+        listPresenter.setViewDelegate(self)
         
         statusBarCoverView.giveBlurredBackground(style: .systemThickMaterialLight)
         statusBarCoverView.alpha = 0
@@ -57,7 +57,7 @@ class WatchlistViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        watchlistPresenter.loadRecentlyViewed()
+        listPresenter.loadRecentlyViewed()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -69,9 +69,9 @@ class WatchlistViewController: UIViewController {
 }
 
 // table view at top of screen, providing categories e.g. "Watchlist, Favorites, Guessed"
-extension WatchlistViewController: UITableViewDelegate, UITableViewDataSource {
+extension ListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return watchlistPresenter.getWatchlistCategoriesCount()
+        return listPresenter.getListCategoriesCount()
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -80,7 +80,7 @@ extension WatchlistViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
-        let category = watchlistPresenter.getWatchlistCategoryFor(index: indexPath.row)
+        let category = listPresenter.getListCategoryFor(index: indexPath.row)
         cell.textLabel?.text = category.title
         cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 20)
         cell.imageView?.image = UIImage(named: category.imageName)
@@ -89,14 +89,14 @@ extension WatchlistViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let category = watchlistPresenter.getWatchlistCategoryFor(index: indexPath.row)
-        let watchlistCategoryGridViewController = WatchlistCategoryGridViewController(watchlistCategory: category)
-        navigationController?.pushViewController(watchlistCategoryGridViewController, animated: true)
+        let category = listPresenter.getListCategoryFor(index: indexPath.row)
+        let listCategoryGridViewController = ListCategoryGridViewController(listCategory: category)
+        navigationController?.pushViewController(listCategoryGridViewController, animated: true)
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 
-extension WatchlistViewController: LoadMoreGridViewDelegate {
+extension ListViewController: LoadMoreGridViewDelegate {
     func viewForHeader(_ loadMoreGridViewController: LoadMoreGridViewController, indexPath: IndexPath) -> UICollectionReusableView? {
         let headerView = loadMoreGridViewController.collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header", for: indexPath) as! RecentlyViewedCollectionViewHeader
         
@@ -108,7 +108,7 @@ extension WatchlistViewController: LoadMoreGridViewDelegate {
     }
     
     func sizeForHeader(_ loadMoreGridViewController: LoadMoreGridViewController) -> CGSize {
-        let categoryTableViewHeight = CGFloat(watchlistPresenter.getWatchlistCategoriesCount()) * RecentlyViewedCollectionViewHeader.categoryTableViewCellHeight
+        let categoryTableViewHeight = CGFloat(listPresenter.getListCategoriesCount()) * RecentlyViewedCollectionViewHeader.categoryTableViewCellHeight
         let recentlyViewedTitleLabelHeight = RecentlyViewedCollectionViewHeader.recentlyViewedTitleHeight
         let spaceFromTop = RecentlyViewedCollectionViewHeader.spaceFromTop
         
@@ -125,11 +125,11 @@ extension WatchlistViewController: LoadMoreGridViewDelegate {
     }
     
     func getNumberOfItems(_ loadMoreGridViewController: LoadMoreGridViewController) -> Int {
-        return watchlistPresenter.getNumberOfRecentlyViewed()
+        return listPresenter.getNumberOfRecentlyViewed()
     }
     
     func getItemFor(_ loadMoreGridViewController: LoadMoreGridViewController, index: Int) -> Entity? {
-        return watchlistPresenter.getRecentlyViewedFor(index: index)
+        return listPresenter.getRecentlyViewedFor(index: index)
     }
     
     func loadMoreItems(_ loadMoreGridViewController: LoadMoreGridViewController) {
@@ -137,7 +137,7 @@ extension WatchlistViewController: LoadMoreGridViewDelegate {
     }
     
     func loadImageFor(_ loadMoreGridViewController: LoadMoreGridViewController, index: Int, completion: @escaping (UIImage?, String?) -> Void) {
-        watchlistPresenter.loadImageFor(index: index, completion: completion)
+        listPresenter.loadImageFor(index: index, completion: completion)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -152,7 +152,7 @@ extension WatchlistViewController: LoadMoreGridViewDelegate {
     }
 }
 
-extension WatchlistViewController: WatchlistViewDelegate {
+extension ListViewController: ListViewDelegate {
     func reloadData() {
         recentlyViewedCollectionView.reloadData()
     }
