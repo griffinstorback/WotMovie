@@ -33,7 +33,8 @@ class RecentlyViewedCollectionViewHeader: UICollectionReusableView {
         super.init(frame: .zero)
         
         categoryTableView.delaysContentTouches = false
-        categoryTableView.isScrollEnabled = false
+        categoryTableView.isScrollEnabled = true
+        categoryTableView.bounces = false
         categoryTableView.tableFooterView = UIView()
         categoryTableView.register(ListCategoryTableViewCell.self, forCellReuseIdentifier: "ListCategoryTableViewCell")
         

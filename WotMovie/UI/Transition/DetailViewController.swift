@@ -75,7 +75,7 @@ class DetailViewController: UIViewController {
         scrollView.delegate = self
         scrollView.contentInsetAdjustmentBehavior = .never
         scrollView.isUserInteractionEnabled = true
-        scrollView.delaysContentTouches = false
+        scrollView.delaysContentTouches = true
         scrollView.alwaysBounceVertical = true
         
         statusBarCoverView.giveBlurredBackground(style: .systemThickMaterialLight)

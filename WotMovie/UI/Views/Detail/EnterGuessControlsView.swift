@@ -83,8 +83,9 @@ class EnterGuessControlsView: UIView {
         addToWatchlistButton.setTitleColor(.white, for: .normal)
         addToWatchlistButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         addToWatchlistButton.titleLabel?.numberOfLines = 2
-        addToWatchlistButton.titleEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 5)
-        addToWatchlistButton.imageEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 10)
+        addToWatchlistButton.titleEdgeInsets = UIEdgeInsets(top: 5, left: 20, bottom: 5, right: 5)
+        addToWatchlistButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        addToWatchlistButton.contentHorizontalAlignment = .leading
         addToWatchlistButton.backgroundColor = .black
         addToWatchlistButton.layer.cornerRadius = 10
         addToWatchlistButton.addTarget(self, action: #selector(addToWatchlistButtonPressed), for: .touchUpInside)

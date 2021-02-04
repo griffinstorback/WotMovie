@@ -54,7 +54,12 @@ extension EntityTableViewController: UITableViewDelegate, UITableViewDataSource 
 
         //tableView.isUserInteractionEnabled = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Set scroll to enabled after view appears (otherwise theres a bug where first tap on cell
+        // doesn't register).
+        tableView.delaysContentTouches = true
         tableView.isScrollEnabled = false
+        tableView.bounces = false
         
         tableView.dataSource = self
         tableView.delegate = self
