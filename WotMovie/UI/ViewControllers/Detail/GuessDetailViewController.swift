@@ -36,6 +36,7 @@ class GuessDetailViewController: DetailViewController {
     
     // checkmark icon that is shown when correctly guessed
     private let checkMarkIconImageView: UIImageView
+    private let checkMarkIconContainerView: UIView
     
     // needs container because contentstackview.alignment == .fill
     private let showHintButtonContainer: UIView
@@ -62,6 +63,7 @@ class GuessDetailViewController: DetailViewController {
         guessDetailViewPresenter = presenter
         
         checkMarkIconImageView = UIImageView(image: UIImage(named: "guessed_correct_icon"))
+        checkMarkIconContainerView = UIView()
         
         showHintButtonContainer = UIView()
         showHintButton = ShrinkOnTouchButton()
@@ -122,8 +124,11 @@ class GuessDetailViewController: DetailViewController {
     }
     
     private func addCheckMarkIconView() {
-        view.addSubview(checkMarkIconImageView)
-        checkMarkIconImageView.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: nil, trailing: nil, padding: UIEdgeInsets(top: 10, left: 10, bottom: 0, right: 0), size: CGSize(width: 40, height: 40))
+        contentStackView.addArrangedSubview(checkMarkIconContainerView)
+        checkMarkIconContainerView.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: CGSize(width: 0, height: 60))
+        
+        checkMarkIconContainerView.addSubview(checkMarkIconImageView)
+        checkMarkIconImageView.anchor(top: checkMarkIconContainerView.topAnchor, leading: checkMarkIconContainerView.leadingAnchor, bottom: checkMarkIconContainerView.bottomAnchor, trailing: nil, padding: UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 0), size: CGSize(width: 30, height: 30))
     }
     
     private func addEnterGuessView() {
@@ -201,6 +206,7 @@ extension GuessDetailViewController: EnterGuessProtocol {
         state = .revealed
         guessDetailViewPresenter.answerWasRevealedAsCorrect()
         enterGuessViewController.setAnswerRevealed()
+        addCheckMarkIcon(animated: true)
         
         transitionPresenter?.setEntityAsRevealed(id: guessDetailViewPresenter.getID(), isCorrect: true)
     }

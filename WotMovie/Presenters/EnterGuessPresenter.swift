@@ -175,9 +175,17 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
     func getWatchlistImageName() -> String {
         switch item.type {
         case .movie, .tvShow:
-            return "watchlist_icon"
+            if item.isFavorite {
+                return "remove_from_watchlist_icon"
+            } else {
+                return "add_to_watchlist_icon"
+            }
         case .person:
-            return "favorites_icon"
+            if item.isFavorite {
+                return "remove_from_favorites_icon"
+            } else {
+                return "add_to_favorites_icon"
+            }
         }
     }
 }

@@ -84,7 +84,7 @@ class DetailViewController: UIViewController {
         contentStackView.axis = .vertical
         contentStackView.alignment = .fill
         contentStackView.spacing = 20
-        contentStackView.layoutMargins = UIEdgeInsets(top: 60, left: 0, bottom: 150, right: 0)
+        contentStackView.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 150, right: 0)
         contentStackView.isLayoutMarginsRelativeArrangement = true
         
         closeButton.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)

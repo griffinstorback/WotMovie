@@ -25,8 +25,8 @@ class ListPresenter: ListPresenterProtocol {
     weak var listViewDelegate: ListViewDelegate?
     
     private let categoryTableViewRows: [ListCategory] = [
-        ListCategory(type: .movieOrTvShowWatchlist, title: "Watchlist", imageName: "watchlist_icon"),
-        ListCategory(type: .personFavorites, title: "Favorites", imageName: "favorites_icon"),
+        ListCategory(type: .movieOrTvShowWatchlist, title: "Watchlist", imageName: "add_to_watchlist_icon"),
+        ListCategory(type: .personFavorites, title: "Favorites", imageName: "add_to_favorites_icon"),
         ListCategory(type: .allGuessed, title: "Guessed", imageName: "guessed_correct_icon"),
         ListCategory(type: .allRevealed, title: "Revealed", imageName: "question_mark"),
         

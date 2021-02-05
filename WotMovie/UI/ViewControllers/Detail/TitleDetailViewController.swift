@@ -36,11 +36,6 @@ class TitleDetailViewController: GuessDetailViewController {
                 detailOverviewView.removePosterImageBlurEffectOverlay(animated: true)
                 detailOverviewView.setTitle(titleDetailViewPresenter.getTitle())     //   // TODO *** animate this
                 detailOverviewView.setOverviewText(titleDetailViewPresenter.getOverview()) // uncensor title name from overview
-            
-                // if item was correctly guessed, show check at top left
-                if titleDetailViewPresenter.item.correctlyGuessed {
-                    addCheckMarkIcon(animated: true)
-                }
             }
         }
     }

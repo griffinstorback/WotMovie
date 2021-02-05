@@ -27,7 +27,7 @@ class EnterGuessControlsView: UIView {
     // stackview shown when answer has been revealed
     private let answerRevealedStackView: UIStackView!
     private let nextButton: ShrinkOnTouchButton!
-    private let addToWatchlistButton: ShrinkOnTouchButton!
+    private let addToWatchlistButton: LeftAlignedImageCenteredTextButton!
     
     init() {
         containerStackView = UIStackView()
@@ -38,7 +38,7 @@ class EnterGuessControlsView: UIView {
         currentlyGuessingStackView = UIStackView()
         
         nextButton = ShrinkOnTouchButton()
-        addToWatchlistButton = ShrinkOnTouchButton()
+        addToWatchlistButton = LeftAlignedImageCenteredTextButton()
         answerRevealedStackView = UIStackView()
         
         super.init(frame: .zero)
@@ -79,13 +79,13 @@ class EnterGuessControlsView: UIView {
         nextButton.layer.cornerRadius = 10
         nextButton.addTarget(self, action: #selector(nextButtonPressed), for: .touchUpInside)
         
-        addToWatchlistButton.setTitle("Add to Watchlist", for: .normal)
+        /*addToWatchlistButton.setTitle("Add to Watchlist", for: .normal)
         addToWatchlistButton.setTitleColor(.white, for: .normal)
         addToWatchlistButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         addToWatchlistButton.titleLabel?.numberOfLines = 2
         addToWatchlistButton.titleEdgeInsets = UIEdgeInsets(top: 5, left: 20, bottom: 5, right: 5)
         addToWatchlistButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-        addToWatchlistButton.contentHorizontalAlignment = .leading
+        addToWatchlistButton.contentHorizontalAlignment = .leading*/
         addToWatchlistButton.backgroundColor = .black
         addToWatchlistButton.layer.cornerRadius = 10
         addToWatchlistButton.addTarget(self, action: #selector(addToWatchlistButtonPressed), for: .touchUpInside)
@@ -145,12 +145,14 @@ class EnterGuessControlsView: UIView {
     }
     
     public func setWatchlistButtonText(text: String) {
-        addToWatchlistButton.setTitle(text, for: .normal)
+        //addToWatchlistButton.setTitle(text, for: .normal)
+        addToWatchlistButton.setLabelText(text: text)
     }
     
     public func setWatchlistButtonImage(imageName: String) {
-        addToWatchlistButton.setImage(UIImage(named: imageName)?.withTintColor(.white), for: .normal)
-        addToWatchlistButton.setImage(UIImage(named: imageName)?.withTintColor(.white), for: .selected)
+        //addToWatchlistButton.setImage(UIImage(named: imageName)?.withTintColor(.white), for: .normal)
+        //addToWatchlistButton.setImage(UIImage(named: imageName)?.withTintColor(.white), for: .selected)
+        addToWatchlistButton.setImageViewImage(imageName: imageName)
     }
     
     public func setShowsEnterGuessFieldCancelButton(_ showsCancelButton: Bool, animated: Bool) {

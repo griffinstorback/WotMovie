@@ -30,9 +30,6 @@ class PersonDetailViewController: GuessDetailViewController {
                 
                 personOverviewView.setName(personDetailViewPresenter.getTitle())     //   // TODO *** animate this
                 //personOverviewView.setOverviewText(personDetailViewPresenter.getOverview())
-            
-                // if item was correctly guessed, show check at top left
-                addCheckMarkIcon(animated: true)
             }
         }
     }

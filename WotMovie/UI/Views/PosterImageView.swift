@@ -15,6 +15,7 @@ enum PosterImageViewState {
 
 class PosterImageView: CardView {
 
+    // don't set state directly, use setState() instance method
     var state: PosterImageViewState = .hidden
     
     private let imageView: UIImageView
