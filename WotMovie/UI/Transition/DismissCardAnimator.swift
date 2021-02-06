@@ -65,7 +65,11 @@ final class DismissCardTransitionDriver {
             context.viewController(forKey: .to) as? DetailPresenterViewController
         )
         
-        cardDetailPosterImageViewCopy = PosterImageView(state: screens.presented.posterImageView.state)
+        // Basically, use the state of the poster image view on detail screen, but if it is 'correctlyGuessedWithoutCheckmark'
+        // change it to 'correctlyGuessed' so that checkmark will show on transition to grid
+        let posterImageState: PosterImageViewState = screens.presented.posterImageView.state == .correctlyGuessedWithoutCheckmark ? .correctlyGuessed : screens.presented.posterImageView.state
+        print("***** presented detail poster image state: \(screens.presented.posterImageView.state), while computed state: \(posterImageState)")
+        cardDetailPosterImageViewCopy = PosterImageView(state: posterImageState)
         cardDetailPosterImageViewCopy.setImage(screens.presented.posterImageView.getImage())
         cardDetailPosterImageViewCopy.frame = screens.presented.posterImageView.convert(screens.presented.posterImageView.frame, to: container)
         cardDetailPosterImageViewCopy.layer.cornerRadius = cardDetailPosterImageViewCopy.frame.height * Constants.imageCornerRadiusRatio

@@ -26,16 +26,22 @@ class TitleDetailViewController: GuessDetailViewController {
                 removeShowHintButton()
                 addInfo()
                 
-            case .revealed, .revealedWithNoNextButton:
+            case .revealed, .revealedWithNoNextButton, .correct, .correctWithNoNextButton:
                 removeShowHintButton()
                 addInfo()
                 
                 // scroll to top of view to show title being revealed
                 scrollToTop()
                 
-                detailOverviewView.removePosterImageBlurEffectOverlay(animated: true)
                 detailOverviewView.setTitle(titleDetailViewPresenter.getTitle())     //   // TODO *** animate this
                 detailOverviewView.setOverviewText(titleDetailViewPresenter.getOverview()) // uncensor title name from overview
+            
+                // depending if correct or not, reflect in state of poster image view
+                if state == .revealed || state == .revealedWithNoNextButton {
+                    detailOverviewView.setPosterImageState(.revealed, animated: true)
+                } else if state == .correct || state == .correctWithNoNextButton {
+                    detailOverviewView.setPosterImageState(.correctlyGuessedWithoutCheckmark, animated: true)
+                }
             }
         }
     }
@@ -45,15 +51,15 @@ class TitleDetailViewController: GuessDetailViewController {
     private let castCollectionView: HorizontalCollectionViewController!
     private let crewTableView: EntityTableViewController!
     
-    init(item: Entity, startHidden: Bool, fromGuessGrid: Bool, presenter: TitleDetailPresenterProtocol? = nil) {
+    init(item: Entity, state: GuessDetailViewState, presenter: TitleDetailPresenterProtocol? = nil) {
         // use passed in presenter if provided (used in tests)
         titleDetailViewPresenter = presenter ?? TitleDetailPresenter(item: item)
         
-        detailOverviewView = DetailOverviewView(frame: .zero, startHidden: startHidden)
+        detailOverviewView = DetailOverviewView(frame: .zero, guessState: state)
         castCollectionView = HorizontalCollectionViewController(title: "Cast")
         crewTableView = EntityTableViewController()
         
-        super.init(item: item, posterImageView: detailOverviewView.posterImageView, startHidden: startHidden, fromGuessGrid: false, presenter: titleDetailViewPresenter)
+        super.init(item: item, posterImageView: detailOverviewView.posterImageView, state: state, presenter: titleDetailViewPresenter)
         
         titleDetailViewPresenter.setViewDelegate(detailViewDelegate: self)
     }
@@ -90,13 +96,14 @@ class TitleDetailViewController: GuessDetailViewController {
             addShowHintButton()
         case .hintShown:
             addInfo()
-        case .revealed, .revealedWithNoNextButton:
+        case .revealed, .revealedWithNoNextButton, .correct, .correctWithNoNextButton:
             addInfo()
-            detailOverviewView.removePosterImageBlurEffectOverlay(animated: false)
             detailOverviewView.setTitle(titleDetailViewPresenter.getTitle())
             
             // if item was correctly guessed, show check at top left
-            addCheckMarkIcon(animated: false)
+            if state == .correct || state == .correctWithNoNextButton {
+                addCheckMarkIcon(animated: false)
+            }
         }
     }
     
@@ -158,13 +165,21 @@ extension TitleDetailViewController: GuessDetailViewDelegate {
         castCollectionView.reloadData()
         crewTableView.reloadData()
         
+        // don't set state if it was presented having already been guessed or revealed
+        if state == .revealedWithNoNextButton || state == .correctWithNoNextButton {
+            return
+        }
+        
+        // SETTING STATE
+        if guessDetailViewPresenter.isAnswerCorrectlyGuessed() {
+            state = .correct
+            return
+        }
         if guessDetailViewPresenter.isAnswerRevealed() || guessDetailViewPresenter.isAnswerCorrectlyGuessed() {
-            print("** guess detail view delegate: setting state to .revealed")
             state = .revealed
             return
         }
         if guessDetailViewPresenter.isHintShown() {
-            print("** guess detail view delegate: setting state to .hintShown")
             state = .hintShown
         }
     }

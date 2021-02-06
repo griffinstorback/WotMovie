@@ -21,7 +21,7 @@ class PersonDetailViewController: GuessDetailViewController {
                 removeShowHintButton()
                 addInfo()
                 
-            case .revealed, .revealedWithNoNextButton:
+            case .revealed, .revealedWithNoNextButton, .correct, .correctWithNoNextButton:
                 removeShowHintButton()
                 addInfo()
                 
@@ -43,11 +43,11 @@ class PersonDetailViewController: GuessDetailViewController {
     private let producedCollectionView: HorizontalCollectionViewController!
     private let wroteCollectionView: HorizontalCollectionViewController!
     
-    init(item: Entity, startHidden: Bool, fromGuessGrid: Bool, presenter: PersonDetailPresenterProtocol? = nil) {
+    init(item: Entity, state: GuessDetailViewState, presenter: PersonDetailPresenterProtocol? = nil) {
         // use passed in presenter if provided (used in tests)
         personDetailViewPresenter = presenter ?? PersonDetailPresenter(item: item)
         
-        personOverviewView = PersonOverviewView(frame: .zero, startHidden: startHidden)
+        personOverviewView = PersonOverviewView(frame: .zero, guessState: state)
         knownForCollectionView = HorizontalCollectionViewController(title: "Known for")
         knownForCollectionView.restorationIdentifier = "Known for"
         
@@ -60,7 +60,8 @@ class PersonDetailViewController: GuessDetailViewController {
         wroteCollectionView = HorizontalCollectionViewController(title: "Writer")
         wroteCollectionView.restorationIdentifier = "Writer"
         
-        super.init(item: item, posterImageView: personOverviewView.posterImageView, startHidden: startHidden, fromGuessGrid: false, presenter: personDetailViewPresenter)
+        //super.init(item: item, posterImageView: personOverviewView.posterImageView, startHidden: startHidden, fromGuessGrid: false, presenter: personDetailViewPresenter)
+        super.init(item: item, posterImageView: personOverviewView.posterImageView, state: state, presenter: personDetailViewPresenter)
         
         personDetailViewPresenter.setViewDelegate(detailViewDelegate: self)
     }
@@ -98,19 +99,19 @@ class PersonDetailViewController: GuessDetailViewController {
             addShowHintButton()
         case .hintShown:
             addInfo()
-        case .revealed, .revealedWithNoNextButton:
+        case .revealed, .revealedWithNoNextButton, .correct, .correctWithNoNextButton:
             addInfo()
             personOverviewView.setName(personDetailViewPresenter.getTitle())
             
             // if item was correctly guessed, show check at top left
-            if personDetailViewPresenter.item.correctlyGuessed {
+            if state == .correct || state == .correctWithNoNextButton {
                 addCheckMarkIcon(animated: false)
             }
         }
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        personOverviewView.removePosterImageBlurEffectOverlay(animated: true)
+        personOverviewView.setPosterImageState(.revealed, animated: true)
     }
     
     private func addInfo() {

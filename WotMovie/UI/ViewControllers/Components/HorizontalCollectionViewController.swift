@@ -151,9 +151,9 @@ extension HorizontalCollectionViewController: UICollectionViewDataSource, UIColl
         
         switch item.type {
         case .movie, .tvShow:
-            guessDetailViewController = TitleDetailViewController(item: item, startHidden: false, fromGuessGrid: false)
+            guessDetailViewController = TitleDetailViewController(item: item, state: .revealedWithNoNextButton)
         case .person:
-            guessDetailViewController = PersonDetailViewController(item: item, startHidden: false, fromGuessGrid: false)
+            guessDetailViewController = PersonDetailViewController(item: item, state: .revealedWithNoNextButton)
         }
         
         // Presenter nil because no entity presented from this VC will start hidden, therefore will never need

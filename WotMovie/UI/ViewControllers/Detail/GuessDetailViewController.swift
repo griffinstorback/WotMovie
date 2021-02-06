@@ -12,6 +12,8 @@ enum GuessDetailViewState {
     case hintShown
     case revealed
     case revealedWithNoNextButton
+    case correct
+    case correctWithNoNextButton
 }
 
 protocol EnterGuessProtocol {
@@ -47,18 +49,8 @@ class GuessDetailViewController: DetailViewController {
     private let enterGuessContainerView: UIView
     private var enterGuessContainerViewTopConstraint: NSLayoutConstraint!
     
-    init(item: Entity, posterImageView: PosterImageView, startHidden: Bool, fromGuessGrid: Bool, presenter: GuessDetailPresenterProtocol) {
-        if startHidden {
-            state = .fullyHidden
-        } else {
-            
-            // only show next button if being presented from guess grid view
-            if fromGuessGrid {
-                state = .revealed
-            } else {
-                state = .revealedWithNoNextButton
-            }
-        }
+    init(item: Entity, posterImageView: PosterImageView, state: GuessDetailViewState, presenter: GuessDetailPresenterProtocol) {
+        self.state = state
         
         guessDetailViewPresenter = presenter
         
@@ -72,7 +64,7 @@ class GuessDetailViewController: DetailViewController {
         enterGuessViewController = EnterGuessViewController(item: item)
         enterGuessContainerView = UIView()
         
-        super.init(posterImageView: posterImageView, startHidden: startHidden)
+        super.init(posterImageView: posterImageView)
         
         navigationItem.largeTitleDisplayMode = .never
         self.title = "?"
@@ -115,10 +107,10 @@ class GuessDetailViewController: DetailViewController {
         
         addEnterGuessView()
         
-        // if state starts as revealed don't show "Enter movie name" field
-        if state == .revealed {
+        // if state starts as revealed or correct, don't show "Enter movie name" field
+        if state == .revealed || state == .correct {
             enterGuessViewController.setAnswerRevealed()
-        } else if state == .revealedWithNoNextButton {
+        } else if state == .revealedWithNoNextButton || state == .correctWithNoNextButton{
             enterGuessViewController.setNoNextButton()
         }
     }

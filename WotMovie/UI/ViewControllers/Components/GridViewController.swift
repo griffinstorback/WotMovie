@@ -77,9 +77,23 @@ class GridViewController: DetailPresenterViewController {
         
         switch item.type {
         case .movie, .tvShow:
-            guessDetailViewController = TitleDetailViewController(item: item, startHidden: !item.isRevealed && !item.correctlyGuessed, fromGuessGrid: true)
+            if item.correctlyGuessed {
+                guessDetailViewController = TitleDetailViewController(item: item, state: .correct)
+            } else if item.isRevealed {
+                guessDetailViewController = TitleDetailViewController(item: item, state: .revealed)
+            } else {
+                guessDetailViewController = TitleDetailViewController(item: item, state: .fullyHidden)
+            }
+            
         case .person:
-            guessDetailViewController = PersonDetailViewController(item: item, startHidden: !item.isRevealed && !item.correctlyGuessed, fromGuessGrid: true)
+            if item.correctlyGuessed {
+                guessDetailViewController = PersonDetailViewController(item: item, state: .correct)
+            } else if item.isRevealed {
+                guessDetailViewController = PersonDetailViewController(item: item, state: .revealed)
+            } else {
+                guessDetailViewController = PersonDetailViewController(item: item, state: .fullyHidden)
+            }
+            //guessDetailViewController = PersonDetailViewController(item: item, startHidden: !item.isRevealed && !item.correctlyGuessed, fromGuessGrid: true)
         }
         
         guessDetailViewController.modalPresentationStyle = .fullScreen

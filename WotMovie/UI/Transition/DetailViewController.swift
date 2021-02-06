@@ -21,7 +21,12 @@ class DetailViewController: UIViewController {
     let contentStackView: UIStackView
     let posterImageView: PosterImageView // keep reference to poster image, as its different if TitleDetail vs PersonDetail (so we can animate dismissal where the poster image returns to where it was on parent)
     
-    var cardBottomToRootBottomConstraint: NSLayoutConstraint!
+    private let closeButton: UIButton!
+    @objc func closeButtonPressed() {
+        self.dismiss(animated: true)
+    }
+    
+    //var cardBottomToRootBottomConstraint: NSLayoutConstraint!
     
     var isDraggingDownToDismiss = false
     var interactiveStartingPoint: CGPoint?
@@ -32,10 +37,7 @@ class DetailViewController: UIViewController {
         isDraggingDownToDismiss = false
     }
     
-    private let closeButton: UIButton!
-    @objc func closeButtonPressed() {
-        self.dismiss(animated: true)
-    }
+    
     
     private lazy var dismissalPanGesture: UIPanGestureRecognizer = {
         let pan = UIPanGestureRecognizer()
@@ -48,7 +50,7 @@ class DetailViewController: UIViewController {
         return edgePan
     }()
     
-    init(posterImageView: PosterImageView, startHidden: Bool) {
+    init(posterImageView: PosterImageView) {
         scrollView = UIScrollView()
         statusBarCoverView = UIView()
         contentStackView = UIStackView()

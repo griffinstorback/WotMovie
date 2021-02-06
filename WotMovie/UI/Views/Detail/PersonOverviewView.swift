@@ -44,8 +44,8 @@ class PersonOverviewView: UIView {
         return stackView
     }()
     
-    init(frame: CGRect, startHidden: Bool) {
-        posterImageView = PosterImageView(state: startHidden ? .hidden : .revealed)
+    init(frame: CGRect, guessState: GuessDetailViewState) {
+        posterImageView = PosterImageView(state: PosterImageViewState(guessDetailState: guessState))
         posterImageView.layer.cornerRadius = Constants.PersonOverviewPosterImage.size.height * Constants.imageCornerRadiusRatio
         posterImageView.layer.masksToBounds = true
         
@@ -93,12 +93,8 @@ class PersonOverviewView: UIView {
         overviewTextView.text = text
     }
     
-    public func removePosterImageBlurEffectOverlay(animated: Bool) {
-        posterImageView.setState(.revealed, animated: animated)
-    }
-    
-    public func addPosterImageBlurEffectOverlay(animated: Bool) {
-        posterImageView.setState(.hidden, animated: animated)
+    public func setPosterImageState(_ state: PosterImageViewState, animated: Bool) {
+        posterImageView.setState(state, animated: animated)
     }
 }
 

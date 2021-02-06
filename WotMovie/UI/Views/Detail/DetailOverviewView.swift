@@ -53,8 +53,8 @@ class DetailOverviewView: UIView {
         return stackView
     }()
     
-    init(frame: CGRect, startHidden: Bool) {
-        posterImageView = PosterImageView(state: startHidden ? .hidden : .revealed)
+    init(frame: CGRect, guessState: GuessDetailViewState) {
+        posterImageView = PosterImageView(state: PosterImageViewState(guessDetailState: guessState))
         posterImageView.layer.cornerRadius = Constants.DetailOverviewPosterImage.size.height * Constants.imageCornerRadiusRatio
         posterImageView.layer.masksToBounds = true
         
@@ -109,11 +109,15 @@ class DetailOverviewView: UIView {
         genreListView.text = commaSeparatedList
     }
     
-    public func removePosterImageBlurEffectOverlay(animated: Bool) {
+    public func setPosterImageState(_ state: PosterImageViewState, animated: Bool) {
+        posterImageView.setState(state, animated: animated)
+    }
+    
+    /*public func removePosterImageBlurEffectOverlay(animated: Bool) {
         posterImageView.setState(.revealed, animated: animated)
     }
     
     public func addPosterImageBlurEffectOverlay(animated: Bool) {
         posterImageView.setState(.hidden, animated: animated)
-    }
+    }*/
 }
