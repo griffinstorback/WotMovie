@@ -24,6 +24,7 @@
 		853C679A25C5FBA500EBEFBE /* TransitionPresenterProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853C679925C5FBA500EBEFBE /* TransitionPresenterProtocol.swift */; };
 		853C679F25CB388E00EBEFBE /* ListCategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853C679E25CB388E00EBEFBE /* ListCategoryTableViewCell.swift */; };
 		853C67B325CC8EF500EBEFBE /* LeftAlignedImageCenteredTextButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853C67B225CC8EF500EBEFBE /* LeftAlignedImageCenteredTextButton.swift */; };
+		853C67B825CF759F00EBEFBE /* SortGridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853C67B725CF759F00EBEFBE /* SortGridViewController.swift */; };
 		854B3E912550DDBB003397E0 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854B3E902550DDBA003397E0 /* CoreDataManager.swift */; };
 		854B3E9625537F55003397E0 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854B3E9525537F55003397E0 /* CoreDataStack.swift */; };
 		85791AD125C0FC2B00F8FE75 /* ListCategoryGridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85791AD025C0FC2B00F8FE75 /* ListCategoryGridViewController.swift */; };
@@ -136,6 +137,7 @@
 		853C679925C5FBA500EBEFBE /* TransitionPresenterProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionPresenterProtocol.swift; sourceTree = "<group>"; };
 		853C679E25CB388E00EBEFBE /* ListCategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCategoryTableViewCell.swift; sourceTree = "<group>"; };
 		853C67B225CC8EF500EBEFBE /* LeftAlignedImageCenteredTextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftAlignedImageCenteredTextButton.swift; sourceTree = "<group>"; };
+		853C67B725CF759F00EBEFBE /* SortGridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortGridViewController.swift; sourceTree = "<group>"; };
 		854B3E902550DDBA003397E0 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		854B3E9525537F55003397E0 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		85791AD025C0FC2B00F8FE75 /* ListCategoryGridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCategoryGridViewController.swift; sourceTree = "<group>"; };
@@ -274,6 +276,7 @@
 				85CF35A92540B3F600A101C9 /* EntityTableViewController.swift */,
 				8527827425BD3FF100FC257A /* LoadMoreGridViewController.swift */,
 				8527827925BD403F00FC257A /* GridViewController.swift */,
+				853C67B725CF759F00EBEFBE /* SortGridViewController.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -765,6 +768,7 @@
 				85CF3498252E5E1700A101C9 /* EndPointType.swift in Sources */,
 				8527828C25C0A96100FC257A /* RecentlyViewedCollectionViewHeader.swift in Sources */,
 				85CF353A25365C5B00A101C9 /* GuessViewController.swift in Sources */,
+				853C67B825CF759F00EBEFBE /* SortGridViewController.swift in Sources */,
 				853C679A25C5FBA500EBEFBE /* TransitionPresenterProtocol.swift in Sources */,
 				8588FD3B256887BC0054EC17 /* PersonDetailPresenter.swift in Sources */,
 				85CF358C253A32D700A101C9 /* ImageDownloadManager.swift in Sources */,

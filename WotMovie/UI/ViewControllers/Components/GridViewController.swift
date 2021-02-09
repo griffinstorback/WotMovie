@@ -15,6 +15,9 @@ class GridViewController: DetailPresenterViewController {
     
     private let spacingAmount: CGFloat = 5
     private let minimumCellWidth: CGFloat = 120 // max is (2 * minimum)
+    func screenWidth() -> CGFloat { collectionView.bounds.width }
+    func numberOfCellsPerRow() -> Int { Int(screenWidth()/minimumCellWidth) }
+    func spacing() -> CGFloat { spacingAmount - spacingAmount/CGFloat(numberOfCellsPerRow()) }
     
     init() {
         collectionView = ContentSizedCollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
@@ -109,11 +112,9 @@ class GridViewController: DetailPresenterViewController {
 
 extension GridViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let screenWidth = collectionView.bounds.width
-        let numberOfCellsPerRow = Int(screenWidth/minimumCellWidth)
-        let spacing = spacingAmount - spacingAmount/CGFloat(numberOfCellsPerRow)
         
-        return CGSize(width: screenWidth/CGFloat(numberOfCellsPerRow) - spacing, height: (screenWidth/CGFloat(numberOfCellsPerRow))*1.5)
+        
+        return CGSize(width: screenWidth()/CGFloat(numberOfCellsPerRow()) - spacing(), height: (screenWidth()/CGFloat(numberOfCellsPerRow()))*1.5)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {

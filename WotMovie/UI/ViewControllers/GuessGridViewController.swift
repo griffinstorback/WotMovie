@@ -11,6 +11,7 @@ protocol GuessGridViewDelegate: NSObjectProtocol {
     func displayItems()
     func displayErrorLoadingItems()
     func reloadData()
+    func numberOfItemsPerRow() -> Int
     
     func revealEntities(at indices: [Int])
     func revealCorrectlyGuessedEntities(at indices: [Int])
@@ -72,6 +73,10 @@ extension GuessGridViewController: GuessGridViewDelegate {
     
     func reloadData() {
         gridView.reloadData()
+    }
+    
+    func numberOfItemsPerRow() -> Int {
+        return gridView.numberOfCellsPerRow()
     }
     
     func revealEntities(at indices: [Int]) {

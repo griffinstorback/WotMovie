@@ -112,12 +112,4 @@ class DetailOverviewView: UIView {
     public func setPosterImageState(_ state: PosterImageViewState, animated: Bool) {
         posterImageView.setState(state, animated: animated)
     }
-    
-    /*public func removePosterImageBlurEffectOverlay(animated: Bool) {
-        posterImageView.setState(.revealed, animated: animated)
-    }
-    
-    public func addPosterImageBlurEffectOverlay(animated: Bool) {
-        posterImageView.setState(.hidden, animated: animated)
-    }*/
 }

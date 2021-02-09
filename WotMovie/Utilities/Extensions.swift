@@ -170,6 +170,28 @@ extension UIViewController {
     }
 }
 
+extension UIAlertController {
+    static func actionSheetWithItems<A: Equatable>(controllerTitle: String, items: [(title: String, value: A)], currentSelection: A? = nil, action: @escaping (A) -> Void) -> UIAlertController {
+        let alertController = UIAlertController(title: controllerTitle, message: nil, preferredStyle: .actionSheet)
+        
+        for (var title, value) in items {
+            if let selection = currentSelection, value == selection {
+                title = "✔︎ " + title
+            }
+            
+            alertController.addAction(UIAlertAction(title: title, style: .default) { _ in
+                action(value)
+            })
+        }
+        
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        alertController.view.tintColor = Constants.Colors.defaultBlue
+        
+        return alertController
+    }
+}
+
 // TODO: Trying to compare two arrays, returning indices where they differ, for reloading collection views (like in GuessGridPresenter)
 /*extension Array<T> {
     func differentIndices<T>(_ array1: [T], _ array2: [T]) where T:Comparable {

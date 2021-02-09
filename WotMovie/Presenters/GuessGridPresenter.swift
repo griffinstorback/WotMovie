@@ -29,6 +29,7 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
     let category: CategoryType
     private var nextPage = 1
     
+    // the items currently being displayed
     private var items: [Entity] = [] {
         didSet {
             //let changedIndices = Array.differentIndices(items, oldValue)
@@ -46,11 +47,22 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
         }
     }
     var itemsCount: Int {
-        return items.count
+        guard let numberOfItemsPerRow = guessGridViewDelegate?.numberOfItemsPerRow() else {
+            print("** WARNING: in GuessGridPresenter, could not get # items per row (view delegate is likely nil).")
+            return 0
+        }
+        
+        guard numberOfItemsPerRow != 0 else {
+            // don't do pruning if zero returned (it means collection view probably hasn't appeared yet, or has no frame)
+            return 1
+        }
+        
+        // prune (if necessary) last few items, to display a clean number of rows.
+        return items.count - (items.count % numberOfItemsPerRow)
     }
     
     // filter out entities user has guessed on already, as well as undesirables (e.g. movie with no overview)
-    private func setItems(_ items: [Entity]) {
+    private func addItems(_ items: [Entity]) {
         var newItems = items
         
         if let movies = newItems as? [Movie] {
@@ -167,7 +179,7 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
             // if empty list was returned, means there is no page entity yet
             if items.count > 0 {
                 print("** Retrieved grid (p. \(nextPage)) items (\(items.count) movies) from Core Data")
-                self.setItems(items)
+                self.addItems(items)
                 self.nextPage += 1
                 
                 // recursive call if all those entities we just got had already been revealed.
@@ -201,7 +213,7 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
                     return
                 }
                 if let movies = movies {
-                    //self?.setItems(movies)
+                    //self?.addItems(movies)
                     
                     // update/create page in core data, then retrieve the newly posted page
                     if let currentPage = self?.nextPage {
@@ -210,7 +222,7 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
                             self?.coreDataManager.createMoviePage(movies: movies, pageNumber: currentPage, genreID: -1)
                             let newlyAddedMovies = self?.coreDataManager.fetchEntityPage(category: .movie, pageNumber: currentPage, genreID: -1)
                             print("** newlyAddedMovies count: \(newlyAddedMovies?.count ?? -1)")
-                            self?.setItems(newlyAddedMovies ?? [])
+                            self?.addItems(newlyAddedMovies ?? [])
                         }
                     }
                     
@@ -229,7 +241,7 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
                     return
                 }
                 if let tvShows = tvShows {
-                    self?.setItems(tvShows)
+                    self?.addItems(tvShows)
                     //self?.items += tvShows
                     self?.nextPage += 1
                 }
@@ -246,7 +258,7 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
                     return
                 }
                 if let people = people {
-                    self?.setItems(people)
+                    self?.addItems(people)
                     //self?.items += people
                     self?.nextPage += 1
                 }

@@ -111,7 +111,11 @@ class PersonDetailViewController: GuessDetailViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        personOverviewView.setPosterImageState(.revealed, animated: true)
+        if state == .correct || state == .correctWithNoNextButton {
+            personOverviewView.setPosterImageState(.correctlyGuessedWithoutCheckmark, animated: true)
+        } else {
+            personOverviewView.setPosterImageState(.revealed, animated: true)
+        }
     }
     
     private func addInfo() {
