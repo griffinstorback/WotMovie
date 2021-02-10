@@ -17,14 +17,18 @@ enum ListCategoryDisplayTypes: String {
 }
 
 protocol ListCategoryGridPresenterProtocol {
-    var listCategoryType: ListCategoryType { get }
+    var sortParameters: SortParameters { get set }
     var itemsCount: Int { get }
     
     func loadItems()
     func setViewDelegate(_ listCategoryGridViewDelegate: ListCategoryGridViewDelegate?)
     func itemFor(index: Int) -> Entity
+    func getTypesCurrentlyDisplaying() -> ListCategoryDisplayTypes
     func getTypesAvailableToDisplay() -> [(String,ListCategoryDisplayTypes)]
     func setTypesToDisplay(listCategoryDisplayTypes: ListCategoryDisplayTypes)
+    func setSearchText(_ text: String?)
+    func getSortParameters() -> SortParameters
+    func setSortParameters(_ sortParameters: SortParameters)
     func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
 }
 
@@ -35,7 +39,12 @@ class ListCategoryGridPresenter: ListCategoryGridPresenterProtocol {
     private let coreDataManager: CoreDataManager
     weak var listCategoryGridViewDelegate: ListCategoryGridViewDelegate?
     
-    let listCategoryType: ListCategoryType
+    var sortParameters: SortParameters {
+        didSet {
+            updateFilter()
+        }
+    }
+    
     var typesDisplayed: ListCategoryDisplayTypes {
         didSet {
             updateFilter()
@@ -66,9 +75,14 @@ class ListCategoryGridPresenter: ListCategoryGridPresenterProtocol {
             filteredResults = filteredResults.filter { $0.name.lowercased().contains(searchString.lowercased()) }
         }
         
-        //
-        // SORT!
-        //
+        switch sortParameters.sortBy {
+        case .dateAdded:
+            break
+        case .alphabetical:
+            filteredResults = filteredResults.sorted { $0.name.lowercased() < $1.name.lowercased() }
+        case .releaseDate:
+            break
+        }
         
         items = filteredResults
     }
@@ -98,7 +112,7 @@ class ListCategoryGridPresenter: ListCategoryGridPresenterProtocol {
         self.imageDownloadManager = imageDownloadManager
         self.coreDataManager = coreDataManager
         
-        self.listCategoryType = listCategoryType
+        self.sortParameters = SortParameters(categoryType: listCategoryType)
         
         switch listCategoryType {
         case .allGuessed, .allRevealed:
@@ -123,10 +137,14 @@ class ListCategoryGridPresenter: ListCategoryGridPresenterProtocol {
         return items[index]
     }
     
+    func getTypesCurrentlyDisplaying() -> ListCategoryDisplayTypes {
+        return typesDisplayed
+    }
+    
     // types to display in drop down menu at top right (right bar item)
     func getTypesAvailableToDisplay() -> [(String,ListCategoryDisplayTypes)] {
         
-        switch listCategoryType {
+        switch sortParameters.listCategoryType {
         case .allGuessed, .allRevealed:
             return [
                 (ListCategoryDisplayTypes.all.rawValue, .all),
@@ -146,9 +164,21 @@ class ListCategoryGridPresenter: ListCategoryGridPresenterProtocol {
     }
     
     func setTypesToDisplay(listCategoryDisplayTypes: ListCategoryDisplayTypes) {
-        guard listCategoryType != .personFavorites else { return } // person favorites has only people type.
+        guard sortParameters.listCategoryType != .personFavorites else { return } // person favorites has only people type.
         
         typesDisplayed = listCategoryDisplayTypes
+    }
+    
+    func setSearchText(_ text: String?) {
+        searchString = text ?? ""
+    }
+    
+    func getSortParameters() -> SortParameters {
+        return self.sortParameters
+    }
+    
+    func setSortParameters(_ sortParameters: SortParameters) {
+        self.sortParameters = sortParameters
     }
     
     func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
@@ -176,7 +206,7 @@ class ListCategoryGridPresenter: ListCategoryGridPresenterProtocol {
     }
     
     private func getNextPageFromCoreData() {
-        switch listCategoryType {
+        switch sortParameters.listCategoryType {
         case .movieOrTvShowWatchlist:
             let items = coreDataManager.fetchWatchlist(genreID: -1)
             allItems += items

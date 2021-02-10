@@ -21,10 +21,12 @@
 		8527827A25BD403F00FC257A /* GridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8527827925BD403F00FC257A /* GridViewController.swift */; };
 		8527827F25BF5AB300FC257A /* ListCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8527827E25BF5AB300FC257A /* ListCategory.swift */; };
 		8527828C25C0A96100FC257A /* RecentlyViewedCollectionViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8527828B25C0A96100FC257A /* RecentlyViewedCollectionViewHeader.swift */; };
+		8535962625D31DBF00F093BA /* SortParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8535962525D31DBF00F093BA /* SortParameters.swift */; };
 		853C679A25C5FBA500EBEFBE /* TransitionPresenterProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853C679925C5FBA500EBEFBE /* TransitionPresenterProtocol.swift */; };
 		853C679F25CB388E00EBEFBE /* ListCategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853C679E25CB388E00EBEFBE /* ListCategoryTableViewCell.swift */; };
 		853C67B325CC8EF500EBEFBE /* LeftAlignedImageCenteredTextButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853C67B225CC8EF500EBEFBE /* LeftAlignedImageCenteredTextButton.swift */; };
 		853C67B825CF759F00EBEFBE /* SortGridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853C67B725CF759F00EBEFBE /* SortGridViewController.swift */; };
+		853C67BD25D30E7D00EBEFBE /* SortGridPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853C67BC25D30E7D00EBEFBE /* SortGridPresenter.swift */; };
 		854B3E912550DDBB003397E0 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854B3E902550DDBA003397E0 /* CoreDataManager.swift */; };
 		854B3E9625537F55003397E0 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854B3E9525537F55003397E0 /* CoreDataStack.swift */; };
 		85791AD125C0FC2B00F8FE75 /* ListCategoryGridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85791AD025C0FC2B00F8FE75 /* ListCategoryGridViewController.swift */; };
@@ -134,10 +136,12 @@
 		8527827925BD403F00FC257A /* GridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridViewController.swift; sourceTree = "<group>"; };
 		8527827E25BF5AB300FC257A /* ListCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCategory.swift; sourceTree = "<group>"; };
 		8527828B25C0A96100FC257A /* RecentlyViewedCollectionViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentlyViewedCollectionViewHeader.swift; sourceTree = "<group>"; };
+		8535962525D31DBF00F093BA /* SortParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortParameters.swift; sourceTree = "<group>"; };
 		853C679925C5FBA500EBEFBE /* TransitionPresenterProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionPresenterProtocol.swift; sourceTree = "<group>"; };
 		853C679E25CB388E00EBEFBE /* ListCategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCategoryTableViewCell.swift; sourceTree = "<group>"; };
 		853C67B225CC8EF500EBEFBE /* LeftAlignedImageCenteredTextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftAlignedImageCenteredTextButton.swift; sourceTree = "<group>"; };
 		853C67B725CF759F00EBEFBE /* SortGridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortGridViewController.swift; sourceTree = "<group>"; };
+		853C67BC25D30E7D00EBEFBE /* SortGridPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortGridPresenter.swift; sourceTree = "<group>"; };
 		854B3E902550DDBA003397E0 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		854B3E9525537F55003397E0 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		85791AD025C0FC2B00F8FE75 /* ListCategoryGridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCategoryGridViewController.swift; sourceTree = "<group>"; };
@@ -276,7 +280,6 @@
 				85CF35A92540B3F600A101C9 /* EntityTableViewController.swift */,
 				8527827425BD3FF100FC257A /* LoadMoreGridViewController.swift */,
 				8527827925BD403F00FC257A /* GridViewController.swift */,
-				853C67B725CF759F00EBEFBE /* SortGridViewController.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -468,6 +471,7 @@
 				8588FD2B2568837F0054EC17 /* MovieOrTVShow.swift */,
 				8588FD30256884660054EC17 /* Job.swift */,
 				8527827E25BF5AB300FC257A /* ListCategory.swift */,
+				8535962525D31DBF00F093BA /* SortParameters.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -493,6 +497,7 @@
 				85CF354825365D0B00A101C9 /* GuessGridViewController.swift */,
 				8527826425BCF67A00FC257A /* ListViewController.swift */,
 				85791AD025C0FC2B00F8FE75 /* ListCategoryGridViewController.swift */,
+				853C67B725CF759F00EBEFBE /* SortGridViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -571,6 +576,7 @@
 				8501405E254B50C20088FA3E /* EnterGuessPresenter.swift */,
 				8527826925BCF6C300FC257A /* ListPresenter.swift */,
 				85791AD525C0FCA100F8FE75 /* ListCategoryGridPresenter.swift */,
+				853C67BC25D30E7D00EBEFBE /* SortGridPresenter.swift */,
 			);
 			path = Presenters;
 			sourceTree = "<group>";
@@ -706,6 +712,7 @@
 			files = (
 				8527827A25BD403F00FC257A /* GridViewController.swift in Sources */,
 				85CF35B72540E1D000A101C9 /* Credits.swift in Sources */,
+				853C67BD25D30E7D00EBEFBE /* SortGridPresenter.swift in Sources */,
 				85CF35752538DA5700A101C9 /* GuessGridPresenter.swift in Sources */,
 				8586DF3325539C3F0066EE65 /* GuessCategoryView.swift in Sources */,
 				8588FD13255F390F0054EC17 /* DismissCardAnimator.swift in Sources */,
@@ -738,6 +745,7 @@
 				85CF353525365B7900A101C9 /* RootTabViewController.swift in Sources */,
 				8527826A25BCF6C300FC257A /* ListPresenter.swift in Sources */,
 				8501404D2548BAF10088FA3E /* EntityTableSectionHeaderView.swift in Sources */,
+				8535962625D31DBF00F093BA /* SortParameters.swift in Sources */,
 				854B3E912550DDBB003397E0 /* CoreDataManager.swift in Sources */,
 				85CF35DB2543A8AD00A101C9 /* HorizontalCollectionViewCell.swift in Sources */,
 				8588FD0E255F38D30054EC17 /* PresentCardAnimator.swift in Sources */,

@@ -46,6 +46,7 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
             }
         }
     }
+    // returns count of items to display. make sure to call items.count if you need count of actual number of items loaded.
     var itemsCount: Int {
         guard let numberOfItemsPerRow = guessGridViewDelegate?.numberOfItemsPerRow() else {
             print("** WARNING: in GuessGridPresenter, could not get # items per row (view delegate is likely nil).")
@@ -54,7 +55,7 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
         
         guard numberOfItemsPerRow != 0 else {
             // don't do pruning if zero returned (it means collection view probably hasn't appeared yet, or has no frame)
-            return 1
+            return 0
         }
         
         // prune (if necessary) last few items, to display a clean number of rows.
@@ -183,7 +184,7 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
                 self.nextPage += 1
                 
                 // recursive call if all those entities we just got had already been revealed.
-                if self.itemsCount < 20 {
+                if self.items.count < 20 {
                     return getNextPageFromCoreData()
                 } else {
                     return true

@@ -18,11 +18,11 @@ class ListCategoryGridViewController: UIViewController {
     private let gridView: LoadMoreGridViewController
     private let searchController: UISearchController
     
-    init(listCategory: ListCategory) {
-        listCategoryGridPresenter = ListCategoryGridPresenter(listCategoryType: listCategory.type)
+    init(listCategory: ListCategory, presenter: ListCategoryGridPresenterProtocol? = nil) {
+        listCategoryGridPresenter = presenter ?? ListCategoryGridPresenter(listCategoryType: listCategory.type)
         
         gridView = LoadMoreGridViewController()
-        searchController = UISearchController()
+        searchController = UISearchController(searchResultsController: nil)
         
         super.init(nibName: nil, bundle: nil)
         
@@ -38,7 +38,11 @@ class ListCategoryGridViewController: UIViewController {
     private func setupViews() {
         navigationItem.largeTitleDisplayMode = .never
         navigationItem.searchController = searchController
+        
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
         searchController.isActive = true
+        searchController.searchBar.delegate = self
         
         listCategoryGridPresenter.setViewDelegate(self)
         
@@ -73,12 +77,12 @@ class ListCategoryGridViewController: UIViewController {
     
     // method needs to be called in view will appear.
     func setupNavBarAndSearchBar() {
-        let category = listCategoryGridPresenter.listCategoryType
+        let category = listCategoryGridPresenter.sortParameters.listCategoryType
         
         switch category {
         case .movieOrTvShowWatchlist:
             
-            let genreSelectionButton = UIBarButtonItem(title: "Movies & TV", style: .plain, target: self, action: #selector(selectEntityTypesToDisplay))
+            let genreSelectionButton = UIBarButtonItem(title: listCategoryGridPresenter.getTypesCurrentlyDisplaying().rawValue, style: .plain, target: self, action: #selector(selectEntityTypesToDisplay))
             navigationItem.rightBarButtonItem = genreSelectionButton
         case .personFavorites:
             // Maybe instead of "All genres" in top right, have "All job types" with a drop down
@@ -90,10 +94,10 @@ class ListCategoryGridViewController: UIViewController {
             
             // TODO: only show all genres button if movies or tv shows only are selected,
             //       as genres for people makes no sense? (also could have "all jobs" for person)
-            let genreSelectionButton = UIBarButtonItem(title: "All types", style: .plain, target: self, action: #selector(selectEntityTypesToDisplay))
+            let genreSelectionButton = UIBarButtonItem(title: listCategoryGridPresenter.getTypesCurrentlyDisplaying().rawValue, style: .plain, target: self, action: #selector(selectEntityTypesToDisplay))
             navigationItem.rightBarButtonItem = genreSelectionButton
         case .allRevealed:
-            let genreSelectionButton = UIBarButtonItem(title: "All types", style: .plain, target: self, action: #selector(selectEntityTypesToDisplay))
+            let genreSelectionButton = UIBarButtonItem(title: listCategoryGridPresenter.getTypesCurrentlyDisplaying().rawValue, style: .plain, target: self, action: #selector(selectEntityTypesToDisplay))
             navigationItem.rightBarButtonItem = genreSelectionButton
         }
         
@@ -159,5 +163,30 @@ extension ListCategoryGridViewController: LoadMoreGridViewDelegate {
 extension ListCategoryGridViewController: ListCategoryGridViewDelegate {
     func reloadData() {
         gridView.reloadData()
+    }
+}
+
+// could replace this with the UISearchBarDelegate function 'textDidChange'
+extension ListCategoryGridViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        listCategoryGridPresenter.setSearchText(searchController.searchBar.text)
+    }
+}
+
+extension ListCategoryGridViewController: UISearchBarDelegate {
+    func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
+        let sortGridViewController = SortGridViewController(sortParameters: listCategoryGridPresenter.getSortParameters())
+        sortGridViewController.resultsDelegate = self
+        let navigationController = UINavigationController(rootViewController: sortGridViewController)
+        navigationController.modalPresentationStyle = .formSheet
+        
+        present(navigationController, animated: true)
+    }
+}
+
+// get results back from 'sort' VC
+extension ListCategoryGridViewController: SortGridViewResultsDelegate {
+    func didSaveWithParameters(_ sortParameters: SortParameters) {
+        listCategoryGridPresenter.setSortParameters(sortParameters)
     }
 }
