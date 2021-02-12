@@ -304,7 +304,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
             
             // attach genre mo objects, either by fetching or by creating them.
             for genreID in movie.genreIDs {
-                if let genreMO = fetchGenre(id: genreID) {
+                if let genreMO = fetchMovieGenre(id: genreID) {
                     // only add genre if it doesnt already exist on movie object
                     if !(movieMO.genres?.contains(genreMO) ?? false) {
                         print("** UPDATE MOVIE - adding EXISTING genreMO: \(genreMO)")
@@ -326,7 +326,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
     }
     
     @discardableResult
-    func createMovie(movie: Movie) -> MovieMO {
+    private func createMovie(movie: Movie, shouldSetLastViewedDate: Bool = true) -> MovieMO {
         let movieMO = MovieMO(context: coreDataStack.persistentContainer.viewContext)
         
         movieMO.id = Int64(movie.id)
@@ -347,8 +347,13 @@ final class CoreDataManager: CoreDataManagerProtocol {
             }
         }
         
+        // Set this to false if creating a movie but not opening it. (i.e. when creating a page of movies, we don't want
+        // the movies to have a lastViewedDate if they haven't been viewed (opened in detail view))
+        if shouldSetLastViewedDate {
+            movieMO.lastViewedDate = Date()
+        }
+        
         movieMO.lastUpdated = Date()
-        movieMO.lastViewedDate = Date()
         movieMO.name = movie.name
         movieMO.overview = movie.overview
         movieMO.posterImageURL = movie.posterPath
@@ -356,7 +361,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
         
         // attach genre mo objects, either by fetching or by creating them.
         for genreID in movie.genreIDs {
-            if let genreMO = fetchGenre(id: genreID) {
+            if let genreMO = fetchMovieGenre(id: genreID) {
                 genreMO.addObject(value: movieMO, for: "movies")
                 print("** CREATED MOVIE - adding EXISTING genreMO: \(genreMO)")
                 //movieMO.addObject(value: genreMO, for: "genres")
@@ -495,6 +500,23 @@ final class CoreDataManager: CoreDataManagerProtocol {
 // MARK: -- GUESS GRID
     
     func fetchMoviePage(_ pageNumber: Int, _ genreID: Int) -> [Movie]? {
+        
+        // fetch the movie page, then convert its movie mos to movies and return
+        if let moviePageMO = fetchMoviePageMO(pageNumber, genreID) {
+            print("**** fetchMoviePage - found existing movie page mo, returning movies")
+            return getMoviesFromMoviePageMO(moviePageMO)
+        } else {
+            print("**** fetchMoviePage - NO movie page mo found")
+            return nil
+        }
+    }
+    
+    private func getMoviesFromMoviePageMO(_ moviePageMO: MoviePageMO) -> [Movie]? {
+        guard let movieMOs = moviePageMO.movies?.allObjects as? [MovieMO] else { return nil }
+        return movieMOs.map { Movie(movieMO: $0) }
+    }
+    
+    private func fetchMoviePageMO(_ pageNumber: Int, _ genreID: Int) -> MoviePageMO? {
         let moc = coreDataStack.persistentContainer.viewContext
         
         let pageFetch = NSFetchRequest<MoviePageMO>(entityName: "MoviePage")
@@ -502,10 +524,10 @@ final class CoreDataManager: CoreDataManagerProtocol {
         
         do {
             let fetchedPages = try moc.fetch(pageFetch)
-            guard fetchedPages.count > 0 else { return [] }
-            guard let movieMOs = fetchedPages[0].movies?.allObjects as? [MovieMO] else { return nil }
+            guard fetchedPages.count > 0 else { return nil }
+            print("*** fetchedPages count: \(fetchedPages.count)")
             
-            return movieMOs.map { Movie(movieMO: $0) }
+            return fetchedPages[0]
         } catch {
             print("** Failed to fetch movie page: \(error)")
             return nil
@@ -520,31 +542,53 @@ final class CoreDataManager: CoreDataManagerProtocol {
         return []
     }
     
-    func createMoviePage(movies: [Movie], pageNumber: Int, genreID: Int) {
+    @discardableResult
+    func updateOrCreateMoviePage(movies: [Movie], pageNumber: Int, genreID: Int) -> [Movie]? {
+        if let moviePageMO = fetchMoviePageMO(pageNumber, genreID) {
+            print("**** updateOrCreateMoviePage - movie page mo found, updating it with movies now.")
+            moviePageMO.removeAllObjects(for: "movies")
+            
+            addMoviesToMoviePageMO(movies: movies, moviePageMO: moviePageMO)
+            
+            moviePageMO.lastUpdated = Date()
+
+            coreDataStack.saveContext()
+            return getMoviesFromMoviePageMO(moviePageMO)
+        } else {
+            print("**** updateOrCreateMoviePage - NO movie page mo found, creating one now.")
+            return createMoviePage(movies: movies, pageNumber: pageNumber, genreID: genreID)
+        }
+    }
+    
+    // DOESN'T SAVE CONTEXT AFTER ADDING MOVIES TO PAGE.
+    private func addMoviesToMoviePageMO(movies: [Movie], moviePageMO: MoviePageMO) {
+        for movie in movies {
+            // first check if movie already in core data
+            let existingMovies = fetchMovie(id: movie.id)
+            if existingMovies.count > 0 {
+                moviePageMO.addObject(value: existingMovies[0], for: "movies")
+            } else {
+                // None found, create a new movieMO object, and don't set the lastViewedDate field, because the movie hasn't
+                // explicitly been loaded into a detail VC yet.
+                let newMovie = createMovie(movie: movie, shouldSetLastViewedDate: false)
+                moviePageMO.addObject(value: newMovie, for: "movies")
+            }
+        }
+    }
+    
+    @discardableResult
+    private func createMoviePage(movies: [Movie], pageNumber: Int, genreID: Int) -> [Movie]? {
         let moc = coreDataStack.persistentContainer.viewContext
         let pageMO = MoviePageMO(context: moc)
         pageMO.genreID = Int64(genreID)
         pageMO.pageNumber = Int64(pageNumber)
         pageMO.lastUpdated = Date()
         
-        print("** in createmoviepage, about to add each movie")
-        
         // create movieMO for each of the apiResponses movies, if they don't already exist
-        for movie in movies {
-            
-            // first check if movie already in core data
-            let existingMovies = fetchMovie(id: movie.id)
-            if existingMovies.count > 0 {
-                pageMO.addObject(value: existingMovies[0], for: "movies")
-            } else {
-                // none found, create a new movieMO object
-                let newMovie = createMovie(movie: movie)
-                pageMO.addObject(value: newMovie, for: "movies")
-            }
-        }
+        addMoviesToMoviePageMO(movies: movies, moviePageMO: pageMO)
         
-        print("** added movies to core data movie page. (\(movies.count) of them)")
         coreDataStack.saveContext()
+        return fetchMoviePage(pageNumber, genreID)
     }
     
     func createPersonPage(people: [Person], pageNumber: Int, genreID: Int) {
@@ -566,7 +610,6 @@ final class CoreDataManager: CoreDataManagerProtocol {
         let fetchRequest = NSFetchRequest<MovieMO>(entityName: "Movie")
         fetchRequest.fetchLimit = 60
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "lastViewedDate", ascending: false)]
-        //fetchRequest.predicate = NSPredicate(format: "", Date())
         
         do {
             let fetchedMovies: [MovieMO] = try moc.fetch(fetchRequest)
@@ -771,9 +814,9 @@ final class CoreDataManager: CoreDataManagerProtocol {
 // MARK: -- GENRES
     
     // should always be called after a network request is performed for this info.
-    func updateOrCreateGenreList(genres: [Genre]) {
+    func updateOrCreateMovieGenreList(genres: [Genre]) {
         for genre in genres {
-            if let genreMO = fetchGenre(id: genre.id) {
+            if let genreMO = fetchMovieGenre(id: genre.id) {
                 // update existing genre managed object
                 genreMO.name = genre.name
                 genreMO.lastUpdated = Date()
@@ -789,7 +832,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
         coreDataStack.saveContext()
     }
     
-    func fetchGenres() -> [Genre] {
+    func fetchMovieGenres() -> [MovieGenre] {
         let moc = coreDataStack.persistentContainer.viewContext
         let genreFetch = NSFetchRequest<MovieGenreMO>(entityName: "MovieGenre")
         
@@ -810,7 +853,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
         }
     }
     
-    func fetchGenre(id: Int) -> MovieGenreMO? {
+    func fetchMovieGenre(id: Int) -> MovieGenreMO? {
         let moc = coreDataStack.persistentContainer.viewContext
         let genreFetch = NSFetchRequest<MovieGenreMO>(entityName: "MovieGenre")
         genreFetch.predicate = NSPredicate(format: "id == %ld", id)

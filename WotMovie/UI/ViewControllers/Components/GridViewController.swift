@@ -62,6 +62,8 @@ class GridViewController: DetailPresenterViewController {
         //collectionView.reloadItems(at: indexPaths)
         for index in indices {
             let indexPath = IndexPath(item: index, section: 0)
+            
+            // TODO : investigate better nil handling. got a 'fatal error, unexpectedly found nil' error on line below.
             let cell = collectionView.cellForItem(at: indexPath) as! GridCollectionViewCell
             cell.reveal(animated: false)
         }

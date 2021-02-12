@@ -82,8 +82,8 @@ class ListCategoryGridViewController: UIViewController {
         switch category {
         case .movieOrTvShowWatchlist:
             
-            let genreSelectionButton = UIBarButtonItem(title: listCategoryGridPresenter.getTypesCurrentlyDisplaying().rawValue, style: .plain, target: self, action: #selector(selectEntityTypesToDisplay))
-            navigationItem.rightBarButtonItem = genreSelectionButton
+            let entityTypesSelectionButton = UIBarButtonItem(title: listCategoryGridPresenter.getTypesCurrentlyDisplaying().rawValue, style: .plain, target: self, action: #selector(selectEntityTypesToDisplay))
+            navigationItem.rightBarButtonItem = entityTypesSelectionButton
         case .personFavorites:
             // Maybe instead of "All genres" in top right, have "All job types" with a drop down
             // with options e.g. "Actor/Actress", "Director", etc.
@@ -94,11 +94,11 @@ class ListCategoryGridViewController: UIViewController {
             
             // TODO: only show all genres button if movies or tv shows only are selected,
             //       as genres for people makes no sense? (also could have "all jobs" for person)
-            let genreSelectionButton = UIBarButtonItem(title: listCategoryGridPresenter.getTypesCurrentlyDisplaying().rawValue, style: .plain, target: self, action: #selector(selectEntityTypesToDisplay))
-            navigationItem.rightBarButtonItem = genreSelectionButton
+            let entityTypesSelectionButton = UIBarButtonItem(title: listCategoryGridPresenter.getTypesCurrentlyDisplaying().rawValue, style: .plain, target: self, action: #selector(selectEntityTypesToDisplay))
+            navigationItem.rightBarButtonItem = entityTypesSelectionButton
         case .allRevealed:
-            let genreSelectionButton = UIBarButtonItem(title: listCategoryGridPresenter.getTypesCurrentlyDisplaying().rawValue, style: .plain, target: self, action: #selector(selectEntityTypesToDisplay))
-            navigationItem.rightBarButtonItem = genreSelectionButton
+            let entityTypesSelectionButton = UIBarButtonItem(title: listCategoryGridPresenter.getTypesCurrentlyDisplaying().rawValue, style: .plain, target: self, action: #selector(selectEntityTypesToDisplay))
+            navigationItem.rightBarButtonItem = entityTypesSelectionButton
         }
         
         // bookmark button is actually the sort button.

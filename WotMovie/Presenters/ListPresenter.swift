@@ -63,6 +63,7 @@ class ListPresenter: ListPresenterProtocol {
         return categoryTableViewRows[index]
     }
     
+    // TODO: REMOVE? CORE DATA HAS GENERIC FUNCTION?
     func getItemCountForCategory(category: ListCategoryType) -> Int {
         switch category {
         case .movieOrTvShowWatchlist:
@@ -80,7 +81,7 @@ class ListPresenter: ListPresenterProtocol {
     
     func loadRecentlyViewed() {
         let items = coreDataManager.fetchPageOfRecentlyViewed()
-        recentlyViewedItems += items
+        recentlyViewedItems = items
         recentlyViewedNextPage += 1
         
         print("*** number on watchlist: \(getItemCountForCategory(category: .movieOrTvShowWatchlist))")

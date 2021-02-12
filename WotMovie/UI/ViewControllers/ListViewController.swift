@@ -56,7 +56,12 @@ class ListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
+        // query recently viewed (re-query whenever this page view appears)
         listPresenter.loadRecentlyViewed()
     }
     

@@ -28,6 +28,11 @@ struct MovieGenre: Genre {
         id = Int(genreMO.id)
         name = genreMO.name ?? ""
     }
+    
+    init(id: Int, name: String) {
+        self.id = id
+        self.name = name
+    }
 }
 struct TVShowGenre: Genre {
     let isMovie: Bool = false

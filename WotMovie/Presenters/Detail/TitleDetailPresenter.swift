@@ -275,7 +275,7 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
     }
     
     private func getGenresFromCoreData() -> String? {
-        let genres = coreDataManager.fetchGenres()
+        let genres = coreDataManager.fetchMovieGenres()
             
         // TODO: need to check if lastUpdated > 2 days (or whatever threshold), then update genres
         // either right now or on a background thread.
@@ -304,7 +304,7 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
                 
                 if let genres = genres {
                     DispatchQueue.main.async {
-                        self.coreDataManager.updateOrCreateGenreList(genres: genres)
+                        self.coreDataManager.updateOrCreateMovieGenreList(genres: genres)
                     }
                     
                     DispatchQueue.main.async {

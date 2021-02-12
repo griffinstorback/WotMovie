@@ -41,6 +41,10 @@ class GuessGridViewController: DetailPresenterViewController {
         
         guessGridViewPresenter.setViewDelegate(self)
         
+        // make button on right side of navigation bar be for genre selection
+        let genreSelectionButton = UIBarButtonItem(title: guessGridViewPresenter.getGenreCurrentlyDisplaying().name, style: .plain, target: self, action: #selector(selectGenresToDisplay))
+        navigationItem.rightBarButtonItem = genreSelectionButton
+        
         gridView.delegate = self
         gridView.transitionPresenter = guessGridViewPresenter
     }
@@ -48,6 +52,32 @@ class GuessGridViewController: DetailPresenterViewController {
     private func layoutViews() {
         addChildViewController(gridView)
         gridView.view.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
+    }
+    
+    // right bar item pressed
+    @objc func selectGenresToDisplay() {
+        let categoryType = guessGridViewPresenter.category
+        let genresDisplayedSelections: [(title: String, value: Int)]
+        
+        if categoryType == .movie {
+            genresDisplayedSelections = guessGridViewPresenter.getMovieGenresAvailableToDisplay().map { (title: $0.name, value: $0.id) }
+        } else if categoryType == .tvShow {
+            genresDisplayedSelections = guessGridViewPresenter.getTVShowGenresAvailableToDisplay().map { (title: $0.name, value: $0.id) }
+        } else {
+            print("** WARNING: attempting to see genres list for type \(categoryType), which isn't possible.")
+            return
+        }
+        
+        let genresDisplayedSelectionController = UIAlertController.actionSheetWithItems(controllerTitle: "Display", items: genresDisplayedSelections) { selectedValue in
+            // set the type on presenter to filter items
+            self.guessGridViewPresenter.setGenreToDisplay(genreID: selectedValue)
+            
+            // set the button string to update what type we are now seeing
+            self.navigationItem.rightBarButtonItem?.title = self.guessGridViewPresenter.getGenreCurrentlyDisplaying().name
+        }
+        
+        genresDisplayedSelectionController.popoverPresentationController?.sourceView = navigationItem.titleView
+        present(genresDisplayedSelectionController, animated: true)
     }
     
     required init?(coder: NSCoder) {
