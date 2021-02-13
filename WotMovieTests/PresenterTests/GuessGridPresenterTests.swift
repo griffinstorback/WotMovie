@@ -6,15 +6,33 @@
 //
 
 import XCTest
+@testable import WotMovie
 
 class GuessGridPresenterTests: XCTestCase {
+    
+    // sut
+    var guessGridPresenter: GuessGridPresenter!
+    
+    var guessGridViewDelegate: GuessGridViewDelegate!
 
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        try super.setUpWithError()
+        
+        // sut
+        guessGridPresenter = GuessGridPresenter(networkManager: NetworkManagerMock(), imageDownloadManager: ImageDownloadManagerMock(), coreDataManager: CoreDataManager.shared, category: .movie)
+        
+        guessGridViewDelegate = GuessGridViewControllerMock(numberOfRows: 4)
+        
+        // set the mock guessgrid view delegate as view delegate on presenter
+        guessGridPresenter.setViewDelegate(guessGridViewDelegate)
     }
 
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        try super.tearDownWithError()
+    }
+    
+    func testReloadDataCalledOnViewDelegate() {
+        
     }
 
     func testExample() throws {

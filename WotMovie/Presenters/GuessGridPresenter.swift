@@ -14,7 +14,7 @@ protocol GuessGridPresenterProtocol: TransitionPresenterProtocol {
     var itemsCount: Int { get }
 
     func setViewDelegate(_ guessGridViewDelegate: GuessGridViewDelegate?)
-    func itemFor(index: Int) -> Entity
+    func itemFor(index: Int) -> Entity?
     func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) // this is used in multiple files - extractable?
 
     func getGenreCurrentlyDisplaying() -> Genre
@@ -101,10 +101,31 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
         // remove items guessed
         newItems = newItems.filter { !$0.correctlyGuessed }
         
-        // remove items revealed (unless they were revealed awhile ago)
-        //newItems = newItems.filter { !$0.isRevealed }//&& $0.lastViewedDate ?? Date() > Date() }
+        // remove items revealed (unless they were revealed awhile ago, ~2 months?)
+        newItems = newItems.filter { !$0.isRevealed }//&& $0.lastViewedDate ?? Date() > Date() }
+        
+        var dupCount = 0
+        for newItem in newItems {
+            for item in self.items {
+                if item.id == newItem.id {
+                    dupCount += 1
+                }
+            }
+        }
+        
+        var totalDups = 0
+        for item in self.items {
+            for item2 in self.items {
+                if item.id == item2.id {
+                    totalDups += 1
+                }
+            }
+            totalDups -= 1
+        }
         
         self.items += newItems
+        
+        print("*** GuessGridPresenter.addItems() - added \(newItems.count) new items, with \(dupCount) new dups. New total: \(self.items.count). Total dups: \(totalDups)")
     }
     
     init(networkManager: NetworkManagerProtocol = NetworkManager.shared,
@@ -149,8 +170,9 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
         }
     }
     
-    func itemFor(index: Int) -> Entity {
-        return items[index]
+    func itemFor(index: Int) -> Entity? {
+        // this check important - index can be out of bounds sometimes when changing genre.
+        return index < items.count ? items[index] : nil
     }
     
     func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
@@ -186,16 +208,17 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
             loadGenresList()
         }
         
-        return genresList as? [MovieGenre] ?? []
+        return genresList.sorted { $0.name < $1.name } as? [MovieGenre] ?? []
     }
     
     func getTVShowGenresAvailableToDisplay() -> [TVShowGenre] {
         return []
     }
     
+    // NOT USED ANYMORE?????
     func getGenresAvailableToDisplay() -> [Genre] {
         if category == .movie {
-            return coreDataManager.fetchMovieGenres()//.map { ($0.name, $0.id) }
+            return genresList.sorted { $0.name < $1.name }
         } else if category == .tvShow {
             //return coreDataManager.fetchTVShowGenres()
             return coreDataManager.fetchMovieGenres()//.map { ($0.name, $0.id) }
@@ -212,89 +235,109 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
         }
     }
     
-    
     // call when want to load another page of items.
     func loadItems() {
         // before loading next page, if genres haven't been loaded yet, load them.
-        loadGenresList()
+        if genresList.isEmpty {
+            loadGenresList()
+        }
+        
         loadNextPageOfItems()
     }
     
+    
+    
+    // MARK:- Private methods
+    
     private func loadGenresList() {
-        if genresList.isEmpty {
-            if !getGenreListFromCoreData() {
-                getGenreListFromNetworkThenCacheInCoreData()
-            }
+        if !getGenreListFromCoreData() {
+            getGenreListFromNetworkThenCacheInCoreData()
         }
     }
+
     
+    private var isLoading = false // semaphore
     private func loadNextPageOfItems() {
-        // first, try to load the current page from core data
-        if !getNextPageFromCoreData() {
-            getNextPageFromNetworkThenCacheInCoreData()
+        if isLoading {
+            print("*** GuessGridPresenter.loadNextPageOfItems() - ABORTING ATTEMPT TO QUERY PAGE \(nextPage) (isLoading is true)")
+            return
         }
+        isLoading = true
+        
+        // first, try to load the current page from core data
+        if !getNextPageFromCoreData(page: nextPage) {
+            print("*** GuessGridPresenter.loadNextPageOfItems() - core data page not found for page \(nextPage), querying network")
+            getNextPageFromNetworkThenCacheInCoreData(page: nextPage) { success in
+                if success {
+                    self.nextPage += 1
+                    self.isLoading = false
+                    
+                    if self.items.count < 20 {
+                        print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is only \(self.items.count), so calling loadItems()...")
+                        self.loadNextPageOfItems()
+                    } else {
+                        print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is \(self.items.count), NOT calling loadItems()...")
+                    }
+                }
+            }
+        } else {
+            nextPage += 1
+            isLoading = false
+            
+            print("*** GuessGridPresenter.loadNextPageOfItems() - got page \(nextPage-1) from core data")
+            if self.items.count < 20 {
+                print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is only \(self.items.count), so calling loadItems()...")
+                loadNextPageOfItems()
+            } else {
+                print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is \(self.items.count), NOT calling loadItems()...")
+            }
+        }
+        
+        //isLoading = false
     }
     
     // returns true if successful
-    private func getNextPageFromCoreData() -> Bool {
-        if let items = coreDataManager.fetchEntityPage(category: category, pageNumber: nextPage, genreID: currentlyDisplayingGenre.id) {
+    private func getNextPageFromCoreData(page: Int) -> Bool {
+        if let items = coreDataManager.fetchEntityPage(category: category, pageNumber: page, genreID: currentlyDisplayingGenre.id) {
+            //self.nextPage += 1
+            self.addItems(items)
             
-            // TODO: need to check if lastUpdated > 2 days (or whatever threshold), then update page
-            // either right now or on a background thread.
-            
-            // if empty list was returned, means there is no page entity yet
-            if items.count > 0 {
-                print("** Retrieved grid (p. \(nextPage)) items (\(items.count) movies) from Core Data")
-                self.addItems(items)
-                self.nextPage += 1
-                
-                // recursive call if all those entities we just got had already been revealed.
-                if self.items.count < 20 {
-                    return getNextPageFromCoreData()
-                } else {
-                    return true
-                }
-            } else {
-                print("** fetchEntityPage came back with empty list.")
-            }
-        } else {
-            print("** fetchEntityPage came back nil. something went WRONG.")
+            return true
         }
         
         return false
     }
     
     // returns true if successful
-    private func getNextPageFromNetworkThenCacheInCoreData() {
-        print("** Retrieving grid (p. \(nextPage)) items from network..")
+    private func getNextPageFromNetworkThenCacheInCoreData(page: Int, completion: @escaping (_ success: Bool) -> Void) {
+        print("** Retrieving grid (p. \(page)) items from network..")
         if category == .movie {
-            networkManager.getListOfMoviesByGenre(id: currentlyDisplayingGenre.id, page: nextPage) { [weak self] movies, error in
+            networkManager.getListOfMoviesByGenre(id: currentlyDisplayingGenre.id, page: page) { [weak self] movies, error in
                 if let error = error {
                     print(error)
-                    
-                    // TODO: Error sometimes is just the page not loading for some reason. Got a 500 error once just for one page.
-                    //       Should re-attempt the next page (just once)
-                    //self?.nextPage += 1
-                    
+                    completion(false)
                     return
                 }
                 if let movies = movies {
-                    //self?.addItems(movies)
                     
                     // update/create page in core data, then retrieve the newly posted page
                     if let strongSelf = self {
                         DispatchQueue.main.async {
-                            print("** calling createMoviePage with moviesCount: \(movies.count), page: \(strongSelf.nextPage), genre: \(strongSelf.currentlyDisplayingGenre.id)")
                             
-                            let newlyAddedMovies = strongSelf.coreDataManager.updateOrCreateMoviePage(movies: movies, pageNumber: strongSelf.nextPage, genreID: strongSelf.currentlyDisplayingGenre.id)
+                            let newlyAddedMovies = strongSelf.coreDataManager.updateOrCreateMoviePage(movies: movies, pageNumber: page, genreID: strongSelf.currentlyDisplayingGenre.id)
+                            //strongSelf.nextPage += 1
                             strongSelf.addItems(newlyAddedMovies ?? [])
-                            strongSelf.nextPage += 1
+                            completion(true)
+                            return
                         }
-                    }                    
+                    }
+                    
+                    completion(false)
+                    return
                 }
             }
         } else if category == .tvShow {
-            networkManager.getListOfTVShowsByGenre(id: -1, page: nextPage) { [weak self] tvShows, error in
+            networkManager.getListOfTVShowsByGenre(id: currentlyDisplayingGenre.id, page: page) { [weak self] tvShows, error in
                 if let error = error {
                     print(error)
                     
@@ -305,13 +348,13 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
                     return
                 }
                 if let tvShows = tvShows {
+                    //self?.nextPage += 1
                     self?.addItems(tvShows)
                     //self?.items += tvShows
-                    self?.nextPage += 1
                 }
             }
         } else if category == .person {
-            networkManager.getPopularPeople(page: nextPage) { [weak self] people, error in
+            networkManager.getPopularPeople(page: page) { [weak self] people, error in
                 if let error = error {
                     print(error)
                     
@@ -322,12 +365,14 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
                     return
                 }
                 if let people = people {
+                    //self?.nextPage += 1
                     self?.addItems(people)
                     //self?.items += people
-                    self?.nextPage += 1
                 }
             }
         }
+        
+        //nextPage += 1
     }
     
     // returns true if got results from core data.
@@ -354,7 +399,9 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
                     self?.genresList = genres
                     
                     // cache result in core data
-                    self?.coreDataManager.updateOrCreateMovieGenreList(genres: genres)
+                    DispatchQueue.main.async {
+                        self?.coreDataManager.updateOrCreateMovieGenreList(genres: genres)
+                    }
                 }
             }
         } else if category == .tvShow {
@@ -365,7 +412,11 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
                 }
                 if let genres = genres {
                     self?.genresList = genres
-                    //self.coreDataManager.updateOrCreateTVShowGenreList(genres: genres)
+                    
+                    // cache result in core data
+                    //DispatchQueue.main.async {
+                    //    self?.coreDataManager.updateOrCreateTVShowGenreList(genres: genres)
+                    //}
                 }
             }
         }

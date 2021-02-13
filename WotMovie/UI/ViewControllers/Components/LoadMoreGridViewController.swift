@@ -128,10 +128,11 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
         } else if elementKind == UICollectionView.elementKindSectionFooter {
             if let footerView = view as? GridCollectionViewFooterView {
                 if delegate?.getNumberOfItems(self) ?? 0 > 0 {
+                    //print("**** LoadMoreGridViewController willdisplaysupplementaryview - number of items was \(delegate?.getNumberOfItems(self)), starting footer animation, calling loadmoreitems.")
                     footerView.startLoadingAnimation()
                     delegate?.loadMoreItems(self)
                 } else {
-                    print("**** nothing more to load?")
+                    print("**** LoadMoreGridViewController willdisplaysupplementaryview - nothing more to load?")
                 }
             }
         }

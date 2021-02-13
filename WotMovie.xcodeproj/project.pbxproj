@@ -22,6 +22,11 @@
 		8527827F25BF5AB300FC257A /* ListCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8527827E25BF5AB300FC257A /* ListCategory.swift */; };
 		8527828C25C0A96100FC257A /* RecentlyViewedCollectionViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8527828B25C0A96100FC257A /* RecentlyViewedCollectionViewHeader.swift */; };
 		8535962625D31DBF00F093BA /* SortParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8535962525D31DBF00F093BA /* SortParameters.swift */; };
+		8535962C25D76F1B00F093BA /* GuessGridPresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8535962B25D76F1B00F093BA /* GuessGridPresenterTests.swift */; };
+		8535963425D76F4900F093BA /* NetworkManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8535963325D76F4900F093BA /* NetworkManagerMock.swift */; };
+		8535963925D770EC00F093BA /* CoreDataManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8535963825D770EC00F093BA /* CoreDataManagerMock.swift */; };
+		8535963E25D7716500F093BA /* ImageDownloadManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8535963D25D7716500F093BA /* ImageDownloadManagerMock.swift */; };
+		8535964325D7728300F093BA /* GuessGridViewControllerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8535964225D7728300F093BA /* GuessGridViewControllerMock.swift */; };
 		853C679A25C5FBA500EBEFBE /* TransitionPresenterProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853C679925C5FBA500EBEFBE /* TransitionPresenterProtocol.swift */; };
 		853C679F25CB388E00EBEFBE /* ListCategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853C679E25CB388E00EBEFBE /* ListCategoryTableViewCell.swift */; };
 		853C67B325CC8EF500EBEFBE /* LeftAlignedImageCenteredTextButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853C67B225CC8EF500EBEFBE /* LeftAlignedImageCenteredTextButton.swift */; };
@@ -137,6 +142,11 @@
 		8527827E25BF5AB300FC257A /* ListCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCategory.swift; sourceTree = "<group>"; };
 		8527828B25C0A96100FC257A /* RecentlyViewedCollectionViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentlyViewedCollectionViewHeader.swift; sourceTree = "<group>"; };
 		8535962525D31DBF00F093BA /* SortParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortParameters.swift; sourceTree = "<group>"; };
+		8535962B25D76F1B00F093BA /* GuessGridPresenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessGridPresenterTests.swift; sourceTree = "<group>"; };
+		8535963325D76F4900F093BA /* NetworkManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManagerMock.swift; sourceTree = "<group>"; };
+		8535963825D770EC00F093BA /* CoreDataManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManagerMock.swift; sourceTree = "<group>"; };
+		8535963D25D7716500F093BA /* ImageDownloadManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownloadManagerMock.swift; sourceTree = "<group>"; };
+		8535964225D7728300F093BA /* GuessGridViewControllerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessGridViewControllerMock.swift; sourceTree = "<group>"; };
 		853C679925C5FBA500EBEFBE /* TransitionPresenterProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionPresenterProtocol.swift; sourceTree = "<group>"; };
 		853C679E25CB388E00EBEFBE /* ListCategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCategoryTableViewCell.swift; sourceTree = "<group>"; };
 		853C67B225CC8EF500EBEFBE /* LeftAlignedImageCenteredTextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftAlignedImageCenteredTextButton.swift; sourceTree = "<group>"; };
@@ -284,6 +294,14 @@
 			path = Components;
 			sourceTree = "<group>";
 		};
+		8535962A25D76EE000F093BA /* PresenterTests */ = {
+			isa = PBXGroup;
+			children = (
+				8535962B25D76F1B00F093BA /* GuessGridPresenterTests.swift */,
+			);
+			path = PresenterTests;
+			sourceTree = "<group>";
+		};
 		854B3E8B2550D7BC003397E0 /* Persistence */ = {
 			isa = PBXGroup;
 			children = (
@@ -386,6 +404,7 @@
 		85CF346F252D430F00A101C9 /* WotMovieTests */ = {
 			isa = PBXGroup;
 			children = (
+				8535962A25D76EE000F093BA /* PresenterTests */,
 				85CF35132535299D00A101C9 /* MockObjects */,
 				85CF35072533C13000A101C9 /* ModelTests */,
 				85CF34EC2533C0B000A101C9 /* NetworkingTests */,
@@ -525,6 +544,10 @@
 			isa = PBXGroup;
 			children = (
 				85CF3514253529CC00A101C9 /* MockJSON.swift */,
+				8535963325D76F4900F093BA /* NetworkManagerMock.swift */,
+				8535963825D770EC00F093BA /* CoreDataManagerMock.swift */,
+				8535963D25D7716500F093BA /* ImageDownloadManagerMock.swift */,
+				8535964225D7728300F093BA /* GuessGridViewControllerMock.swift */,
 			);
 			path = MockObjects;
 			sourceTree = "<group>";
@@ -804,11 +827,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				85CF34EE2533C0D600A101C9 /* EncodingTests.swift in Sources */,
+				8535963925D770EC00F093BA /* CoreDataManagerMock.swift in Sources */,
 				85CF34F62533C0FD00A101C9 /* ServiceTests.swift in Sources */,
+				8535963E25D7716500F093BA /* ImageDownloadManagerMock.swift in Sources */,
+				8535963425D76F4900F093BA /* NetworkManagerMock.swift in Sources */,
 				85CF35092533C14800A101C9 /* MovieTests.swift in Sources */,
 				85CF34FB2533C10D00A101C9 /* ManagerTests.swift in Sources */,
 				85CF3515253529CC00A101C9 /* MockJSON.swift in Sources */,
 				85CF35002533C12400A101C9 /* EndPointTests.swift in Sources */,
+				8535964325D7728300F093BA /* GuessGridViewControllerMock.swift in Sources */,
+				8535962C25D76F1B00F093BA /* GuessGridPresenterTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

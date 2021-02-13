@@ -69,6 +69,9 @@ class GuessGridViewController: DetailPresenterViewController {
         }
         
         let genresDisplayedSelectionController = UIAlertController.actionSheetWithItems(controllerTitle: "Display", items: genresDisplayedSelections) { selectedValue in
+            // scroll to top, so that more pages than necessary aren't loaded
+            self.scrollToTop()
+            
             // set the type on presenter to filter items
             self.guessGridViewPresenter.setGenreToDisplay(genreID: selectedValue)
             
@@ -78,6 +81,10 @@ class GuessGridViewController: DetailPresenterViewController {
         
         genresDisplayedSelectionController.popoverPresentationController?.sourceView = navigationItem.titleView
         present(genresDisplayedSelectionController, animated: true)
+    }
+    
+    func scrollToTop() {
+        gridView.collectionView.setContentOffset(.zero, animated: false)
     }
     
     required init?(coder: NSCoder) {
