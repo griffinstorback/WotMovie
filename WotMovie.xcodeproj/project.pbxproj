@@ -27,6 +27,10 @@
 		8535963925D770EC00F093BA /* CoreDataManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8535963825D770EC00F093BA /* CoreDataManagerMock.swift */; };
 		8535963E25D7716500F093BA /* ImageDownloadManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8535963D25D7716500F093BA /* ImageDownloadManagerMock.swift */; };
 		8535964325D7728300F093BA /* GuessGridViewControllerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8535964225D7728300F093BA /* GuessGridViewControllerMock.swift */; };
+		8535964825D8A97000F093BA /* SettingsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8535964725D8A97000F093BA /* SettingsPresenter.swift */; };
+		8535964D25D9DA3F00F093BA /* StatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8535964C25D9DA3F00F093BA /* StatsViewController.swift */; };
+		8535965225D9DA6800F093BA /* StatsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8535965125D9DA6800F093BA /* StatsPresenter.swift */; };
+		8535965725DC410000F093BA /* EntityStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8535965625DC410000F093BA /* EntityStats.swift */; };
 		853C679A25C5FBA500EBEFBE /* TransitionPresenterProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853C679925C5FBA500EBEFBE /* TransitionPresenterProtocol.swift */; };
 		853C679F25CB388E00EBEFBE /* ListCategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853C679E25CB388E00EBEFBE /* ListCategoryTableViewCell.swift */; };
 		853C67B325CC8EF500EBEFBE /* LeftAlignedImageCenteredTextButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853C67B225CC8EF500EBEFBE /* LeftAlignedImageCenteredTextButton.swift */; };
@@ -147,6 +151,10 @@
 		8535963825D770EC00F093BA /* CoreDataManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManagerMock.swift; sourceTree = "<group>"; };
 		8535963D25D7716500F093BA /* ImageDownloadManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownloadManagerMock.swift; sourceTree = "<group>"; };
 		8535964225D7728300F093BA /* GuessGridViewControllerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessGridViewControllerMock.swift; sourceTree = "<group>"; };
+		8535964725D8A97000F093BA /* SettingsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsPresenter.swift; sourceTree = "<group>"; };
+		8535964C25D9DA3F00F093BA /* StatsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsViewController.swift; sourceTree = "<group>"; };
+		8535965125D9DA6800F093BA /* StatsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsPresenter.swift; sourceTree = "<group>"; };
+		8535965625DC410000F093BA /* EntityStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityStats.swift; sourceTree = "<group>"; };
 		853C679925C5FBA500EBEFBE /* TransitionPresenterProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionPresenterProtocol.swift; sourceTree = "<group>"; };
 		853C679E25CB388E00EBEFBE /* ListCategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCategoryTableViewCell.swift; sourceTree = "<group>"; };
 		853C67B225CC8EF500EBEFBE /* LeftAlignedImageCenteredTextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftAlignedImageCenteredTextButton.swift; sourceTree = "<group>"; };
@@ -491,6 +499,7 @@
 				8588FD30256884660054EC17 /* Job.swift */,
 				8527827E25BF5AB300FC257A /* ListCategory.swift */,
 				8535962525D31DBF00F093BA /* SortParameters.swift */,
+				8535965625DC410000F093BA /* EntityStats.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -517,6 +526,7 @@
 				8527826425BCF67A00FC257A /* ListViewController.swift */,
 				85791AD025C0FC2B00F8FE75 /* ListCategoryGridViewController.swift */,
 				853C67B725CF759F00EBEFBE /* SortGridViewController.swift */,
+				8535964C25D9DA3F00F093BA /* StatsViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -600,6 +610,8 @@
 				8527826925BCF6C300FC257A /* ListPresenter.swift */,
 				85791AD525C0FCA100F8FE75 /* ListCategoryGridPresenter.swift */,
 				853C67BC25D30E7D00EBEFBE /* SortGridPresenter.swift */,
+				8535964725D8A97000F093BA /* SettingsPresenter.swift */,
+				8535965125D9DA6800F093BA /* StatsPresenter.swift */,
 			);
 			path = Presenters;
 			sourceTree = "<group>";
@@ -766,7 +778,9 @@
 				85CF35D32543912300A101C9 /* HorizontalCollectionViewController.swift in Sources */,
 				8501405F254B50C20088FA3E /* EnterGuessPresenter.swift in Sources */,
 				85CF353525365B7900A101C9 /* RootTabViewController.swift in Sources */,
+				8535965225D9DA6800F093BA /* StatsPresenter.swift in Sources */,
 				8527826A25BCF6C300FC257A /* ListPresenter.swift in Sources */,
+				8535964D25D9DA3F00F093BA /* StatsViewController.swift in Sources */,
 				8501404D2548BAF10088FA3E /* EntityTableSectionHeaderView.swift in Sources */,
 				8535962625D31DBF00F093BA /* SortParameters.swift in Sources */,
 				854B3E912550DDBB003397E0 /* CoreDataManager.swift in Sources */,
@@ -804,6 +818,7 @@
 				8588FD3B256887BC0054EC17 /* PersonDetailPresenter.swift in Sources */,
 				85CF358C253A32D700A101C9 /* ImageDownloadManager.swift in Sources */,
 				85CF356B25377D0200A101C9 /* Genre.swift in Sources */,
+				8535964825D8A97000F093BA /* SettingsPresenter.swift in Sources */,
 				85905C44256B046A00443348 /* NetworkEnvironment.swift in Sources */,
 				85CF35302536301F00A101C9 /* PropertyWrappers.swift in Sources */,
 				853C679F25CB388E00EBEFBE /* ListCategoryTableViewCell.swift in Sources */,
@@ -814,6 +829,7 @@
 				85CF3587253A306100A101C9 /* GridCollectionViewCell.swift in Sources */,
 				8586DF3D2555CC3F0066EE65 /* TitleDetailViewController.swift in Sources */,
 				850140552549E7350088FA3E /* EnterGuessViewController.swift in Sources */,
+				8535965725DC410000F093BA /* EntityStats.swift in Sources */,
 				8527826525BCF67A00FC257A /* ListViewController.swift in Sources */,
 				85CF35C12541F9DD00A101C9 /* EntityTableViewCell.swift in Sources */,
 				8588FD01255F27E50054EC17 /* CardPresentationController.swift in Sources */,

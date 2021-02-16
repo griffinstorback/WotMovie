@@ -13,7 +13,8 @@ class GuessGridPresenterTests: XCTestCase {
     // sut
     var guessGridPresenter: GuessGridPresenter!
     
-    var guessGridViewDelegate: GuessGridViewDelegate!
+    // conforms to GuessGridViewDelegate
+    var guessGridViewDelegate: GuessGridViewControllerMock!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -31,8 +32,14 @@ class GuessGridPresenterTests: XCTestCase {
         try super.tearDownWithError()
     }
     
-    func testReloadDataCalledOnViewDelegate() {
+    func testReloadDataCalledOnceAfterLoadingItems() {
+        // reload data should not have been called yet
+        XCTAssertEqual(guessGridViewDelegate.reloadDataCalledCount, 0)
         
+        guessGridPresenter.loadItems()
+        
+        // reload data should have been called at least once
+        XCTAssertGreaterThan(guessGridViewDelegate.reloadDataCalledCount, 0)
     }
 
     func testExample() throws {

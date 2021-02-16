@@ -37,7 +37,7 @@ class GuessCategoryView: UIView {
         
         categoryLabel = UILabel()
         categoryLabel.text = category.title
-        categoryLabel.font = UIFont.boldSystemFont(ofSize: 16)
+        categoryLabel.font = UIFont.boldSystemFont(ofSize: 18)
         
         horizontalStack = UIStackView()
         
@@ -64,7 +64,7 @@ class GuessCategoryView: UIView {
         giveShadow(radius: 10)
         
         horizontalStack.axis = .horizontal
-        horizontalStack.spacing = 10
+        horizontalStack.spacing = 15
         
         verticalStack.axis = .vertical
         verticalStack.spacing = 10

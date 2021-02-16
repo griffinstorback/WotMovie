@@ -113,6 +113,7 @@ extension EntityTableViewController: UITableViewDelegate, UITableViewDataSource 
         cell.setName(text: item.name)
         cell.setImagePath(imagePath: item.posterPath ?? "")
         delegate?.loadImage(for: index, section: section, completion: cell.setImage)
+        cell.accessoryType = .disclosureIndicator
 
         return cell
     }

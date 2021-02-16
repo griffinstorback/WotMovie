@@ -215,18 +215,6 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
         return []
     }
     
-    // NOT USED ANYMORE?????
-    func getGenresAvailableToDisplay() -> [Genre] {
-        if category == .movie {
-            return genresList.sorted { $0.name < $1.name }
-        } else if category == .tvShow {
-            //return coreDataManager.fetchTVShowGenres()
-            return coreDataManager.fetchMovieGenres()//.map { ($0.name, $0.id) }
-        }
-        
-        return []
-    }
-    
     func setGenreToDisplay(genreID: Int) {
         if category == .movie {
             currentlyDisplayingGenre = genresList.first { $0.id == genreID } ?? MovieGenre(id: -1, name: "All genres")
@@ -258,6 +246,8 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
     
     private var isLoading = false // semaphore
     private func loadNextPageOfItems() {
+        guard nextPage < 1000 else { return } // in case of bug, don't just keep trying to load new pages forever.
+        
         if isLoading {
             print("*** GuessGridPresenter.loadNextPageOfItems() - ABORTING ATTEMPT TO QUERY PAGE \(nextPage) (isLoading is true)")
             return
@@ -265,12 +255,11 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
         isLoading = true
         
         // first, try to load the current page from core data
-        if !getNextPageFromCoreData(page: nextPage) {
+        if !getPageFromCoreData(page: nextPage) {
             print("*** GuessGridPresenter.loadNextPageOfItems() - core data page not found for page \(nextPage), querying network")
-            getNextPageFromNetworkThenCacheInCoreData(page: nextPage) { success in
+            getPageFromNetworkThenCacheInCoreData(page: nextPage) { success in
                 if success {
                     self.nextPage += 1
-                    self.isLoading = false
                     
                     if self.items.count < 20 {
                         print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is only \(self.items.count), so calling loadItems()...")
@@ -279,6 +268,8 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
                         print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is \(self.items.count), NOT calling loadItems()...")
                     }
                 }
+                
+                self.isLoading = false
             }
         } else {
             nextPage += 1
@@ -297,19 +288,19 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
     }
     
     // returns true if successful
-    private func getNextPageFromCoreData(page: Int) -> Bool {
+    private func getPageFromCoreData(page: Int) -> Bool {
         if let items = coreDataManager.fetchEntityPage(category: category, pageNumber: page, genreID: currentlyDisplayingGenre.id) {
-            //self.nextPage += 1
-            self.addItems(items)
-            
-            return true
+            if items.count != 0 {
+                self.addItems(items)
+                return true
+            }
         }
         
         return false
     }
     
     // returns true if successful
-    private func getNextPageFromNetworkThenCacheInCoreData(page: Int, completion: @escaping (_ success: Bool) -> Void) {
+    private func getPageFromNetworkThenCacheInCoreData(page: Int, completion: @escaping (_ success: Bool) -> Void) {
         print("** Retrieving grid (p. \(page)) items from network..")
         if category == .movie {
             networkManager.getListOfMoviesByGenre(id: currentlyDisplayingGenre.id, page: page) { [weak self] movies, error in
@@ -325,7 +316,6 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
                         DispatchQueue.main.async {
                             
                             let newlyAddedMovies = strongSelf.coreDataManager.updateOrCreateMoviePage(movies: movies, pageNumber: page, genreID: strongSelf.currentlyDisplayingGenre.id)
-                            //strongSelf.nextPage += 1
                             strongSelf.addItems(newlyAddedMovies ?? [])
                             completion(true)
                             return
@@ -336,6 +326,13 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
                     return
                 }
             }
+            
+            
+            
+            
+        // TODO: UPDATE TV SHOW AND PERSON REQUEST METHODS TO BE LIKE MOVIE.
+
+
         } else if category == .tvShow {
             networkManager.getListOfTVShowsByGenre(id: currentlyDisplayingGenre.id, page: page) { [weak self] tvShows, error in
                 if let error = error {

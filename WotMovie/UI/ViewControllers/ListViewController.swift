@@ -89,6 +89,8 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
         cell.setCategoryLabelText(text: category.title)
         cell.setIconImage(imageName: category.imageName)
         
+        cell.accessoryType = .disclosureIndicator
+        
         return cell
     }
     
