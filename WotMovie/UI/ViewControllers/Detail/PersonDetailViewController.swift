@@ -30,6 +30,13 @@ class PersonDetailViewController: GuessDetailViewController {
                 
                 personOverviewView.setName(personDetailViewPresenter.getTitle())     //   // TODO *** animate this
                 //personOverviewView.setOverviewText(personDetailViewPresenter.getOverview())
+            
+                // depending if correct or not, reflect in state of poster image view
+                if state == .revealed || state == .revealedWithNoNextButton {
+                    personOverviewView.setPosterImageState(.revealed, animated: true)
+                } else if state == .correct || state == .correctWithNoNextButton {
+                    personOverviewView.setPosterImageState(.correctlyGuessedWithoutCheckmark, animated: true)
+                }
             }
         }
     }
@@ -111,10 +118,13 @@ class PersonDetailViewController: GuessDetailViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        if state == .correct || state == .correctWithNoNextButton {
+        switch state {
+        case .correct, .correctWithNoNextButton:
             personOverviewView.setPosterImageState(.correctlyGuessedWithoutCheckmark, animated: true)
-        } else {
+        case .revealed, .revealedWithNoNextButton:
             personOverviewView.setPosterImageState(.revealed, animated: true)
+        case .fullyHidden, .hintShown:
+            personOverviewView.setPosterImageState(.revealWhileDetailOpenButHideOnGrid, animated: true)
         }
     }
     

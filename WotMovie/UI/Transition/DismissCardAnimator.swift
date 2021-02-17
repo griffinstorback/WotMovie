@@ -70,6 +70,12 @@ final class DismissCardTransitionDriver {
         let posterImageState: PosterImageViewState = screens.presented.posterImageView.state == .correctlyGuessedWithoutCheckmark ? .correctlyGuessed : screens.presented.posterImageView.state
         print("***** presented detail poster image state: \(screens.presented.posterImageView.state), while computed state: \(posterImageState)")
         cardDetailPosterImageViewCopy = PosterImageView(state: posterImageState)
+        
+        // If a person type was presented, and was not guessed or revealed, it needs to animate back to a hidden state while on the grid.
+        if screens.presented.posterImageView.state == .revealWhileDetailOpenButHideOnGrid {
+            cardDetailPosterImageViewCopy.setState(.hidden, animated: false)
+        }
+        
         cardDetailPosterImageViewCopy.setImage(screens.presented.posterImageView.getImage())
         cardDetailPosterImageViewCopy.frame = screens.presented.posterImageView.convert(screens.presented.posterImageView.frame, to: container)
         cardDetailPosterImageViewCopy.layer.cornerRadius = cardDetailPosterImageViewCopy.frame.height * Constants.imageCornerRadiusRatio

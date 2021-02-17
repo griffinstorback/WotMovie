@@ -256,16 +256,17 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
         
         // first, try to load the current page from core data
         if !getPageFromCoreData(page: nextPage) {
-            print("*** GuessGridPresenter.loadNextPageOfItems() - core data page not found for page \(nextPage), querying network")
             getPageFromNetworkThenCacheInCoreData(page: nextPage) { success in
                 if success {
                     self.nextPage += 1
+                    self.isLoading = false
                     
+                    print("*** GuessGridPresenter.loadNextPageOfItems() - got page \(self.nextPage-1) from network")
                     if self.items.count < 20 {
-                        print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is only \(self.items.count), so calling loadItems()...")
+                        print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is only \(self.items.count), so loading another page (page \(self.nextPage))...")
                         self.loadNextPageOfItems()
                     } else {
-                        print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is \(self.items.count), NOT calling loadItems()...")
+                        print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is \(self.items.count), so we're done.")
                     }
                 }
                 
@@ -277,10 +278,10 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
             
             print("*** GuessGridPresenter.loadNextPageOfItems() - got page \(nextPage-1) from core data")
             if self.items.count < 20 {
-                print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is only \(self.items.count), so calling loadItems()...")
+                print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is only \(self.items.count), so loading another page (page \(nextPage))...")
                 loadNextPageOfItems()
             } else {
-                print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is \(self.items.count), NOT calling loadItems()...")
+                print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is \(self.items.count), so we're done.")
             }
         }
         

@@ -14,6 +14,8 @@ enum PosterImageViewState {
     case correctlyGuessedWithoutCheckmark // This case exists so detailoverviewview and persondetailview can have the
                                           // checkmark in different spot, not on the poster image itself.
     
+    case revealWhileDetailOpenButHideOnGrid // This case is used for when presenting a fullyHidden Person entity (b.c. user guesses based on the image)
+    
     // When initializing from a detail view controller, check should not be shown on Image itself, but rather somewhere
     // on the detail view controller (as of now, top left)
     init(guessDetailState: GuessDetailViewState) {
@@ -102,7 +104,7 @@ class PosterImageView: CardView {
             addQuestionMarkOverlay(animated: animated)
             removeCheckMarkOverlay(animated: animated)
             
-        case .revealed, .correctlyGuessedWithoutCheckmark:
+        case .revealed, .correctlyGuessedWithoutCheckmark, .revealWhileDetailOpenButHideOnGrid:
             removeQuestionMarkOverlay(animated: animated)
             removeBlurEffectOverlay(animated: animated)
             removeCheckMarkOverlay(animated: animated)

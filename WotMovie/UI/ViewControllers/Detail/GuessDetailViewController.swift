@@ -195,7 +195,7 @@ extension GuessDetailViewController: EnterGuessProtocol {
     }
     
     func revealAsCorrect() {
-        state = .revealed
+        state = .correctWithNoNextButton
         guessDetailViewPresenter.answerWasRevealedAsCorrect()
         enterGuessViewController.setAnswerRevealed()
         addCheckMarkIcon(animated: true)
