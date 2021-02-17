@@ -27,7 +27,7 @@ class GuessGridViewController: DetailPresenterViewController {
         // use passed in presenter if provided (used in tests)
         guessGridViewPresenter = presenter ?? GuessGridPresenter(category: category.type)
         
-        gridView = LoadMoreGridViewController()
+        gridView = LoadMoreGridViewController(shouldDisplayLoadMoreFooter: true)
 
         super.init(nibName: nil, bundle: nil)
         

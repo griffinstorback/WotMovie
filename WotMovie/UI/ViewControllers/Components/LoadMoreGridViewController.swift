@@ -26,9 +26,13 @@ protocol LoadMoreGridViewDelegate {
 // Builds on GridViewController to provide a footer view which loads more items when in view. Also has optional header
 class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource {
     var delegate: LoadMoreGridViewDelegate?
+    let shouldDisplayLoadMoreFooter: Bool
     
-    override init() {
+    init(shouldDisplayLoadMoreFooter: Bool) {
+        self.shouldDisplayLoadMoreFooter = shouldDisplayLoadMoreFooter
+        
         super.init()
+        
         setupCollectionView()
     }
     
@@ -84,7 +88,7 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        if delegate?.getNumberOfItems(self) ?? 0 > 0 {
+        if delegate?.getNumberOfItems(self) ?? 0 > 0 && shouldDisplayLoadMoreFooter {
             return CGSize(width: collectionView.frame.width, height: 100)
         }
         return .zero
@@ -113,7 +117,7 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
                 
                 return headerView ?? UICollectionReusableView()
             }
-        } else if kind == UICollectionView.elementKindSectionFooter {
+        } else if kind == UICollectionView.elementKindSectionFooter && shouldDisplayLoadMoreFooter {
             let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footer", for: indexPath) as! GridCollectionViewFooterView
             
             return footerView
@@ -125,7 +129,7 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
         if elementKind == UICollectionView.elementKindSectionHeader {
             delegate?.willDisplayHeader(self)
-        } else if elementKind == UICollectionView.elementKindSectionFooter {
+        } else if elementKind == UICollectionView.elementKindSectionFooter && shouldDisplayLoadMoreFooter {
             if let footerView = view as? GridCollectionViewFooterView {
                 if delegate?.getNumberOfItems(self) ?? 0 > 0 {
                     //print("**** LoadMoreGridViewController willdisplaysupplementaryview - number of items was \(delegate?.getNumberOfItems(self)), starting footer animation, calling loadmoreitems.")
@@ -141,7 +145,7 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath) {
         if elementKind == UICollectionView.elementKindSectionHeader {
             delegate?.didEndDisplayingHeader(self)
-        } else if elementKind == UICollectionView.elementKindSectionFooter {
+        } else if elementKind == UICollectionView.elementKindSectionFooter && shouldDisplayLoadMoreFooter {
             if let footerView = view as? GridCollectionViewFooterView {
                 footerView.stopLoadingAnimation()
             }

@@ -24,7 +24,7 @@ class ListViewController: UIViewController {
         listPresenter = presenter ?? ListPresenter()
         
         statusBarCoverView = UIView()
-        recentlyViewedCollectionView = LoadMoreGridViewController()
+        recentlyViewedCollectionView = LoadMoreGridViewController(shouldDisplayLoadMoreFooter: false)
         
         super.init(nibName: nil, bundle: nil)
         

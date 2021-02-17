@@ -21,7 +21,7 @@ class ListCategoryGridViewController: UIViewController {
     init(listCategory: ListCategory, presenter: ListCategoryGridPresenterProtocol? = nil) {
         listCategoryGridPresenter = presenter ?? ListCategoryGridPresenter(listCategoryType: listCategory.type)
         
-        gridView = LoadMoreGridViewController()
+        gridView = LoadMoreGridViewController(shouldDisplayLoadMoreFooter: false)
         searchController = UISearchController(searchResultsController: nil)
         
         super.init(nibName: nil, bundle: nil)

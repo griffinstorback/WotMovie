@@ -14,6 +14,7 @@ protocol StatsPresenterProtocol {
     func getTextForHeaderInSection(_ section: Int) -> String
     func getNumberOfItemsInSection(_ section: Int) -> Int
     func getTextForItemAt(_ indexPath: IndexPath) -> String
+    func getIndentLevelForItemAt(_ indexPath: IndexPath) -> Int
     func getCountForStatTypeAt(_ indexPath: IndexPath) -> Int
     func didSelectItemAt(_ indexPath: IndexPath)
 }
@@ -84,6 +85,16 @@ class StatsPresenter: StatsPresenterProtocol {
         guard row < section.numberOfStatRows else { return "" }
         
         return section.getNameForStatTypeAtIndex(index: row)
+    }
+    
+    func getIndentLevelForItemAt(_ indexPath: IndexPath) -> Int {
+        guard indexPath.section < sections.count else { return 0 }
+        let section = sections[indexPath.section]
+        
+        let row = indexPath.row
+        guard row < section.numberOfStatRows else { return 0 }
+        
+        return section.getIndentLevelForStatTypeAt(index: row)
     }
     
     func getCountForStatTypeAt(_ indexPath: IndexPath) -> Int {

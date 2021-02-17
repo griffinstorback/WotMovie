@@ -62,4 +62,19 @@ struct EntityStats {
             return 0
         }
     }
+    
+    func getIndentLevelForStatTypeAt(index: Int) -> Int {
+        switch index {
+        case 0: // totalGuessed
+            return 0
+        case 1: // guessedWithoutHint
+            return 1
+        case 2: // guessedWithHint
+            return 1
+        case 3: // totalRevealed
+            return 0
+        default:
+            return 0
+        }
+    }
 }
