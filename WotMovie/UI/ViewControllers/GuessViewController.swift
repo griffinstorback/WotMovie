@@ -29,27 +29,30 @@ class GuessViewController: UIViewController {
         guessCategoryViews = []
         
         super.init(nibName: nil, bundle: nil)
+        
+        setupViews()
+        layoutViews()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
-        guessViewPresenter.setViewDelegate(guessViewDelegate: self)
+        self.navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
         
-        view.backgroundColor = .white
-        
-        setupViews()
-        layoutViews()
+        guessViewPresenter.updateGuessedCounts()
     }
     
     func setupViews() {
+        guessViewPresenter.setViewDelegate(guessViewDelegate: self)
+        view.backgroundColor = .white
+        
         // navigation view controller
         navigationItem.title = "WotMovie"
-        self.navigationController?.navigationBar.prefersLargeTitles = true
         
         scrollView.isUserInteractionEnabled = true
         scrollView.delaysContentTouches = false

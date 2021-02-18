@@ -10,6 +10,7 @@ import Foundation
 protocol GuessPresenterProtocol {
     func setViewDelegate(guessViewDelegate: GuessViewDelegate?)
     func getCategoryFor(type: CategoryType) -> GuessCategory?
+    func updateGuessedCounts()
 }
 
 class GuessPresenter: GuessPresenterProtocol {
@@ -25,25 +26,18 @@ class GuessPresenter: GuessPresenterProtocol {
         .stats: GuessCategory(type: .stats, title: "See all stats", shortTitle: "Stats", numberGuessed: nil, imageName: "stats_icon")
     ]
     
-    init(networkManager: NetworkManagerProtocol = NetworkManager.shared, coreDataManager: CoreDataManager = .shared) {
+    init(networkManager: NetworkManagerProtocol = NetworkManager.shared,
+         coreDataManager: CoreDataManager = .shared) {
         self.networkManager = networkManager
         self.coreDataManager = coreDataManager
-        
-        // TODO: replace this with listener for when counts change in core data.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-            self.updateGuessedCounts()
-        }
-        
-        /*
-        coreDataManager.deleteAllData("Genre")
-        coreDataManager.deleteAllData("Movie")
-        coreDataManager.deleteAllData("MoviePage")
-        coreDataManager.deleteAllData("MovieWatchlist")
-         */
     }
     
     func setViewDelegate(guessViewDelegate: GuessViewDelegate?) {
         self.guessViewDelegate = guessViewDelegate
+    }
+    
+    func getCategoryFor(type: CategoryType) -> GuessCategory? {
+        return categories[type]
     }
     
     func updateGuessedCounts() {
@@ -53,9 +47,5 @@ class GuessPresenter: GuessPresenterProtocol {
         categories[.tvShow]?.numberGuessed = coreDataManager.getNumberGuessedFor(category: .tvShow)
         
         guessViewDelegate?.reloadData()
-    }
-    
-    func getCategoryFor(type: CategoryType) -> GuessCategory? {
-        return categories[type]
     }
 }
