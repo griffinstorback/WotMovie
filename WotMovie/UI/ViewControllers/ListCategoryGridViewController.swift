@@ -50,6 +50,7 @@ class ListCategoryGridViewController: UIViewController {
     }
     
     private func layoutViews() {
+        // Had to move this to viewDidLoad for some reason but don't remember why... something about needing to call loadItems first?
         //addChildViewController(gridView)
         //gridView.view.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
     }
@@ -117,7 +118,7 @@ class ListCategoryGridViewController: UIViewController {
             self.navigationItem.rightBarButtonItem?.title = selectedValue.rawValue
         }
         
-        typesDisplayedSelectionController.popoverPresentationController?.sourceView = navigationItem.titleView
+        typesDisplayedSelectionController.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
         present(typesDisplayedSelectionController, animated: true)
     }
 }
@@ -152,6 +153,10 @@ extension ListCategoryGridViewController: LoadMoreGridViewDelegate {
     }
     
     func didEndDisplayingHeader(_ loadMoreGridViewController: LoadMoreGridViewController) {
+        // nothing
+    }
+    
+    func didPresentEntityDetail() {
         // nothing
     }
     

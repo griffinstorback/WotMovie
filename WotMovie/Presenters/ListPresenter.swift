@@ -12,10 +12,11 @@ protocol ListPresenterProtocol {
     func setViewDelegate(_ viewDelegate: ListViewDelegate)
     func getListCategoriesCount() -> Int
     func getListCategoryFor(index: Int) -> ListCategory
+    func getCountForCategory(index: Int) -> Int
     func loadRecentlyViewed()
+    func loadCategoryCounts()
     func getNumberOfRecentlyViewed() -> Int
     func getRecentlyViewedFor(index: Int) -> Entity
-    func getItemCountForCategory(category: ListCategoryType) -> Int
     func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
 }
 
@@ -24,23 +25,23 @@ class ListPresenter: ListPresenterProtocol {
     private let coreDataManager: CoreDataManager
     weak var listViewDelegate: ListViewDelegate?
     
-    private let categoryTableViewRows: [ListCategory] = [
-        ListCategory(type: .movieOrTvShowWatchlist, title: "Watchlist", imageName: "add_to_watchlist_icon"),
-        ListCategory(type: .personFavorites, title: "Favorites", imageName: "add_to_favorites_icon"),
-        ListCategory(type: .allGuessed, title: "Guessed", imageName: "guessed_correct_icon"),
-        ListCategory(type: .allRevealed, title: "Revealed", imageName: "question_mark"),
-        
-        // TODO: Decide if search should be allowed. Because it would easily allow for cheating,
-        //       though of course people could cheat anyways, but this would make it a lot easier,
-        //       and might even serve to promote it.
-        //ListCategory(title: "Search Movies, TV Shows, and people", imageName: "question_mark")
-    ]
+    private var categoryTableViewRows: [ListCategory] = [
+        ListCategory(type: .movieOrTvShowWatchlist, title: "Watchlist", imageName: "add_to_watchlist_icon", count: 0),
+        ListCategory(type: .personFavorites, title: "Favorites", imageName: "add_to_favorites_icon", count: 0),
+        ListCategory(type: .allGuessed, title: "Guessed", imageName: "guessed_correct_bounded", count: 0),
+        ListCategory(type: .allRevealed, title: "Revealed", imageName: "question_mark_bounded", count: 0),
+    ] {
+        didSet {
+            DispatchQueue.main.async {
+                self.listViewDelegate?.reloadCategoryListData()
+            }
+        }
+    }
     
-    private var recentlyViewedNextPage = 1
     private var recentlyViewedItems: [Entity] = [] {
         didSet {
             DispatchQueue.main.async {
-                self.listViewDelegate?.reloadData()
+                self.listViewDelegate?.reloadRecentlyViewedData()
             }
         }
     }
@@ -63,28 +64,20 @@ class ListPresenter: ListPresenterProtocol {
         return categoryTableViewRows[index]
     }
     
-    // TODO: REMOVE? CORE DATA HAS GENERIC FUNCTION?
-    func getItemCountForCategory(category: ListCategoryType) -> Int {
-        switch category {
-        case .movieOrTvShowWatchlist:
-            return coreDataManager.fetchWatchlistCount()
-        case .personFavorites:
-            break
-        case .allGuessed:
-            break
-        case .allRevealed:
-            break
-        }
-        
-        return -1
+    func getCountForCategory(index: Int) -> Int {
+        return categoryTableViewRows[index].count
     }
     
     func loadRecentlyViewed() {
+        // TODO: perform this request on background thread. As of now, there is a noticeable delay when pressing list tab.
         let items = coreDataManager.fetchPageOfRecentlyViewed()
         recentlyViewedItems = items
-        recentlyViewedNextPage += 1
-        
-        print("*** number on watchlist: \(getItemCountForCategory(category: .movieOrTvShowWatchlist))")
+    }
+    
+    func loadCategoryCounts() {
+        for i in 0..<categoryTableViewRows.count {
+            categoryTableViewRows[i].count = coreDataManager.getCountForListCategory(listCategory: categoryTableViewRows[i].type)
+        }
     }
     
     func getNumberOfRecentlyViewed() -> Int {

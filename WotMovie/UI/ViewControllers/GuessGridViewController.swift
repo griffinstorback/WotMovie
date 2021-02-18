@@ -79,7 +79,7 @@ class GuessGridViewController: DetailPresenterViewController {
             self.navigationItem.rightBarButtonItem?.title = self.guessGridViewPresenter.getGenreCurrentlyDisplaying().name
         }
         
-        genresDisplayedSelectionController.popoverPresentationController?.sourceView = navigationItem.titleView
+        genresDisplayedSelectionController.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
         present(genresDisplayedSelectionController, animated: true)
     }
     
@@ -156,6 +156,10 @@ extension GuessGridViewController: LoadMoreGridViewDelegate {
     
     func loadImageFor(_ loadMoreGridViewController: LoadMoreGridViewController, index: Int, completion: @escaping (UIImage?, String?) -> Void) {
         guessGridViewPresenter.loadImageFor(index: index, completion: completion)
+    }
+    
+    func didPresentEntityDetail() {
+        // nothing
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

@@ -14,7 +14,7 @@ class RecentlyViewedCollectionViewHeader: UICollectionReusableView {
     // These are static so they can be used in other classes (specifically ListViewController) to
     // calculate header height.
     static let categoryTableViewCellHeight: CGFloat = 80 // multiply this by # cells to get tableview height
-    static let recentlyViewedTitleHeight: CGFloat = 80
+    static let recentlyViewedTitleHeight: CGFloat = 90
     static let spaceFromTop: CGFloat = 10
     
     // displays categories to select at the top, e.g. "Guessed", "Watchlist", "Favorites"
@@ -36,6 +36,7 @@ class RecentlyViewedCollectionViewHeader: UICollectionReusableView {
         categoryTableView.isScrollEnabled = true
         categoryTableView.bounces = false
         categoryTableView.tableFooterView = UIView()
+    
         categoryTableView.register(ListCategoryTableViewCell.self, forCellReuseIdentifier: "ListCategoryTableViewCell")
         
         recentlyViewedTitle.text = "Recently viewed"

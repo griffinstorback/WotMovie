@@ -8,7 +8,8 @@
 import UIKit
 
 protocol ListViewDelegate: NSObjectProtocol {
-    func reloadData()
+    func reloadRecentlyViewedData()
+    func reloadCategoryListData()
 }
 
 class ListViewController: UIViewController {
@@ -18,6 +19,8 @@ class ListViewController: UIViewController {
     let statusBarCoverView: UIView
     // recentlyViewedCollectionView contains header with category table view inside
     let recentlyViewedCollectionView: LoadMoreGridViewController
+    // keep reference to header so we can reload table view rows when needed (when counts change)
+    weak var recentlyViewedCollectionViewHeader: RecentlyViewedCollectionViewHeader?
     
     init(presenter: ListPresenterProtocol? = nil) {
         // use passed in presenter if provided (used in tests)
@@ -54,19 +57,18 @@ class ListViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        // query recently viewed (re-query whenever this page view appears)
-        listPresenter.loadRecentlyViewed()
-    }
-    
+    var justPresentedEntityDetail: Bool = false
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        // query recently viewed if arriving from another page other than an entity detail.
+        if !justPresentedEntityDetail {
+            listPresenter.loadRecentlyViewed()
+        }
+        justPresentedEntityDetail = false
+        
+        // reload counts for categories in category list (in recentlyViewedCollectionView header)
+        listPresenter.loadCategoryCounts()
         
         // hide nav bar on this view controller
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
@@ -89,6 +91,11 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
         cell.setCategoryLabelText(text: category.title)
         cell.setIconImage(imageName: category.imageName)
         
+        let countForStatType = listPresenter.getCountForCategory(index: indexPath.row)
+        cell.detailTextLabel?.text = String(countForStatType)
+        cell.detailTextLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        cell.detailTextLabel?.textColor = Constants.Colors.defaultBlue
+        
         cell.accessoryType = .disclosureIndicator
         
         return cell
@@ -109,6 +116,9 @@ extension ListViewController: LoadMoreGridViewDelegate {
         // set this VC as delegate & data source for table view in the header
         headerView.categoryTableView.delegate = self
         headerView.categoryTableView.dataSource = self
+        
+        // keep reference to header so we can reload cells.
+        recentlyViewedCollectionViewHeader = headerView
         
         return headerView
     }
@@ -139,11 +149,16 @@ extension ListViewController: LoadMoreGridViewDelegate {
     }
     
     func loadMoreItems(_ loadMoreGridViewController: LoadMoreGridViewController) {
-        print("*** LOAD NEXT PAGE...")
+        // nothing (amount of recently viewed displayed is static - 60 as of writing this comment)
     }
     
     func loadImageFor(_ loadMoreGridViewController: LoadMoreGridViewController, index: Int, completion: @escaping (UIImage?, String?) -> Void) {
         listPresenter.loadImageFor(index: index, completion: completion)
+    }
+    
+    func didPresentEntityDetail() {
+        // make sure recently viewed doesn't reload after presenting entity modal (causes bugs with animating poster image back to the correct grid cell)
+        justPresentedEntityDetail = true
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -159,7 +174,12 @@ extension ListViewController: LoadMoreGridViewDelegate {
 }
 
 extension ListViewController: ListViewDelegate {
-    func reloadData() {
+    func reloadRecentlyViewedData() {
         recentlyViewedCollectionView.reloadData()
+    }
+    
+    // reloads when counts for categories change.
+    func reloadCategoryListData() {
+        recentlyViewedCollectionViewHeader?.categoryTableView.reloadData()
     }
 }

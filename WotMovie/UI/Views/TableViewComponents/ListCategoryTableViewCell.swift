@@ -20,7 +20,8 @@ class ListCategoryTableViewCell: UITableViewCell {
         containerView = UIView()
         categoryLabel = UILabel()
         
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        // make style value1, to display number on right side by arrow.
+        super.init(style: .value1, reuseIdentifier: reuseIdentifier)
         
         setupViews()
         layoutViews()

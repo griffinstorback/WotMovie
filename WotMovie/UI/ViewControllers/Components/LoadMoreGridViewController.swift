@@ -20,13 +20,14 @@ protocol LoadMoreGridViewDelegate {
     func willDisplayHeader(_ loadMoreGridViewController: LoadMoreGridViewController)
     func didEndDisplayingHeader(_ loadMoreGridViewController: LoadMoreGridViewController)
     
+    func didPresentEntityDetail()
     func scrollViewDidScroll(_ scrollView: UIScrollView)
 }
 
-// Builds on GridViewController to provide a footer view which loads more items when in view. Also has optional header
+// Builds on GridViewController to provide an optional footer view which loads more items when in view. Also has optional header
 class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource {
     var delegate: LoadMoreGridViewDelegate?
-    let shouldDisplayLoadMoreFooter: Bool
+    let shouldDisplayLoadMoreFooter: Bool // if true, display the loadmore footer view, and call delegate.loadMore() when it appears
     
     init(shouldDisplayLoadMoreFooter: Bool) {
         self.shouldDisplayLoadMoreFooter = shouldDisplayLoadMoreFooter
@@ -83,6 +84,9 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
         } completion: { _ in
             if let item = self.delegate?.getItemFor(self, index: indexPath.row) {
                 self.presentGuessDetail(for: item, fromCard: cell.posterImageView)
+                
+                // tell delegate a modal was presented (useful for recently viewed - so recently viewed won't reload when dismissing the modal)
+                self.delegate?.didPresentEntityDetail()
             }
         }
     }

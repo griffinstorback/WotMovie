@@ -58,6 +58,20 @@ final class CoreDataManager: CoreDataManagerProtocol {
         }
     }
     
+    // for List page (i.e. "watchlist", "favorites", "guessed"
+    func getCountForListCategory(listCategory: ListCategoryType) -> Int {
+        switch listCategory {
+        case .allGuessed:
+            return getTotalNumberGuessed()
+        case .allRevealed:
+            return getTotalNumberRevealed()
+        case .movieOrTvShowWatchlist:
+            return fetchWatchlistCount()
+        case .personFavorites:
+            return fetchFavoritesCount()
+        }
+    }
+    
     // Either: Creates this movie/tv show/person, or
     // Updates the existing info from api, as well as meta info regarding if its been guessed correctly, revealed, hint shown, etc.
     func updateOrCreateEntity(entity: Entity) {

@@ -12,6 +12,7 @@ struct ListCategory {
     let type: ListCategoryType
     let title: String
     let imageName: String
+    var count: Int = 0
 }
 
 enum ListCategoryType {
