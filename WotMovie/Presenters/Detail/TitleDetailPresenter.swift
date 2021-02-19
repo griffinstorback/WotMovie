@@ -73,16 +73,6 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
         }
                 
         super.init(networkManager: networkManager, imageDownloadManager: imageDownloadManager, coreDataManager: coreDataManager, item: item)
-        
-        
-        // read this movie from core data
-        let returned = coreDataManager.fetchMovie(id: item.id)
-        if returned[0].isHintShown {
-            hintWasShown()
-        }
-        if returned[0].revealed != nil {
-            answerWasRevealed()
-        }
     }
     
     func loadCredits() {
@@ -223,8 +213,9 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
     // MARK: - Private
     
     private func getCreditsFromCoreData() -> Credits? {
-        let credits = coreDataManager.getCreditsFor(type: item.type, id: item.id)
-        return credits
+        //let credits = coreDataManager.getCreditsFor(type: item.type, id: item.id)
+        //return credits
+        return nil
     }
     
     private func getCreditsFromNetworkThenCacheInCoreData() {

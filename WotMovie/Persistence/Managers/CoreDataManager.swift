@@ -74,21 +74,25 @@ final class CoreDataManager: CoreDataManagerProtocol {
     
     // Either: Creates this movie/tv show/person, or
     // Updates the existing info from api, as well as meta info regarding if its been guessed correctly, revealed, hint shown, etc.
-    func updateOrCreateEntity(entity: Entity) {
+    @discardableResult
+    func updateOrCreateEntity(entity: Entity) -> Entity {
         switch entity.type {
         case .movie:
             if let movie = entity as? Movie {
-                updateOrCreateMovie(movie: movie)
+                return Movie(movieMO: updateOrCreateMovie(movie: movie))
             }
         case .tvShow:
             if let tvShow = entity as? TVShow {
-                updateOrCreateTVShow(tvShow: tvShow)
+                //return TVShow(tvShowMO: updateOrCreateTVShow(tvShow: tvShow))
             }
         case .person:
             if let person = entity as? Person {
-                updateOrCreatePerson(person: person)
+                //return Person(personMO: updateOrCreatePerson(person: person))
             }
         }
+        
+        // TODO : DELETE THIS after implementing updateOrCreate tv show / person
+        return Movie(movieOrTVShow: MovieOrTVShow(id: -1, type: .movie, name: "fekj", posterPath: nil, overview: "jflekrj", releaseDate: "fijoer", genreIDs: [], personsJob: nil, character: nil))!
     }
     
     // returns empty list if page doesnt exist. returns nil if there was an error
@@ -104,6 +108,10 @@ final class CoreDataManager: CoreDataManagerProtocol {
             // if category type was "stats", nothing to return.
             return nil
         }
+    }
+    
+    func fetchPageOfRecentlyViewed() -> [Entity] {
+        return fetchPageOfRecentlyViewedMovies(amount: 60) + fetchPageOfRecentlyViewedTVShows(amount: 60) + fetchPageOfRecentlyViewedPeople(amount: 60)
     }
 
     func addEntityToWatchlistOrFavorites(entity: Entity) {
@@ -281,16 +289,14 @@ final class CoreDataManager: CoreDataManagerProtocol {
     
 // MARK: -- MOVIES
     
-    func updateOrCreateMovie(movie: Movie) {
-        let existingMovieEntries = fetchMovie(id: movie.id)
+    @discardableResult
+    func updateOrCreateMovie(movie: Movie) -> MovieMO {
         
-        if existingMovieEntries.count > 0 {
-            print("** Found \(existingMovieEntries.count) existing entries for movie \(movie.id)")
-            
-            let movieMO = existingMovieEntries[0]
+        if let movieMO = fetchMovie(id: movie.id) {
             
             // update all values except 'id,' 'dateAdded,' and 'guessed'
             // (in case movie overview in api has changed since last stored).
+            movieMO.language = Locale.autoupdatingCurrent.identifier
             movieMO.lastUpdated = Date()
             movieMO.lastViewedDate = Date()
             movieMO.name = movie.name
@@ -333,9 +339,10 @@ final class CoreDataManager: CoreDataManagerProtocol {
             }
             
             coreDataStack.saveContext()
+            return movieMO
         } else {
             print("** Found 0 existing entries for movie \(movie.id). Creating one now.")
-            createMovie(movie: movie)
+            return createMovie(movie: movie)
         }
     }
     
@@ -344,6 +351,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
         let movieMO = MovieMO(context: coreDataStack.persistentContainer.viewContext)
         
         movieMO.id = Int64(movie.id)
+        movieMO.language = Locale.autoupdatingCurrent.identifier
         movieMO.isHintShown = movie.isHintShown
         
         if movie.isRevealed {
@@ -393,7 +401,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
         return movieMO
     }
     
-    func fetchMovie(id: Int, context: NSManagedObjectContext? = nil) -> [MovieMO] {
+    func fetchMovie(id: Int, context: NSManagedObjectContext? = nil) -> MovieMO? {
         let moc: NSManagedObjectContext
         if let providedContext = context {
             moc = providedContext
@@ -407,11 +415,19 @@ final class CoreDataManager: CoreDataManagerProtocol {
         
         do {
             let fetchedMovies = try moc.fetch(movieFetch)
-            print("FETCHED MOVIES: \(fetchedMovies)")
-            return fetchedMovies
+            
+            guard fetchedMovies.count > 0 else {
+                return nil
+            }
+            
+            if fetchedMovies.count > 1 {
+                print("** WARNING: in fetchMovie(), got \(fetchedMovies.count) results when there should be just 1.")
+            }
+            
+            return fetchedMovies[0]
         } catch {
-            print("** Failed to fetch movie: \(error)")
-            return []
+            print("** WARNING: Failed to fetch movie: \(error)")
+            return nil
         }
     }
     
@@ -421,7 +437,9 @@ final class CoreDataManager: CoreDataManagerProtocol {
 
 // MARK: -- TV SHOWS
     
+    @discardableResult
     func updateOrCreateTVShow(tvShow: TVShow) {
+        //let tvShowMO = TVShowMO(context: coreDataStack.persistentContainer.viewContext)
         
     }
     
@@ -440,6 +458,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
         let personMO = PersonMO(context: coreDataStack.persistentContainer.viewContext)
         
         personMO.id = Int64(person.id)
+        personMO.language = Locale.autoupdatingCurrent.identifier
         personMO.name = person.name
         personMO.posterImageURL = person.posterPath
         
@@ -452,6 +471,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
         let personMO = PersonMO(context: coreDataStack.persistentContainer.viewContext)
         
         personMO.id = Int64(person.id)
+        personMO.language = Locale.autoupdatingCurrent.identifier
         personMO.isHintShown = person.isHintShown
         
         personMO.name = person.name
@@ -565,6 +585,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
             addMoviesToMoviePageMO(movies: movies, moviePageMO: moviePageMO)
             
             moviePageMO.lastUpdated = Date()
+            moviePageMO.region = Locale.autoupdatingCurrent.regionCode
 
             coreDataStack.saveContext()
             return getMoviesFromMoviePageMO(moviePageMO)
@@ -574,13 +595,12 @@ final class CoreDataManager: CoreDataManagerProtocol {
         }
     }
     
-    // DOESN'T SAVE CONTEXT AFTER ADDING MOVIES TO PAGE.
+    // DOESN'T SAVE CONTEXT AFTER ADDING MOVIES TO PAGE (helper function, don't call directly)
     private func addMoviesToMoviePageMO(movies: [Movie], moviePageMO: MoviePageMO) {
         for movie in movies {
             // first check if movie already in core data
-            let existingMovies = fetchMovie(id: movie.id)
-            if existingMovies.count > 0 {
-                moviePageMO.addObject(value: existingMovies[0], for: "movies")
+            if let existingMovieMO = fetchMovie(id: movie.id) {
+                moviePageMO.addObject(value: existingMovieMO, for: "movies")
             } else {
                 // None found, create a new movieMO object, and don't set the lastViewedDate field, because the movie hasn't
                 // explicitly been loaded into a detail VC yet.
@@ -597,6 +617,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
         pageMO.genreID = Int64(genreID)
         pageMO.pageNumber = Int64(pageNumber)
         pageMO.lastUpdated = Date()
+        pageMO.region = Locale.autoupdatingCurrent.regionCode
         
         // create movieMO for each of the apiResponses movies, if they don't already exist
         addMoviesToMoviePageMO(movies: movies, moviePageMO: pageMO)
@@ -619,7 +640,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
     
 // MARK: -- RECENTLY VIEWED
     
-    func fetchPageOfRecentlyViewed() -> [Entity] {
+    func fetchPageOfRecentlyViewedMovies(amount: Int = 60) -> [Movie] {
         let moc = coreDataStack.persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<MovieMO>(entityName: "Movie")
         fetchRequest.fetchLimit = 60
@@ -634,6 +655,28 @@ final class CoreDataManager: CoreDataManagerProtocol {
         }
     }
     
+    func fetchPageOfRecentlyViewedTVShows(amount: Int = 60) -> [TVShow] {
+        return []
+    }
+    
+    func fetchPageOfRecentlyViewedPeople(amount: Int = 60) -> [Person] {
+        return []
+    }
+    
+    // TODO: Should I implement these? Or should I fetch a page of recently viewed when fetching a guess grid, and filter in the guess grid presenter? (I think the latter would
+    // be better - it would mean one core data query instead of a query for each title.)
+    func movieWasViewedRecently(movie: Movie) -> Bool {
+        return false
+    }
+    
+    func tvShowWasViewedRecently(tvShow: TVShow) -> Bool {
+        return false
+    }
+    
+    func personWasViewedRecently(person: Person) -> Bool {
+        return false
+    }
+    
     
 
     
@@ -642,12 +685,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
     
     func addMovieToWatchlist(movie: Movie) {
         // add to watchlist if isFavorited is set to true
-        let existingMovieEntries = fetchMovie(id: movie.id)
-        
-        if existingMovieEntries.count > 0 {
-            print("** Found \(existingMovieEntries.count) existing entries for movie \(movie.id)")
-            
-            let movieMO = existingMovieEntries[0]
+        if let movieMO = fetchMovie(id: movie.id) {
             
             // add movie to watchlist (if watchlist prop doesnt exist yet)
             if movieMO.watchlist == nil {
@@ -661,8 +699,11 @@ final class CoreDataManager: CoreDataManagerProtocol {
             
             coreDataStack.saveContext()
         } else {
-            print("** Found 0 existing entries for movie \(movie.id). Creating one now.")
-            createMovie(movie: movie)
+            print("** Found 0 existing entries for movie \(movie.id). Creating one now, and creating watchlist mo to add it to.")
+            let movieMO = createMovie(movie: movie)
+            let movieWatchlistItem = MovieWatchlistMO(context: coreDataStack.persistentContainer.viewContext)
+            movieWatchlistItem.dateAdded = Date()
+            movieWatchlistItem.movie = movieMO
         }
     }
     
@@ -676,12 +717,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
     
     func removeMovieFromWatchlist(movie: Movie) {
         // add to watchlist if isFavorited is set to true
-        let existingMovieEntries = fetchMovie(id: movie.id)
-        
-        if existingMovieEntries.count > 0 {
-            print("** Found \(existingMovieEntries.count) existing entries for movie \(movie.id)")
-            
-            let movieMO = existingMovieEntries[0]
+        if let movieMO = fetchMovie(id: movie.id) {
             
             // remove from watchlist
             if let movieWatchlist = movieMO.watchlist {
@@ -691,7 +727,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
             
             coreDataStack.saveContext()
         } else {
-            print("** Found 0 existing entries for movie \(movie.id). Creating one now.")
+            print("** Found 0 existing entries for movie \(movie.id). Creating one now, but not creating watchlist, because it is attempting to be removed from watchlist")
             createMovie(movie: movie)
         }
     }
@@ -833,12 +869,14 @@ final class CoreDataManager: CoreDataManagerProtocol {
             if let genreMO = fetchMovieGenre(id: genre.id) {
                 // update existing genre managed object
                 genreMO.name = genre.name
+                genreMO.language = Locale.autoupdatingCurrent.identifier
                 genreMO.lastUpdated = Date()
             } else {
                 // create a genre for this id
                 let genreMO = MovieGenreMO(context: coreDataStack.persistentContainer.viewContext)
                 genreMO.id = Int64(genre.id)
                 genreMO.name = genre.name
+                genreMO.language = Locale.autoupdatingCurrent.identifier
                 genreMO.lastUpdated = Date()
             }
         }
@@ -893,7 +931,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
 
     
 // MARK: -- CREDITS
-    
+    /*
     func updateOrCreateCredits(type: EntityType, credits: Credits) {
         switch type {
     
@@ -946,7 +984,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
         
         return nil
     }
-    
+    */
 
     
     

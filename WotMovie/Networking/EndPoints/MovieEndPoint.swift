@@ -15,7 +15,6 @@ public enum MovieApi {
     
     case discoverMoviesByGenre(id: Int, page: Int)
     case discoverTVShowsByGenre(id: Int, page: Int)
-    case popularPeople(page: Int)
     
     case topRatedMovies(page: Int)
     case topRatedTVShows(page: Int)
@@ -26,11 +25,9 @@ public enum MovieApi {
     
     case movieCredits(id: Int)
     case tvShowCredits(id: Int)
-    case personCredits(id: Int)
     
     case searchMovies(text: String)
     case searchTVShows(text: String)
-    case searchPeople(text: String)
 }
 
 extension MovieApi: EndPointType {
@@ -54,7 +51,6 @@ extension MovieApi: EndPointType {
             
         case .discoverMoviesByGenre: return "discover/movie"
         case .discoverTVShowsByGenre: return "discover/tv"
-        case .popularPeople: return "person/popular"
             
         case .topRatedMovies: return "movie/top_rated"
         case .topRatedTVShows: return "tv/top_rated"
@@ -65,11 +61,9 @@ extension MovieApi: EndPointType {
             
         case .movieCredits(let id): return "movie/\(id)/credits"
         case .tvShowCredits(let id): return "tv/\(id)/credits"
-        case .personCredits(let id): return "person/\(id)/combined_credits"
             
         case .searchMovies: return "search/movie"
         case .searchTVShows: return "search/tv"
-        case .searchPeople: return "search/person"
         }
     }
     
@@ -94,10 +88,6 @@ extension MovieApi: EndPointType {
             }
             return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
         
-        case .popularPeople(let page):
-            let urlParameters: [String: Any] = ["api_key": NetworkManager.MovieAPIKey, "page": page]
-            return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
-        
         // NOT REALLY USED (IM PRETTY SURE)
         case .topRatedMovies(let page), .topRatedTVShows(let page):
             let urlParameters: [String: Any] = ["api_key": NetworkManager.MovieAPIKey, "page": page]
@@ -106,12 +96,8 @@ extension MovieApi: EndPointType {
         case .movieCredits, .tvShowCredits:
             let urlParameters: [String: Any] = ["api_key": NetworkManager.MovieAPIKey]
             return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
-            
-        case .personCredits:
-            let urlParameters: [String: Any] = ["api_key": NetworkManager.MovieAPIKey]
-            return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
         
-        case .searchMovies(let text), .searchTVShows(let text), .searchPeople(let text):
+        case .searchMovies(let text), .searchTVShows(let text):
             let urlParameters: [String: Any] = ["api_key": NetworkManager.MovieAPIKey, "query": text]
             return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
             

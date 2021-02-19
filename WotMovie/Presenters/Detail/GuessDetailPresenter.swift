@@ -24,6 +24,7 @@ protocol GuessDetailPresenterProtocol {
     func isHintShown() -> Bool
     func isAnswerRevealed() -> Bool
     func isAnswerCorrectlyGuessed() -> Bool
+    
     func hintWasShown()
     func answerWasRevealed()
     func answerWasRevealedAsCorrect()
@@ -35,7 +36,13 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
     let coreDataManager: CoreDataManager
     weak var detailViewDelegate: GuessDetailViewDelegate?
     
-    var item: Entity
+    var item: Entity {
+        didSet {
+            DispatchQueue.main.async {
+                self.detailViewDelegate?.reloadData()
+            }
+        }
+    }
     
     var crewTypes: [Department] = [] {
         didSet {
@@ -59,8 +66,22 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
         
         //loadCrewTypes()
         
+        guard item.type == .movie else { return }
+        
         // LOG THIS ENTITY as OPENED (mainly to update date, aka last seen date) in CORE DATA
-        coreDataManager.updateOrCreateEntity(entity: item)
+        let entityFromCoreData = coreDataManager.updateOrCreateEntity(entity: item)
+        if entityFromCoreData.isRevealed {
+            self.item.isRevealed = true
+        } else if entityFromCoreData.correctlyGuessed {
+            self.item.correctlyGuessed = true
+        }
+        
+        // hint shown is separate, because user may have shown hint before guessing
+        if entityFromCoreData.isHintShown {
+            self.item.isHintShown = true
+        }
+        
+        // TODO (maybe not right here though): Check if Core data entity language matches user's current language - if not, retrieve from network and update movie.
     }
     
     func setViewDelegate(detailViewDelegate: GuessDetailViewDelegate?) {
@@ -128,23 +149,22 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
         return item.correctlyGuessed
     }
     
+    
+    // Call one of the below functions from the view delegate. If just retrieved the entity from core data, just set
+    // item.isHintShown/.isRevealed/.correctlyGuessed on the item itself, to avoid redundant core data update.
+    //
     func hintWasShown() {
-        print("** guess detail presenter: in hintWasShown")
         item.isHintShown = true
         coreDataManager.updateOrCreateEntity(entity: item)
-        detailViewDelegate?.reloadData()
     }
     
     func answerWasRevealed() {
-        print("** guess detail presenter: in answerWasRevealed")
         item.isRevealed = true
         coreDataManager.updateOrCreateEntity(entity: item)
-        detailViewDelegate?.reloadData()
     }
     
     func answerWasRevealedAsCorrect() {
         item.correctlyGuessed = true
         coreDataManager.updateOrCreateEntity(entity: item)
-        detailViewDelegate?.reloadData()
     }
 }
