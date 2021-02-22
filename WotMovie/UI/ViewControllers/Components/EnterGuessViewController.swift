@@ -97,6 +97,7 @@ class EnterGuessViewController: UIViewController {
         enterGuessControlsView.removeNextButton()
     }
     
+    // Change constaint so it fits keyboard underneath search bar, but don't unhide the results table view (see searchBar didBeginEditing below)
     @objc func keyboardWillAppear(notification: Notification) {
         let userInfo: NSDictionary = notification.userInfo! as NSDictionary
         let keyboardFrame: NSValue = userInfo.value(forKey: UIResponder.keyboardFrameEndUserInfoKey) as! NSValue
@@ -107,35 +108,27 @@ class EnterGuessViewController: UIViewController {
         let constraintHeight = view.frame.height - view.safeAreaInsets.bottom - keyboardHeight + spacingBetweenKeyboardAndTextView
         
         enterGuessControlsViewBottomConstraint.constant = -constraintHeight
-        resultsTableView.isHidden = false
         UIView.animate(withDuration: 0.5) {
             self.view.layoutIfNeeded()
-            self.resultsTableView.alpha = 1
         }
-        
-        enterGuessControlsView.setShowsEnterGuessFieldCancelButton(true, animated: true)
-        enterGuessControlsView.setShowsRevealButton(false, animated: true)
-        delegate?.showResults()
     }
     
+    // Change constraint so it touches bottom of screen, but don't hide the results table view (see searchBar didEndEditing below)
     @objc func keyboardWillDisappear() {
-        enterGuessControlsViewBottomConstraint.constant = 0
-        UIView.animate(withDuration: 0.5) {
-            self.view.layoutIfNeeded()
-            self.resultsTableView.alpha = 0
-        } completion: { _ in
-            self.resultsTableView.isHidden = true
+        if enterGuessControlsViewBottomConstraint.constant != 0 {
+            enterGuessControlsViewBottomConstraint.constant = 0
+            UIView.animate(withDuration: 0.5) {
+                self.view.layoutIfNeeded()
+            }
         }
-        
-        enterGuessControlsView.setShowsEnterGuessFieldCancelButton(false, animated: true)
-        enterGuessControlsView.setShowsRevealButton(true, animated: true)
-        delegate?.hideResults()
     }
 }
 
 extension EnterGuessViewController: UITableViewDelegate, UITableViewDataSource {
     func setupTableView() {
         resultsTableView.isHidden = true
+        resultsTableView.alpha = 0
+        
         resultsTableView.backgroundColor = UIColor.black.withAlphaComponent(0.2)
         
         // TODO: give results tableview blurred background
@@ -143,7 +136,6 @@ extension EnterGuessViewController: UITableViewDelegate, UITableViewDataSource {
         resultsTableView.separatorColor = .white
         resultsTableView.delegate = self
         resultsTableView.dataSource = self
-        resultsTableView.alpha = 0
         
         // removes lines between cells when tableview empty
         resultsTableView.tableFooterView = UIView()
@@ -169,6 +161,13 @@ extension EnterGuessViewController: UITableViewDelegate, UITableViewDataSource {
         enterGuessPresenter.loadImage(for: indexPath.row, completion: cell.setImage)
         cell.backgroundColor = .clear
         
+        // if this item already been guessed (cell was tapped), display 'X' on right, indicating not the answer.
+        if enterGuessPresenter.itemHasBeenGuessed(id: item.id) {
+            cell.accessoryType = .detailButton
+        } else {
+            cell.accessoryType = .none
+        }
+        
         return cell
     }
     
@@ -176,9 +175,8 @@ extension EnterGuessViewController: UITableViewDelegate, UITableViewDataSource {
         if enterGuessPresenter.isCorrect(index: indexPath.row) {
             delegate?.revealAsCorrect()
             enterGuessControlsView.shouldResignFirstReponder()
-            print("Correct!")
         } else {
-            print("Wrong.")
+            // haptic- give light single tap for wrong answer, strong double tap for correct?
         }
     }
 }
@@ -203,6 +201,29 @@ extension EnterGuessViewController: EnterGuessControlsDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(performSearch), object: searchBar)
         self.perform(#selector(performSearch(_:)), with: searchBar, afterDelay: 0.2)
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        resultsTableView.isHidden = false
+        UIView.animate(withDuration: 0.5) {
+            self.resultsTableView.alpha = 1
+        }
+        
+        enterGuessControlsView.setShowsEnterGuessFieldCancelButton(true, animated: true)
+        enterGuessControlsView.setShowsRevealButton(false, animated: true)
+        delegate?.showResults(animated: true)
+    }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        UIView.animate(withDuration: 0.5) {
+            self.resultsTableView.alpha = 0
+        } completion: { _ in
+            self.resultsTableView.isHidden = true
+        }
+        
+        enterGuessControlsView.setShowsEnterGuessFieldCancelButton(false, animated: true)
+        enterGuessControlsView.setShowsRevealButton(true, animated: false) // for some reason, trying to animate this makes it not animate...
+        delegate?.hideResults(animated: true)
     }
     
     @objc func performSearch(_ searchBar: UISearchBar) {

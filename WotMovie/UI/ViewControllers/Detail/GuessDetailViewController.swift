@@ -17,8 +17,8 @@ enum GuessDetailViewState {
 }
 
 protocol EnterGuessProtocol {
-    func showResults()
-    func hideResults()
+    func showResults(animated: Bool)
+    func hideResults(animated: Bool)
     func revealAnswer()
     func revealAsCorrect()
     func nextQuestion()
@@ -178,12 +178,24 @@ class GuessDetailViewController: DetailViewController {
 }
 
 extension GuessDetailViewController: EnterGuessProtocol {
-    func showResults() {
+    func showResults(animated: Bool) {
         enterGuessContainerViewTopConstraint.isActive = true
+        
+        if animated {
+            UIView.animate(withDuration: 0.3) {
+                self.view.layoutIfNeeded()
+            }
+        }
     }
     
-    func hideResults() {
+    func hideResults(animated: Bool) {
         enterGuessContainerViewTopConstraint.isActive = false
+        
+        if animated {
+            UIView.animate(withDuration: 0.3) {
+                self.view.layoutIfNeeded()
+            }
+        }
     }
     
     func revealAnswer() {

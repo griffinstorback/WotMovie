@@ -15,6 +15,7 @@ protocol EnterGuessPresenterProtocol {
     func searchResult(for index: Int) -> Entity
     func search(searchText: String)
     func isCorrect(index: Int) -> Bool
+    func itemHasBeenGuessed(id: Int) -> Bool
     func getPlaceholderText() -> String
     func addItemToWatchlist()
     func getWatchlistButtonText() -> String
@@ -37,6 +38,15 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
     }    
     var searchResultsCount: Int {
         return searchResults.count
+    }
+    
+    // holds the attempts made by user, by id
+    private var guesses: [Int] = [] {
+        didSet {
+            DispatchQueue.main.async {
+                self.enterGuessViewDelegate?.reloadResults()
+            }
+        }
     }
     
     init(networkManager: NetworkManager = NetworkManager.shared,
@@ -121,15 +131,23 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
     }
     
     func isCorrect(index: Int) -> Bool {
-        let answer = item.id == searchResults[index].id
+        guard index < searchResults.count else { return false }
+        let selectedItem = searchResults[index]
+        let isCorrect = item.id == selectedItem.id
         
-        if answer {
+        if isCorrect {
             item.isRevealed = true
             item.correctlyGuessed = true
             coreDataManager.updateOrCreateEntity(entity: item)
+        } else {
+            guesses.append(selectedItem.id)
         }
         
-        return answer
+        return isCorrect
+    }
+    
+    func itemHasBeenGuessed(id: Int) -> Bool {
+        return guesses.contains(id)
     }
     
     func getPlaceholderText() -> String {

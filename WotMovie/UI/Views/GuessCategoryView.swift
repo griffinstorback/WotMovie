@@ -27,18 +27,16 @@ class GuessCategoryView: UIView {
     private var numberGuessedLabel: UILabel?
     private let verticalStack: UIStackView
     
+    private let rightPointingArrowContainer: UIView
+    private let rightPointingArrow: UIImageView
+    private let outerHorizontalStack: UIStackView
+    
+    
     init(category: GuessCategory) {
         self.category = category
         
-        let categoryImage = UIImage(named: category.imageName)
-        categoryImageView = UIImageView(image: categoryImage)
-        categoryImageView.tintColor = Constants.Colors.defaultBlue
-        categoryImageView.contentMode = .scaleAspectFit
-        
+        categoryImageView = UIImageView(image: UIImage(named: category.imageName))
         categoryLabel = UILabel()
-        categoryLabel.text = category.title
-        categoryLabel.font = UIFont.boldSystemFont(ofSize: 18)
-        
         horizontalStack = UIStackView()
         
         // if category is 'stats' (e.g. numberGuessed is set to nil), don't display numberGuessedLabel
@@ -47,6 +45,10 @@ class GuessCategoryView: UIView {
         }
         
         verticalStack = UIStackView()
+        
+        rightPointingArrowContainer = UIView()
+        rightPointingArrow = UIImageView()
+        outerHorizontalStack = UIStackView()
         
         super.init(frame: .zero)
         
@@ -63,6 +65,13 @@ class GuessCategoryView: UIView {
         layer.masksToBounds = true
         giveShadow(radius: 10)
         
+        categoryImageView.tintColor = Constants.Colors.defaultBlue
+        categoryImageView.contentMode = .scaleAspectFit
+        
+        categoryLabel.text = category.title
+        categoryLabel.font = UIFont.boldSystemFont(ofSize: 18)
+        categoryLabel.numberOfLines = 2
+        
         horizontalStack.axis = .horizontal
         horizontalStack.spacing = 15
         
@@ -70,11 +79,23 @@ class GuessCategoryView: UIView {
         verticalStack.spacing = 10
         verticalStack.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         verticalStack.isLayoutMarginsRelativeArrangement = true
+        
+        let rightPointingArrowImage = UIImage(systemName: "chevron.right", withConfiguration: UIImage.SymbolConfiguration(pointSize: 16, weight: .bold))
+        rightPointingArrow.image = rightPointingArrowImage
+        rightPointingArrow.tintColor = .tertiaryLabel
+        rightPointingArrow.contentMode = .scaleAspectFit
     }
     
     private func layoutViews() {
-        addSubview(verticalStack)
-        verticalStack.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
+        addSubview(outerHorizontalStack)
+        outerHorizontalStack.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
+        
+        outerHorizontalStack.addArrangedSubview(verticalStack)
+        
+        rightPointingArrowContainer.addSubview(rightPointingArrow)
+        rightPointingArrow.anchor(top: nil, leading: rightPointingArrowContainer.leadingAnchor, bottom: nil, trailing: rightPointingArrowContainer.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5), size: CGSize(width: 20, height: 0))
+        rightPointingArrow.anchorToCenter(yAnchor: rightPointingArrowContainer.centerYAnchor, xAnchor: nil)
+        outerHorizontalStack.addArrangedSubview(rightPointingArrowContainer)
         
         verticalStack.addArrangedSubview(horizontalStack)
         horizontalStack.addArrangedSubview(categoryImageView)

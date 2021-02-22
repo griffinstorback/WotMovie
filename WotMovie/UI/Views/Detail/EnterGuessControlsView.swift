@@ -160,10 +160,12 @@ class EnterGuessControlsView: UIView {
     }
     
     public func setShowsRevealButton(_ showsRevealButton: Bool, animated: Bool) {
-        if showsRevealButton {
-            revealButton.isHidden = false
+        if animated {
+            UIView.animate(withDuration: 0.2) {
+                self.revealButton.isHidden = !showsRevealButton
+            }
         } else {
-            revealButton.isHidden = true
+            revealButton.isHidden = !showsRevealButton
         }
     }
     
