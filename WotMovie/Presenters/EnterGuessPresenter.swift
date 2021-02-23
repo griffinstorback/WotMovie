@@ -17,7 +17,7 @@ protocol EnterGuessPresenterProtocol {
     func isCorrect(index: Int) -> Bool
     func itemHasBeenGuessed(id: Int) -> Bool
     func getPlaceholderText() -> String
-    func addItemToWatchlist()
+    func addItemToWatchlist() -> Bool
     func getWatchlistButtonText() -> String
     func getWatchlistImageName() -> String
 }
@@ -102,7 +102,7 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
                 }
                 
                 if let movies = movies {
-                    self?.searchResults = movies.reversed()
+                    self?.searchResults = movies//.reversed()
                 }
             }
         case .tvShow:
@@ -113,7 +113,7 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
                 }
                 
                 if let tvShows = tvShows {
-                    self?.searchResults = tvShows.reversed()
+                    self?.searchResults = tvShows//.reversed()
                 }
             }
         case .person:
@@ -124,7 +124,7 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
                 }
                 
                 if let people = people {
-                    self?.searchResults = people.reversed()
+                    self?.searchResults = people//.reversed()
                 }
             }
         }
@@ -161,7 +161,8 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
         }
     }
     
-    func addItemToWatchlist() {
+    // returns true if item was added, false if item was removed from watchlist.
+    func addItemToWatchlist() -> Bool {
         if item.isFavorite {
             coreDataManager.removeEntityFromWatchlistOrFavorites(entity: item)
             item.isFavorite = false
@@ -171,6 +172,7 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
         }
         
         enterGuessViewDelegate?.reloadResults()
+        return item.isFavorite
     }
     
     func getWatchlistButtonText() -> String {

@@ -80,7 +80,7 @@ class DetailViewController: UIViewController {
         scrollView.delaysContentTouches = true
         scrollView.alwaysBounceVertical = true
         
-        statusBarCoverView.giveBlurredBackground(style: .systemThickMaterialLight)
+        statusBarCoverView.giveBlurredBackground(style: .systemMaterial)
         statusBarCoverView.alpha = 0
         
         contentStackView.axis = .vertical
@@ -90,8 +90,8 @@ class DetailViewController: UIViewController {
         contentStackView.isLayoutMarginsRelativeArrangement = true
         
         closeButton.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
-        closeButton.imageView?.contentMode = .scaleAspectFill
-        closeButton.tintColor = .gray
+        closeButton.imageView?.contentMode = .scaleAspectFit
+        closeButton.tintColor = .systemGray
         closeButton.addTarget(self, action: #selector(closeButtonPressed), for: .touchUpInside)
     }
     

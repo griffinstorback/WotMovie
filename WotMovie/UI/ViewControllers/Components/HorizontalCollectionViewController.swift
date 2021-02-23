@@ -97,7 +97,7 @@ extension HorizontalCollectionViewController: UICollectionViewDataSource, UIColl
     func setupCollectionView() {
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .systemBackground
         
         collectionView.register(HorizontalCollectionViewCell.self, forCellWithReuseIdentifier: "HorizontalCollectionViewCell")
     }

@@ -68,7 +68,7 @@ class GuessDetailViewController: DetailViewController {
         
         navigationItem.largeTitleDisplayMode = .never
         self.title = "?"
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
     }
     
     required init?(coder: NSCoder) {
@@ -99,7 +99,7 @@ class GuessDetailViewController: DetailViewController {
         showHintButton.addTarget(self, action: #selector(showHintButtonPressed), for: .touchUpInside)
         
         enterGuessViewController.setDelegate(self)
-        enterGuessContainerView.giveBlurredBackground(style: .systemThickMaterialLight)
+        enterGuessContainerView.giveBlurredBackground(style: .systemMaterial)
     }
     
     private func layoutViews() {

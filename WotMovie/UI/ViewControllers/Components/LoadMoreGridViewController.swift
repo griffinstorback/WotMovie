@@ -43,7 +43,7 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
     
     func setupCollectionView() {
         collectionView.dataSource = self
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .systemBackground
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

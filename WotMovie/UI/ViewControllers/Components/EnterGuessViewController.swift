@@ -133,7 +133,7 @@ extension EnterGuessViewController: UITableViewDelegate, UITableViewDataSource {
         
         // TODO: give results tableview blurred background
         
-        resultsTableView.separatorColor = .white
+        resultsTableView.separatorColor = .separator
         resultsTableView.delegate = self
         resultsTableView.dataSource = self
         
@@ -161,22 +161,24 @@ extension EnterGuessViewController: UITableViewDelegate, UITableViewDataSource {
         enterGuessPresenter.loadImage(for: indexPath.row, completion: cell.setImage)
         cell.backgroundColor = .clear
         
-        // if this item already been guessed (cell was tapped), display 'X' on right, indicating not the answer.
-        if enterGuessPresenter.itemHasBeenGuessed(id: item.id) {
-            cell.accessoryType = .detailButton
-        } else {
-            cell.accessoryType = .none
-        }
+        // if this item already been guessed (cell was tapped), display 'X' on right, indicating not the answer (otherwise remove accessory view)
+        cell.accessoryView = enterGuessPresenter.itemHasBeenGuessed(id: item.id) ? UIImageView(image: UIImage(named: "wrong")) : .none
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // haptic- give light single tap for attempt
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
+        
         if enterGuessPresenter.isCorrect(index: indexPath.row) {
+            // additional success haptic if correct
+            let generator = UINotificationFeedbackGenerator()
+            generator.notificationOccurred(.success)
+            
             delegate?.revealAsCorrect()
             enterGuessControlsView.shouldResignFirstReponder()
-        } else {
-            // haptic- give light single tap for wrong answer, strong double tap for correct?
         }
     }
 }
@@ -187,11 +189,23 @@ extension EnterGuessViewController: EnterGuessControlsDelegate {
     }
     
     func nextButtonPressed() {
+        // haptic- give light single tap
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
+        
         delegate?.nextQuestion()
     }
     
     func addToWatchlistButtonPressed() {
-        enterGuessPresenter.addItemToWatchlist()
+        if enterGuessPresenter.addItemToWatchlist() {
+            // give user success haptic (successfully added to watchlist)
+            let generator = UINotificationFeedbackGenerator()
+            generator.notificationOccurred(.success)
+        } else {
+            // haptic- give light single tap for removal from watchlist
+            let generator = UIImpactFeedbackGenerator(style: .light)
+            generator.impactOccurred()
+        }
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
@@ -217,8 +231,6 @@ extension EnterGuessViewController: EnterGuessControlsDelegate {
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         UIView.animate(withDuration: 0.5) {
             self.resultsTableView.alpha = 0
-        } completion: { _ in
-            self.resultsTableView.isHidden = true
         }
         
         enterGuessControlsView.setShowsEnterGuessFieldCancelButton(false, animated: true)
@@ -242,9 +254,10 @@ extension EnterGuessViewController: EnterGuessViewDelegate {
         resultsTableView.reloadData()
         enterGuessControlsView.setWatchlistButtonText(text: enterGuessPresenter.getWatchlistButtonText())
         enterGuessControlsView.setWatchlistButtonImage(imageName: enterGuessPresenter.getWatchlistImageName())
-        scrollToBottom()
+        //scrollToBottom()
     }
     
+    // not used anymore?
     func scrollToBottom() {
         if enterGuessPresenter.searchResultsCount > 0 {
             let lastRow = IndexPath(row: enterGuessPresenter.searchResultsCount-1, section: 0)

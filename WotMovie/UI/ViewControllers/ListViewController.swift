@@ -17,8 +17,10 @@ class ListViewController: UIViewController {
     let listPresenter: ListPresenterProtocol
     
     let statusBarCoverView: UIView
+    
     // recentlyViewedCollectionView contains header with category table view inside
     let recentlyViewedCollectionView: LoadMoreGridViewController
+    
     // keep reference to header so we can reload table view rows when needed (when counts change)
     weak var recentlyViewedCollectionViewHeader: RecentlyViewedCollectionViewHeader?
     
@@ -38,7 +40,7 @@ class ListViewController: UIViewController {
     private func setupViews() {
         listPresenter.setViewDelegate(self)
         
-        statusBarCoverView.giveBlurredBackground(style: .systemThickMaterialLight)
+        statusBarCoverView.giveBlurredBackground(style: .systemMaterial)
         statusBarCoverView.alpha = 0
         
         recentlyViewedCollectionView.delegate = self
@@ -89,7 +91,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ListCategoryTableViewCell") as! ListCategoryTableViewCell
         let category = listPresenter.getListCategoryFor(index: indexPath.row)
         cell.setCategoryLabelText(text: category.title)
-        cell.setIconImage(imageName: category.imageName)
+        cell.setIconImage(imageName: category.imageName, tintColor: .label)
         
         let countForStatType = listPresenter.getCountForCategory(index: indexPath.row)
         cell.detailTextLabel?.text = String(countForStatType)

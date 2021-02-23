@@ -18,7 +18,7 @@ class EntityTableSectionHeaderView: UITableViewHeaderFooterView {
         
         super.init(reuseIdentifier: reuseIdentifier)
 
-        contentView.backgroundColor = .white
+        contentView.backgroundColor = .systemBackground
         layoutView()
     }
     

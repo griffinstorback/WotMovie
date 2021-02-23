@@ -60,14 +60,14 @@ class PersonOverviewView: UIView {
     }
     
     private func setupView() {
-        backgroundColor = .white
+        backgroundColor = .systemBackground
         overviewTextView.isScrollEnabled = false
         overviewTextView.isUserInteractionEnabled = false
         overviewTextView.isEditable = false
-        overviewTextView.backgroundColor = .white
+        overviewTextView.backgroundColor = .systemBackground
         overviewTextView.font = UIFont.systemFont(ofSize: 17.0)
         
-        verticalStackView.backgroundColor = .white
+        verticalStackView.backgroundColor = .systemBackground
         verticalStackView.alignment = .center
         
         addSubview(verticalStackView)

@@ -39,7 +39,10 @@ class PosterImageView: CardView {
     
     // lazy because they're completely unneeded if the image is never "anonymized" (blurred out)
     private lazy var blurEffectView: UIVisualEffectView = {
-        let view = UIVisualEffectView(effect: UIBlurEffect(style: .systemUltraThinMaterialDark))
+        // Make it MaterialDark (instead of just Material), because the question mark has light tint, and it
+        // shows up best on a dark background.
+        let blurEffect = UIBlurEffect(style: .systemUltraThinMaterialDark)
+        let view = UIVisualEffectView(effect: blurEffect)
         view.isUserInteractionEnabled = false
         return view
     }()
@@ -75,7 +78,7 @@ class PosterImageView: CardView {
         
         super.init(frame: frame)
         
-        backgroundColor = .white
+        backgroundColor = .systemBackground
     }
     
     required init?(coder: NSCoder) {

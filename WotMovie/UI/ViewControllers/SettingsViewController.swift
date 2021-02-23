@@ -62,7 +62,7 @@ class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
     }
     
     // for deselecting row after returning from detail. it seems to do the same as just deselecting immediately though?

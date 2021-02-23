@@ -60,7 +60,7 @@ class GuessCategoryView: UIView {
     }
     
     private func setupViews() {
-        backgroundColor = .white
+        backgroundColor = .tertiarySystemBackground
         layer.cornerRadius = 20
         layer.masksToBounds = true
         giveShadow(radius: 10)

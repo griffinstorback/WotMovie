@@ -49,7 +49,7 @@ class GuessViewController: UIViewController {
     
     func setupViews() {
         guessViewPresenter.setViewDelegate(guessViewDelegate: self)
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         
         // navigation view controller
         navigationItem.title = "WotMovie"

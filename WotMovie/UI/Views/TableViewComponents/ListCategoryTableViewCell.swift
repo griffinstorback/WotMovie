@@ -34,7 +34,7 @@ class ListCategoryTableViewCell: UITableViewCell {
         containerView.clipsToBounds = false
         
         categoryLabel.font = UIFont.boldSystemFont(ofSize: 20)
-        categoryLabel.textColor = .black
+        categoryLabel.textColor = .label
     }
     
     private func layoutViews() {
@@ -57,8 +57,12 @@ class ListCategoryTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
 
-    func setIconImage(imageName: String) {
+    func setIconImage(imageName: String, tintColor: UIColor? = nil) {
         iconImageView.image = UIImage(named: imageName)
+        
+        if let tintColor = tintColor {
+            iconImageView.tintColor = tintColor
+        }
     }
     
     func setCategoryLabelText(text: String) {

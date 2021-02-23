@@ -34,7 +34,7 @@ class GridViewController: DetailPresenterViewController {
     
     private func setupViews() {
         collectionView.delegate = self
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .systemBackground
         collectionView.delaysContentTouches = false
         
         collectionView.register(GridCollectionViewCell.self, forCellWithReuseIdentifier: "GridCollectionViewCell")
