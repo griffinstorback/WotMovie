@@ -42,9 +42,19 @@ class PosterImageView: CardView {
         // Make it MaterialDark (instead of just Material), because the question mark has light tint, and it
         // shows up best on a dark background.
         let blurEffect = UIBlurEffect(style: .systemUltraThinMaterialDark)
-        let view = UIVisualEffectView(effect: blurEffect)
-        view.isUserInteractionEnabled = false
-        return view
+        let blurView = UIVisualEffectView(effect: blurEffect)
+        blurView.isUserInteractionEnabled = false
+        blurView.translatesAutoresizingMaskIntoConstraints = false
+        
+        /*  VIBRANCY DOES ABSOLUTELY NOTHING?
+        let vibrancyEffect = UIVibrancyEffect(blurEffect: blurEffect)
+        let vibrancyView = UIVisualEffectView(effect: vibrancyEffect)
+        blurView.contentView.addSubview(vibrancyView)
+        //vibrancyView.anchor(top: blurView.contentView.topAnchor, leading: blurView.contentView.leadingAnchor, bottom: blurView.contentView.bottomAnchor, trailing: blurView.contentView.trailingAnchor)
+        //vibrancyView.frame = blurView.frame
+        */
+        
+        return blurView
     }()
     private lazy var questionMarkImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "question_mark"))

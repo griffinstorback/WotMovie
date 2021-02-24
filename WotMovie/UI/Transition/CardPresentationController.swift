@@ -26,7 +26,7 @@ class CardPresentationController: UIPresentationController {
         
         presentedViewController.transitionCoordinator!.animate { context in
             UIView.animate(withDuration: 0.5) {
-                self.blurView.effect = UIBlurEffect(style: .light)
+                self.blurView.effect = UIBlurEffect(style: .systemMaterial)
                 self.blurView.alpha = 1
             }
         }
