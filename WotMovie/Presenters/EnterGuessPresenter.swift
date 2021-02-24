@@ -41,7 +41,7 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
     }
     
     // holds the attempts made by user, by id
-    private var guesses: [Int] = [] {
+    private var guesses: Set<Int> = [] {
         didSet {
             DispatchQueue.main.async {
                 self.enterGuessViewDelegate?.reloadResults()
@@ -140,7 +140,7 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
             item.correctlyGuessed = true
             coreDataManager.updateOrCreateEntity(entity: item)
         } else {
-            guesses.append(selectedItem.id)
+            guesses.insert(selectedItem.id)
         }
         
         return isCorrect
