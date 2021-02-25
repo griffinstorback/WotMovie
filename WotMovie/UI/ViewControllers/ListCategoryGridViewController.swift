@@ -10,6 +10,9 @@ import UIKit
 
 protocol ListCategoryGridViewDelegate: NSObjectProtocol {
     func reloadData()
+    
+    func revealEntities(at indices: [Int])
+    func revealCorrectlyGuessedEntities(at indices: [Int])
 }
 
 class ListCategoryGridViewController: UIViewController {
@@ -47,6 +50,7 @@ class ListCategoryGridViewController: UIViewController {
         listCategoryGridPresenter.setViewDelegate(self)
         
         gridView.delegate = self
+        gridView.transitionPresenter = listCategoryGridPresenter
     }
     
     private func layoutViews() {
@@ -168,6 +172,14 @@ extension ListCategoryGridViewController: LoadMoreGridViewDelegate {
 extension ListCategoryGridViewController: ListCategoryGridViewDelegate {
     func reloadData() {
         gridView.reloadData()
+    }
+    
+    func revealEntities(at indices: [Int]) {
+        gridView.revealEntities(at: indices)
+    }
+    
+    func revealCorrectlyGuessedEntities(at indices: [Int]) {
+        gridView.revealCorrectlyGuessedEntities(at: indices)
     }
 }
 

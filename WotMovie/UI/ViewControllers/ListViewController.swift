@@ -10,6 +10,9 @@ import UIKit
 protocol ListViewDelegate: NSObjectProtocol {
     func reloadRecentlyViewedData()
     func reloadCategoryListData()
+    
+    func revealEntities(at indices: [Int])
+    func revealCorrectlyGuessedEntities(at indices: [Int])
 }
 
 class ListViewController: UIViewController {
@@ -44,6 +47,7 @@ class ListViewController: UIViewController {
         statusBarCoverView.alpha = 0
         
         recentlyViewedCollectionView.delegate = self
+        recentlyViewedCollectionView.transitionPresenter = listPresenter
         recentlyViewedCollectionView.registerClassAsCollectionViewHeader(customClass: RecentlyViewedCollectionViewHeader.self)
     }
     
@@ -183,5 +187,13 @@ extension ListViewController: ListViewDelegate {
     // reloads when counts for categories change.
     func reloadCategoryListData() {
         recentlyViewedCollectionViewHeader?.categoryTableView.reloadData()
+    }
+    
+    func revealEntities(at indices: [Int]) {
+        recentlyViewedCollectionView.revealEntities(at: indices)
+    }
+    
+    func revealCorrectlyGuessedEntities(at indices: [Int]) {
+        recentlyViewedCollectionView.revealCorrectlyGuessedEntities(at: indices)
     }
 }

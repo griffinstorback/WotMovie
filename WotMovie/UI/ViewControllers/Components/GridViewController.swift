@@ -11,7 +11,7 @@ import UIKit
 // Collection view displaying a grid of PosterImageView's, number of columns depending on screen width
 class GridViewController: DetailPresenterViewController {
     let collectionView: ContentSizedCollectionView
-    var transitionPresenter: TransitionPresenterProtocol?
+    weak var transitionPresenter: TransitionPresenterProtocol?
     
     private let spacingAmount: CGFloat = 5
     private let minimumCellWidth: CGFloat = 120 // max is (2 * minimum)

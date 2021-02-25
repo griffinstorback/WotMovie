@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-protocol ListPresenterProtocol {
+protocol ListPresenterProtocol: TransitionPresenterProtocol {
     func setViewDelegate(_ viewDelegate: ListViewDelegate)
     func getListCategoriesCount() -> Int
     func getListCategoryFor(index: Int) -> ListCategory
@@ -20,7 +20,7 @@ protocol ListPresenterProtocol {
     func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
 }
 
-class ListPresenter: ListPresenterProtocol {
+class ListPresenter: NSObject, ListPresenterProtocol {
     private let imageDownloadManager: ImageDownloadManagerProtocol
     private let coreDataManager: CoreDataManager
     weak var listViewDelegate: ListViewDelegate?
@@ -38,13 +38,15 @@ class ListPresenter: ListPresenterProtocol {
         }
     }
     
-    private var recentlyViewedItems: [Entity] = [] {
-        didSet {
-            DispatchQueue.main.async {
-                self.listViewDelegate?.reloadRecentlyViewedData()
-            }
+    // have separate setter so we can reload the view when set, but also do operations without reloading view (like setting item as favorite)
+    private func setRecentlyViewedItems(items: [Entity]) {
+        recentlyViewedItems = items
+        
+        DispatchQueue.main.async {
+            self.listViewDelegate?.reloadRecentlyViewedData()
         }
     }
+    private var recentlyViewedItems: [Entity] = []
     
     init(imageDownloadManager: ImageDownloadManager = ImageDownloadManager.shared,
             coreDataManager: CoreDataManager = CoreDataManager.shared) {
@@ -71,7 +73,7 @@ class ListPresenter: ListPresenterProtocol {
     func loadRecentlyViewed() {
         // TODO: perform this request on background thread. As of now, there is a noticeable delay when pressing list tab.
         let items = coreDataManager.fetchPageOfRecentlyViewed()
-        recentlyViewedItems = items
+        setRecentlyViewedItems(items: items)
     }
     
     func loadCategoryCounts() {
@@ -108,6 +110,40 @@ class ListPresenter: ListPresenterProtocol {
         } else {
             DispatchQueue.main.async {
                 completion(nil, nil)
+            }
+        }
+    }
+}
+
+// TransitionPresenterProtocol - called when dismissing modal detail (if item was revealed/added to watchlist while modal was up)
+extension ListPresenter {
+    func setEntityAsRevealed(id: Int, isCorrect: Bool) {
+        if let index = recentlyViewedItems.firstIndex(where: { $0.id == id }) {
+            if isCorrect { // if entity was correctly guessed
+                if !recentlyViewedItems[index].correctlyGuessed {
+                    recentlyViewedItems[index].correctlyGuessed = true
+                    DispatchQueue.main.async {
+                        self.listViewDelegate?.revealCorrectlyGuessedEntities(at: [index])
+                    }
+                }
+            } else { // if entity was revealed (user gave up)
+                if !recentlyViewedItems[index].isRevealed {
+                    recentlyViewedItems[index].isRevealed = true
+                    DispatchQueue.main.async {
+                        self.listViewDelegate?.revealEntities(at: [index])
+                    }
+                }
+            }
+        }
+    }
+    
+    // either add entity to watchlist/favorites, or remove it.
+    func setEntityAsFavorite(id: Int, entityWasAdded: Bool) {
+        if let index = recentlyViewedItems.firstIndex(where: { $0.id == id }) {
+            if entityWasAdded {
+                recentlyViewedItems[index].isFavorite = true
+            } else { // entity was removed from favorites/watchlist
+                recentlyViewedItems[index].isFavorite = false
             }
         }
     }

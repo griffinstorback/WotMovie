@@ -201,10 +201,16 @@ extension EnterGuessViewController: EnterGuessControlsDelegate {
             // give user success haptic (successfully added to watchlist)
             let generator = UINotificationFeedbackGenerator()
             generator.notificationOccurred(.success)
+            
+            // tell delegate (grid view that presented this entity) to add item to favorites/watchlist
+            delegate?.addEntityToFavorites()
         } else {
             // haptic- give light single tap for removal from watchlist
             let generator = UIImpactFeedbackGenerator(style: .light)
             generator.impactOccurred()
+            
+            // tell delegate (grid) to remove item from favorites/watchlist
+            delegate?.removeEntityFromFavorites()
         }
     }
     

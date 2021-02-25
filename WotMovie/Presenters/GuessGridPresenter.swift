@@ -25,7 +25,7 @@ protocol GuessGridPresenterProtocol: TransitionPresenterProtocol {
     func loadItems()
 }
 
-class GuessGridPresenter: GuessGridPresenterProtocol {
+class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
     private let networkManager: NetworkManagerProtocol
     private let imageDownloadManager: ImageDownloadManagerProtocol
     private let coreDataManager: CoreDataManager
@@ -147,27 +147,6 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
     
     func setViewDelegate(_ guessGridViewDelegate: GuessGridViewDelegate?) {
         self.guessGridViewDelegate = guessGridViewDelegate
-    }
-    
-    // TransitionPresenterProtocol - called when dismissing modal detail (if item was revealed while modal was up)
-    func setEntityAsRevealed(id: Int, isCorrect: Bool) {        
-        if let index = items.firstIndex(where: { $0.id == id }) {
-            if isCorrect { // if entity was correctly guessed
-                if !items[index].correctlyGuessed {
-                    items[index].correctlyGuessed = true
-                    DispatchQueue.main.async {
-                        self.guessGridViewDelegate?.revealCorrectlyGuessedEntities(at: [index])
-                    }
-                }
-            } else { // if entity was revealed (user gave up)
-                if !items[index].isRevealed {
-                    items[index].isRevealed = true
-                    DispatchQueue.main.async {
-                        self.guessGridViewDelegate?.revealEntities(at: [index])
-                    }
-                }
-            }
-        }
     }
     
     func itemFor(index: Int) -> Entity? {
@@ -416,6 +395,40 @@ class GuessGridPresenter: GuessGridPresenterProtocol {
                     //    self?.coreDataManager.updateOrCreateTVShowGenreList(genres: genres)
                     //}
                 }
+            }
+        }
+    }
+}
+
+// TransitionPresenterProtocol - called when dismissing modal detail (if item was revealed/added to watchlist while modal was up)
+extension GuessGridPresenter {
+    func setEntityAsRevealed(id: Int, isCorrect: Bool) {
+        if let index = items.firstIndex(where: { $0.id == id }) {
+            if isCorrect { // if entity was correctly guessed
+                if !items[index].correctlyGuessed {
+                    items[index].correctlyGuessed = true
+                    DispatchQueue.main.async {
+                        self.guessGridViewDelegate?.revealCorrectlyGuessedEntities(at: [index])
+                    }
+                }
+            } else { // if entity was revealed (user gave up)
+                if !items[index].isRevealed {
+                    items[index].isRevealed = true
+                    DispatchQueue.main.async {
+                        self.guessGridViewDelegate?.revealEntities(at: [index])
+                    }
+                }
+            }
+        }
+    }
+    
+    // either add entity to watchlist/favorites, or remove it.
+    func setEntityAsFavorite(id: Int, entityWasAdded: Bool) {
+        if let index = items.firstIndex(where: { $0.id == id }) {
+            if entityWasAdded {
+                items[index].isFavorite = true
+            } else { // entity was removed from favorites/watchlist
+                items[index].isFavorite = false
             }
         }
     }

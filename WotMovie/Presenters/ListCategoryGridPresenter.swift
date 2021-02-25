@@ -16,7 +16,7 @@ enum ListCategoryDisplayTypes: String {
     case moviesAndTVShows = "Movies & TV"
 }
 
-protocol ListCategoryGridPresenterProtocol {
+protocol ListCategoryGridPresenterProtocol: TransitionPresenterProtocol {
     var sortParameters: SortParameters { get set }
     var itemsCount: Int { get }
     
@@ -34,7 +34,7 @@ protocol ListCategoryGridPresenterProtocol {
 
 // TODO: Should make all presenters conform to a BasePresenter class, which should contain
 //       methods all presenters (or most) use like loadImageFor(index).
-class ListCategoryGridPresenter: ListCategoryGridPresenterProtocol {
+class ListCategoryGridPresenter: NSObject, ListCategoryGridPresenterProtocol {
     private let imageDownloadManager: ImageDownloadManagerProtocol
     private let coreDataManager: CoreDataManager
     weak var listCategoryGridViewDelegate: ListCategoryGridViewDelegate?
@@ -85,6 +85,11 @@ class ListCategoryGridPresenter: ListCategoryGridPresenterProtocol {
         }
         
         items = filteredResults
+        
+        // tell view to reload
+        DispatchQueue.main.async {
+            self.listCategoryGridViewDelegate?.reloadData()
+        }
     }
     
     // contains all items retrieved for this ListCategoryType. filter from this and assign to 'items'
@@ -95,13 +100,7 @@ class ListCategoryGridPresenter: ListCategoryGridPresenterProtocol {
     }
     
     // the items currently being displayed
-    private var items: [Entity] = [] {
-        didSet {
-            DispatchQueue.main.async {
-                self.listCategoryGridViewDelegate?.reloadData()
-            }
-        }
-    }
+    private var items: [Entity] = []
     var itemsCount: Int {
         return items.count
     }
@@ -219,6 +218,40 @@ class ListCategoryGridPresenter: ListCategoryGridPresenterProtocol {
         case .allRevealed:
             let items = coreDataManager.fetchRevealedEntities()
             allItems += items
+        }
+    }
+}
+
+// TransitionPresenterProtocol - called when dismissing modal detail (if item was revealed/added to watchlist while modal was up)
+extension ListCategoryGridPresenter {
+    func setEntityAsRevealed(id: Int, isCorrect: Bool) {
+        if let index = items.firstIndex(where: { $0.id == id }) {
+            if isCorrect { // if entity was correctly guessed
+                if !items[index].correctlyGuessed {
+                    items[index].correctlyGuessed = true
+                    DispatchQueue.main.async {
+                        self.listCategoryGridViewDelegate?.revealCorrectlyGuessedEntities(at: [index])
+                    }
+                }
+            } else { // if entity was revealed (user gave up)
+                if !items[index].isRevealed {
+                    items[index].isRevealed = true
+                    DispatchQueue.main.async {
+                        self.listCategoryGridViewDelegate?.revealEntities(at: [index])
+                    }
+                }
+            }
+        }
+    }
+    
+    // either add entity to watchlist/favorites, or remove it.
+    func setEntityAsFavorite(id: Int, entityWasAdded: Bool) {
+        if let index = items.firstIndex(where: { $0.id == id }) {
+            if entityWasAdded {
+                items[index].isFavorite = true
+            } else { // entity was removed from favorites/watchlist
+                items[index].isFavorite = false
+            }
         }
     }
 }

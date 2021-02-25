@@ -49,11 +49,6 @@ class DetailPresenterViewController: UIViewController {
         }
     }
     
-    // should be overriden and implemented in calling VC, so that if card is revealed in detail, presenter will show changes too.
-    /*func setEntityAsRevealed(id: Int, isRevealed: Bool) {
-        print("*** DetailPresenterVC: setEntity with id \(id) as \(isRevealed ? "revealed" : "NOT revealed")")
-    }*/
-    
     /*func present(_ viewController: UIViewController, fromCard: UIView, fromView: UIView, startHidden: Bool) {
         
         // Freeze highlighted state or else it will bounce back??

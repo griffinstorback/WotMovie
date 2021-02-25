@@ -7,6 +7,7 @@
 
 import Foundation
 
-protocol TransitionPresenterProtocol {
+protocol TransitionPresenterProtocol: NSObject {
     func setEntityAsRevealed(id: Int, isCorrect: Bool)
+    func setEntityAsFavorite(id: Int, entityWasAdded: Bool)
 }

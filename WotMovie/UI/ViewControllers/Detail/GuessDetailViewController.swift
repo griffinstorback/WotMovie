@@ -22,6 +22,8 @@ protocol EnterGuessProtocol {
     func revealAnswer()
     func revealAsCorrect()
     func nextQuestion()
+    func addEntityToFavorites()
+    func removeEntityFromFavorites()
 }
 
 protocol GuessDetailViewDelegate: NSObjectProtocol {
@@ -33,9 +35,7 @@ class GuessDetailViewController: DetailViewController {
     
     let guessDetailViewPresenter: GuessDetailPresenterProtocol
     var state: GuessDetailViewState
-    
-    var parentPresenter: TransitionPresenterProtocol?
-    
+        
     // checkmark icon that is shown when correctly guessed
     private let checkMarkIconImageView: UIImageView
     private let checkMarkIconContainerView: UIView
@@ -217,6 +217,14 @@ extension GuessDetailViewController: EnterGuessProtocol {
     
     func nextQuestion() {
         self.dismiss(animated: true)
+    }
+    
+    func addEntityToFavorites() {
+        transitionPresenter?.setEntityAsFavorite(id: guessDetailViewPresenter.getID(), entityWasAdded: true)
+    }
+    
+    func removeEntityFromFavorites() {
+        transitionPresenter?.setEntityAsFavorite(id: guessDetailViewPresenter.getID(), entityWasAdded: false)
     }
 }
 
