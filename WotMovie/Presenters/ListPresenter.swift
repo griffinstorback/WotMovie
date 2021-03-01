@@ -147,4 +147,8 @@ extension ListPresenter {
             }
         }
     }
+    
+    func presentNextQuestion(currentQuestionID: Int) {
+        // nothing
+    }
 }

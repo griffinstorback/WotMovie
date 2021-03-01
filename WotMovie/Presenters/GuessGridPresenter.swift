@@ -432,4 +432,10 @@ extension GuessGridPresenter {
             }
         }
     }
+    
+    func presentNextQuestion(currentQuestionID: Int) {
+        if let index = items.firstIndex(where: { $0.id == currentQuestionID }) {
+            guessGridViewDelegate?.presentGuessDetailFor(index: index+1)
+        }
+    }
 }

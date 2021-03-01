@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Appodeal
 
 enum GuessDetailViewState {
     case fullyHidden
@@ -16,7 +17,7 @@ enum GuessDetailViewState {
     case correctWithNoNextButton
 }
 
-protocol EnterGuessProtocol {
+protocol EnterGuessProtocol: NSObjectProtocol {
     func showResults(animated: Bool)
     func hideResults(animated: Bool)
     func revealAnswer()
@@ -82,6 +83,13 @@ class GuessDetailViewController: DetailViewController {
         layoutViews()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        //print("**** SHOWING INTERSTITIAL: ", Appodeal.showAd(.interstitial, forPlacement: "", rootViewController: self))
+        //print("**** SHOWING BANNER: ", Appodeal.showAd(.bannerTop, forPlacement: "", rootViewController: self))
+    }
+    
     @objc func showHintButtonPressed() {
         guessDetailViewPresenter.hintWasShown()
         state = .hintShown
@@ -100,6 +108,8 @@ class GuessDetailViewController: DetailViewController {
         
         enterGuessViewController.setDelegate(self)
         enterGuessContainerView.giveBlurredBackground(style: .systemMaterial)
+        
+        // if next button pressed 3 times in a row, show interstitial.
     }
     
     private func layoutViews() {
@@ -216,7 +226,10 @@ extension GuessDetailViewController: EnterGuessProtocol {
     }
     
     func nextQuestion() {
-        self.dismiss(animated: true)
+        self.dismiss(animated: true) {
+            print("*** DISMISSED")
+            self.transitionPresenter?.presentNextQuestion(currentQuestionID: self.guessDetailViewPresenter.getID())
+        }
     }
     
     func addEntityToFavorites() {

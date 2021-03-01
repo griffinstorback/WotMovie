@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-protocol LoadMoreGridViewDelegate {
+protocol LoadMoreGridViewDelegate: NSObjectProtocol {
     func getNumberOfItems(_ loadMoreGridViewController: LoadMoreGridViewController) -> Int
     func getItemFor(_ loadMoreGridViewController: LoadMoreGridViewController, index: Int) -> Entity?
     func loadMoreItems(_ loadMoreGridViewController: LoadMoreGridViewController)
@@ -26,7 +26,7 @@ protocol LoadMoreGridViewDelegate {
 
 // Builds on GridViewController to provide an optional footer view which loads more items when in view. Also has optional header
 class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource {
-    var delegate: LoadMoreGridViewDelegate?
+    weak var delegate: LoadMoreGridViewDelegate?
     let shouldDisplayLoadMoreFooter: Bool // if true, display the loadmore footer view, and call delegate.loadMore() when it appears
     
     init(shouldDisplayLoadMoreFooter: Bool) {
@@ -44,6 +44,11 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
     func setupCollectionView() {
         collectionView.dataSource = self
         collectionView.backgroundColor = .systemBackground
+    }
+    
+    func selectCellAt(indexPath: IndexPath) {
+        collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+        collectionView(collectionView, didSelectItemAt: indexPath)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -75,7 +80,10 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let cell = collectionView.cellForItem(at: indexPath) as! GridCollectionViewCell
+        // can fail when dismissing guess detail by pressing Next button (e.g when next item is at index which is higher than the items count)
+        guard let cell = collectionView.cellForItem(at: indexPath) as? GridCollectionViewCell else {
+            return
+        }
         let cellFrame = cell.frame
         
         // scroll so cell completely visible so doesn't overlap the nav bar or tab bar.

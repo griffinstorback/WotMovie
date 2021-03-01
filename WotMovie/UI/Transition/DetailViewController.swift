@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Appodeal
 
 // Detail modal must extend this class
 class DetailViewController: UIViewController {
@@ -17,7 +18,14 @@ class DetailViewController: UIViewController {
     static let targetCornerRadius: CGFloat = 20
     
     let scrollView: UIScrollView
+    
     let statusBarCoverView: UIView
+    var statusBarCoverBottomConstraint: NSLayoutConstraint!
+    var topBannerAdView: UIView
+    
+    // space from top is needed when a banner ad is visible.
+    let spacingFromTop: UIView
+    
     let contentStackView: UIStackView
     let posterImageView: PosterImageView // keep reference to poster image, as its different if TitleDetail vs PersonDetail (so we can animate dismissal where the poster image returns to where it was on parent)
     
@@ -52,7 +60,12 @@ class DetailViewController: UIViewController {
     
     init(posterImageView: PosterImageView) {
         scrollView = UIScrollView()
+        
         statusBarCoverView = UIView()
+        topBannerAdView = UIView()
+        
+        spacingFromTop = UIView()
+        
         contentStackView = UIStackView()
         self.posterImageView = posterImageView
         
@@ -73,7 +86,48 @@ class DetailViewController: UIViewController {
         layoutViews()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        addTopBannerAd()
+    }
+    
+    private func addTopBannerAd() {
+        if let banner = Appodeal.banner() {
+            print("*** ADDING BANNER")
+            // add the banner view
+            topBannerAdView = banner
+            statusBarCoverView.addSubview(topBannerAdView)
+            topBannerAdView.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: statusBarCoverView.leadingAnchor, bottom: statusBarCoverView.bottomAnchor, trailing: statusBarCoverView.trailingAnchor, size: CGSize(width: 0, height: 50))
+            
+            // bottom of status bar cover view is constrained to safe area layout guide. we need to disable that to allow for ad to have room.
+            //statusBarCoverBottomConstraint.isActive = false
+
+            spacingFromTop.isHidden = false
+        } else {
+            print("**** NO BANNER returned from Appodeal.banner()")
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+            self?.removeTopBannerAd()
+        }
+    }
+    
+    private func removeTopBannerAd() {
+        print("*** REMOVING BANNER")
+        
+        topBannerAdView.removeFromSuperview()
+        statusBarCoverBottomConstraint.isActive = true
+        spacingFromTop.isHidden = true
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+            self?.addTopBannerAd()
+        }
+    }
+    
     private func setupViews() {
+        Appodeal.setBannerDelegate(self)
+        
         scrollView.delegate = self
         scrollView.contentInsetAdjustmentBehavior = .never
         scrollView.isUserInteractionEnabled = true
@@ -81,7 +135,7 @@ class DetailViewController: UIViewController {
         scrollView.alwaysBounceVertical = true
         
         statusBarCoverView.giveBlurredBackground(style: .systemMaterial)
-        statusBarCoverView.alpha = 0
+        //statusBarCoverView.alpha = 0
         
         contentStackView.axis = .vertical
         contentStackView.alignment = .fill
@@ -113,19 +167,26 @@ class DetailViewController: UIViewController {
     
     private func layoutViews() {
         view.addSubview(scrollView)
-        // must anchor to safeAreaLayoutguide top and bottom. tried to go to view.top but kept freezing.
+        // must anchor to view.top, not safearea, so that statusBarCoverView covers status bar
         scrollView.anchor(top: view.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, trailing: view.safeAreaLayoutGuide.trailingAnchor)
         
         scrollView.addSubview(contentStackView)
         contentStackView.anchor(top: scrollView.topAnchor, leading: scrollView.leadingAnchor, bottom: scrollView.bottomAnchor, trailing: scrollView.trailingAnchor)
         contentStackView.anchorSize(height: nil, width: scrollView.widthAnchor)
         
+        contentStackView.addArrangedSubview(spacingFromTop)
+        spacingFromTop.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: CGSize(width: 0, height: 50))
+        spacingFromTop.isHidden = true
+        
+        // add the status bar cover view, which will contain the banner ad
         scrollView.addSubview(statusBarCoverView)
-        statusBarCoverView.anchor(top: scrollView.topAnchor, leading: scrollView.leadingAnchor, bottom: view.safeAreaLayoutGuide.topAnchor, trailing: scrollView.trailingAnchor)
+        statusBarCoverView.anchor(top: scrollView.topAnchor, leading: scrollView.leadingAnchor, bottom: nil, trailing: scrollView.trailingAnchor)
+        statusBarCoverBottomConstraint = statusBarCoverView.bottomAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.topAnchor)
+        statusBarCoverBottomConstraint.isActive = true
         
         // add close button to top right corner
-        view.addSubview(closeButton)
-        closeButton.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: nil, bottom: nil, trailing: view.safeAreaLayoutGuide.trailingAnchor, size: CGSize(width: 54, height: 54))
+        scrollView.addSubview(closeButton)
+        closeButton.anchor(top: statusBarCoverView.bottomAnchor, leading: nil, bottom: nil, trailing: scrollView.trailingAnchor, size: CGSize(width: 54, height: 54))
     }
     
     @objc func handleDismissalPan(gesture: UIPanGestureRecognizer) {
@@ -219,7 +280,8 @@ extension DetailViewController: UIScrollViewDelegate {
         
         // hide or unhide the opaque view under status bar, depending on if scrolled to top or not.
         if contentOffset <= 20 {
-            statusBarCoverView.alpha = max(min(contentOffset/20, 1), 0)
+            //statusBarCoverView.alpha = max(min(contentOffset/20, 1), 0)
+            statusBarCoverView.alpha = 1
         } else {
             statusBarCoverView.alpha = 1
         }
@@ -242,5 +304,30 @@ extension DetailViewController: UIScrollViewDelegate {
 extension DetailViewController: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
+    }
+}
+
+extension DetailViewController: AppodealBannerDelegate {
+    func bannerDidLoadAdIsPrecache(_ precache: Bool) {
+        print("*** BANNER DID LOAD AD IS PRECACHE")
+    }
+    
+    func bannerDidShow() {
+        print("*** BANNER DID SHOW")
+    }
+    
+    // banner failed to load
+    func bannerDidFailToLoadAd() {
+        print("*** BANNER DID FAIL TO LOAD AD")
+    }
+    
+    // banner was clicked
+    func bannerDidClick() {
+        print("*** BANNER DID CLICK")
+    }
+    
+    // banner did expire and could not be shown
+    func bannerDidExpired() {
+        print("*** BANNER DID EXPIRED")
     }
 }

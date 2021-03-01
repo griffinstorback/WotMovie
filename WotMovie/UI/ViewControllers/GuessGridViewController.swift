@@ -15,6 +15,8 @@ protocol GuessGridViewDelegate: NSObjectProtocol {
     
     func revealEntities(at indices: [Int])
     func revealCorrectlyGuessedEntities(at indices: [Int])
+    
+    func presentGuessDetailFor(index: Int)
 }
 
 class GuessGridViewController: DetailPresenterViewController {
@@ -22,12 +24,14 @@ class GuessGridViewController: DetailPresenterViewController {
     private let guessGridViewPresenter: GuessGridPresenterProtocol
     
     private let gridView: LoadMoreGridViewController
+    //private var bottomBannerAdView: UIView
     
     init(for category: GuessCategory, presenter: GuessGridPresenterProtocol? = nil) {
         // use passed in presenter if provided (used in tests)
         guessGridViewPresenter = presenter ?? GuessGridPresenter(category: category.type)
         
         gridView = LoadMoreGridViewController(shouldDisplayLoadMoreFooter: true)
+        //bottomBannerAdView = UIView()
 
         super.init(nibName: nil, bundle: nil)
         
@@ -37,6 +41,9 @@ class GuessGridViewController: DetailPresenterViewController {
     }
     
     private func setupViews() {
+        //Appodeal.setBannerDelegate(self)
+        //Appodeal.setSmartBannersEnabled(true)
+        
         navigationItem.largeTitleDisplayMode = .never
         
         guessGridViewPresenter.setViewDelegate(self)
@@ -52,6 +59,9 @@ class GuessGridViewController: DetailPresenterViewController {
     private func layoutViews() {
         addChildViewController(gridView)
         gridView.view.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
+        
+        //view.addSubview(bottomBannerAdView)
+        //bottomBannerAdView.anchor(top: nil, leading: view.leadingAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, trailing: view.trailingAnchor, size: CGSize(width: 0, height: 50))
     }
     
     // right bar item pressed
@@ -97,6 +107,20 @@ class GuessGridViewController: DetailPresenterViewController {
         // load first page of movies/tv shows
         guessGridViewPresenter.loadItems()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // add the banner view
+        /*if let banner = Appodeal.banner() {
+            
+            bottomBannerAdView = banner
+            view.addSubview(bottomBannerAdView)
+            bottomBannerAdView.anchor(top: nil, leading: view.leadingAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, trailing: view.trailingAnchor, size: CGSize(width: 0, height: 50))
+        } else {
+            print("**** NO BANNER returned from Appodeal.banner()")
+        }*/
+    }
 }
 
 extension GuessGridViewController: GuessGridViewDelegate {
@@ -122,6 +146,15 @@ extension GuessGridViewController: GuessGridViewDelegate {
     
     func revealCorrectlyGuessedEntities(at indices: [Int]) {
         gridView.revealCorrectlyGuessedEntities(at: indices)
+    }
+    
+    func presentGuessDetailFor(index: Int) {
+        // TODO: FIND A WAY TO __SAFELY__ SELECT THE ITEM AT THE NEXT INDEX. (is it currently safe?)
+        let indexPath = IndexPath(item: index, section: 0)
+        
+        DispatchQueue.main.async {
+            self.gridView.selectCellAt(indexPath: indexPath)
+        }
     }
 }
 
@@ -166,3 +199,28 @@ extension GuessGridViewController: LoadMoreGridViewDelegate {
         // nothing
     }
 }
+
+/*extension GuessGridViewController: AppodealBannerDelegate {
+    func bannerDidLoadAdIsPrecache(_ precache: Bool) {
+        print("*** BANNER DID LOAD AD IS PRECACHE")
+    }
+    
+    func bannerDidShow() {
+        print("*** BANNER DID SHOW")
+    }
+    
+    // banner failed to load
+    func bannerDidFailToLoadAd() {
+        print("*** BANNER DID FAIL TO LOAD AD")
+    }
+    
+    // banner was clicked
+    func bannerDidClick() {
+        print("*** BANNER DID CLICK")
+    }
+    
+    // banner did expire and could not be shown
+    func bannerDidExpired() {
+        print("*** BANNER DID EXPIRED")
+    }
+}*/

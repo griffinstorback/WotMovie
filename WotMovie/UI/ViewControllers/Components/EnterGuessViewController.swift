@@ -14,7 +14,7 @@ protocol EnterGuessViewDelegate: NSObjectProtocol {
 class EnterGuessViewController: UIViewController {
     
     private let enterGuessPresenter: EnterGuessPresenterProtocol
-    private var delegate: EnterGuessProtocol?
+    private weak var delegate: EnterGuessProtocol?
     
     private let enterGuessControlsView: EnterGuessControlsView
     private var enterGuessControlsViewBottomConstraint: NSLayoutConstraint!
@@ -232,6 +232,9 @@ extension EnterGuessViewController: EnterGuessControlsDelegate {
         enterGuessControlsView.setShowsEnterGuessFieldCancelButton(true, animated: true)
         enterGuessControlsView.setShowsRevealButton(false, animated: true)
         delegate?.showResults(animated: true)
+        
+        // show banner at top
+        //Appodeal.showAd(.bannerTop, forPlacement: "", rootViewController: self)
     }
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
@@ -242,6 +245,9 @@ extension EnterGuessViewController: EnterGuessControlsDelegate {
         enterGuessControlsView.setShowsEnterGuessFieldCancelButton(false, animated: true)
         enterGuessControlsView.setShowsRevealButton(true, animated: false) // for some reason, trying to animate this makes it not animate...
         delegate?.hideResults(animated: true)
+        
+        // hide banner at top
+        //Appodeal.hideBanner()
     }
     
     @objc func performSearch(_ searchBar: UISearchBar) {

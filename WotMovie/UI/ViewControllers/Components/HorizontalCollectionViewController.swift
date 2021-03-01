@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol HorizontalCollectionViewDelegate {
+protocol HorizontalCollectionViewDelegate: NSObjectProtocol {
     func getNumberOfItems(_ horizontalCollectionViewController: HorizontalCollectionViewController) -> Int
     func getItemFor(_ horizontalCollectionViewController: HorizontalCollectionViewController, index: Int) -> Entity?
     func getSubtitleFor(_ horizontalCollectionViewController: HorizontalCollectionViewController, index: Int) -> String?
@@ -16,7 +16,7 @@ protocol HorizontalCollectionViewDelegate {
 
 class HorizontalCollectionViewController: DetailPresenterViewController {
 
-    private var delegate: HorizontalCollectionViewDelegate?
+    private weak var delegate: HorizontalCollectionViewDelegate?
     
     private var titleLabel: UILabel?
     private var collectionView: UICollectionView!

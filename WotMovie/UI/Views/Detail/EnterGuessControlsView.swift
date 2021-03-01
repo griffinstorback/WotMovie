@@ -14,7 +14,7 @@ protocol EnterGuessControlsDelegate: UISearchBarDelegate {
 }
 
 class EnterGuessControlsView: UIView {
-    private var delegate: EnterGuessControlsDelegate?
+    private weak var delegate: EnterGuessControlsDelegate?
     
     // holds both horizontal stackviews
     private let containerStackView: UIStackView!

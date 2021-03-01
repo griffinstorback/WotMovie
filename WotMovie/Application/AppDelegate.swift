@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreData
+import Appodeal
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -14,7 +15,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        Appodeal.initialize(withApiKey: "b69e97c9e3951577965b129806e50a3026c74d5ea551fdd0", types: [.banner, .interstitial], hasConsent: false)
+        Appodeal.setTestingEnabled(true)
+        
         return true
     }
 

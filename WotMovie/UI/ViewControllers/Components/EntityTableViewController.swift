@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol EntityTableViewDelegate {
+protocol EntityTableViewDelegate: NSObjectProtocol {
     func getSectionsCount() -> Int
     func getCountForSection(section: Int) -> Int
     func getSectionTitle(for index: Int) -> String?
@@ -17,7 +17,7 @@ protocol EntityTableViewDelegate {
 
 class EntityTableViewController: DetailPresenterViewController {
     
-    private var delegate: EntityTableViewDelegate?
+    private weak var delegate: EntityTableViewDelegate?
     
     private var tableView: ContentSizedTableView!
     

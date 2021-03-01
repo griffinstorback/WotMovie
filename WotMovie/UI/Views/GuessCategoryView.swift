@@ -7,12 +7,12 @@
 
 import UIKit
 
-protocol GuessCategoryViewDelegate {
+protocol GuessCategoryViewDelegate: NSObjectProtocol {
     func categoryWasSelected(_ category: GuessCategory)
 }
 
 class GuessCategoryView: UIView {
-    private var delegate: GuessCategoryViewDelegate?
+    private weak var delegate: GuessCategoryViewDelegate?
     
     var category: GuessCategory {
         didSet {

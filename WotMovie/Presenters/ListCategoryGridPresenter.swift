@@ -254,4 +254,8 @@ extension ListCategoryGridPresenter {
             }
         }
     }
+    
+    func presentNextQuestion(currentQuestionID: Int) {
+        // nothing
+    }
 }
