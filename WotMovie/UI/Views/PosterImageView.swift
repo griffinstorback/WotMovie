@@ -92,7 +92,7 @@ class PosterImageView: CardView {
     
     override init(frame: CGRect) {
         imageView = UIImageView()
-        imageView.backgroundColor = .systemGray
+        imageView.backgroundColor = .systemGray4
         
         super.init(frame: frame)
         

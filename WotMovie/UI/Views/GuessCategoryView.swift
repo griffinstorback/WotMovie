@@ -60,20 +60,21 @@ class GuessCategoryView: UIView {
     }
     
     private func setupViews() {
-        backgroundColor = .tertiarySystemBackground
+        backgroundColor = .systemGray6
         layer.cornerRadius = 20
         layer.masksToBounds = true
-        giveShadow(radius: 10)
+        //giveShadow(radius: 10)
         
         categoryImageView.tintColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue
         categoryImageView.contentMode = .scaleAspectFit
         
-        categoryLabel.text = category.title
+        //categoryLabel.text = category.title
+        categoryLabel.text = category.shortTitle
         categoryLabel.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         categoryLabel.numberOfLines = 2
         
         horizontalStack.axis = .horizontal
-        horizontalStack.spacing = 15
+        horizontalStack.spacing = 20
         
         verticalStack.axis = .vertical
         verticalStack.spacing = 10

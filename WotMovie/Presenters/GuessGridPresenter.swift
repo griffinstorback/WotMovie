@@ -434,8 +434,19 @@ extension GuessGridPresenter {
     }
     
     func presentNextQuestion(currentQuestionID: Int) {
+        
+        // get index of question just guessed
         if let index = items.firstIndex(where: { $0.id == currentQuestionID }) {
-            guessGridViewDelegate?.presentGuessDetailFor(index: index+1)
+            
+            // iterate through items until we find one that hasn't been guessed/revealed.
+            for i in index+1..<items.count {
+                if !items[i].correctlyGuessed && !items[i].isRevealed {
+                    
+                    // found the next item which hasn't been opened.
+                    guessGridViewDelegate?.presentGuessDetailFor(index: i)
+                    return
+                }
+            }
         }
     }
 }
