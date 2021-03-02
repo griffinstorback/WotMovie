@@ -107,7 +107,7 @@ class ListCategoryGridViewController: UIViewController {
         }
         
         // bookmark button is actually the sort button.
-        searchController.searchBar.setImage(UIImage(named: "sort_icon"), for: .bookmark, state: .normal)
+        searchController.searchBar.setImage(UIImage(named: "sort_icon")?.withTintColor(UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue), for: .bookmark, state: .normal)
         searchController.searchBar.showsBookmarkButton = true
     }
     

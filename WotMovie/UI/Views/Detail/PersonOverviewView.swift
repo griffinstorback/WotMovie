@@ -16,7 +16,7 @@ class PersonOverviewView: UIView {
         let label = UILabel()
         label.numberOfLines = 0
         label.text = "?"
-        label.font = UIFont.boldSystemFont(ofSize: 32)
+        label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
         label.textAlignment = .center
         return label
     }()
@@ -51,15 +51,15 @@ class PersonOverviewView: UIView {
         
         super.init(frame: frame)
         
-        setupView()
-        setupLayout()
+        setupViews()
+        layoutViews()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupView() {
+    private func setupViews() {
         backgroundColor = .systemBackground
         overviewTextView.isScrollEnabled = false
         overviewTextView.isUserInteractionEnabled = false
@@ -69,11 +69,10 @@ class PersonOverviewView: UIView {
         
         verticalStackView.backgroundColor = .systemBackground
         verticalStackView.alignment = .center
-        
-        addSubview(verticalStackView)
     }
     
-    private func setupLayout() {
+    private func layoutViews() {
+        addSubview(verticalStackView)
         //posterImageView.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: Constants.PersonOverviewPosterImage.size)
         posterImageView.heightAnchor.constraint(lessThanOrEqualToConstant: Constants.PersonOverviewPosterImage.size.height).isActive = true
         posterImageView.widthAnchor.constraint(equalTo: posterImageView.heightAnchor, multiplier: 2/3).isActive = true

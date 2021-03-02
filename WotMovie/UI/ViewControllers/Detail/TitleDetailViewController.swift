@@ -61,23 +61,18 @@ class TitleDetailViewController: GuessDetailViewController {
         
         super.init(item: item, posterImageView: detailOverviewView.posterImageView, state: state, presenter: titleDetailViewPresenter)
         
-        titleDetailViewPresenter.setViewDelegate(detailViewDelegate: self)
+        setupViews()
+        layoutViews()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
+    private func setupViews() {
+        titleDetailViewPresenter.setViewDelegate(detailViewDelegate: self)
         titleDetailViewPresenter.loadCredits()
         
-        setupViews()
-        layoutViews()
-    }
-    
-    private func setupViews() {
         // set detailOverviewView values
         titleDetailViewPresenter.loadPosterImage(completion: detailOverviewView.setPosterImage)
         titleDetailViewPresenter.getGenres(completion: detailOverviewView.setGenreList)

@@ -19,20 +19,39 @@ class HorizontalCollectionViewController: DetailPresenterViewController {
     private weak var delegate: HorizontalCollectionViewDelegate?
     
     private var titleLabel: UILabel?
-    private var collectionView: UICollectionView!
+    private var collectionView: UICollectionView
     
     init(title: String?) {
+        func createLayout() -> UICollectionViewLayout {
+            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            
+            let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(100), heightDimension: .fractionalHeight(1))
+            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+            let section = NSCollectionLayoutSection(group: group)
+            section.interGroupSpacing = 5
+            
+            let config = UICollectionViewCompositionalLayoutConfiguration()
+            config.scrollDirection = .horizontal
+            
+            let layout = UICollectionViewCompositionalLayout(section: section, configuration: config)
+            return layout
+        }
+        
         if let title = title {
             titleLabel = UILabel()
             titleLabel?.text = title
         }
         
+        self.collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
+        
         super.init(nibName: nil, bundle: nil)
         
-        self.collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
+        setupViews()
+        layoutViews()
     }
     
-    private func createLayout() -> UICollectionViewLayout {
+    /*private func createLayout() -> UICollectionViewLayout {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
@@ -46,7 +65,7 @@ class HorizontalCollectionViewController: DetailPresenterViewController {
         
         let layout = UICollectionViewCompositionalLayout(section: section, configuration: config)
         return layout
-    }
+    }*/
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -55,18 +74,18 @@ class HorizontalCollectionViewController: DetailPresenterViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupViews()
+        //setupViews()
+        //layoutViews()
     }
     
     private func setupViews() {
         collectionView.delaysContentTouches = false
         
         if titleLabel != nil {
-            titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+            titleLabel?.font = UIFont.systemFont(ofSize: 22, weight: .bold)
         }
         
         setupCollectionView()
-        layoutViews()
     }
     
     private func layoutViews() {
@@ -81,6 +100,12 @@ class HorizontalCollectionViewController: DetailPresenterViewController {
         } else {
             collectionView.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
         }
+        
+        print("**** HorizontalCollectionView frame after layoutViews(): \(view.frame), collectionView frame itself: \(collectionView.frame)")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            print("**** (0.5 seconds later) HorizontalCollectionView frame after layoutViews(): \(self.view.frame), collectionView frame itself: \(self.collectionView.frame)")
+        }
+        
     }
     
     public func setDelegate(_ delegate: HorizontalCollectionViewDelegate) {

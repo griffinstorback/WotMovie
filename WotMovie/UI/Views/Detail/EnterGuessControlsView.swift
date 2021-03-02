@@ -55,15 +55,15 @@ class EnterGuessControlsView: UIView {
         currentlyGuessingStackView.spacing = 10
         
         enterGuessField.searchBarStyle = .minimal
-        enterGuessField.tintColor = Constants.Colors.defaultBlue
+        enterGuessField.tintColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue
         
-        let enterGuessFieldIcon = UIImage(named: "question_mark")?.withTintColor(Constants.Colors.defaultBlue, renderingMode: .alwaysOriginal)
+        let enterGuessFieldIcon = UIImage(named: "question_mark")?.withTintColor(UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue, renderingMode: .alwaysOriginal)
         enterGuessField.setImage(enterGuessFieldIcon, for: .search, state: .normal)
         
         revealButton.setTitle("Reveal", for: .normal)
         revealButton.setTitleColor(.white, for: .normal)
-        revealButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
-        revealButton.backgroundColor = Constants.Colors.defaultBlue
+        revealButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        revealButton.backgroundColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue
         revealButton.layer.cornerRadius = 10
         revealButton.addTarget(self, action: #selector(revealButtonPressed), for: .touchUpInside)
         
@@ -74,14 +74,14 @@ class EnterGuessControlsView: UIView {
         
         nextButton.setTitle("Next", for: .normal)
         nextButton.setTitleColor(.white, for: .normal)
-        nextButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
-        nextButton.backgroundColor = Constants.Colors.defaultBlue
+        nextButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        nextButton.backgroundColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue
         nextButton.layer.cornerRadius = 10
         nextButton.addTarget(self, action: #selector(nextButtonPressed), for: .touchUpInside)
         
         /*addToWatchlistButton.setTitle("Add to Watchlist", for: .normal)
         addToWatchlistButton.setTitleColor(.white, for: .normal)
-        addToWatchlistButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        addToWatchlistButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         addToWatchlistButton.titleLabel?.numberOfLines = 2
         addToWatchlistButton.titleEdgeInsets = UIEdgeInsets(top: 5, left: 20, bottom: 5, right: 5)
         addToWatchlistButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)

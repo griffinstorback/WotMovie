@@ -33,7 +33,7 @@ class ListCategoryTableViewCell: UITableViewCell {
         
         containerView.clipsToBounds = false
         
-        categoryLabel.font = UIFont.boldSystemFont(ofSize: 20)
+        categoryLabel.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         categoryLabel.textColor = .label
     }
     

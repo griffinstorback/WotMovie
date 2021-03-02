@@ -15,6 +15,7 @@ class DetailOverviewView: UIView {
     private lazy var genreListView: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
+        label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
         return label
     }()
     private lazy var horizontalStackView: UIStackView = {
@@ -30,17 +31,23 @@ class DetailOverviewView: UIView {
         let label = UILabel()
         label.numberOfLines = 0
         label.text = "?"
-        label.font = UIFont.boldSystemFont(ofSize: 32)
+        label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
         return label
     }()
     private lazy var releaseDateLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 16)
-        label.textColor = .gray
+        label.font = UIFont.systemFont(ofSize: 17)
+        label.textColor = .secondaryLabel
         return label
     }()
     private lazy var overviewTextView: UITextView = {
-        return UITextView()
+        let textView = UITextView()
+        textView.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        textView.isScrollEnabled = false
+        textView.isUserInteractionEnabled = false
+        textView.isEditable = false
+        textView.backgroundColor = .systemBackground
+        return textView
     }()
     private lazy var verticalStackView: UIStackView = {
         let stackView = UIStackView()
@@ -50,6 +57,7 @@ class DetailOverviewView: UIView {
         stackView.addArrangedSubview(overviewTextView)
         stackView.axis = .vertical
         stackView.spacing = 5
+        stackView.backgroundColor = .systemBackground
         return stackView
     }()
     
@@ -60,28 +68,21 @@ class DetailOverviewView: UIView {
         
         super.init(frame: frame)
         
-        setupView()
-        setupLayout()
+        setupViews()
+        layoutViews()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupView() {
+    private func setupViews() {
         backgroundColor = .systemBackground
-        overviewTextView.isScrollEnabled = false
-        overviewTextView.isUserInteractionEnabled = false
-        overviewTextView.isEditable = false
-        overviewTextView.backgroundColor = .systemBackground
-        overviewTextView.font = UIFont.systemFont(ofSize: 17.0)
-        
-        verticalStackView.backgroundColor = .systemBackground
-        
-        addSubview(verticalStackView)
     }
     
-    private func setupLayout() {
+    private func layoutViews() {
+        addSubview(verticalStackView)
+
         //posterImageView.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: Constants.DetailOverviewPosterImage.size)
         posterImageView.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.DetailOverviewPosterImage.size.width).isActive = true
         posterImageView.widthAnchor.constraint(equalTo: posterImageView.heightAnchor, multiplier: 2/3).isActive = true

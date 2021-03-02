@@ -29,7 +29,7 @@ class LeftAlignedImageCenteredTextButton: ShrinkOnTouchButton {
         leftAlignedImageView.contentMode = .scaleAspectFit
         
         centeredTextLabel.textColor = .white
-        centeredTextLabel.font = UIFont.boldSystemFont(ofSize: 18)
+        centeredTextLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         centeredTextLabel.adjustsFontSizeToFitWidth = true
         centeredTextLabel.textAlignment = .center
         centeredTextLabel.numberOfLines = 2

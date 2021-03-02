@@ -99,8 +99,8 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
         
         let countForStatType = listPresenter.getCountForCategory(index: indexPath.row)
         cell.detailTextLabel?.text = String(countForStatType)
-        cell.detailTextLabel?.font = UIFont.boldSystemFont(ofSize: 20)
-        cell.detailTextLabel?.textColor = Constants.Colors.defaultBlue
+        cell.detailTextLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        cell.detailTextLabel?.textColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue
         
         cell.accessoryType = .disclosureIndicator
         

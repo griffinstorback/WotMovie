@@ -40,9 +40,7 @@ class RecentlyViewedCollectionViewHeader: UICollectionReusableView {
         categoryTableView.register(ListCategoryTableViewCell.self, forCellReuseIdentifier: "ListCategoryTableViewCell")
         
         recentlyViewedTitle.text = "Recently viewed"
-        //recentlyViewedTitle.font = UIFont.preferredFont(forTextStyle: .largeTitle)
         recentlyViewedTitle.font = UIFont.systemFont(ofSize: 28, weight: .bold)
-        //recentlyViewedTitle.font = UIFont.boldSystemFont(ofSize: 24)
         
         layoutViews()
     }

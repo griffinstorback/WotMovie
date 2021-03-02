@@ -36,6 +36,13 @@ class PosterImageView: CardView {
     var state: PosterImageViewState = .hidden
     
     private let imageView: UIImageView
+    override var bounds: CGRect {
+        didSet {
+            // update corner radius when bounds change.
+            layer.cornerRadius = bounds.height * Constants.imageCornerRadiusRatio
+            layer.masksToBounds = true
+        }
+    }
     
     // lazy because they're completely unneeded if the image is never "anonymized" (blurred out)
     private lazy var blurEffectView: UIVisualEffectView = {
@@ -85,6 +92,7 @@ class PosterImageView: CardView {
     
     override init(frame: CGRect) {
         imageView = UIImageView()
+        imageView.backgroundColor = .systemGray
         
         super.init(frame: frame)
         

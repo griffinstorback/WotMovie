@@ -20,11 +20,12 @@ class DetailViewController: UIViewController {
     let scrollView: UIScrollView
     
     let statusBarCoverView: UIView
-    var statusBarCoverBottomConstraint: NSLayoutConstraint!
     var topBannerAdView: UIView
+    var displayingTopBanner: Bool = false
     
     // space from top is needed when a banner ad is visible.
     let spacingFromTop: UIView
+    var spacingFromTopHeightConstraint: NSLayoutConstraint?
     
     let contentStackView: UIStackView
     let posterImageView: PosterImageView // keep reference to poster image, as its different if TitleDetail vs PersonDetail (so we can animate dismissal where the poster image returns to where it was on parent)
@@ -93,36 +94,40 @@ class DetailViewController: UIViewController {
     }
     
     private func addTopBannerAd() {
+        displayingTopBanner = true
+        
         if let banner = Appodeal.banner() {
-            print("*** ADDING BANNER")
+            let bannerHeight = banner.frame.height
+            print("*** ADDING BANNER, SIZE: \(banner.frame)")
             // add the banner view
             topBannerAdView = banner
             statusBarCoverView.addSubview(topBannerAdView)
-            topBannerAdView.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: statusBarCoverView.leadingAnchor, bottom: statusBarCoverView.bottomAnchor, trailing: statusBarCoverView.trailingAnchor, size: CGSize(width: 0, height: 50))
-            
-            // bottom of status bar cover view is constrained to safe area layout guide. we need to disable that to allow for ad to have room.
-            //statusBarCoverBottomConstraint.isActive = false
+            topBannerAdView.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: statusBarCoverView.leadingAnchor, bottom: statusBarCoverView.bottomAnchor, trailing: statusBarCoverView.trailingAnchor, size: CGSize(width: 0, height: bannerHeight))
 
+            // add spacing to top of scrollview content, so that banner doesnt overlay the checkmark/title
             spacingFromTop.isHidden = false
+            spacingFromTopHeightConstraint?.constant = bannerHeight
         } else {
             print("**** NO BANNER returned from Appodeal.banner()")
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+        /*DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             self?.removeTopBannerAd()
-        }
+        }*/
     }
     
     private func removeTopBannerAd() {
+        displayingTopBanner = false
+        
         print("*** REMOVING BANNER")
         
+        // remove the banner, and hide the extra space in scrollview content
         topBannerAdView.removeFromSuperview()
-        statusBarCoverBottomConstraint.isActive = true
         spacingFromTop.isHidden = true
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+        /*DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             self?.addTopBannerAd()
-        }
+        }*/
     }
     
     private func setupViews() {
@@ -174,14 +179,17 @@ class DetailViewController: UIViewController {
         contentStackView.anchor(top: scrollView.topAnchor, leading: scrollView.leadingAnchor, bottom: scrollView.bottomAnchor, trailing: scrollView.trailingAnchor)
         contentStackView.anchorSize(height: nil, width: scrollView.widthAnchor)
         
+        // init spacing from top to 50, but change when ad is displayed if its larger/smaller (e.g. ipad ad height is 70)
         contentStackView.addArrangedSubview(spacingFromTop)
         spacingFromTop.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: CGSize(width: 0, height: 50))
+        spacingFromTopHeightConstraint = spacingFromTop.heightAnchor.constraint(equalToConstant: 70)
+        spacingFromTopHeightConstraint?.isActive = true
         spacingFromTop.isHidden = true
         
         // add the status bar cover view, which will contain the banner ad
         scrollView.addSubview(statusBarCoverView)
         statusBarCoverView.anchor(top: scrollView.topAnchor, leading: scrollView.leadingAnchor, bottom: nil, trailing: scrollView.trailingAnchor)
-        statusBarCoverBottomConstraint = statusBarCoverView.bottomAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.topAnchor)
+        let statusBarCoverBottomConstraint = statusBarCoverView.bottomAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.topAnchor)
         statusBarCoverBottomConstraint.isActive = true
         
         // add close button to top right corner
@@ -279,9 +287,8 @@ extension DetailViewController: UIScrollViewDelegate {
         }
         
         // hide or unhide the opaque view under status bar, depending on if scrolled to top or not.
-        if contentOffset <= 20 {
-            //statusBarCoverView.alpha = max(min(contentOffset/20, 1), 0)
-            statusBarCoverView.alpha = 1
+        if contentOffset <= 20 && !displayingTopBanner {
+            statusBarCoverView.alpha = max(min(contentOffset/20, 1), 0)
         } else {
             statusBarCoverView.alpha = 1
         }

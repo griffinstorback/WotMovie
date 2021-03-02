@@ -84,13 +84,13 @@ extension StatsViewController: UITableViewDelegate, UITableViewDataSource {
         
         let text = statsPresenter.getTextForItemAt(indexPath)
         cell.textLabel?.text = text
-        cell.textLabel?.font = indentLevel == 0 ? UIFont.boldSystemFont(ofSize: 18) : UIFont.systemFont(ofSize: 18)
+        cell.textLabel?.font = indentLevel == 0 ? UIFont.systemFont(ofSize: 18, weight: .bold) : UIFont.systemFont(ofSize: 18)
         
         let countForStatType = statsPresenter.getCountForStatTypeAt(indexPath)
         //cell.accessoryType = .disclosureIndicator
         cell.detailTextLabel?.text = String(countForStatType)
-        cell.detailTextLabel?.font = indentLevel == 0 ? UIFont.boldSystemFont(ofSize: 18) : UIFont.systemFont(ofSize: 18)
-        cell.detailTextLabel?.textColor = Constants.Colors.defaultBlue
+        cell.detailTextLabel?.font = indentLevel == 0 ? UIFont.systemFont(ofSize: 18, weight: .bold) : UIFont.systemFont(ofSize: 18)
+        cell.detailTextLabel?.textColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue
         
         return cell
     }

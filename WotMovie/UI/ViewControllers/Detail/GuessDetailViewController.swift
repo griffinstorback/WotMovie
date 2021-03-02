@@ -101,9 +101,9 @@ class GuessDetailViewController: DetailViewController {
         checkMarkIconImageView.alpha = 0
         
         showHintButton.setTitle("Show hint", for: .normal)
-        showHintButton.backgroundColor = Constants.Colors.defaultBlue
+        showHintButton.backgroundColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue
         showHintButton.titleLabel?.textColor = .white
-        showHintButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        showHintButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         showHintButton.addTarget(self, action: #selector(showHintButtonPressed), for: .touchUpInside)
         
         enterGuessViewController.setDelegate(self)

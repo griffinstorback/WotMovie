@@ -21,7 +21,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.windowScene = windowScene
         
-        window?.tintColor = Constants.Colors.defaultBlue
+        window?.tintColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue
         window?.rootViewController = RootTabViewController()
         
         window?.makeKeyAndVisible()

@@ -186,7 +186,7 @@ extension UIAlertController {
         
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         
-        alertController.view.tintColor = Constants.Colors.defaultBlue
+        alertController.view.tintColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue
         
         return alertController
     }

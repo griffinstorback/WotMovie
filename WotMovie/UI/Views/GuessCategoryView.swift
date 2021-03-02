@@ -65,11 +65,11 @@ class GuessCategoryView: UIView {
         layer.masksToBounds = true
         giveShadow(radius: 10)
         
-        categoryImageView.tintColor = Constants.Colors.defaultBlue
+        categoryImageView.tintColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue
         categoryImageView.contentMode = .scaleAspectFit
         
         categoryLabel.text = category.title
-        categoryLabel.font = UIFont.boldSystemFont(ofSize: 18)
+        categoryLabel.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         categoryLabel.numberOfLines = 2
         
         horizontalStack.axis = .horizontal
@@ -124,9 +124,9 @@ class GuessCategoryView: UIView {
             // if at least one has been guessed, make the number blue instead of black
             let numberTextAttributes: [NSAttributedString.Key : NSObject]
             if numberGuessed > 0 {
-                numberTextAttributes = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 18), NSAttributedString.Key.foregroundColor: Constants.Colors.defaultBlue]
+                numberTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 18, weight: .bold), NSAttributedString.Key.foregroundColor: UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue]
             } else {
-                numberTextAttributes = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 18)]
+                numberTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 18, weight: .bold)]
             }
             let numberText = NSMutableAttributedString(string: "\(numberGuessed)", attributes: numberTextAttributes)
             

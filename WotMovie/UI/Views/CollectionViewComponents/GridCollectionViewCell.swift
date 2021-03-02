@@ -22,11 +22,6 @@ class GridCollectionViewCell: UICollectionViewCell {
         posterImageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
     }
     
-    func setCornerRadius() {
-        posterImageView.layer.cornerRadius = posterImageView.frame.height * Constants.imageCornerRadiusRatio
-        posterImageView.layer.masksToBounds = true
-    }
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -49,7 +44,6 @@ class GridCollectionViewCell: UICollectionViewCell {
             return
         }
         
-        setCornerRadius()
         posterImageView.setImage(image)
     }
     
