@@ -180,28 +180,3 @@ extension GuessGridViewController: LoadMoreGridViewDelegate {
         // nothing
     }
 }
-
-/*extension GuessGridViewController: AppodealBannerDelegate {
-    func bannerDidLoadAdIsPrecache(_ precache: Bool) {
-        print("*** BANNER DID LOAD AD IS PRECACHE")
-    }
-    
-    func bannerDidShow() {
-        print("*** BANNER DID SHOW")
-    }
-    
-    // banner failed to load
-    func bannerDidFailToLoadAd() {
-        print("*** BANNER DID FAIL TO LOAD AD")
-    }
-    
-    // banner was clicked
-    func bannerDidClick() {
-        print("*** BANNER DID CLICK")
-    }
-    
-    // banner did expire and could not be shown
-    func bannerDidExpired() {
-        print("*** BANNER DID EXPIRED")
-    }
-}*/

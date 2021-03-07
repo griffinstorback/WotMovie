@@ -704,62 +704,6 @@ final class CoreDataManager: CoreDataManagerProtocol {
         return personMO
     }
     
-    /*
-    // don't call this directly, call updateOrCreate
-    @discardableResult
-    private func createPerson(person: Person, shouldSetLastViewedDate: Bool = true) -> PersonMO {
-        let personMO = PersonMO(context: coreDataStack.persistentContainer.viewContext)
-        
-        personMO.id = Int64(person.id)
-        personMO.language = Locale.autoupdatingCurrent.identifier
-        personMO.lastUpdated = Date()
-        personMO.name = person.name
-        personMO.posterImageURL = person.posterPath
-        
-        personMO.birthday = person.birthday
-        personMO.deathday = person.deathday
-        personMO.gender = Int16(person.gender ?? 0)
-        personMO.knownForDepartment = person.knownForDepartment
-        
-        // Set this to false if creating a tv show but not opening it. (i.e. when creating a page of tv shows, we don't want
-        // the tv shows to have a lastViewedDate if they haven't been viewed (opened in detail view))
-        if shouldSetLastViewedDate {
-            personMO.lastViewedDate = Date()
-        }
-        
-        // Only set these to true; don't allow it to be set from true to false, that should never have to happen.
-        if person.isHintShown {
-            personMO.isHintShown = person.isHintShown
-        }
-        if person.isRevealed {
-            let personRevealedMO = PersonRevealedMO(context: coreDataStack.persistentContainer.viewContext)
-            personRevealedMO.dateAdded = Date()
-            personMO.revealed = personRevealedMO
-        }
-        if person.correctlyGuessed {
-            let personGuessedMO = PersonGuessedMO(context: coreDataStack.persistentContainer.viewContext)
-            personGuessedMO.dateAdded = Date()
-            personMO.guessed = personGuessedMO
-        }
-        
-        // fetch/create the movies in the persons knownFor array, then attach to personMO
-        for title in person.knownFor {
-            if title.type == .movie {
-                guard let movie = title as? Movie else { continue }
-                let movieMO = updateOrCreateMovie(movie: movie)
-                personMO.addObject(value: movieMO, for: "knownForMovies")
-            } else if title.type == .tvShow {
-                guard let tvShow = title as? TVShow else { continue }
-                let tvShowMO = updateOrCreateTVShow(tvShow: tvShow)
-                personMO.addObject(value: tvShowMO, for: "knownForTVShows")
-            }
-        }
-        
-        coreDataStack.saveContext()
-        return personMO
-    }
-    */
-    
     func fetchPerson(id: Int, context: NSManagedObjectContext? = nil) -> PersonMO? {
         let moc = context ?? coreDataStack.persistentContainer.viewContext
         
@@ -870,22 +814,6 @@ final class CoreDataManager: CoreDataManagerProtocol {
         }
     }
     
-    /*@discardableResult
-    private func createMoviePage(movies: [Movie], pageNumber: Int, genreID: Int) -> [Movie]? {
-        let moc = coreDataStack.persistentContainer.viewContext
-        let pageMO = MoviePageMO(context: moc)
-        pageMO.genreID = Int64(genreID)
-        pageMO.pageNumber = Int64(pageNumber)
-        pageMO.lastUpdated = Date()
-        pageMO.region = Locale.autoupdatingCurrent.regionCode
-        
-        // create movieMO for each of the apiResponses movies, if they don't already exist
-        addMoviesToMoviePageMO(movies: movies, moviePageMO: pageMO)
-        
-        coreDataStack.saveContext()
-        return fetchMoviePage(pageNumber, genreID)
-    }*/
-    
     
     
     
@@ -958,23 +886,6 @@ final class CoreDataManager: CoreDataManagerProtocol {
             tvShowPageMO.addObject(value: tvShowMO, for: "tvShows")
         }
     }
-    
-    /*@discardableResult
-    private func createTVShowPage(tvShows: [TVShow], pageNumber: Int, genreID: Int) -> [TVShow]? {
-        let moc = coreDataStack.persistentContainer.viewContext
-        
-        let pageMO = TVShowPageMO(context: moc)
-        pageMO.genreID = Int64(genreID)
-        pageMO.pageNumber = Int64(pageNumber)
-        pageMO.lastUpdated = Date()
-        pageMO.region = Locale.autoupdatingCurrent.regionCode
-        
-        // create tvShowMO for each of the apiResponses tv shows, if they don't already exist
-        addTVShowsToTVShowPageMO(tvShows: tvShows, tvShowPageMO: pageMO)
-        
-        coreDataStack.saveContext()
-        return fetchTVShowPage(pageNumber, genreID)
-    }*/
     
     
     

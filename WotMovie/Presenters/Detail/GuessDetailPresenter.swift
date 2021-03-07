@@ -65,10 +65,9 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
         self.item = item
         
         //loadCrewTypes()
-        
-        guard item.type == .movie else { return }
-        
-        // LOG THIS ENTITY as OPENED (mainly to update date, aka last seen date) in CORE DATA
+                
+        // LOG THIS ENTITY as OPENED (to update date, aka last seen date)
+        // and CHECK STATE of HINT SHOWN, REVEALED, AND CORRECTLY GUESSED
         let entityFromCoreData = coreDataManager.updateOrCreateEntity(entity: item)
         if entityFromCoreData.isRevealed {
             self.item.isRevealed = true
@@ -76,7 +75,6 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
             self.item.correctlyGuessed = true
         }
         
-        // hint shown is separate, because user may have shown hint before guessing
         if entityFromCoreData.isHintShown {
             self.item.isHintShown = true
         }
