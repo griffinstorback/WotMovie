@@ -59,7 +59,6 @@ class GridViewController: DetailPresenterViewController {
     }
     
     public func revealEntities(at indices: [Int]) {
-        //collectionView.reloadItems(at: indexPaths)
         for index in indices {
             let indexPath = IndexPath(item: index, section: 0)
             
@@ -72,8 +71,10 @@ class GridViewController: DetailPresenterViewController {
     public func revealCorrectlyGuessedEntities(at indices: [Int]) {
         for index in indices {
             let indexPath = IndexPath(item: index, section: 0)
-            let cell = collectionView.cellForItem(at: indexPath) as! GridCollectionViewCell
-            cell.revealAsCorrect(animated: false)
+            
+            if let cell = collectionView.cellForItem(at: indexPath) as? GridCollectionViewCell {
+                cell.revealAsCorrect(animated: false)
+            }
         }
     }
     

@@ -19,6 +19,8 @@ enum GenreCodingKeys: String, CodingKey {
 }
 
 struct MovieGenre: Genre {
+    static let allGenres = MovieGenre(id: -1, name: "All genres")
+    
     let isMovie: Bool = true
     let id: Int
     let name: String
@@ -35,10 +37,22 @@ struct MovieGenre: Genre {
     }
 }
 struct TVShowGenre: Genre {
+    static let allGenres = TVShowGenre(id: -1, name: "All genres")
+    
     let isMovie: Bool = false
     let id: Int
     let name: String
     let correctlyGuessedCount: Int = 0
+    
+    init(genreMO: TVShowGenreMO) {
+        id = Int(genreMO.id)
+        name = genreMO.name ?? ""
+    }
+    
+    init(id: Int, name: String) {
+        self.id = id
+        self.name = name
+    }
 }
 
 extension MovieGenre: Decodable {

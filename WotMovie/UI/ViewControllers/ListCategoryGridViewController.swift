@@ -87,7 +87,7 @@ class ListCategoryGridViewController: UIViewController {
         switch category {
         case .movieOrTvShowWatchlist:
             
-            let entityTypesSelectionButton = UIBarButtonItem(title: listCategoryGridPresenter.getTypesCurrentlyDisplaying().rawValue, style: .plain, target: self, action: #selector(selectEntityTypesToDisplay))
+            let entityTypesSelectionButton = UIBarButtonItem(title: listCategoryGridPresenter.getTypesCurrentlyDisplaying().rawValue, style: .done, target: self, action: #selector(selectEntityTypesToDisplay))
             navigationItem.rightBarButtonItem = entityTypesSelectionButton
         case .personFavorites:
             // Maybe instead of "All genres" in top right, have "All job types" with a drop down
@@ -99,10 +99,10 @@ class ListCategoryGridViewController: UIViewController {
             
             // TODO: only show all genres button if movies or tv shows only are selected,
             //       as genres for people makes no sense? (also could have "all jobs" for person)
-            let entityTypesSelectionButton = UIBarButtonItem(title: listCategoryGridPresenter.getTypesCurrentlyDisplaying().rawValue, style: .plain, target: self, action: #selector(selectEntityTypesToDisplay))
+            let entityTypesSelectionButton = UIBarButtonItem(title: listCategoryGridPresenter.getTypesCurrentlyDisplaying().rawValue, style: .done, target: self, action: #selector(selectEntityTypesToDisplay))
             navigationItem.rightBarButtonItem = entityTypesSelectionButton
         case .allRevealed:
-            let entityTypesSelectionButton = UIBarButtonItem(title: listCategoryGridPresenter.getTypesCurrentlyDisplaying().rawValue, style: .plain, target: self, action: #selector(selectEntityTypesToDisplay))
+            let entityTypesSelectionButton = UIBarButtonItem(title: listCategoryGridPresenter.getTypesCurrentlyDisplaying().rawValue, style: .done, target: self, action: #selector(selectEntityTypesToDisplay))
             navigationItem.rightBarButtonItem = entityTypesSelectionButton
         }
         

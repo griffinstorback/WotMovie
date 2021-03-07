@@ -38,6 +38,32 @@ struct TVShow: Title {
         overview = item.overview
         genreIDs = item.genreIDs
     }
+    
+    init(tvShowMO: TVShowMO) {
+        id = Int(tvShowMO.id)
+        posterPath = tvShowMO.posterImageURL
+        backdrop = nil
+        name = tvShowMO.name ?? ""
+        releaseDate = tvShowMO.releaseDate
+        rating = nil
+        overview = tvShowMO.overview ?? ""
+        
+        if let genres = tvShowMO.genres?.allObjects as? [TVShowGenreMO] {
+            var genreIDs = [Int]()
+            for genre in genres {
+                genreIDs.append(Int(genre.id))
+            }
+            self.genreIDs = genreIDs
+        } else {
+            genreIDs = []
+        }
+        
+        lastViewedDate = tvShowMO.lastViewedDate
+        isHintShown = tvShowMO.isHintShown
+        isRevealed = tvShowMO.revealed != nil || tvShowMO.guessed != nil
+        correctlyGuessed = tvShowMO.guessed != nil
+        isFavorite = tvShowMO.watchlist != nil
+    }
 }
 
 extension TVShow: Decodable {

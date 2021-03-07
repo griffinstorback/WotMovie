@@ -37,7 +37,7 @@ class HorizontalCollectionViewCell: UICollectionViewCell {
         subtitleLabel.numberOfLines = 0
         subtitleLabel.font = UIFont.systemFont(ofSize: 13.0)
         subtitleLabel.textAlignment = .center
-        subtitleLabel.textColor = .gray
+        subtitleLabel.textColor = .secondaryLabel
         
         let emptySpacingView = UIView()
         emptySpacingView.backgroundColor = .clear

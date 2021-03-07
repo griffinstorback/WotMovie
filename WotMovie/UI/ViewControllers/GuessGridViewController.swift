@@ -24,14 +24,12 @@ class GuessGridViewController: DetailPresenterViewController {
     private let guessGridViewPresenter: GuessGridPresenterProtocol
     
     private let gridView: LoadMoreGridViewController
-    //private var bottomBannerAdView: UIView
     
     init(for category: GuessCategory, presenter: GuessGridPresenterProtocol? = nil) {
         // use passed in presenter if provided (used in tests)
         guessGridViewPresenter = presenter ?? GuessGridPresenter(category: category.type)
         
         gridView = LoadMoreGridViewController(shouldDisplayLoadMoreFooter: true)
-        //bottomBannerAdView = UIView()
 
         super.init(nibName: nil, bundle: nil)
         
@@ -41,16 +39,16 @@ class GuessGridViewController: DetailPresenterViewController {
     }
     
     private func setupViews() {
-        //Appodeal.setBannerDelegate(self)
-        //Appodeal.setSmartBannersEnabled(true)
-        
         navigationItem.largeTitleDisplayMode = .never
         
         guessGridViewPresenter.setViewDelegate(self)
         
-        // make button on right side of navigation bar be for genre selection
-        let genreSelectionButton = UIBarButtonItem(title: guessGridViewPresenter.getGenreCurrentlyDisplaying().name, style: .plain, target: self, action: #selector(selectGenresToDisplay))
-        navigationItem.rightBarButtonItem = genreSelectionButton
+        // make button on right side of navigation bar be for genre selection (except for People, obviously)
+        if guessGridViewPresenter.category == .movie || guessGridViewPresenter.category == .tvShow {
+            let genreSelectionButton = UIBarButtonItem(title: guessGridViewPresenter.getGenreCurrentlyDisplaying().name, style: .done, target: self, action: #selector(selectGenresToDisplay))
+            navigationItem.rightBarButtonItem = genreSelectionButton
+        }
+        
         
         gridView.delegate = self
         gridView.transitionPresenter = guessGridViewPresenter
@@ -59,9 +57,6 @@ class GuessGridViewController: DetailPresenterViewController {
     private func layoutViews() {
         addChildViewController(gridView)
         gridView.view.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
-        
-        //view.addSubview(bottomBannerAdView)
-        //bottomBannerAdView.anchor(top: nil, leading: view.leadingAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, trailing: view.trailingAnchor, size: CGSize(width: 0, height: 50))
     }
     
     // right bar item pressed
@@ -103,23 +98,9 @@ class GuessGridViewController: DetailPresenterViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-                
+        
         // load first page of movies/tv shows
         guessGridViewPresenter.loadItems()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        // add the banner view
-        /*if let banner = Appodeal.banner() {
-            
-            bottomBannerAdView = banner
-            view.addSubview(bottomBannerAdView)
-            bottomBannerAdView.anchor(top: nil, leading: view.leadingAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, trailing: view.trailingAnchor, size: CGSize(width: 0, height: 50))
-        } else {
-            print("**** NO BANNER returned from Appodeal.banner()")
-        }*/
     }
 }
 

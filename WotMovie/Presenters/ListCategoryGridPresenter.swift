@@ -257,5 +257,6 @@ extension ListCategoryGridPresenter {
     
     func presentNextQuestion(currentQuestionID: Int) {
         // nothing
+        print("** WARNING: 'nextQuestion' was attempted in listCategoryGridPresenter for \(sortParameters.listCategoryType). The next button was likely pressed - it should not be present in detail presented from here.")
     }
 }

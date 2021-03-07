@@ -20,6 +20,10 @@ protocol PersonDetailPresenterProtocol: GuessDetailPresenterProtocol {
     func getActorInTitle(for index: Int) -> Title?
     func getJobForTitle(for index: Int, section: Int) -> Title?
     func getActorInSubtitle(for index: Int) -> String?
+    
+    func personIsKnownForDirecting() -> Bool
+    func personIsKnownForProducing() -> Bool
+    func personIsKnownForWriting() -> Bool
 }
 
 class PersonDetailPresenter: GuessDetailPresenter, PersonDetailPresenterProtocol {
@@ -37,8 +41,14 @@ class PersonDetailPresenter: GuessDetailPresenter, PersonDetailPresenterProtocol
     private var personCrewToDisplay: [String:[MovieOrTVShow]] = [:]
     private func setPersonCrewToDisplay() {
         if let personCredits = personCredits {
+            
+            // for each project the Person has worked on as a crew member (e.g. writer)
             for projectAsCrew in personCredits.crew {
+                
+                // for each crew type we display (see crewTypeForSection in parent class GuessDetailPresenter)
                 for crewType in crewTypeForSection {
+                    
+                    // if this person worked as this crew type we want, add them to the personCrewToDisplay dict.
                     if projectAsCrew.personsJob == crewType {
                         if personCrewToDisplay[crewType] == nil {
                             personCrewToDisplay[crewType] = [projectAsCrew]
@@ -58,9 +68,9 @@ class PersonDetailPresenter: GuessDetailPresenter, PersonDetailPresenterProtocol
         person = item as? Person
         
         // if item came from a "Cast" or "Crew" section for movie, it will be type CastMember or CrewMember
-        if let item = item as? CastMember {
-            person = Person(castMember: item)
-        }
+        //if let item = item as? CastMember {
+        //    person = Person(castMember: item)
+        //}
         //if let item = item as? CrewMember {
         //    person = Person(crewMember: item)
         //}
@@ -187,5 +197,15 @@ class PersonDetailPresenter: GuessDetailPresenter, PersonDetailPresenterProtocol
     
     func getActorInSubtitle(for index: Int) -> String? {
         return personCredits?.cast[index].character
+    }
+    
+    func personIsKnownForDirecting() -> Bool {
+        return person?.knownForDepartment == "Director"
+    }
+    func personIsKnownForProducing() -> Bool {
+        return person?.knownForDepartment == "Producer"
+    }
+    func personIsKnownForWriting() -> Bool {
+        return person?.knownForDepartment == "Writer"
     }
 }

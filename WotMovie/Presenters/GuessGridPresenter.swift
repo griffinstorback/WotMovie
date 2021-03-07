@@ -187,18 +187,25 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
             loadGenresList()
         }
         
-        return genresList.sorted { $0.name < $1.name } as? [MovieGenre] ?? []
+        // sorted alphabetically, but with all genres at top (otherwise 'action' would be above it)
+        return [MovieGenre.allGenres] + genresList.sorted { $0.name < $1.name } as? [MovieGenre] ?? []
     }
     
     func getTVShowGenresAvailableToDisplay() -> [TVShowGenre] {
-        return []
+        if genresList.isEmpty {
+            loadGenresList()
+        }
+        
+        // sorted alphabetically, but with all genres at top (otherwise 'action' would be above it)
+        return [TVShowGenre.allGenres] + genresList.sorted { $0.name < $1.name } as? [TVShowGenre] ?? []
     }
     
     func setGenreToDisplay(genreID: Int) {
+        // if genre isn't in list, fallback to all genres (shouldn't happen ever)
         if category == .movie {
-            currentlyDisplayingGenre = genresList.first { $0.id == genreID } ?? MovieGenre(id: -1, name: "All genres")
+            currentlyDisplayingGenre = genresList.first { $0.id == genreID } ?? MovieGenre.allGenres
         } else if category == .tvShow {
-            
+            currentlyDisplayingGenre = genresList.first { $0.id == genreID } ?? TVShowGenre.allGenres
         }
     }
     
@@ -281,7 +288,7 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
     
     // returns true if successful
     private func getPageFromNetworkThenCacheInCoreData(page: Int, completion: @escaping (_ success: Bool) -> Void) {
-        print("** Retrieving grid (p. \(page)) items from network..")
+        print("** Retrieving grid of type \(category) (p. \(page)) items from network..")
         if category == .movie {
             networkManager.getListOfMoviesByGenre(id: currentlyDisplayingGenre.id, page: page) { [weak self] movies, error in
                 if let error = error {
@@ -306,50 +313,64 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
                     return
                 }
             }
-            
-            
-            
-            
-        // TODO: UPDATE TV SHOW AND PERSON REQUEST METHODS TO BE LIKE MOVIE.
-
 
         } else if category == .tvShow {
             networkManager.getListOfTVShowsByGenre(id: currentlyDisplayingGenre.id, page: page) { [weak self] tvShows, error in
                 if let error = error {
                     print(error)
-                    
-                    // TODO: Error sometimes is just the page not loading for some reason. Got a 500 error once just for one page.
-                    //       Should re-attempt the next page (just once)
-                    //self?.nextPage += 1
-                    
+                    completion(false)
                     return
                 }
                 if let tvShows = tvShows {
-                    //self?.nextPage += 1
-                    self?.addItems(tvShows)
-                    //self?.items += tvShows
+                    
+                    // update/create page in core data, then retrieve the newly posted page
+                    if let strongSelf = self {
+                        DispatchQueue.main.async {
+                            
+                            let newlyAddedTVShows = strongSelf.coreDataManager.updateOrCreateTVShowPage(tvShows: tvShows, pageNumber: page, genreID: strongSelf.currentlyDisplayingGenre.id)
+                            strongSelf.addItems(newlyAddedTVShows ?? [])
+                            completion(true)
+                            return
+                        }
+                    }
+                    
+                    completion(false)
+                    return
                 }
             }
+            
+            
+            
+            
+            // TODO: UPDATE PERSON REQUEST METHODS TO BE LIKE MOVIE.
+            
+            
+            
         } else if category == .person {
             networkManager.getPopularPeople(page: page) { [weak self] people, error in
                 if let error = error {
                     print(error)
-                    
-                    // TODO: Error sometimes is just the page not loading for some reason. Got a 500 error once just for one page.
-                    //       Should re-attempt the next page (just once)
-                    //self?.nextPage += 1
-                    
+                    completion(false)
                     return
                 }
                 if let people = people {
-                    //self?.nextPage += 1
-                    self?.addItems(people)
-                    //self?.items += people
+                    
+                    // update/create page in core data, then retrieve the newly posted page
+                    if let strongSelf = self {
+                        DispatchQueue.main.async {
+                            
+                            let newlyAddedPeople = strongSelf.coreDataManager.updateOrCreatePersonPage(people: people, pageNumber: page)
+                            strongSelf.addItems(newlyAddedPeople ?? [])
+                            completion(true)
+                            return
+                        }
+                    }
+                    
+                    completion(false)
+                    return
                 }
             }
         }
-        
-        //nextPage += 1
     }
     
     // returns true if got results from core data.
@@ -358,7 +379,7 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
             genresList = coreDataManager.fetchMovieGenres()
             return !genresList.isEmpty
         } else if category == .tvShow {
-            //genresList = coreDataManager.fetchTVShowGenres()
+            genresList = coreDataManager.fetchTVShowGenres()
             return !genresList.isEmpty
         }
         

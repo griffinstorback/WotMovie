@@ -72,6 +72,5 @@ extension MovieOrTVShow: Decodable {
         releaseDate = try container.decodeIfPresent(String.self, forKey: .releaseDate)
         personsJob = try container.decodeIfPresent(String.self, forKey: .personsJob)
         character = try container.decodeIfPresent(String.self, forKey: .character)
-        print("*** Found: (character '\(character)'  -  job '\(personsJob)') for name: '\(name)'")
     }
 }

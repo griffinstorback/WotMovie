@@ -18,6 +18,7 @@ class EntityTableViewCell: UITableViewCell {
     lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
+        imageView.backgroundColor = .systemGray4
         imageView.layer.cornerRadius = EntityTableViewCell.cellHeight * Constants.imageCornerRadiusRatio
         imageView.layer.masksToBounds = true
         return imageView
@@ -50,7 +51,6 @@ class EntityTableViewCell: UITableViewCell {
         
         // TODO replace image with N/A image
         //setImage(image: UIImage(systemName: "x.circle.fill"))
-        profileImageView.backgroundColor = .lightGray
     }
     
     func layoutViews() {

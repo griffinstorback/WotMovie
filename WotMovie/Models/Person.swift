@@ -9,12 +9,17 @@ import Foundation
 
 // MARK: - "Person" is used for full person object (like when guessing people, getting popular people, searching people, etc.)
 
-struct Person: Entity {
-    let id: Int
-    let type: EntityType = .person
-    let name: String
-    let posterPath: String?
+struct Person: BasePerson {
+    var id: Int
+    var type: EntityType = .person
+    var name: String
+    var posterPath: String?
+    var gender: Int?
+    var knownForDepartment: String
+    
     let knownFor: [Title]
+    let birthday: String?
+    let deathday: String?
     
     var lastViewedDate: Date?
     var isHintShown: Bool = false
@@ -22,11 +27,48 @@ struct Person: Entity {
     var correctlyGuessed: Bool = false
     var isFavorite: Bool = false
     
-    init(castMember: CastMember) {
+    // IS THIS EVER USED???
+    /*init(castMember: CastMember) {
         id = castMember.id
         name = castMember.name
         posterPath = castMember.posterPath
         knownFor = []
+        
+        gender = castMember.gender
+        birthday = nil
+        deathday = nil
+        knownForDepartment = castMember.knownForDepartment
+    }*/
+    
+    init(personMO: PersonMO) {
+        id = Int(personMO.id)
+        name = personMO.name ?? ""
+        posterPath = personMO.posterImageURL
+        gender = Int(personMO.gender)
+        knownForDepartment = personMO.knownForDepartment ?? ""
+        birthday = personMO.birthday
+        deathday = personMO.deathday
+        
+        // parse movies and tv shows person is known for, and add to knownFor.
+        var knownForTitles: [Title] = []
+        if let knownForMovies = personMO.knownForMovies?.allObjects as? [MovieMO] {
+            for knownForMovie in knownForMovies {
+                knownForTitles.append(Movie(movieMO: knownForMovie))
+            }
+        }
+        if let knownForTVShows = personMO.knownForTVShows?.allObjects as? [TVShowMO] {
+            for knownForTVShow in knownForTVShows {
+                knownForTitles.append(TVShow(tvShowMO: knownForTVShow))
+            }
+        }
+        knownFor = knownForTitles
+        
+        
+        lastViewedDate = personMO.lastViewedDate
+        isHintShown = personMO.isHintShown
+        isRevealed = personMO.revealed != nil || personMO.guessed != nil
+        correctlyGuessed = personMO.guessed != nil
+        isFavorite = personMO.favorite != nil
     }
 }
 
@@ -35,7 +77,12 @@ extension Person: Decodable {
         case id
         case name
         case posterPath = "profile_path"
+        case gender
+        case knownForDepartment = "known_for_department"
+        
         case knownFor = "known_for"
+        case birthday
+        case deathday
     }
     
     init(from decoder: Decoder) throws {
@@ -44,7 +91,12 @@ extension Person: Decodable {
         id = try container.decode(Int.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)
         posterPath = try container.decodeIfPresent(String.self, forKey: .posterPath)
+        gender = try container.decodeIfPresent(Int.self, forKey: .gender)
+        knownForDepartment = try container.decode(String.self, forKey: .knownForDepartment)
+        
         knownFor = try container.decode([MovieOrTVShow].self, forKey: .knownFor)
+        birthday = try container.decodeIfPresent(String.self, forKey: .birthday)
+        deathday = try container.decodeIfPresent(String.self, forKey: .deathday)
     }
 }
 
@@ -79,8 +131,10 @@ extension PersonApiResponse: Decodable {
 protocol BasePerson: Entity {
     var id: Int { get }
     var type: EntityType { get }
-    var posterPath: String? { get }
     var name: String { get }
+    var posterPath: String? { get }
+    var gender: Int? { get }
+    var knownForDepartment: String { get }
 }
 
 struct CastMember: BasePerson {
@@ -88,6 +142,9 @@ struct CastMember: BasePerson {
     var type: EntityType = .person
     var name: String
     var posterPath: String?
+    var gender: Int?
+    var knownForDepartment: String
+    
     var character: String
     
     // these properties are unused on castmember, as user is never guessing castmembers.
@@ -103,6 +160,9 @@ struct CrewMember: BasePerson {
     var type: EntityType = .person
     var name: String
     var posterPath: String?
+    var gender: Int?
+    var knownForDepartment: String
+    
     var department: String
     var job: String
     
@@ -117,8 +177,11 @@ struct CrewMember: BasePerson {
 extension CastMember: Decodable {
     enum CastMemberCodingKey: String, CodingKey {
         case id
-        case posterPath = "profile_path"
         case name
+        case posterPath = "profile_path"
+        case gender
+        case knownForDepartment = "known_for_department"
+        
         case character
     }
     
@@ -128,6 +191,9 @@ extension CastMember: Decodable {
         id = try container.decode(Int.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)
         posterPath = try container.decode(String?.self, forKey: .posterPath)
+        gender = try container.decodeIfPresent(Int.self, forKey: .gender)
+        knownForDepartment = try container.decode(String.self, forKey: .knownForDepartment)
+        
         character = try container.decode(String.self, forKey: .character)
     }
 }
@@ -135,8 +201,11 @@ extension CastMember: Decodable {
 extension CrewMember: Decodable {
     enum CrewMemberCodingKey: String, CodingKey {
         case id
-        case posterPath = "profile_path"
         case name
+        case posterPath = "profile_path"
+        case gender
+        case knownForDepartment = "known_for_department"
+        
         case department
         case job
     }
@@ -147,6 +216,9 @@ extension CrewMember: Decodable {
         id = try container.decode(Int.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)
         posterPath = try container.decode(String?.self, forKey: .posterPath)
+        gender = try container.decodeIfPresent(Int.self, forKey: .gender)
+        knownForDepartment = try container.decode(String.self, forKey: .knownForDepartment)
+        
         department = try container.decode(String.self, forKey: .department)
         job = try container.decode(String.self, forKey: .job)
     }

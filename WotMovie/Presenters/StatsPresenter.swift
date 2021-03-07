@@ -41,20 +41,20 @@ class StatsPresenter: StatsPresenterProtocol {
         // Load each entity types stats
         if let movieStatsIndex = sections.firstIndex(where: { $0.type == .movie }) {
             sections[movieStatsIndex].totalGuessed = coreDataManager.getNumberGuessedFor(category: .movie)
-            //sections[movieStatsIndex].guessedWithoutHint = coreDataManager.getNumberGuessedWithoutHintFor(category: .movie)
-            //sections[movieStatsIndex].guessedWithHint = coreDataManager.getNumberGuessedWithHintFor(category: .movie)
+            sections[movieStatsIndex].guessedWithoutHint = coreDataManager.getNumberGuessedFor(category: .movie, withHint: false)
+            sections[movieStatsIndex].guessedWithHint = coreDataManager.getNumberGuessedFor(category: .movie, withHint: true)
             sections[movieStatsIndex].totalRevealed = coreDataManager.getNumberRevealedFor(category: .movie)
         }
         if let tvShowStatsIndex = sections.firstIndex(where: { $0.type == .tvShow }) {
             sections[tvShowStatsIndex].totalGuessed = coreDataManager.getNumberGuessedFor(category: .tvShow)
-            //sections[tvShowStatsIndex].guessedWithoutHint = coreDataManager.getNumberGuessedWithoutHintFor(category: .tvShow)
-            //sections[tvShowStatsIndex].guessedWithHint = coreDataManager.getNumberGuessedWithHintFor(category: .tvShow)
+            sections[tvShowStatsIndex].guessedWithoutHint = coreDataManager.getNumberGuessedFor(category: .tvShow, withHint: false)
+            sections[tvShowStatsIndex].guessedWithHint = coreDataManager.getNumberGuessedFor(category: .tvShow, withHint: true)
             sections[tvShowStatsIndex].totalRevealed = coreDataManager.getNumberRevealedFor(category: .tvShow)
         }
         if let personStatsIndex = sections.firstIndex(where: { $0.type == .person }) {
             sections[personStatsIndex].totalGuessed = coreDataManager.getNumberGuessedFor(category: .person)
-            //sections[personStatsIndex].guessedWithoutHint = coreDataManager.getNumberGuessedWithoutHintFor(category: .person)
-            //sections[personStatsIndex].guessedWithHint = coreDataManager.getNumberGuessedWithHintFor(category: .person)
+            sections[personStatsIndex].guessedWithoutHint = coreDataManager.getNumberGuessedFor(category: .person, withHint: false)
+            sections[personStatsIndex].guessedWithHint = coreDataManager.getNumberGuessedFor(category: .person, withHint: true)
             sections[personStatsIndex].totalRevealed = coreDataManager.getNumberRevealedFor(category: .person)
         }
         

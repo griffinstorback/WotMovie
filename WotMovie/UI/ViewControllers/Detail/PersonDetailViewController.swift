@@ -130,6 +130,32 @@ class PersonDetailViewController: GuessDetailViewController {
     
     private func addInfo() {
         addChildToStackView(knownForCollectionView)
+        
+        // first section after 'knownFor' should be the department the Person is known for (knownForDepartment)
+        if personDetailViewPresenter.personIsKnownForDirecting() {
+            addChildToStackView(directedCollectionView)
+            addChildToStackView(wroteCollectionView)
+            addChildToStackView(actorInCollectionView)
+            addChildToStackView(producedCollectionView)
+            print("***** PERSON IS KNOWN FOR DIRECTING")
+            return
+        } else if personDetailViewPresenter.personIsKnownForProducing() {
+            addChildToStackView(producedCollectionView)
+            addChildToStackView(directedCollectionView)
+            addChildToStackView(wroteCollectionView)
+            addChildToStackView(actorInCollectionView)
+            print("***** PERSON IS KNOWN FOR PRODUCING")
+            return
+        } else if personDetailViewPresenter.personIsKnownForWriting() {
+            addChildToStackView(wroteCollectionView)
+            addChildToStackView(directedCollectionView)
+            addChildToStackView(actorInCollectionView)
+            addChildToStackView(producedCollectionView)
+            print("***** PERSON IS KNOWN FOR WRITING")
+            return
+        }
+        
+        // if person is known for acting, OR if the knownForDepartment is null or there is some other error, show acting credits first.
         addChildToStackView(actorInCollectionView)
         addChildToStackView(directedCollectionView)
         addChildToStackView(producedCollectionView)
