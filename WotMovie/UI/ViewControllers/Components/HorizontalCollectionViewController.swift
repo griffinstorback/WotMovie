@@ -115,6 +115,7 @@ class HorizontalCollectionViewController: DetailPresenterViewController {
     
     public func reloadData() {
         collectionView.reloadData()
+        view.layoutIfNeeded()
     }
 }
 

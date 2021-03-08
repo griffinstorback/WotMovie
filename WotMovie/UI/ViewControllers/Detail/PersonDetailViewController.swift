@@ -160,6 +160,13 @@ class PersonDetailViewController: GuessDetailViewController {
         addChildToStackView(directedCollectionView)
         addChildToStackView(producedCollectionView)
         addChildToStackView(wroteCollectionView)
+        
+        // refresh and reload all the collection views. This fixes bug where collection view cells are sometimes wrong size/no label after being added
+        knownForCollectionView.reloadData()
+        actorInCollectionView.reloadData()
+        directedCollectionView.reloadData()
+        producedCollectionView.reloadData()
+        wroteCollectionView.reloadData()
     }
 }
 

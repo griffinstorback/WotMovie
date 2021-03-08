@@ -94,6 +94,10 @@ class PosterImageView: CardView {
         imageView = UIImageView()
         imageView.backgroundColor = .systemGray4
         
+        // should it have border? if so, need to add cornerRadius code here. also, it looks kinda cool with no border
+        //imageView.layer.borderWidth = 1
+        //imageView.layer.borderColor = UIColor.systemGray4.cgColor
+        
         super.init(frame: frame)
         
         backgroundColor = .systemBackground

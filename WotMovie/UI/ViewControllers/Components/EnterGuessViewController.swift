@@ -9,6 +9,7 @@ import UIKit
 
 protocol EnterGuessViewDelegate: NSObjectProtocol {
     func reloadResults()
+    func reloadGuesses()
 }
 
 class EnterGuessViewController: UIViewController {
@@ -139,6 +140,7 @@ extension EnterGuessViewController: UITableViewDelegate, UITableViewDataSource {
         
         // removes lines between cells when tableview empty
         resultsTableView.tableFooterView = UIView()
+        resultsTableView.tableHeaderView = UIView()
         
         resultsTableView.register(EntityTableViewCell.self, forCellReuseIdentifier: "ResultsCell")
     }
@@ -154,7 +156,7 @@ extension EnterGuessViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ResultsCell") as! EntityTableViewCell
         
-        let item = enterGuessPresenter.searchResult(for: indexPath.row)
+        guard let item = enterGuessPresenter.searchResult(for: indexPath.row) else { return cell }
         
         cell.setName(text: item.name)
         cell.setImagePath(imagePath: item.posterPath ?? "")
@@ -232,9 +234,6 @@ extension EnterGuessViewController: EnterGuessControlsDelegate {
         enterGuessControlsView.setShowsEnterGuessFieldCancelButton(true, animated: true)
         enterGuessControlsView.setShowsRevealButton(false, animated: true)
         delegate?.showResults(animated: true)
-        
-        // show banner at top
-        //Appodeal.showAd(.bannerTop, forPlacement: "", rootViewController: self)
     }
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
@@ -245,9 +244,6 @@ extension EnterGuessViewController: EnterGuessControlsDelegate {
         enterGuessControlsView.setShowsEnterGuessFieldCancelButton(false, animated: true)
         enterGuessControlsView.setShowsRevealButton(true, animated: false) // for some reason, trying to animate this makes it not animate...
         delegate?.hideResults(animated: true)
-        
-        // hide banner at top
-        //Appodeal.hideBanner()
     }
     
     @objc func performSearch(_ searchBar: UISearchBar) {
@@ -266,7 +262,12 @@ extension EnterGuessViewController: EnterGuessViewDelegate {
         resultsTableView.reloadData()
         enterGuessControlsView.setWatchlistButtonText(text: enterGuessPresenter.getWatchlistButtonText())
         enterGuessControlsView.setWatchlistButtonImage(imageName: enterGuessPresenter.getWatchlistImageName())
-        //scrollToBottom()
+        scrollToBottom()
+    }
+    
+    // only reload the tableview. don't scroll to the bottom.
+    func reloadGuesses() {
+        resultsTableView.reloadData()
     }
     
     // not used anymore?

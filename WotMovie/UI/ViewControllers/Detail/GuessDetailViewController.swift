@@ -135,7 +135,7 @@ class GuessDetailViewController: DetailViewController {
     
     private func addEnterGuessView() {
         view.addSubview(enterGuessContainerView)
-        enterGuessContainerViewTopConstraint = enterGuessContainerView.topAnchor.constraint(equalTo: view.topAnchor)
+        enterGuessContainerViewTopConstraint = enterGuessContainerView.topAnchor.constraint(equalTo: statusBarCoverView.bottomAnchor)
         enterGuessContainerView.anchor(top: nil, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
         addChild(enterGuessViewController)
         enterGuessContainerView.addSubview(enterGuessViewController.view)
@@ -227,7 +227,6 @@ extension GuessDetailViewController: EnterGuessProtocol {
     
     func nextQuestion() {
         self.dismiss(animated: true) {
-            print("*** DISMISSED")
             self.transitionPresenter?.presentNextQuestion(currentQuestionID: self.guessDetailViewPresenter.getID())
         }
     }

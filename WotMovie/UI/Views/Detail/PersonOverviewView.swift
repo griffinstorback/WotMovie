@@ -73,8 +73,12 @@ class PersonOverviewView: UIView {
     
     private func layoutViews() {
         addSubview(verticalStackView)
-        //posterImageView.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: Constants.PersonOverviewPosterImage.size)
-        posterImageView.heightAnchor.constraint(lessThanOrEqualToConstant: Constants.PersonOverviewPosterImage.size.height).isActive = true
+        
+        // cant use this, or image aspect ratio will change and look wonky while being presented
+        posterImageView.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: Constants.PersonOverviewPosterImage.size)
+        
+        //posterImageView.heightAnchor.constraint(lessThanOrEqualToConstant: Constants.PersonOverviewPosterImage.size.height).isActive = true
+        //posterImageView.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.DetailOverviewPosterImage.size.width).isActive = true
         posterImageView.widthAnchor.constraint(equalTo: posterImageView.heightAnchor, multiplier: 2/3).isActive = true
         verticalStackView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor, padding: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10))
     }
@@ -85,6 +89,10 @@ class PersonOverviewView: UIView {
     
     // don't really need to do check with imagePath for this view, as it isn't being reused
     public func setPosterImage(_ image: UIImage?, _ imagePath: String?) {
+        guard let image = image else {
+            posterImageView.setImage(UIImage())
+            return
+        }
         posterImageView.setImage(image)
     }
     

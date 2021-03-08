@@ -105,6 +105,9 @@ class TitleDetailViewController: GuessDetailViewController {
     private func addInfo() {
         addChildToStackView(castCollectionView)
         addChildToStackView(crewTableView)
+        
+        // reload cast collection view (fixes bug where cells sometimes wrong size, or missing labels after being added)
+        castCollectionView.reloadData()
     }
 }
 

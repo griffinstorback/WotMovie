@@ -24,7 +24,7 @@ class HorizontalCollectionViewCell: UICollectionViewCell {
                 
         imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.backgroundColor = .lightGray
+        imageView.backgroundColor = .systemGray4
         imageView.layer.cornerRadius = HorizontalCollectionViewCell.cellHeight * Constants.imageCornerRadiusRatio
         imageView.layer.masksToBounds = true
         

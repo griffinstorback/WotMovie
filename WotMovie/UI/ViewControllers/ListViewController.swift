@@ -41,6 +41,8 @@ class ListViewController: UIViewController {
     }
     
     private func setupViews() {
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        
         listPresenter.setViewDelegate(self)
         
         statusBarCoverView.giveBlurredBackground(style: .systemMaterial)

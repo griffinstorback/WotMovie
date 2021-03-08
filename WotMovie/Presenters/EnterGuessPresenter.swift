@@ -12,7 +12,7 @@ protocol EnterGuessPresenterProtocol {
     var searchResultsCount: Int { get }
     func setViewDelegate(_ delegat: EnterGuessViewDelegate)
     func loadImage(for index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
-    func searchResult(for index: Int) -> Entity
+    func searchResult(for index: Int) -> Entity?
     func search(searchText: String)
     func isCorrect(index: Int) -> Bool
     func itemHasBeenGuessed(id: Int) -> Bool
@@ -44,7 +44,7 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
     private var guesses: Set<Int> = [] {
         didSet {
             DispatchQueue.main.async {
-                self.enterGuessViewDelegate?.reloadResults()
+                self.enterGuessViewDelegate?.reloadGuesses()
             }
         }
     }
@@ -64,7 +64,7 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
     }
     
     func loadImage(for index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
-        let item = searchResult(for: index)
+        guard let item = searchResult(for: index) else { return }
         
         if let posterPath = item.posterPath {
             imageDownloadManager.downloadImage(path: posterPath) { image, error in
@@ -83,7 +83,9 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
         }
     }
     
-    func searchResult(for index: Int) -> Entity {
+    func searchResult(for index: Int) -> Entity? {
+        guard index < searchResultsCount else { return nil }
+        
         return searchResults[index]
     }
     
@@ -102,7 +104,7 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
                 }
                 
                 if let movies = movies {
-                    self?.searchResults = movies//.reversed()
+                    self?.searchResults = movies.reversed()
                 }
             }
         case .tvShow:
@@ -113,7 +115,7 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
                 }
                 
                 if let tvShows = tvShows {
-                    self?.searchResults = tvShows//.reversed()
+                    self?.searchResults = tvShows.reversed()
                 }
             }
         case .person:
@@ -124,7 +126,7 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
                 }
                 
                 if let people = people {
-                    self?.searchResults = people//.reversed()
+                    self?.searchResults = people.reversed()
                 }
             }
         }

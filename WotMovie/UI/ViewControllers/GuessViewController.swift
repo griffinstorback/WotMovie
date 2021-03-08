@@ -53,6 +53,7 @@ class GuessViewController: UIViewController {
         
         // navigation view controller
         navigationItem.title = "WotMovie"
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         
         scrollView.isUserInteractionEnabled = true
         scrollView.delaysContentTouches = false
