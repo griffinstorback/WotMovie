@@ -26,7 +26,7 @@ class SortGridViewController: UIViewController {
     init(sortParameters: SortParameters, presenter: SortGridPresenterProtocol? = nil) {
         sortGridPresenter = presenter ?? SortGridPresenter(sortParameters: sortParameters)
         
-        tableView = UITableView(frame: .zero, style: .grouped)
+        tableView = UITableView(frame: .zero, style: .insetGrouped)
         
         super.init(nibName: nil, bundle: nil)
         

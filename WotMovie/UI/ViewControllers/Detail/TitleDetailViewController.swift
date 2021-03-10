@@ -156,12 +156,13 @@ extension TitleDetailViewController: EntityTableViewDelegate {
 
 extension TitleDetailViewController: GuessDetailViewDelegate {
     func displayError() {
-        print("error loading detail view")
+        print("** error loading detail view")
     }
     
     func reloadData() {
         castCollectionView.reloadData()
         crewTableView.reloadData()
+        updateItemOnEnterGuessView() // this is defined in parent class GuessDetailVC
         
         // don't set state if it was presented having already been guessed or revealed
         if state == .revealedWithNoNextButton || state == .correctWithNoNextButton {

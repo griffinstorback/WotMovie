@@ -14,6 +14,7 @@ import UIKit
 
 protocol GuessDetailPresenterProtocol {
     var item: Entity { get set }
+    func reloadItemFromCoreData()
     
     func setViewDelegate(detailViewDelegate: GuessDetailViewDelegate?)
     func loadPosterImage(completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
@@ -36,11 +37,14 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
     let coreDataManager: CoreDataManager
     weak var detailViewDelegate: GuessDetailViewDelegate?
     
-    var item: Entity {
-        didSet {
-            DispatchQueue.main.async {
-                self.detailViewDelegate?.reloadData()
-            }
+    var item: Entity
+    
+    // call this function if you want to reload view after item is set.
+    func setItem(item: Entity) {
+        self.item = item
+        
+        DispatchQueue.main.async {
+            self.detailViewDelegate?.reloadData()
         }
     }
     
@@ -65,21 +69,18 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
         self.item = item
         
         //loadCrewTypes()
-                
-        // LOG THIS ENTITY as OPENED (to update date, aka last seen date)
-        // and CHECK STATE of HINT SHOWN, REVEALED, AND CORRECTLY GUESSED
-        let entityFromCoreData = coreDataManager.updateOrCreateEntity(entity: item)
-        if entityFromCoreData.isRevealed {
-            self.item.isRevealed = true
-        } else if entityFromCoreData.correctlyGuessed {
-            self.item.correctlyGuessed = true
-        }
-        
-        if entityFromCoreData.isHintShown {
-            self.item.isHintShown = true
-        }
+        reloadItemFromCoreData()
         
         // TODO (maybe not right here though): Check if Core data entity language matches user's current language - if not, retrieve from network and update movie.
+    }
+    
+    func reloadItemFromCoreData() {
+        guard let entityFromCoreData = coreDataManager.updateOrCreateEntity(entity: item) else { return }
+        self.item = entityFromCoreData
+        
+        DispatchQueue.main.async {
+            self.detailViewDelegate?.updateItemOnEnterGuessView()
+        }
     }
     
     func setViewDelegate(detailViewDelegate: GuessDetailViewDelegate?) {

@@ -78,28 +78,36 @@ class GridViewController: DetailPresenterViewController {
         }
     }
     
-    func presentGuessDetail(for item: Entity, fromCard: UIView) {
+    func presentGuessDetail(for item: Entity, fromCard: UIView, presentingFromGuessGrid: Bool) {
         let guessDetailViewController: GuessDetailViewController
         
-        switch item.type {
-        case .movie, .tvShow:
-            if item.correctlyGuessed {
-                guessDetailViewController = TitleDetailViewController(item: item, state: .correct)
-            } else if item.isRevealed {
-                guessDetailViewController = TitleDetailViewController(item: item, state: .revealed)
-            } else {
-                guessDetailViewController = TitleDetailViewController(item: item, state: .fullyHidden)
+        if !presentingFromGuessGrid {
+            switch item.type {
+            case .movie, .tvShow:
+                guessDetailViewController = TitleDetailViewController(item: item, state: .revealedWithNoNextButton)
+            case .person:
+                guessDetailViewController = PersonDetailViewController(item: item, state: .revealedWithNoNextButton)
             }
-            
-        case .person:
-            if item.correctlyGuessed {
-                guessDetailViewController = PersonDetailViewController(item: item, state: .correct)
-            } else if item.isRevealed {
-                guessDetailViewController = PersonDetailViewController(item: item, state: .revealed)
-            } else {
-                guessDetailViewController = PersonDetailViewController(item: item, state: .fullyHidden)
+        } else {
+            switch item.type {
+            case .movie, .tvShow:
+                if item.correctlyGuessed {
+                    guessDetailViewController = TitleDetailViewController(item: item, state: .correct)
+                } else if item.isRevealed {
+                    guessDetailViewController = TitleDetailViewController(item: item, state: .revealed)
+                } else {
+                    guessDetailViewController = TitleDetailViewController(item: item, state: .fullyHidden)
+                }
+                
+            case .person:
+                if item.correctlyGuessed {
+                    guessDetailViewController = PersonDetailViewController(item: item, state: .correct)
+                } else if item.isRevealed {
+                    guessDetailViewController = PersonDetailViewController(item: item, state: .revealed)
+                } else {
+                    guessDetailViewController = PersonDetailViewController(item: item, state: .fullyHidden)
+                }
             }
-            //guessDetailViewController = PersonDetailViewController(item: item, startHidden: !item.isRevealed && !item.correctlyGuessed, fromGuessGrid: true)
         }
         
         guessDetailViewController.modalPresentationStyle = .fullScreen

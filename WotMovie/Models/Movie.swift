@@ -25,11 +25,7 @@ struct Movie: Title {
     var correctlyGuessed: Bool = false
     var isFavorite: Bool = false
     
-    init?(movieOrTVShow item: MovieOrTVShow) {
-        guard item.type == .movie else {
-            return nil
-        }
-        
+    init(movieOrTVShow item: MovieOrTVShow) {
         id = item.id
         posterPath = item.posterPath
         backdrop = nil

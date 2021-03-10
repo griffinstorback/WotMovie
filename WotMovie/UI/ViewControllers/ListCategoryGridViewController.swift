@@ -160,6 +160,13 @@ extension ListCategoryGridViewController: LoadMoreGridViewDelegate {
         // nothing
     }
     
+    func isPresentingFromGuessGrid() -> Bool {
+        // Since this is not a GuessGrid, all items should appear revealed
+        //  (otherwise, you could e.g. see an actor in a movie you're viewing, open the actor in Person detail and add them to favorites,
+        //  even though you haven't guessed on this actor yet; and it would show up in favorites as hidden - this makes no sense).
+        return false
+    }
+    
     func didPresentEntityDetail() {
         // nothing
     }

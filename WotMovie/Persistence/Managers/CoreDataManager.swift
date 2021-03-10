@@ -88,7 +88,33 @@ final class CoreDataManager: CoreDataManagerProtocol {
     // Either: Creates this movie/tv show/person, or
     // Updates the existing info from api, as well as meta info regarding if its been guessed correctly, revealed, hint shown, etc.
     @discardableResult
-    func updateOrCreateEntity(entity: Entity) -> Entity {
+    func updateOrCreateEntity(entity: Entity) -> Entity? {
+        
+        // if the requested entity is MovieOrTVShow type, it needs to be converted either to a TV Show or a Movie.
+        if let movieOrTVShow = entity as? MovieOrTVShow {
+            switch movieOrTVShow.type {
+            case .movie:
+                let movie = Movie(movieOrTVShow: movieOrTVShow)
+                return Movie(movieMO: updateOrCreateMovie(movie: movie))
+            case .tvShow:
+                let tvShow = TVShow(movieOrTVShow: movieOrTVShow)
+                return TVShow(tvShowMO: updateOrCreateTVShow(tvShow: tvShow))
+            case .person:
+                print("** WARNING: updateOrCreateEntity called on type MovieOrTVShow, but it's type was set to .person - this should NEVER happen.")
+                return nil
+            }
+        }
+
+        // if the requested entity is CastMember or CrewMember type, it needs to be converted to Person.
+        if let castMember = entity as? CastMember {
+            let person = Person(castMember: castMember)
+            return Person(personMO: updateOrCreatePerson(person: person))
+        }
+        if let crewMember = entity as? CrewMember {
+            let person = Person(crewMember: crewMember)
+            return Person(personMO: updateOrCreatePerson(person: person))
+        }
+        
         switch entity.type {
         case .movie:
             if let movie = entity as? Movie {
@@ -104,8 +130,9 @@ final class CoreDataManager: CoreDataManagerProtocol {
             }
         }
         
+        return nil
         // TODO : DELETE THIS after implementing updateOrCreate person?
-        return Movie(movieOrTVShow: MovieOrTVShow(id: -1, type: .movie, name: "ERROR", posterPath: nil, overview: "THIS SHOULD NOT BE SEEN EVER!", releaseDate: "NEVER!", genreIDs: [], personsJob: nil, character: nil))!
+        //return Movie(movieOrTVShow: MovieOrTVShow(id: -1, type: .movie, name: "ERROR", posterPath: nil, overview: "THIS SHOULD NOT BE SEEN EVER!", releaseDate: "NEVER!", genreIDs: [], personsJob: nil, character: nil))!
     }
     
     // returns empty list if page doesnt exist. returns nil if there was an error
@@ -550,56 +577,6 @@ final class CoreDataManager: CoreDataManagerProtocol {
         return tvShowMO
     }
     
-    /*
-    @discardableResult
-    private func createTVShow(tvShow: TVShow, shouldSetLastViewedDate: Bool = true) -> TVShowMO {
-        let tvShowMO = TVShowMO(context: coreDataStack.persistentContainer.viewContext)
-        
-        tvShowMO.id = Int64(tvShow.id)
-        tvShowMO.language = Locale.autoupdatingCurrent.identifier
-        tvShowMO.lastUpdated = Date()
-        tvShowMO.name = tvShow.name
-        tvShowMO.overview = tvShow.overview
-        tvShowMO.posterImageURL = tvShow.posterPath
-        tvShowMO.releaseDate = tvShow.releaseDate
-        
-        // Set this to false if creating a tv show but not opening it. (i.e. when creating a page of tv show, we don't want
-        // the tv shows to have a lastViewedDate if they haven't been viewed (opened in detail view))
-        if shouldSetLastViewedDate {
-            tvShowMO.lastViewedDate = Date()
-        }
-        
-        // Only set these to true; don't allow it to be set from true to false, that should never have to happen.
-        if tvShow.isHintShown {
-            tvShowMO.isHintShown = tvShow.isHintShown
-        }
-        if tvShow.isRevealed {
-            let tvShowRevealedMO = TVShowRevealedMO(context: coreDataStack.persistentContainer.viewContext)
-            tvShowRevealedMO.dateAdded = Date()
-            tvShowMO.revealed = tvShowRevealedMO
-        }
-        if tvShow.correctlyGuessed {
-            let tvShowGuessedMO = TVShowGuessedMO(context: coreDataStack.persistentContainer.viewContext)
-            tvShowGuessedMO.dateAdded = Date()
-            tvShowMO.guessed = tvShowGuessedMO
-        }
-        
-        // attach genre mo objects, either by fetching or by creating them.
-        for genreID in tvShow.genreIDs {
-            if let genreMO = fetchTVShowGenre(id: genreID) {
-                genreMO.addObject(value: tvShowMO, for: "tvShows")
-            } else {
-                let genreMO = TVShowGenreMO(context: coreDataStack.persistentContainer.viewContext)
-                genreMO.id = Int64(genreID)
-                genreMO.addObject(value: tvShowMO, for: "tvShows")
-            }
-        }
-        
-        coreDataStack.saveContext()
-        return tvShowMO
-    }
-     */
-    
     func fetchTVShow(id: Int, context: NSManagedObjectContext? = nil) -> TVShowMO? {
         let moc = context ?? coreDataStack.persistentContainer.viewContext
         
@@ -647,8 +624,8 @@ final class CoreDataManager: CoreDataManagerProtocol {
         personMO.name = person.name
         personMO.posterImageURL = person.posterPath
         
-        personMO.birthday = person.birthday
-        personMO.deathday = person.deathday
+        if let birthday = person.birthday { personMO.birthday = birthday }
+        if let deathday = person.deathday { personMO.deathday = deathday }
         personMO.gender = Int16(person.gender ?? 0)
         personMO.knownForDepartment = person.knownForDepartment
         
@@ -675,27 +652,31 @@ final class CoreDataManager: CoreDataManagerProtocol {
             personMO.revealed = personRevealedMO
         }
         
-        // fetch/create the movies in the persons knownFor array, then attach to personMO
-        for title in person.knownFor {
-            if title.type == .movie {
-                guard let movieOrTVShow = title as? MovieOrTVShow else { continue }
-                guard let movie = Movie(movieOrTVShow: movieOrTVShow) else { continue }
-                let movieMO = updateOrCreateMovie(movie: movie)
-                
-                // only add movie if it doesnt already exist on personMOs knownForMovies
-                if !(personMO.knownForMovies?.contains(movieMO) ?? false) {
-                    print("** UPDATE PERSON - ADDING MOVIE TO KNOWN FOR MOVIES: \(movieMO)")
-                    personMO.addObject(value: movieMO, for: "knownForMovies")
-                }
-            } else if title.type == .tvShow {
-                guard let movieOrTVShow = title as? MovieOrTVShow else { continue }
-                guard let tvShow = TVShow(movieOrTVShow: movieOrTVShow) else { continue }
-                let tvShowMO = updateOrCreateTVShow(tvShow: tvShow)
-                
-                // only add tv show if it doesnt already exist on personMOs knownForTVShows
-                if !(personMO.knownForTVShows?.contains(tvShowMO) ?? false) {
-                    print("** UPDATE PERSON - ADDING TV SHOW TO KNOWN FOR TVSHOWS: \(tvShowMO)")
-                    personMO.addObject(value: tvShowMO, for: "knownForTVShows")
+        // only update if not empty
+        if person.knownFor.count > 0 {
+            
+            // fetch/create the movies in the persons knownFor array, then attach to personMO
+            for title in person.knownFor {
+                if title.type == .movie {
+                    guard let movieOrTVShow = title as? MovieOrTVShow else { continue }
+                    let movie = Movie(movieOrTVShow: movieOrTVShow)
+                    let movieMO = updateOrCreateMovie(movie: movie)
+                    
+                    // only add movie if it doesnt already exist on personMOs knownForMovies
+                    if !(personMO.knownForMovies?.contains(movieMO) ?? false) {
+                        print("** UPDATE PERSON - ADDING MOVIE TO KNOWN FOR MOVIES: \(movieMO)")
+                        personMO.addObject(value: movieMO, for: "knownForMovies")
+                    }
+                } else if title.type == .tvShow {
+                    guard let movieOrTVShow = title as? MovieOrTVShow else { continue }
+                    let tvShow = TVShow(movieOrTVShow: movieOrTVShow)
+                    let tvShowMO = updateOrCreateTVShow(tvShow: tvShow)
+                    
+                    // only add tv show if it doesnt already exist on personMOs knownForTVShows
+                    if !(personMO.knownForTVShows?.contains(tvShowMO) ?? false) {
+                        print("** UPDATE PERSON - ADDING TV SHOW TO KNOWN FOR TVSHOWS: \(tvShowMO)")
+                        personMO.addObject(value: tvShowMO, for: "knownForTVShows")
+                    }
                 }
             }
         }

@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import Appodeal
 
 enum GuessDetailViewState {
     case fullyHidden
@@ -23,13 +22,13 @@ protocol EnterGuessProtocol: NSObjectProtocol {
     func revealAnswer()
     func revealAsCorrect()
     func nextQuestion()
-    func addEntityToFavorites()
-    func removeEntityFromFavorites()
 }
 
+// this protocol is implemented by subclasses of GuessDetailVC (TitleDetailVC and PersonDetailVC)
 protocol GuessDetailViewDelegate: NSObjectProtocol {
     func displayError()
     func reloadData()
+    func updateItemOnEnterGuessView()
 }
 
 class GuessDetailViewController: DetailViewController {
@@ -83,11 +82,12 @@ class GuessDetailViewController: DetailViewController {
         layoutViews()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
-        //print("**** SHOWING INTERSTITIAL: ", Appodeal.showAd(.interstitial, forPlacement: "", rootViewController: self))
-        //print("**** SHOWING BANNER: ", Appodeal.showAd(.bannerTop, forPlacement: "", rootViewController: self))
+        // Reload item from core data - so that if item was added to watchlist or favorites in different modal, and that was dismissed to this one,
+        // changes will be reflected.
+        guessDetailViewPresenter.reloadItemFromCoreData()
     }
     
     @objc func showHintButtonPressed() {
@@ -185,6 +185,12 @@ class GuessDetailViewController: DetailViewController {
             checkMarkIconImageView.isHidden = true
         }
     }
+    
+    // Call this when reloading from title/person detail presenter.
+    // This satisfies conformance to GuessDetailViewDelegate, so subclasses (title, person detail vc) need not implement.
+    func updateItemOnEnterGuessView() {
+        enterGuessViewController.updateItem(item: guessDetailViewPresenter.item)
+    }
 }
 
 extension GuessDetailViewController: EnterGuessProtocol {
@@ -229,40 +235,5 @@ extension GuessDetailViewController: EnterGuessProtocol {
         self.dismiss(animated: true) {
             self.transitionPresenter?.presentNextQuestion(currentQuestionID: self.guessDetailViewPresenter.getID())
         }
-    }
-    
-    func addEntityToFavorites() {
-        transitionPresenter?.setEntityAsFavorite(id: guessDetailViewPresenter.getID(), entityWasAdded: true)
-    }
-    
-    func removeEntityFromFavorites() {
-        transitionPresenter?.setEntityAsFavorite(id: guessDetailViewPresenter.getID(), entityWasAdded: false)
-    }
-}
-
-// main stack view methods
-extension GuessDetailViewController {
-    func addViewToStackView(_ view: UIView) {
-        contentStackView.addArrangedSubview(view)
-    }
-    
-    func addChildToStackView(_ child: UIViewController) {
-        guard !children.contains(child) else {
-            return
-        }
-        
-        addChild(child)
-        contentStackView.addArrangedSubview(child.view)
-        child.didMove(toParent: self)
-    }
-    
-    func removeChildFromStackView(_ child: UIViewController) {
-        guard child.parent != nil else {
-            return
-        }
-        child.willMove(toParent: nil)
-        contentStackView.removeArrangedSubview(child.view)
-        child.view.removeFromSuperview()
-        child.removeFromParent()
     }
 }

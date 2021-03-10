@@ -94,6 +94,7 @@ class DetailViewController: UIViewController {
     }
     
     private func addTopBannerAd() {
+        guard !displayingTopBanner else { return }
         displayingTopBanner = true
         
         if let banner = Appodeal.banner() {
@@ -117,6 +118,7 @@ class DetailViewController: UIViewController {
     }
     
     private func removeTopBannerAd() {
+        guard displayingTopBanner else { return }
         displayingTopBanner = false
         
         print("*** REMOVING BANNER")
@@ -313,6 +315,34 @@ extension DetailViewController: UIGestureRecognizerDelegate {
         return true
     }
 }
+
+// main stack view methods
+extension DetailViewController {
+    func addViewToStackView(_ view: UIView) {
+        contentStackView.addArrangedSubview(view)
+    }
+    
+    func addChildToStackView(_ child: UIViewController) {
+        guard !children.contains(child) else {
+            return
+        }
+        
+        addChild(child)
+        contentStackView.addArrangedSubview(child.view)
+        child.didMove(toParent: self)
+    }
+    
+    func removeChildFromStackView(_ child: UIViewController) {
+        guard child.parent != nil else {
+            return
+        }
+        child.willMove(toParent: nil)
+        contentStackView.removeArrangedSubview(child.view)
+        child.view.removeFromSuperview()
+        child.removeFromParent()
+    }
+}
+
 
 extension DetailViewController: AppodealBannerDelegate {
     func bannerDidLoadAdIsPrecache(_ precache: Bool) {

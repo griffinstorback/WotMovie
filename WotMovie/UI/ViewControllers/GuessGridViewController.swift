@@ -102,6 +102,13 @@ class GuessGridViewController: DetailPresenterViewController {
         // load first page of movies/tv shows
         guessGridViewPresenter.loadItems()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // unhide nav bar (it was hidden in viewWillAppear of parent, GuessVC)
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
 }
 
 extension GuessGridViewController: GuessGridViewDelegate {
@@ -170,6 +177,10 @@ extension GuessGridViewController: LoadMoreGridViewDelegate {
     
     func loadImageFor(_ loadMoreGridViewController: LoadMoreGridViewController, index: Int, completion: @escaping (UIImage?, String?) -> Void) {
         guessGridViewPresenter.loadImageFor(index: index, completion: completion)
+    }
+    
+    func isPresentingFromGuessGrid() -> Bool {
+        return true
     }
     
     func didPresentEntityDetail() {

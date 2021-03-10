@@ -20,6 +20,9 @@ protocol LoadMoreGridViewDelegate: NSObjectProtocol {
     func willDisplayHeader(_ loadMoreGridViewController: LoadMoreGridViewController)
     func didEndDisplayingHeader(_ loadMoreGridViewController: LoadMoreGridViewController)
     
+    // return true if presenting from non-guess type grid, (i.e. Watchlist)
+    func isPresentingFromGuessGrid() -> Bool
+    
     func didPresentEntityDetail()
     func scrollViewDidScroll(_ scrollView: UIScrollView)
 }
@@ -68,7 +71,11 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
         cell.setCellImagePath(imagePath: item.posterPath ?? "")
         delegate?.loadImageFor(self, index: indexPath.row, completion: cell.imageDataReceived)
         
-        if item.isRevealed {
+        // reveal poster image on cell if:
+        //   - item has been revealed
+        //   - OR, we're presenting from a list category grid (i.e. 'Watchlist' or 'Favorites')
+        let isPresentingFromGuessGrid = delegate?.isPresentingFromGuessGrid() ?? false
+        if item.isRevealed || !isPresentingFromGuessGrid {
             cell.reveal(animated: false)
         }
         
@@ -91,7 +98,8 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
             collectionView.scrollRectToVisible(cellFrame, animated: false)
         } completion: { _ in
             if let item = self.delegate?.getItemFor(self, index: indexPath.row) {
-                self.presentGuessDetail(for: item, fromCard: cell.posterImageView)
+                let presentingFromGuessGrid = self.delegate?.isPresentingFromGuessGrid() ?? false
+                self.presentGuessDetail(for: item, fromCard: cell.posterImageView, presentingFromGuessGrid: presentingFromGuessGrid)
                 
                 // tell delegate a modal was presented (useful for recently viewed - so recently viewed won't reload when dismissing the modal)
                 self.delegate?.didPresentEntityDetail()
@@ -144,7 +152,6 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
         } else if elementKind == UICollectionView.elementKindSectionFooter && shouldDisplayLoadMoreFooter {
             if let footerView = view as? GridCollectionViewFooterView {
                 if delegate?.getNumberOfItems(self) ?? 0 > 0 {
-                    //print("**** LoadMoreGridViewController willdisplaysupplementaryview - number of items was \(delegate?.getNumberOfItems(self)), starting footer animation, calling loadmoreitems.")
                     footerView.startLoadingAnimation()
                     delegate?.loadMoreItems(self)
                 } else {

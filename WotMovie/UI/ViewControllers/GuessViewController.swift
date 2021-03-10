@@ -44,6 +44,9 @@ class GuessViewController: UIViewController {
         self.navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
         
+        // hide nav bar on this view controller
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
+        
         guessViewPresenter.updateGuessedCounts()
     }
     
@@ -53,7 +56,9 @@ class GuessViewController: UIViewController {
         
         // navigation view controller
         navigationItem.title = "WotMovie"
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        
+        //navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = UIBarButtonItem(image: UIImage(named: "question_mark"), style: .plain, target: nil, action: nil)
         
         scrollView.isUserInteractionEnabled = true
         scrollView.delaysContentTouches = false
@@ -89,12 +94,15 @@ class GuessViewController: UIViewController {
     }
     
     func layoutViews() {
-        view.addSubview(scrollView)
+        /*view.addSubview(scrollView)
         scrollView.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, trailing: view.safeAreaLayoutGuide.trailingAnchor)
         
         scrollView.addSubview(guessCategoryStackView)
         guessCategoryStackView.anchor(top: scrollView.topAnchor, leading: scrollView.leadingAnchor, bottom: scrollView.bottomAnchor, trailing: scrollView.trailingAnchor)
-        guessCategoryStackView.anchorSize(height: nil, width: scrollView.widthAnchor)
+        guessCategoryStackView.anchorSize(height: nil, width: scrollView.widthAnchor)*/
+        
+        view.addSubview(guessCategoryStackView)
+        guessCategoryStackView.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
         
         for categoryView in guessCategoryViews {
             guessCategoryStackView.addArrangedSubview(categoryView)

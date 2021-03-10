@@ -20,7 +20,7 @@ class StatsViewController: UIViewController {
     init(presenter: StatsPresenterProtocol? = nil) {
         statsPresenter = presenter ?? StatsPresenter()
         
-        tableView = UITableView(frame: .zero, style: .grouped)
+        tableView = UITableView(frame: .zero, style: .insetGrouped)
         
         super.init(nibName: nil, bundle: nil)
         

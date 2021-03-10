@@ -27,18 +27,29 @@ struct Person: BasePerson {
     var correctlyGuessed: Bool = false
     var isFavorite: Bool = false
     
-    // IS THIS EVER USED???
-    /*init(castMember: CastMember) {
+    init(castMember: CastMember) {
         id = castMember.id
         name = castMember.name
         posterPath = castMember.posterPath
-        knownFor = []
-        
         gender = castMember.gender
+        knownForDepartment = castMember.knownForDepartment
+        
+        knownFor = []
         birthday = nil
         deathday = nil
-        knownForDepartment = castMember.knownForDepartment
-    }*/
+    }
+    
+    init(crewMember: CrewMember) {
+        id = crewMember.id
+        name = crewMember.name
+        posterPath = crewMember.posterPath
+        gender = crewMember.gender
+        knownForDepartment = crewMember.knownForDepartment
+        
+        knownFor = []
+        birthday = nil
+        deathday = nil
+    }
     
     init(personMO: PersonMO) {
         id = Int(personMO.id)

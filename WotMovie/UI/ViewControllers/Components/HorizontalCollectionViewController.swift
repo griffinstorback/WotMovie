@@ -100,12 +100,6 @@ class HorizontalCollectionViewController: DetailPresenterViewController {
         } else {
             collectionView.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
         }
-        
-        print("**** HorizontalCollectionView frame after layoutViews(): \(view.frame), collectionView frame itself: \(collectionView.frame)")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            print("**** (0.5 seconds later) HorizontalCollectionView frame after layoutViews(): \(self.view.frame), collectionView frame itself: \(self.collectionView.frame)")
-        }
-        
     }
     
     public func setDelegate(_ delegate: HorizontalCollectionViewDelegate) {

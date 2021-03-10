@@ -10,6 +10,7 @@ import UIKit
 
 protocol EnterGuessPresenterProtocol {
     var searchResultsCount: Int { get }
+    func setItem(item: Entity)
     func setViewDelegate(_ delegat: EnterGuessViewDelegate)
     func loadImage(for index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
     func searchResult(for index: Int) -> Entity?
@@ -29,6 +30,15 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
     weak private var enterGuessViewDelegate: EnterGuessViewDelegate?
     
     private var item: Entity
+    
+    // this is called from view when it is given an updated item (e.g. when GuessDetailView passes updated item info down to EnterGuessView)
+    func setItem(item: Entity) {
+        self.item = item
+        DispatchQueue.main.async {
+            self.enterGuessViewDelegate?.reloadState()
+        }
+    }
+    
     private var searchResults: [Entity] = [] {
         didSet {
             DispatchQueue.main.async {

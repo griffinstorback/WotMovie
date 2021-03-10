@@ -41,7 +41,8 @@ class ListViewController: UIViewController {
     }
     
     private func setupViews() {
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        //navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = UIBarButtonItem(image: UIImage(named: "list_icon"), style: .plain, target: nil, action: nil)
         
         listPresenter.setViewDelegate(self)
         
@@ -162,6 +163,10 @@ extension ListViewController: LoadMoreGridViewDelegate {
     
     func loadImageFor(_ loadMoreGridViewController: LoadMoreGridViewController, index: Int, completion: @escaping (UIImage?, String?) -> Void) {
         listPresenter.loadImageFor(index: index, completion: completion)
+    }
+    
+    func isPresentingFromGuessGrid() -> Bool {
+        return true
     }
     
     func didPresentEntityDetail() {

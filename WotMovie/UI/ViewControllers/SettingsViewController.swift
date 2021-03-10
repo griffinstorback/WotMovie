@@ -22,7 +22,7 @@ class SettingsViewController: UIViewController {
         
         settingsPresenter = presenter ?? SettingsPresenter()
         
-        tableView = UITableView(frame: .zero, style: .grouped)
+        tableView = UITableView(frame: .zero, style: .insetGrouped)
         
         super.init(nibName: nil, bundle: nil)
         

@@ -10,6 +10,7 @@ import UIKit
 protocol EnterGuessViewDelegate: NSObjectProtocol {
     func reloadResults()
     func reloadGuesses()
+    func reloadState()
 }
 
 class EnterGuessViewController: UIViewController {
@@ -96,6 +97,10 @@ class EnterGuessViewController: UIViewController {
     public func setNoNextButton() {
         enterGuessControlsView.setAnswerWasRevealed()
         enterGuessControlsView.removeNextButton()
+    }
+    
+    public func updateItem(item: Entity) {
+        enterGuessPresenter.setItem(item: item)
     }
     
     // Change constaint so it fits keyboard underneath search bar, but don't unhide the results table view (see searchBar didBeginEditing below)
@@ -203,16 +208,10 @@ extension EnterGuessViewController: EnterGuessControlsDelegate {
             // give user success haptic (successfully added to watchlist)
             let generator = UINotificationFeedbackGenerator()
             generator.notificationOccurred(.success)
-            
-            // tell delegate (grid view that presented this entity) to add item to favorites/watchlist
-            delegate?.addEntityToFavorites()
         } else {
             // haptic- give light single tap for removal from watchlist
             let generator = UIImpactFeedbackGenerator(style: .light)
             generator.impactOccurred()
-            
-            // tell delegate (grid) to remove item from favorites/watchlist
-            delegate?.removeEntityFromFavorites()
         }
     }
     
@@ -270,7 +269,13 @@ extension EnterGuessViewController: EnterGuessViewDelegate {
         resultsTableView.reloadData()
     }
     
-    // not used anymore?
+    // only reload watch/favorite button state. (GuessDetailVC --updateItem--> thisVC --setItem--> thisPresenter --reloadState--> here)
+    func reloadState() {
+        enterGuessControlsView.setWatchlistButtonText(text: enterGuessPresenter.getWatchlistButtonText())
+        enterGuessControlsView.setWatchlistButtonImage(imageName: enterGuessPresenter.getWatchlistImageName())
+    }
+    
+    // scroll to bottom when new results will be shown (because most relevant items start from bottom)
     func scrollToBottom() {
         if enterGuessPresenter.searchResultsCount > 0 {
             let lastRow = IndexPath(row: enterGuessPresenter.searchResultsCount-1, section: 0)
