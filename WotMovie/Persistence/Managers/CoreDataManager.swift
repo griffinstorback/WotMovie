@@ -151,7 +151,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
     }
     
     func fetchPageOfRecentlyViewed() -> [Entity] {
-        return fetchPageOfRecentlyViewedMovies(amount: 60) + fetchPageOfRecentlyViewedTVShows(amount: 60) + fetchPageOfRecentlyViewedPeople(amount: 60)
+        return fetchPageOfRecentlyViewedMovies() + fetchPageOfRecentlyViewedTVShows() + fetchPageOfRecentlyViewedPeople()
     }
 
     func addEntityToWatchlistOrFavorites(entity: Entity) {
@@ -946,11 +946,12 @@ final class CoreDataManager: CoreDataManagerProtocol {
     
 // MARK: -- RECENTLY VIEWED
     
-    func fetchPageOfRecentlyViewedMovies(amount: Int = 60) -> [Movie] {
+    func fetchPageOfRecentlyViewedMovies(limit: Int = 40) -> [Movie] {
         let moc = coreDataStack.persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<MovieMO>(entityName: "Movie")
-        fetchRequest.fetchLimit = 60
+        fetchRequest.fetchLimit = limit
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "lastViewedDate", ascending: false)]
+        fetchRequest.predicate = NSPredicate(format: "revealed != nil || guessed != nil")
         
         do {
             let fetchedMovies: [MovieMO] = try moc.fetch(fetchRequest)
@@ -961,11 +962,12 @@ final class CoreDataManager: CoreDataManagerProtocol {
         }
     }
     
-    func fetchPageOfRecentlyViewedTVShows(amount: Int = 60) -> [TVShow] {
+    func fetchPageOfRecentlyViewedTVShows(limit: Int = 40) -> [TVShow] {
         let moc = coreDataStack.persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<TVShowMO>(entityName: "TVShow")
-        fetchRequest.fetchLimit = 60
+        fetchRequest.fetchLimit = limit
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "lastViewedDate", ascending: false)]
+        fetchRequest.predicate = NSPredicate(format: "revealed != nil || guessed != nil")
         
         do {
             let fetchedTVShows: [TVShowMO] = try moc.fetch(fetchRequest)
@@ -976,11 +978,12 @@ final class CoreDataManager: CoreDataManagerProtocol {
         }
     }
     
-    func fetchPageOfRecentlyViewedPeople(amount: Int = 60) -> [Person] {
+    func fetchPageOfRecentlyViewedPeople(limit: Int = 40) -> [Person] {
         let moc = coreDataStack.persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<PersonMO>(entityName: "Person")
-        fetchRequest.fetchLimit = 60
+        fetchRequest.fetchLimit = limit
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "lastViewedDate", ascending: false)]
+        fetchRequest.predicate = NSPredicate(format: "revealed != nil || guessed != nil")
         
         do {
             let fetchedPeople: [PersonMO] = try moc.fetch(fetchRequest)
@@ -989,20 +992,6 @@ final class CoreDataManager: CoreDataManagerProtocol {
             print("** Failed to fetch recently viewed.")
             return []
         }
-    }
-    
-    // TODO: Should I implement these? Or should I fetch a page of recently viewed when fetching a guess grid, and filter in the guess grid presenter? (I think the latter would
-    // be better - it would mean one core data query instead of a query for each title.)
-    func movieWasViewedRecently(movie: Movie) -> Bool {
-        return false
-    }
-    
-    func tvShowWasViewedRecently(tvShow: TVShow) -> Bool {
-        return false
-    }
-    
-    func personWasViewedRecently(person: Person) -> Bool {
-        return false
     }
     
     

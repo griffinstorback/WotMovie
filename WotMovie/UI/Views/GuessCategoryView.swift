@@ -98,13 +98,14 @@ class GuessCategoryView: UIView {
         upgradeButton.setTitle("Upgrade", for: .normal)
         upgradeButton.setTitleColor(.white, for: .normal)
         upgradeButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        upgradeButton.titleLabel?.adjustsFontSizeToFitWidth = true
         upgradeButton.layer.cornerRadius = 10
         upgradeButton.addTarget(self, action: #selector(upgradeButtonPressed), for: .touchUpInside)
-        upgradeButton.sizeToFit()
     }
     
     @objc func upgradeButtonPressed() {
         print("** UPGRADE BUTTON PRESSED")
+        delegate?.categoryWasSelected(category)
     }
     
     private func layoutViews() {
@@ -120,8 +121,8 @@ class GuessCategoryView: UIView {
             rightPointingArrow.anchorToCenter(yAnchor: rightEdgeImageViewContainer.centerYAnchor, xAnchor: nil)
         } else {
             rightEdgeImageViewContainer.addSubview(upgradeButton)
-            //upgradeButton.anchor(top: nil, leading: rightEdgeImageViewContainer.leadingAnchor, bottom: nil, trailing: rightEdgeImageViewContainer.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 10), size: CGSize(width: 90, height: 0))
-            upgradeButton.anchor(top: nil, leading: rightEdgeImageViewContainer.leadingAnchor, bottom: nil, trailing: rightEdgeImageViewContainer.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 10))
+            upgradeButton.anchor(top: nil, leading: rightEdgeImageViewContainer.leadingAnchor, bottom: nil, trailing: rightEdgeImageViewContainer.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 10), size: CGSize(width: 90, height: 0))
+            //upgradeButton.anchor(top: nil, leading: rightEdgeImageViewContainer.leadingAnchor, bottom: nil, trailing: rightEdgeImageViewContainer.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 10))
             upgradeButton.anchorToCenter(yAnchor: rightEdgeImageViewContainer.centerYAnchor, xAnchor: nil)
         }
         outerHorizontalStack.addArrangedSubview(rightEdgeImageViewContainer)
@@ -163,11 +164,6 @@ class GuessCategoryView: UIView {
         categoryLabelContainer.addSubview(categoryLabel)
         categoryLabel.anchor(top: nil, leading: categoryLabelContainer.leadingAnchor, bottom: nil, trailing: categoryLabelContainer.trailingAnchor)
         categoryLabel.anchorToCenter(yAnchor: categoryLabelContainer.centerYAnchor, xAnchor: nil)*/
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        self.updateShadow()
     }
     
     func setDelegate(_ delegate: GuessCategoryViewDelegate) {
