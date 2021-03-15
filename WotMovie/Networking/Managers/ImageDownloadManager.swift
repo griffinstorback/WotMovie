@@ -16,13 +16,17 @@ protocol ImageDownloadManagerProtocol {
 final class ImageDownloadManager: ImageDownloadManagerProtocol {
     
     static let shared = ImageDownloadManager()
-    private init() {}
+    private init() {
+        imageCache = ImageCacheManager.shared
+    }
     
-    private let imageCache = NSCache<NSString, UIImage>()
+    private let imageCache: ImageCacheManager
     private let imageRouter = Router<ImageApi>()
     
     func downloadImage(path: String, completion: @escaping (_ image: UIImage?, _ error: String?) -> Void) {
-        if let cachedImage = imageCache.object(forKey: path as NSString) {
+        let nsStringPath = path as NSString
+        
+        if let cachedImage = imageCache[nsStringPath] {
             completion(cachedImage, nil)
             return
         }
@@ -47,7 +51,7 @@ final class ImageDownloadManager: ImageDownloadManagerProtocol {
                         completion(image, nil)
                         
                         // update image cache
-                        self.imageCache.setObject(image, forKey: path as NSString)
+                        self.imageCache[nsStringPath] = image
                     } else {
                         completion(nil, NetworkResponse.unableToDecode.rawValue)
                     }

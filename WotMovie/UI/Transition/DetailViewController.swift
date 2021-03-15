@@ -94,7 +94,7 @@ class DetailViewController: UIViewController {
     }
     
     private func addTopBannerAd() {
-        guard !displayingTopBanner else { return }
+        //guard !displayingTopBanner else { return }
         displayingTopBanner = true
         
         if let banner = Appodeal.banner() {
@@ -118,7 +118,7 @@ class DetailViewController: UIViewController {
     }
     
     private func removeTopBannerAd() {
-        guard displayingTopBanner else { return }
+        //guard displayingTopBanner else { return }
         displayingTopBanner = false
         
         print("*** REMOVING BANNER")

@@ -94,6 +94,7 @@ class TitleDetailViewController: GuessDetailViewController {
         case .revealed, .revealedWithNoNextButton, .correct, .correctWithNoNextButton:
             addInfo()
             detailOverviewView.setTitle(titleDetailViewPresenter.getTitle())
+            detailOverviewView.setOverviewText(titleDetailViewPresenter.getOverview()) // uncensor title name from overview
             
             // if item was correctly guessed, show check at top left
             if state == .correct || state == .correctWithNoNextButton {
@@ -164,8 +165,15 @@ extension TitleDetailViewController: GuessDetailViewDelegate {
         crewTableView.reloadData()
         updateItemOnEnterGuessView() // this is defined in parent class GuessDetailVC
         
-        // don't set state if it was presented having already been guessed or revealed
+        print("*** RELOADING DATA in TitleDetailVC: item: \(guessDetailViewPresenter.item)")
+        
+        // don't set state if it was presented from a non guess grid (i.e. Watching or Favorites)
         if state == .revealedWithNoNextButton || state == .correctWithNoNextButton {
+            
+            // but if the presented entity has been guessed, still display the checkmark.
+            if guessDetailViewPresenter.isAnswerCorrectlyGuessed() {
+                state = .correctWithNoNextButton
+            }
             return
         }
         
@@ -174,7 +182,7 @@ extension TitleDetailViewController: GuessDetailViewDelegate {
             state = .correct
             return
         }
-        if guessDetailViewPresenter.isAnswerRevealed() || guessDetailViewPresenter.isAnswerCorrectlyGuessed() {
+        if guessDetailViewPresenter.isAnswerRevealed() {
             state = .revealed
             return
         }

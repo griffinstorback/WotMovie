@@ -339,13 +339,6 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
                 }
             }
             
-            
-            
-            
-            // TODO: UPDATE PERSON REQUEST METHODS TO BE LIKE MOVIE.
-            
-            
-            
         } else if category == .person {
             networkManager.getPopularPeople(page: page) { [weak self] people, error in
                 if let error = error {
@@ -412,9 +405,9 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
                     self?.genresList = genres
                     
                     // cache result in core data
-                    //DispatchQueue.main.async {
-                    //    self?.coreDataManager.updateOrCreateTVShowGenreList(genres: genres)
-                    //}
+                    DispatchQueue.main.async {
+                        self?.coreDataManager.updateOrCreateTVShowGenreList(genres: genres)
+                    }
                 }
             }
         }

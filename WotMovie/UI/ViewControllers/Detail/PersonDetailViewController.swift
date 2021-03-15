@@ -245,14 +245,31 @@ extension PersonDetailViewController: GuessDetailViewDelegate {
         directedCollectionView.reloadData()
         producedCollectionView.reloadData()
         wroteCollectionView.reloadData()
+        updateItemOnEnterGuessView() // this is defined in parent class GuessDetailVC
+        view.layoutIfNeeded()
         
+        print("*** RELOADING DATA in PersonDetailVC: item: \(guessDetailViewPresenter.item)")
+        
+        // don't set state if it was presented from a non guess grid (i.e. Watching or Favorites)
+        if state == .revealedWithNoNextButton || state == .correctWithNoNextButton {
+            
+            // but if the presented entity has been guessed, still display the checkmark.
+            if guessDetailViewPresenter.isAnswerCorrectlyGuessed() {
+                state = .correctWithNoNextButton
+            }
+            return
+        }
+        
+        // SETTING STATE
+        if guessDetailViewPresenter.isAnswerCorrectlyGuessed() {
+            state = .correct
+            return
+        }
         if guessDetailViewPresenter.isAnswerRevealed() {
-            print("** guess detail view delegate: setting state to .revealed")
             state = .revealed
             return
         }
         if guessDetailViewPresenter.isHintShown() {
-            print("** guess detail view delegate: setting state to .hintShown")
             state = .hintShown
         }
     }

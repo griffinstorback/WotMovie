@@ -56,7 +56,18 @@ class CoreDataStack {
         }
     }
     
-    func saveContextOnBackgroundContext() {
-        
+    func saveContext(_ context: NSManagedObjectContext) {
+        if context.hasChanges {
+            do {
+                try context.save()
+            } catch {
+                let nserror = error as NSError
+                print("Error when saving context: \(nserror.localizedDescription)")
+                print("Callstack: ")
+                for symbol: String in Thread.callStackSymbols {
+                    print(" > \(symbol)")
+                }
+            }
+        }
     }
 }

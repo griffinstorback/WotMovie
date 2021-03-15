@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -39,6 +39,7 @@
 		853C67BD25D30E7D00EBEFBE /* SortGridPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853C67BC25D30E7D00EBEFBE /* SortGridPresenter.swift */; };
 		854B3E912550DDBB003397E0 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854B3E902550DDBA003397E0 /* CoreDataManager.swift */; };
 		854B3E9625537F55003397E0 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854B3E9525537F55003397E0 /* CoreDataStack.swift */; };
+		856FF74125FC362700D438A6 /* ImageCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856FF74025FC362700D438A6 /* ImageCacheManager.swift */; };
 		85791AD125C0FC2B00F8FE75 /* ListCategoryGridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85791AD025C0FC2B00F8FE75 /* ListCategoryGridViewController.swift */; };
 		85791AD625C0FCA100F8FE75 /* ListCategoryGridPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85791AD525C0FCA100F8FE75 /* ListCategoryGridPresenter.swift */; };
 		857B353B25B74BB0004CC310 /* CoreData+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 857B353A25B74BB0004CC310 /* CoreData+Extensions.swift */; };
@@ -163,6 +164,7 @@
 		853C67BC25D30E7D00EBEFBE /* SortGridPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortGridPresenter.swift; sourceTree = "<group>"; };
 		854B3E902550DDBA003397E0 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		854B3E9525537F55003397E0 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		856FF74025FC362700D438A6 /* ImageCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacheManager.swift; sourceTree = "<group>"; };
 		85791AD025C0FC2B00F8FE75 /* ListCategoryGridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCategoryGridViewController.swift; sourceTree = "<group>"; };
 		85791AD525C0FCA100F8FE75 /* ListCategoryGridPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCategoryGridPresenter.swift; sourceTree = "<group>"; };
 		857B353A25B74BB0004CC310 /* CoreData+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreData+Extensions.swift"; sourceTree = "<group>"; };
@@ -329,6 +331,7 @@
 			isa = PBXGroup;
 			children = (
 				854B3E902550DDBA003397E0 /* CoreDataManager.swift */,
+				856FF74025FC362700D438A6 /* ImageCacheManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -629,7 +632,6 @@
 				CE4326E5218B83187F9AB8DE /* Pods-WotMovie.debug.xcconfig */,
 				DAA8FF8869C850EFE4CC3B9A /* Pods-WotMovie.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -889,6 +891,7 @@
 				85014048254795660088FA3E /* Constants.swift in Sources */,
 				85CF3459252D430C00A101C9 /* SceneDelegate.swift in Sources */,
 				85CF35A0253E48A300A101C9 /* PosterImageView.swift in Sources */,
+				856FF74125FC362700D438A6 /* ImageCacheManager.swift in Sources */,
 				85CF357A2538DE1D00A101C9 /* Title.swift in Sources */,
 				85CF356625377CBA00A101C9 /* GuessPresenter.swift in Sources */,
 				8586DF4A2555DE100066EE65 /* PersonOverviewView.swift in Sources */,

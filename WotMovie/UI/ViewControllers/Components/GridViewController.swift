@@ -84,9 +84,17 @@ class GridViewController: DetailPresenterViewController {
         if !presentingFromGuessGrid {
             switch item.type {
             case .movie, .tvShow:
-                guessDetailViewController = TitleDetailViewController(item: item, state: .revealedWithNoNextButton)
+                if item.correctlyGuessed {
+                    guessDetailViewController = TitleDetailViewController(item: item, state: .correctWithNoNextButton)
+                } else {
+                    guessDetailViewController = TitleDetailViewController(item: item, state: .revealedWithNoNextButton)
+                }
             case .person:
-                guessDetailViewController = PersonDetailViewController(item: item, state: .revealedWithNoNextButton)
+                if item.correctlyGuessed {
+                    guessDetailViewController = PersonDetailViewController(item: item, state: .correctWithNoNextButton)
+                } else {
+                    guessDetailViewController = PersonDetailViewController(item: item, state: .revealedWithNoNextButton)
+                }
             }
         } else {
             switch item.type {

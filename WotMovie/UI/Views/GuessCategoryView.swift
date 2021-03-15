@@ -20,6 +20,10 @@ class GuessCategoryView: UIView {
         }
     }
     
+    static var categoryImageViewSize: CGSize {
+        return CGSize(width: 100, height: 100)
+    }
+    
     private let categoryImageView: UIImageView
     private let categoryLabel: UILabel
     private let horizontalStack: UIStackView
@@ -27,8 +31,10 @@ class GuessCategoryView: UIView {
     private var numberGuessedLabel: UILabel?
     private let verticalStack: UIStackView
     
-    private let rightPointingArrowContainer: UIView
+    private let rightEdgeImageViewContainer: UIView
     private let rightPointingArrow: UIImageView
+    private let upgradeButton: ShrinkOnTouchButton // its a button, but we don't need button functionality (this whole view is like a big button already)
+    
     private let outerHorizontalStack: UIStackView
     
     
@@ -46,8 +52,10 @@ class GuessCategoryView: UIView {
         
         verticalStack = UIStackView()
         
-        rightPointingArrowContainer = UIView()
+        rightEdgeImageViewContainer = UIView()
         rightPointingArrow = UIImageView()
+        upgradeButton = ShrinkOnTouchButton()
+        
         outerHorizontalStack = UIStackView()
         
         super.init(frame: .zero)
@@ -60,12 +68,11 @@ class GuessCategoryView: UIView {
     }
     
     private func setupViews() {
-        backgroundColor = .systemGray6
+        backgroundColor = UIColor.systemGray5.withAlphaComponent(0.75)
         layer.cornerRadius = 20
         layer.masksToBounds = true
-        //giveShadow(radius: 10)
         
-        categoryImageView.tintColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue
+        //categoryImageView.tintColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue
         categoryImageView.contentMode = .scaleAspectFit
         
         //categoryLabel.text = category.title
@@ -81,10 +88,23 @@ class GuessCategoryView: UIView {
         verticalStack.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         verticalStack.isLayoutMarginsRelativeArrangement = true
         
-        let rightPointingArrowImage = UIImage(systemName: "chevron.right", withConfiguration: UIImage.SymbolConfiguration(pointSize: 16, weight: .bold))
+        let rightPointingArrowImage = UIImage(systemName: "chevron.right", withConfiguration: UIImage.SymbolConfiguration(pointSize: 18, weight: .bold))
         rightPointingArrow.image = rightPointingArrowImage
         rightPointingArrow.tintColor = .tertiaryLabel
         rightPointingArrow.contentMode = .scaleAspectFit
+        
+        upgradeButton.backgroundColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue
+        upgradeButton.titleEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+        upgradeButton.setTitle("Upgrade", for: .normal)
+        upgradeButton.setTitleColor(.white, for: .normal)
+        upgradeButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        upgradeButton.layer.cornerRadius = 10
+        upgradeButton.addTarget(self, action: #selector(upgradeButtonPressed), for: .touchUpInside)
+        upgradeButton.sizeToFit()
+    }
+    
+    @objc func upgradeButtonPressed() {
+        print("** UPGRADE BUTTON PRESSED")
     }
     
     private func layoutViews() {
@@ -93,20 +113,56 @@ class GuessCategoryView: UIView {
         
         outerHorizontalStack.addArrangedSubview(verticalStack)
         
-        rightPointingArrowContainer.addSubview(rightPointingArrow)
-        rightPointingArrow.anchor(top: nil, leading: rightPointingArrowContainer.leadingAnchor, bottom: nil, trailing: rightPointingArrowContainer.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5), size: CGSize(width: 20, height: 0))
-        rightPointingArrow.anchorToCenter(yAnchor: rightPointingArrowContainer.centerYAnchor, xAnchor: nil)
-        outerHorizontalStack.addArrangedSubview(rightPointingArrowContainer)
+        // either show right pointing arrow to indicate category is selectable, or show a "Pro" button instead, indicating user needs to upgrade.
+        if category.type != .person {
+            rightEdgeImageViewContainer.addSubview(rightPointingArrow)
+            rightPointingArrow.anchor(top: nil, leading: rightEdgeImageViewContainer.leadingAnchor, bottom: nil, trailing: rightEdgeImageViewContainer.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5), size: CGSize(width: 20, height: 0))
+            rightPointingArrow.anchorToCenter(yAnchor: rightEdgeImageViewContainer.centerYAnchor, xAnchor: nil)
+        } else {
+            rightEdgeImageViewContainer.addSubview(upgradeButton)
+            //upgradeButton.anchor(top: nil, leading: rightEdgeImageViewContainer.leadingAnchor, bottom: nil, trailing: rightEdgeImageViewContainer.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 10), size: CGSize(width: 90, height: 0))
+            upgradeButton.anchor(top: nil, leading: rightEdgeImageViewContainer.leadingAnchor, bottom: nil, trailing: rightEdgeImageViewContainer.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 10))
+            upgradeButton.anchorToCenter(yAnchor: rightEdgeImageViewContainer.centerYAnchor, xAnchor: nil)
+        }
+        outerHorizontalStack.addArrangedSubview(rightEdgeImageViewContainer)
         
         verticalStack.addArrangedSubview(horizontalStack)
         horizontalStack.addArrangedSubview(categoryImageView)
-        categoryImageView.widthAnchor.constraint(equalToConstant: 120).isActive = true
-        categoryImageView.heightAnchor.constraint(equalToConstant: 120).isActive = true
+        categoryImageView.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: GuessCategoryView.categoryImageViewSize)
         horizontalStack.addArrangedSubview(categoryLabel)
         
         if let numberGuessedLabel = numberGuessedLabel {
             verticalStack.addArrangedSubview(numberGuessedLabel)
         }
+        
+        
+        // ALTERNATE ATTEMPT BELOW
+        
+        /*addSubview(rightEdgeImageViewContainer)
+        rightEdgeImageViewContainer.anchor(top: topAnchor, leading: nil, bottom: bottomAnchor, trailing: trailingAnchor)
+        
+        rightEdgeImageViewContainer.addSubview(rightPointingArrow)
+        rightPointingArrow.anchor(top: nil, leading: rightEdgeImageViewContainer.leadingAnchor, bottom: nil, trailing: rightEdgeImageViewContainer.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5), size: CGSize(width: 20, height: 0))
+        rightPointingArrow.anchorToCenter(yAnchor: rightEdgeImageViewContainer.centerYAnchor, xAnchor: nil)
+        
+        let numberGuessedLabelContainer = UIView()
+        addSubview(numberGuessedLabelContainer)
+        if let numberGuessedLabel = numberGuessedLabel {
+            numberGuessedLabelContainer.addSubview(numberGuessedLabel)
+            numberGuessedLabel.anchor(top: numberGuessedLabelContainer.topAnchor, leading: numberGuessedLabelContainer.leadingAnchor, bottom: numberGuessedLabelContainer.bottomAnchor, trailing: numberGuessedLabelContainer.trailingAnchor)
+        }
+        numberGuessedLabelContainer.anchor(top: nil, leading: leadingAnchor, bottom: bottomAnchor, trailing: rightEdgeImageViewContainer.leadingAnchor)
+        
+        addSubview(categoryImageView)
+        categoryImageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: numberGuessedLabelContainer.topAnchor, trailing: nil)
+        
+        let categoryLabelContainer = UIView()
+        addSubview(categoryLabelContainer)
+        categoryLabelContainer.anchor(top: topAnchor, leading: categoryImageView.trailingAnchor, bottom: numberGuessedLabelContainer.topAnchor, trailing: rightEdgeImageViewContainer.leadingAnchor)
+        
+        categoryLabelContainer.addSubview(categoryLabel)
+        categoryLabel.anchor(top: nil, leading: categoryLabelContainer.leadingAnchor, bottom: nil, trailing: categoryLabelContainer.trailingAnchor)
+        categoryLabel.anchorToCenter(yAnchor: categoryLabelContainer.centerYAnchor, xAnchor: nil)*/
     }
     
     override func layoutSubviews() {
@@ -132,7 +188,7 @@ class GuessCategoryView: UIView {
             let numberText = NSMutableAttributedString(string: "\(numberGuessed)", attributes: numberTextAttributes)
             
             // keep the text after the number black, and not bold
-            let numberGuessedTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
+            let numberGuessedTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .medium)]
             let numberGuessedText = NSMutableAttributedString(string: " guessed correctly", attributes: numberGuessedTextAttributes)
             
             numberText.append(numberGuessedText)
