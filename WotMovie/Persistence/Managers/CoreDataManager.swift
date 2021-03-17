@@ -189,11 +189,23 @@ final class CoreDataManager: CoreDataManagerProtocol {
     }
     
     func fetchGuessedEntities() -> [Entity] {
-        return fetchGuessedMovies() + fetchGuessedTVShows() + fetchGuessedPeople()
+        var guessedEntitiesWithDateAdded: [(entity: Entity, dateAdded: Date?)] = []
+        guessedEntitiesWithDateAdded += fetchGuessedMoviesWithDateAdded()
+        guessedEntitiesWithDateAdded += fetchGuessedTVShowsWithDateAdded()
+        guessedEntitiesWithDateAdded += fetchGuessedPeopleWithDateAdded()
+        
+        guessedEntitiesWithDateAdded.sort { $0.dateAdded ?? Date.distantPast > $1.dateAdded ?? Date.distantPast }
+        return guessedEntitiesWithDateAdded.map { $0.entity }
     }
     
     func fetchRevealedEntities() -> [Entity] {
-        return fetchRevealedMovies() + fetchRevealedTVShows() + fetchRevealedPeople()
+        var revealedEntitiesWithDateAdded: [(entity: Entity, dateAdded: Date?)] = []
+        revealedEntitiesWithDateAdded += fetchRevealedMoviesWithDateAdded()
+        revealedEntitiesWithDateAdded += fetchRevealedTVShowsWithDateAdded()
+        revealedEntitiesWithDateAdded += fetchRevealedPeopleWithDateAdded()
+        
+        revealedEntitiesWithDateAdded.sort { $0.dateAdded ?? Date.distantPast > $1.dateAdded ?? Date.distantPast }
+        return revealedEntitiesWithDateAdded.map { $0.entity }
     }
     
     
@@ -1108,12 +1120,21 @@ final class CoreDataManager: CoreDataManagerProtocol {
         }
     }
     
+    // 1,200,000 took 21 seconds to retrieve - 12,000 took 0.21 seconds, which is barely acceptable (simulator)
+    // real device: 20,000 took 0.61 seconds. This is all on main thread.
     func fetchWatchlist(genreID: Int) -> [Entity] {
         var watchlistEntitiesSortedByDateAdded: [(entity: Entity, dateAdded: Date?)] = []
         watchlistEntitiesSortedByDateAdded += fetchMovieWatchlistEntitiesWithDateAdded(genreID: genreID)
         watchlistEntitiesSortedByDateAdded += fetchTVShowWatchlistEntitiesWithDateAdded(genreID: genreID)
         
+        /*let start = CFAbsoluteTimeGetCurrent()
+        for _ in 0..<10000 {
+            watchlistEntitiesSortedByDateAdded += fetchTVShowWatchlistEntitiesWithDateAdded(genreID: genreID)
+        }*/
+        
         watchlistEntitiesSortedByDateAdded.sort { $0.dateAdded ?? Date.distantPast > $1.dateAdded ?? Date.distantPast }
+        //let finish = CFAbsoluteTimeGetCurrent()
+        //print("**** TOTAL TIME TO RETRIEVE \(watchlistEntitiesSortedByDateAdded.count) ITEMS: \(finish - start)")
         return watchlistEntitiesSortedByDateAdded.map { $0.entity }
     }
     
@@ -1192,7 +1213,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
     
 // MARK: -- GUESSED
     
-    func fetchGuessedMovies() -> [Movie] {
+    func fetchGuessedMoviesWithDateAdded() -> [(entity: Movie, dateAdded: Date?)] {
         let context = coreDataStack.persistentContainer.viewContext
         
         let fetchRequest = NSFetchRequest<MovieGuessedMO>(entityName: "MovieGuessed")
@@ -1202,21 +1223,21 @@ final class CoreDataManager: CoreDataManagerProtocol {
         do {
             let guessedResults: [MovieGuessedMO] = try context.fetch(fetchRequest)
             
-            var movieMOs = [MovieMO]()
+            var movieAndDates = [(entity: Movie, dateAdded: Date?)]()
             for guessed in guessedResults {
                 if let movieMO = guessed.movie {
-                    movieMOs.append(movieMO)
+                    movieAndDates.append( (entity: Movie(movieMO: movieMO), dateAdded: guessed.dateAdded) )
                 }
             }
             
-            return movieMOs.map { Movie(movieMO: $0) }
+            return movieAndDates
         } catch {
             print("** Failed to fetch guessed movies.")
             return []
         }
     }
     
-    func fetchGuessedTVShows() -> [TVShow] {
+    func fetchGuessedTVShowsWithDateAdded() -> [(entity: TVShow, dateAdded: Date?)] {
         let context = coreDataStack.persistentContainer.viewContext
         
         let fetchRequest = NSFetchRequest<TVShowGuessedMO>(entityName: "TVShowGuessed")
@@ -1226,21 +1247,21 @@ final class CoreDataManager: CoreDataManagerProtocol {
         do {
             let guessedResults: [TVShowGuessedMO] = try context.fetch(fetchRequest)
             
-            var tvShowMOs = [TVShowMO]()
+            var tvShowAndDates = [(entity: TVShow, dateAdded: Date?)]()
             for guessed in guessedResults {
                 if let tvShowMO = guessed.tvShow {
-                    tvShowMOs.append(tvShowMO)
+                    tvShowAndDates.append( (entity: TVShow(tvShowMO: tvShowMO), dateAdded: guessed.dateAdded) )
                 }
             }
             
-            return tvShowMOs.map { TVShow(tvShowMO: $0) }
+            return tvShowAndDates
         } catch {
             print("** Failed to fetch guessed tv shows.")
             return []
         }
     }
     
-    func fetchGuessedPeople() -> [Person] {
+    func fetchGuessedPeopleWithDateAdded() -> [(entity: Person, dateAdded: Date?)] {
         let context = coreDataStack.persistentContainer.viewContext
         
         let fetchRequest = NSFetchRequest<PersonGuessedMO>(entityName: "PersonGuessed")
@@ -1250,14 +1271,14 @@ final class CoreDataManager: CoreDataManagerProtocol {
         do {
             let guessedResults: [PersonGuessedMO] = try context.fetch(fetchRequest)
             
-            var personMOs = [PersonMO]()
+            var personAndDates = [(entity: Person, dateAdded: Date?)]()
             for guessed in guessedResults {
                 if let personMO = guessed.person {
-                    personMOs.append(personMO)
+                    personAndDates.append( (entity: Person(personMO: personMO), dateAdded: guessed.dateAdded) )
                 }
             }
             
-            return personMOs.map { Person(personMO: $0) }
+            return personAndDates
         } catch {
             print("** Failed to fetch guessed movies.")
             return []
@@ -1270,7 +1291,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
     
 // MARK: -- REVEALED
     
-    func fetchRevealedMovies() -> [Movie] {
+    func fetchRevealedMoviesWithDateAdded() -> [(entity: Movie, dateAdded: Date?)] {
         let context = coreDataStack.persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<MovieRevealedMO>(entityName: "MovieRevealed")
         fetchRequest.fetchLimit = 100000
@@ -1279,21 +1300,21 @@ final class CoreDataManager: CoreDataManagerProtocol {
         do {
             let revealedResults: [MovieRevealedMO] = try context.fetch(fetchRequest)
             
-            var movieMOs = [MovieMO]()
+            var movieAndDates = [(entity: Movie, dateAdded: Date?)]()
             for revealed in revealedResults {
                 if let movieMO = revealed.movie {
-                    movieMOs.append(movieMO)
+                    movieAndDates.append( (entity: Movie(movieMO: movieMO), dateAdded: revealed.dateAdded) )
                 }
             }
             
-            return movieMOs.map { Movie(movieMO: $0) }
+            return movieAndDates
         } catch {
             print("** ERROR: Failed to fetch revealed movies")
             return []
         }
     }
     
-    func fetchRevealedTVShows() -> [TVShow] {
+    func fetchRevealedTVShowsWithDateAdded() -> [(entity: TVShow, dateAdded: Date?)] {
         let context = coreDataStack.persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<TVShowRevealedMO>(entityName: "TVShowRevealed")
         fetchRequest.fetchLimit = 100000
@@ -1302,21 +1323,21 @@ final class CoreDataManager: CoreDataManagerProtocol {
         do {
             let revealedResults: [TVShowRevealedMO] = try context.fetch(fetchRequest)
             
-            var tvShowMOs = [TVShowMO]()
+            var tvShowAndDates = [(entity: TVShow, dateAdded: Date?)]()
             for revealed in revealedResults {
                 if let tvShowMO = revealed.tvShow {
-                    tvShowMOs.append(tvShowMO)
+                    tvShowAndDates.append( (entity: TVShow(tvShowMO: tvShowMO), dateAdded: revealed.dateAdded) )
                 }
             }
             
-            return tvShowMOs.map { TVShow(tvShowMO: $0) }
+            return tvShowAndDates
         } catch {
             print("** ERROR: Failed to fetch revealed tv shows")
             return []
         }
     }
     
-    func fetchRevealedPeople() -> [Person] {
+    func fetchRevealedPeopleWithDateAdded() -> [(entity: Person, dateAdded: Date?)] {
         let context = coreDataStack.persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<PersonRevealedMO>(entityName: "PersonRevealed")
         fetchRequest.fetchLimit = 100000
@@ -1325,14 +1346,14 @@ final class CoreDataManager: CoreDataManagerProtocol {
         do {
             let revealedResults: [PersonRevealedMO] = try context.fetch(fetchRequest)
             
-            var personMOs = [PersonMO]()
+            var personAndDates = [(entity: Person, dateAdded: Date?)]()
             for revealed in revealedResults {
                 if let personMO = revealed.person {
-                    personMOs.append(personMO)
+                    personAndDates.append( (entity: Person(personMO: personMO), dateAdded: revealed.dateAdded) )
                 }
             }
             
-            return personMOs.map { Person(personMO: $0) }
+            return personAndDates
         } catch {
             print("** ERROR: Failed to fetch revealed people")
             return []
