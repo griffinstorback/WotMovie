@@ -29,6 +29,8 @@ protocol GuessDetailPresenterProtocol {
     func hintWasShown()
     func answerWasRevealed()
     func answerWasRevealedAsCorrect()
+    
+    func answerWasRevealedDuringAttemptToDismiss()
 }
 
 class GuessDetailPresenter: GuessDetailPresenterProtocol {
@@ -165,5 +167,10 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
     func answerWasRevealedAsCorrect() {
         item.correctlyGuessed = true
         coreDataManager.updateOrCreateEntity(entity: item)
+    }
+    
+    // Call this from DetailViewController when user is trying to dismiss detail view without having guessed/revealed.
+    func answerWasRevealedDuringAttemptToDismiss() {
+        detailViewDelegate?.answerWasRevealedDuringAttemptToDismiss()
     }
 }

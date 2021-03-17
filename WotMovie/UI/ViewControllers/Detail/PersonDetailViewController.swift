@@ -273,4 +273,8 @@ extension PersonDetailViewController: GuessDetailViewDelegate {
             state = .hintShown
         }
     }
+    
+    // FOLLOWING TWO METHODS ARE PART OF GuessDetailViewDelegate, but are satisfied in super class GuessDetailViewController (so don't implement here)
+    // func updateItemOnEnterGuessView()
+    // func answerWasRevealedDuringAttemptToDismiss()
 }

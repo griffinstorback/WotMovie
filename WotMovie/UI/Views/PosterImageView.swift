@@ -76,7 +76,7 @@ class PosterImageView: CardView {
     }()
     private lazy var checkMarkImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "guessed_correct_icon"))
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         imageView.isUserInteractionEnabled = false
         return imageView
     }()

@@ -48,6 +48,8 @@ final class CachedImage: Codable {
     }
 }*/
 
+
+// Partially based on this article by John Sundell: https://www.swiftbysundell.com/articles/caching-in-swift/
 final class ImageCacheManager {
     static let cacheFilename = "ImageCache.cache"
     static var shared = {

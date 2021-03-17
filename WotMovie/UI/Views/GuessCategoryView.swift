@@ -137,7 +137,7 @@ class GuessCategoryView: UIView {
         }
         
         
-        // ALTERNATE ATTEMPT BELOW
+        // ALTERNATE ATTEMPT BELOW (using no stack views)
         
         /*addSubview(rightEdgeImageViewContainer)
         rightEdgeImageViewContainer.anchor(top: topAnchor, leading: nil, bottom: bottomAnchor, trailing: trailingAnchor)

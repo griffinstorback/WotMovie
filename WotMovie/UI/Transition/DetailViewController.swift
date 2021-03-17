@@ -12,6 +12,7 @@ import Appodeal
 class DetailViewController: UIViewController {
     
     weak var transitionPresenter: TransitionPresenterProtocol?
+    let guessDetailPresenter: GuessDetailPresenterProtocol
     
     // amount view will change when dragging down or on screen edge
     static let targetShrinkScale: CGFloat = 0.85
@@ -59,7 +60,9 @@ class DetailViewController: UIViewController {
         return edgePan
     }()
     
-    init(posterImageView: PosterImageView) {
+    init(posterImageView: PosterImageView, presenter: GuessDetailPresenterProtocol) {
+        guessDetailPresenter = presenter
+        
         scrollView = UIScrollView()
         
         statusBarCoverView = UIView()
@@ -112,6 +115,7 @@ class DetailViewController: UIViewController {
             print("**** NO BANNER returned from Appodeal.banner()")
         }
         
+        // For testing if adding/removing ad causes any weird display issues in VC
         /*DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             self?.removeTopBannerAd()
         }*/
@@ -127,6 +131,7 @@ class DetailViewController: UIViewController {
         topBannerAdView.removeFromSuperview()
         spacingFromTop.isHidden = true
         
+        // For testing if adding/removing ad causes any weird display issues in VC
         /*DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             self?.addTopBannerAd()
         }*/
@@ -150,7 +155,7 @@ class DetailViewController: UIViewController {
         contentStackView.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 150, right: 0)
         contentStackView.isLayoutMarginsRelativeArrangement = true
         
-        closeButton.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
+        closeButton.setImage(UIImage(systemName: "xmark.circle.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 22, weight: .semibold)), for: .normal)
         closeButton.imageView?.contentMode = .scaleAspectFit
         closeButton.tintColor = .systemGray
         closeButton.addTarget(self, action: #selector(closeButtonPressed), for: .touchUpInside)
@@ -227,16 +232,22 @@ class DetailViewController: UIViewController {
             
             let isDismissalSuccess = progress >= 1.0
             if isDismissalSuccess {
-                dismissalAnimator?.stopAnimation(false)
-                dismissalAnimator?.addCompletion { [weak self] position in
-                    switch position {
-                    case .end:
-                        self?.dismiss(animated: true)
-                    default:
-                        print("ERROR: Must finish dismissal at end!")
+                if guessDetailPresenter.item.isRevealed || guessDetailPresenter.item.correctlyGuessed {
+                    dismissalAnimator?.stopAnimation(false)
+                    dismissalAnimator?.addCompletion { [weak self] position in
+                        switch position {
+                        case .end:
+                            self?.dismiss(animated: true)
+                        default:
+                            print("ERROR: Must finish dismissal at end!")
+                        }
                     }
+                    dismissalAnimator?.finishAnimation(at: .end)
+                } else {
+                    print("***** SHOULD NOT DISMISS \(Int.random(in: 0..<12))")
+                    cancelGesture(gesture)
+                    presentRevealAndDismissConfirmation()
                 }
-                dismissalAnimator?.finishAnimation(at: .end)
             }
             
         case .ended, .cancelled:
@@ -276,6 +287,25 @@ class DetailViewController: UIViewController {
             animator.fractionComplete = progress
             return animator
         }
+    }
+    
+    func cancelGesture(_ gesture: UIGestureRecognizer) {
+        gesture.isEnabled = false
+        gesture.isEnabled = true
+    }
+    
+    // called when user tries to dismiss detail view without revealing/guessing
+    func presentRevealAndDismissConfirmation() {
+        let alertController = UIAlertController(title: "Reveal", message: "Are you sure you want to reveal the answer?", preferredStyle: .alert)
+        
+        alertController.addAction(UIAlertAction(title: "Reveal", style: .default) { [weak self] _ in
+            self?.guessDetailPresenter.answerWasRevealedDuringAttemptToDismiss()
+        })
+        
+        // do nothing on cancel, just return to guess detail view
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in })
+        
+        self.present(alertController, animated: true)
     }
 }
 

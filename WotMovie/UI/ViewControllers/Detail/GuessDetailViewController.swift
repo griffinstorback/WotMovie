@@ -29,6 +29,7 @@ protocol GuessDetailViewDelegate: NSObjectProtocol {
     func displayError()
     func reloadData()
     func updateItemOnEnterGuessView()
+    func answerWasRevealedDuringAttemptToDismiss()
 }
 
 class GuessDetailViewController: DetailViewController {
@@ -64,7 +65,7 @@ class GuessDetailViewController: DetailViewController {
         enterGuessViewController = EnterGuessViewController(item: item)
         enterGuessContainerView = UIView()
         
-        super.init(posterImageView: posterImageView)
+        super.init(posterImageView: posterImageView, presenter: presenter)
         
         navigationItem.largeTitleDisplayMode = .never
         self.title = "?"
@@ -186,10 +187,15 @@ class GuessDetailViewController: DetailViewController {
         }
     }
     
+    
+    // --- FOLLOWING TWO METHODS satisfy conformance to GuessDetailViewDelegate, so subclasses (title, person detail vc) need not implement.
     // Call this when reloading from title/person detail presenter.
-    // This satisfies conformance to GuessDetailViewDelegate, so subclasses (title, person detail vc) need not implement.
     func updateItemOnEnterGuessView() {
         enterGuessViewController.updateItem(item: guessDetailViewPresenter.item)
+    }
+    // Call this from presenter when super class (DetailViewController) wants to reveal answer (because user tried to dismiss without revealing/guessing)
+    func answerWasRevealedDuringAttemptToDismiss() {
+        revealAnswer()
     }
 }
 

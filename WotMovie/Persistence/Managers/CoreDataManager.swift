@@ -1109,37 +1109,38 @@ final class CoreDataManager: CoreDataManagerProtocol {
     }
     
     func fetchWatchlist(genreID: Int) -> [Entity] {
-        let moviesWatching = fetchMovieWatchlist(genreID: genreID)
-        let tvShowsWatching = fetchTVShowWatchlist(genreID: genreID)
+        var watchlistEntitiesSortedByDateAdded: [(entity: Entity, dateAdded: Date?)] = []
+        watchlistEntitiesSortedByDateAdded += fetchMovieWatchlistEntitiesWithDateAdded(genreID: genreID)
+        watchlistEntitiesSortedByDateAdded += fetchTVShowWatchlistEntitiesWithDateAdded(genreID: genreID)
         
-        return moviesWatching + tvShowsWatching
+        watchlistEntitiesSortedByDateAdded.sort { $0.dateAdded ?? Date.distantPast > $1.dateAdded ?? Date.distantPast }
+        return watchlistEntitiesSortedByDateAdded.map { $0.entity }
     }
     
-    func fetchMovieWatchlist(genreID: Int) -> [Movie] {
+    func fetchMovieWatchlistEntitiesWithDateAdded(genreID: Int) -> [(entity: Movie, dateAdded: Date?)] {
         let moc = coreDataStack.persistentContainer.viewContext
         
         let fetchRequest = NSFetchRequest<MovieWatchlistMO>(entityName: "MovieWatchlist")
-        //fetchRequest.fetchLimit = 20
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "dateAdded", ascending: false)]
         
         do {
             let watchlistResults: [MovieWatchlistMO] = try moc.fetch(fetchRequest)
             
-            var movieMOs = [MovieMO]()
+            var movieAndDates = [(entity: Movie, dateAdded: Date?)]()
             for watchlistResult in watchlistResults {
                 if let movieMO = watchlistResult.movie {
-                    movieMOs.append(movieMO)
+                    movieAndDates.append( (entity: Movie(movieMO: movieMO), dateAdded: watchlistResult.dateAdded) )
                 }
             }
             
-            return movieMOs.map { Movie(movieMO: $0) }
+            return movieAndDates
         } catch {
             print("** Failed to fetch watchlist page.")
             return []
         }
     }
     
-    func fetchTVShowWatchlist(genreID: Int) -> [TVShow] {
+    func fetchTVShowWatchlistEntitiesWithDateAdded(genreID: Int) -> [(entity: TVShow, dateAdded: Date?)] {
         let moc = coreDataStack.persistentContainer.viewContext
         
         let fetchRequest = NSFetchRequest<TVShowWatchlistMO>(entityName: "TVShowWatchlist")
@@ -1148,14 +1149,14 @@ final class CoreDataManager: CoreDataManagerProtocol {
         do {
             let watchlistResults: [TVShowWatchlistMO] = try moc.fetch(fetchRequest)
             
-            var tvShowMOs = [TVShowMO]()
+            var tvShowAndDates = [(entity: TVShow, dateAdded: Date?)]()
             for watchlistResult in watchlistResults {
                 if let tvShowMO = watchlistResult.tvShow {
-                    tvShowMOs.append(tvShowMO)
+                    tvShowAndDates.append( (entity: TVShow(tvShowMO: tvShowMO), dateAdded: watchlistResult.dateAdded) )
                 }
             }
             
-            return tvShowMOs.map { TVShow(tvShowMO: $0) }
+            return tvShowAndDates
         } catch {
             print("** Failed to fetch watchlist page.")
             return []

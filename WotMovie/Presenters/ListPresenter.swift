@@ -71,7 +71,7 @@ class ListPresenter: NSObject, ListPresenterProtocol {
     }
     
     func loadRecentlyViewed() {
-        // Retrieve page of recently viewed, then sort by recently viewed (otherwise RV movies show first, then TV then person when we want it to be mixed)
+        // Retrieve page of recently viewed, then sort by recently viewed (otherwise RV movies show first, then TV then person when we want it to be mixed, not sorted by type)
         let items = coreDataManager.fetchPageOfRecentlyViewed().sorted { $0.lastViewedDate ?? Date.distantPast > $1.lastViewedDate ?? Date.distantPast }
         setRecentlyViewedItems(items: items)
     }

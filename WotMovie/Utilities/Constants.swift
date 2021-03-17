@@ -23,7 +23,21 @@ struct Constants {
     }
     
     struct Colors {
+        // this static color should only be used as backup - the actual default blue is a dynamic color (different in light/dark mode), and is defined in Assets.
         static let defaultBlue: UIColor = UIColor(red: 84/255, green: 101/255, blue: 255/255, alpha: 1.0)
         //static let defaultBlue: UIColor = UIColor(red: 107/255, green: 122/255, blue: 255/255, alpha: 1.0)
+    }
+    
+    // When displaying grid, should omit these items below, for they have descriptions that are either impossible to
+    // guess from, or way too easy; especially important for first impressions (don't want a first time user to see
+    // multiple bad descriptions in a row)
+    struct BadDescriptions {
+        static let movies: Set<Int> = [
+            -1, // MovieName
+        ]
+        
+        static let tvShows: Set<Int> = [
+            -1, // TVShowName
+        ]
     }
 }

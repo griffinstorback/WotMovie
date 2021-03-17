@@ -208,16 +208,16 @@ class ListCategoryGridPresenter: NSObject, ListCategoryGridPresenterProtocol {
         switch sortParameters.listCategoryType {
         case .movieOrTvShowWatchlist:
             let items = coreDataManager.fetchWatchlist(genreID: -1)
-            allItems += items
+            allItems = items
         case .personFavorites:
             let items = coreDataManager.fetchFavoritePeople()
-            allItems += items
+            allItems = items
         case .allGuessed:
             let items = coreDataManager.fetchGuessedEntities()
-            allItems += items
+            allItems = items
         case .allRevealed:
             let items = coreDataManager.fetchRevealedEntities()
-            allItems += items
+            allItems = items
         }
     }
 }
