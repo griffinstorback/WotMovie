@@ -80,13 +80,13 @@ class GuessViewController: UIViewController {
             categoryView.setDelegate(self)
             guessCategoryViews.append(categoryView)
         }
-        if let personCategory = guessViewPresenter.getCategoryFor(type: .person) {
-            categoryView = GuessCategoryView(category: personCategory)
+        if let tvShowCategory = guessViewPresenter.getCategoryFor(type:.tvShow) {
+            categoryView = GuessCategoryView(category: tvShowCategory)
             categoryView.setDelegate(self)
             guessCategoryViews.append(categoryView)
         }
-        if let tvShowCategory = guessViewPresenter.getCategoryFor(type:.tvShow) {
-            categoryView = GuessCategoryView(category: tvShowCategory)
+        if let personCategory = guessViewPresenter.getCategoryFor(type: .person) {
+            categoryView = GuessCategoryView(category: personCategory)
             categoryView.setDelegate(self)
             guessCategoryViews.append(categoryView)
         }
@@ -120,6 +120,14 @@ extension GuessViewController: GuessCategoryViewDelegate {
     func categoryWasSelected(_ type: GuessCategory) {        
         let guessGridViewController = GuessGridViewController(for: type)
         navigationController?.pushViewController(guessGridViewController, animated: true)
+    }
+    
+    func upgradeButtonPressed() {
+        let upgradeViewController = UpgradeViewController()
+        let navigationController = UINavigationController(rootViewController: upgradeViewController)
+        navigationController.modalPresentationStyle = .formSheet
+        
+        present(navigationController, animated: true)
     }
 }
 

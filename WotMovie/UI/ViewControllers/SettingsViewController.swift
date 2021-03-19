@@ -56,7 +56,11 @@ class SettingsViewController: UIViewController {
     }
     
     @objc func upgradeButtonPressed() {
-        print("*** UPGRADE BUTTON PRESSED")
+        let upgradeViewController = UpgradeViewController()
+        let navigationController = UINavigationController(rootViewController: upgradeViewController)
+        navigationController.modalPresentationStyle = .formSheet
+        
+        present(navigationController, animated: true)
     }
     
     override func viewDidLoad() {

@@ -71,17 +71,15 @@ class SortGridPresenter: SortGridPresenterProtocol {
     }
     
     func itemIsSelected(at indexPath: IndexPath) -> Bool {
-        if indexPath.section == 0 {
-            // true if this item is the selected "SortBy" state
-            return SortBy.allCases[indexPath.row] == sortParameters.sortBy
-        }
+        guard indexPath.section == 0 else { return false }
         
-        return false
+        // true if this item is the selected "SortBy" state
+        return SortBy.allCases[indexPath.row] == sortParameters.sortBy
     }
     
     func didSelectItemAt(_ indexPath: IndexPath) {
-        if indexPath.section == 0 {
-            sortParameters.sortBy = SortBy.allCases[indexPath.row]
-        }
+        guard indexPath.section == 0 else { return }
+        
+        sortParameters.sortBy = SortBy.allCases[indexPath.row]
     }
 }

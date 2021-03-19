@@ -40,6 +40,10 @@
 		854B3E912550DDBB003397E0 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854B3E902550DDBA003397E0 /* CoreDataManager.swift */; };
 		854B3E9625537F55003397E0 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854B3E9525537F55003397E0 /* CoreDataStack.swift */; };
 		856FF74125FC362700D438A6 /* ImageCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856FF74025FC362700D438A6 /* ImageCacheManager.swift */; };
+		856FF74626028AE400D438A6 /* UpgradeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856FF74526028AE300D438A6 /* UpgradeViewController.swift */; };
+		856FF74B2602DF2700D438A6 /* IAP_ProductIDs.plist in Resources */ = {isa = PBXBuildFile; fileRef = 856FF74A2602DF2700D438A6 /* IAP_ProductIDs.plist */; };
+		856FF7502602DF9500D438A6 /* IAPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856FF74F2602DF9500D438A6 /* IAPManager.swift */; };
+		856FF75526041BF500D438A6 /* UpgradePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856FF75426041BF400D438A6 /* UpgradePresenter.swift */; };
 		85791AD125C0FC2B00F8FE75 /* ListCategoryGridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85791AD025C0FC2B00F8FE75 /* ListCategoryGridViewController.swift */; };
 		85791AD625C0FCA100F8FE75 /* ListCategoryGridPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85791AD525C0FCA100F8FE75 /* ListCategoryGridPresenter.swift */; };
 		857B353B25B74BB0004CC310 /* CoreData+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 857B353A25B74BB0004CC310 /* CoreData+Extensions.swift */; };
@@ -165,6 +169,10 @@
 		854B3E902550DDBA003397E0 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		854B3E9525537F55003397E0 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		856FF74025FC362700D438A6 /* ImageCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacheManager.swift; sourceTree = "<group>"; };
+		856FF74526028AE300D438A6 /* UpgradeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradeViewController.swift; sourceTree = "<group>"; };
+		856FF74A2602DF2700D438A6 /* IAP_ProductIDs.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = IAP_ProductIDs.plist; sourceTree = "<group>"; };
+		856FF74F2602DF9500D438A6 /* IAPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPManager.swift; sourceTree = "<group>"; };
+		856FF75426041BF400D438A6 /* UpgradePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradePresenter.swift; sourceTree = "<group>"; };
 		85791AD025C0FC2B00F8FE75 /* ListCategoryGridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCategoryGridViewController.swift; sourceTree = "<group>"; };
 		85791AD525C0FCA100F8FE75 /* ListCategoryGridPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCategoryGridPresenter.swift; sourceTree = "<group>"; };
 		857B353A25B74BB0004CC310 /* CoreData+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreData+Extensions.swift"; sourceTree = "<group>"; };
@@ -520,6 +528,8 @@
 				85CF3456252D430C00A101C9 /* AppDelegate.swift */,
 				85CF3458252D430C00A101C9 /* SceneDelegate.swift */,
 				85CF3464252D430F00A101C9 /* LaunchScreen.storyboard */,
+				856FF74A2602DF2700D438A6 /* IAP_ProductIDs.plist */,
+				856FF74F2602DF9500D438A6 /* IAPManager.swift */,
 			);
 			path = Application;
 			sourceTree = "<group>";
@@ -537,6 +547,7 @@
 				85791AD025C0FC2B00F8FE75 /* ListCategoryGridViewController.swift */,
 				853C67B725CF759F00EBEFBE /* SortGridViewController.swift */,
 				8535964C25D9DA3F00F093BA /* StatsViewController.swift */,
+				856FF74526028AE300D438A6 /* UpgradeViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -622,6 +633,7 @@
 				853C67BC25D30E7D00EBEFBE /* SortGridPresenter.swift */,
 				8535964725D8A97000F093BA /* SettingsPresenter.swift */,
 				8535965125D9DA6800F093BA /* StatsPresenter.swift */,
+				856FF75426041BF400D438A6 /* UpgradePresenter.swift */,
 			);
 			path = Presenters;
 			sourceTree = "<group>";
@@ -749,6 +761,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				856FF74B2602DF2700D438A6 /* IAP_ProductIDs.plist in Resources */,
 				85CF3466252D430F00A101C9 /* LaunchScreen.storyboard in Resources */,
 				85CF3463252D430F00A101C9 /* Assets.xcassets in Resources */,
 			);
@@ -846,6 +859,7 @@
 				8588FD18255F51670054EC17 /* DetailPresenterViewController.swift in Sources */,
 				8586DF422555CC540066EE65 /* PersonDetailViewController.swift in Sources */,
 				85905C3F256B01AF00443348 /* PersonEndPoint.swift in Sources */,
+				856FF7502602DF9500D438A6 /* IAPManager.swift in Sources */,
 				8588FD09255F2A8E0054EC17 /* CardTransition.swift in Sources */,
 				8588FD1D256059D10054EC17 /* DetailViewController.swift in Sources */,
 				85CF35702538D38600A101C9 /* TVShow.swift in Sources */,
@@ -886,6 +900,7 @@
 				8586DF54255A15970066EE65 /* ShrinkOnTouchButton.swift in Sources */,
 				85CF354925365D0B00A101C9 /* GuessGridViewController.swift in Sources */,
 				85CF34C4252EB18100A101C9 /* Movie.swift in Sources */,
+				856FF75526041BF500D438A6 /* UpgradePresenter.swift in Sources */,
 				857B353B25B74BB0004CC310 /* CoreData+Extensions.swift in Sources */,
 				8588FD36256887AC0054EC17 /* TitleDetailPresenter.swift in Sources */,
 				85014048254795660088FA3E /* Constants.swift in Sources */,
@@ -915,6 +930,7 @@
 				85CF3461252D430C00A101C9 /* WotMovie.xcdatamodeld in Sources */,
 				85CF34AF252E61CE00A101C9 /* URLParameterEncoder.swift in Sources */,
 				85CF35BC2540E41B00A101C9 /* Person.swift in Sources */,
+				856FF74626028AE400D438A6 /* UpgradeViewController.swift in Sources */,
 				85014069254C7F1D0088FA3E /* EnterGuessControlsView.swift in Sources */,
 				85CF3587253A306100A101C9 /* GridCollectionViewCell.swift in Sources */,
 				8586DF3D2555CC3F0066EE65 /* TitleDetailViewController.swift in Sources */,

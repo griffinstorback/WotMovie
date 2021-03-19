@@ -16,10 +16,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
+        IAPManager.shared.startObserving()
+        
         Appodeal.initialize(withApiKey: "b69e97c9e3951577965b129806e50a3026c74d5ea551fdd0", types: [.banner, .interstitial], hasConsent: false)
         Appodeal.setTestingEnabled(true)
         
         return true
+    }
+    
+    func applicationWillTerminate(_ application: UIApplication) {
+        IAPManager.shared.stopObserving()
     }
 
     // MARK: UISceneSession Lifecycle

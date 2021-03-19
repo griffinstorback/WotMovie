@@ -8,7 +8,7 @@
 import UIKit
 
 // VC presenting SortGridViewController needs to adhere to this protocol and set self as resultsDelegate in order to get results
-protocol SortGridViewResultsDelegate {
+protocol SortGridViewResultsDelegate: NSObjectProtocol {
     func didSaveWithParameters(_ sortParameters: SortParameters)
 }
 
@@ -19,7 +19,7 @@ protocol SortGridViewDelegate: NSObjectProtocol {
 class SortGridViewController: UIViewController {
     let sortGridPresenter: SortGridPresenterProtocol
         
-    var resultsDelegate: SortGridViewResultsDelegate?
+    weak var resultsDelegate: SortGridViewResultsDelegate?
 
     let tableView: UITableView
     
@@ -45,11 +45,8 @@ class SortGridViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         
-        let saveButton = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(saveSortSettings))
-        navigationItem.rightBarButtonItem = saveButton
-        
-        let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonPressed))
-        navigationItem.leftBarButtonItem = cancelButton
+        let closeButton = UIBarButtonItem(title: "Close", style: .done, target: self, action: #selector(closeButtonPressed))
+        navigationItem.rightBarButtonItem = closeButton
     }
     
     private func layoutViews() {
@@ -67,17 +64,16 @@ class SortGridViewController: UIViewController {
         navigationItem.title = "Sort"
     }
     
-    @objc func saveSortSettings() {
-        if let resultsDelegate = resultsDelegate {
-            resultsDelegate.didSaveWithParameters(sortGridPresenter.getSortParameters())
-        } else {
-            print("** WARNING: SortGridViewController save button was pressed, but no results delegate was set, so nothing will happen.")
-        }
+    @objc func closeButtonPressed() {
         self.dismiss(animated: true)
     }
     
-    @objc func cancelButtonPressed() {
-        self.dismiss(animated: true)
+    func saveSettings() {
+        if let resultsDelegate = resultsDelegate {
+            resultsDelegate.didSaveWithParameters(sortGridPresenter.getSortParameters())
+        } else {
+            print("** WARNING: SortGridViewController tried to save sort settings, but no results delegate was set, so nothing will happen.")
+        }
     }
 }
 
@@ -106,7 +102,14 @@ extension SortGridViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        sortGridPresenter.didSelectItemAt(indexPath)
+        // only update settings if the selected row wasn't already selected.
+        if !sortGridPresenter.itemIsSelected(at: indexPath) {
+            sortGridPresenter.didSelectItemAt(indexPath)
+            
+            // save after selection is pressed
+            saveSettings()
+        }
+        
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }

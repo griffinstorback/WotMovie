@@ -9,6 +9,7 @@ import UIKit
 
 protocol GuessCategoryViewDelegate: NSObjectProtocol {
     func categoryWasSelected(_ category: GuessCategory)
+    func upgradeButtonPressed()
 }
 
 class GuessCategoryView: UIView {
@@ -68,7 +69,7 @@ class GuessCategoryView: UIView {
     }
     
     private func setupViews() {
-        backgroundColor = UIColor.systemGray5.withAlphaComponent(0.75)
+        backgroundColor = UIColor.systemGray6//.withAlphaComponent(0.9)
         layer.cornerRadius = 20
         layer.masksToBounds = true
         
@@ -104,8 +105,7 @@ class GuessCategoryView: UIView {
     }
     
     @objc func upgradeButtonPressed() {
-        print("** UPGRADE BUTTON PRESSED")
-        delegate?.categoryWasSelected(category)
+        delegate?.upgradeButtonPressed()
     }
     
     private func layoutViews() {
