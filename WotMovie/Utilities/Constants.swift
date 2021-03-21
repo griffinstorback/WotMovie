@@ -40,4 +40,11 @@ struct Constants {
             -1, // TVShowName
         ]
     }
+    
+    struct KeychainStrings {
+        static let personUpgradePurchasedKey = "person_guessing"
+        static let personUpgradePurchasedValue = "yes"
+    }
 }
+
+

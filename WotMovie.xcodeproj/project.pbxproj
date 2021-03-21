@@ -44,6 +44,7 @@
 		856FF74B2602DF2700D438A6 /* IAP_ProductIDs.plist in Resources */ = {isa = PBXBuildFile; fileRef = 856FF74A2602DF2700D438A6 /* IAP_ProductIDs.plist */; };
 		856FF7502602DF9500D438A6 /* IAPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856FF74F2602DF9500D438A6 /* IAPManager.swift */; };
 		856FF75526041BF500D438A6 /* UpgradePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856FF75426041BF400D438A6 /* UpgradePresenter.swift */; };
+		856FF75B2605725B00D438A6 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856FF75A2605725A00D438A6 /* Keychain.swift */; };
 		85791AD125C0FC2B00F8FE75 /* ListCategoryGridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85791AD025C0FC2B00F8FE75 /* ListCategoryGridViewController.swift */; };
 		85791AD625C0FCA100F8FE75 /* ListCategoryGridPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85791AD525C0FCA100F8FE75 /* ListCategoryGridPresenter.swift */; };
 		857B353B25B74BB0004CC310 /* CoreData+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 857B353A25B74BB0004CC310 /* CoreData+Extensions.swift */; };
@@ -173,6 +174,7 @@
 		856FF74A2602DF2700D438A6 /* IAP_ProductIDs.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = IAP_ProductIDs.plist; sourceTree = "<group>"; };
 		856FF74F2602DF9500D438A6 /* IAPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPManager.swift; sourceTree = "<group>"; };
 		856FF75426041BF400D438A6 /* UpgradePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradePresenter.swift; sourceTree = "<group>"; };
+		856FF75A2605725A00D438A6 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		85791AD025C0FC2B00F8FE75 /* ListCategoryGridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCategoryGridViewController.swift; sourceTree = "<group>"; };
 		85791AD525C0FCA100F8FE75 /* ListCategoryGridPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCategoryGridPresenter.swift; sourceTree = "<group>"; };
 		857B353A25B74BB0004CC310 /* CoreData+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreData+Extensions.swift"; sourceTree = "<group>"; };
@@ -530,6 +532,7 @@
 				85CF3464252D430F00A101C9 /* LaunchScreen.storyboard */,
 				856FF74A2602DF2700D438A6 /* IAP_ProductIDs.plist */,
 				856FF74F2602DF9500D438A6 /* IAPManager.swift */,
+				856FF75A2605725A00D438A6 /* Keychain.swift */,
 			);
 			path = Application;
 			sourceTree = "<group>";
@@ -896,6 +899,7 @@
 				8586DF3825547C810066EE65 /* GuessCategory.swift in Sources */,
 				8501403B2544E22F0088FA3E /* GridCollectionViewFooterView.swift in Sources */,
 				8588FD222560AAA90054EC17 /* CardCollectionViewCell.swift in Sources */,
+				856FF75B2605725B00D438A6 /* Keychain.swift in Sources */,
 				85CF34A0252E5EE400A101C9 /* HTTPMethod.swift in Sources */,
 				8586DF54255A15970066EE65 /* ShrinkOnTouchButton.swift in Sources */,
 				85CF354925365D0B00A101C9 /* GuessGridViewController.swift in Sources */,

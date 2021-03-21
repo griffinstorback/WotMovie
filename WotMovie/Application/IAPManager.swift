@@ -20,7 +20,7 @@ class IAPManager: NSObject {
     var onBuyProductHandler: ((Swift.Result<Bool, Swift.Error>) -> Void)?
     
     fileprivate func getProductIDs() -> [String]? {
-        guard let url = Bundle.main.url(forResource: "IAP_Product_IDs", withExtension: "plist") else { return nil }
+        guard let url = Bundle.main.url(forResource: "IAP_ProductIDs", withExtension: "plist") else { return nil }
         
         do {
             let data = try Data(contentsOf: url)
@@ -70,12 +70,28 @@ class IAPManager: NSObject {
         SKPaymentQueue.default().restoreCompletedTransactions()
     }
     
+    func readReceipt() {
+        
+    }
+    
     func startObserving() {
         SKPaymentQueue.default().add(self)
     }
     
     func stopObserving() {
         SKPaymentQueue.default().remove(self)
+    }
+    
+    // call when user purchases/restores the person category upgrade.
+    private func updateKeychainWithPersonUpgradePurchase() {
+        print("***** (IAP MANAGER) UPDATING KEYCHAIN WITH PERSON UPGRADE PURCHASE, AND SENDING NOTIFICATION THAT USER UPGRADED.")
+        
+        // update keychain to reflect user has purchased the upgrade
+        Keychain.shared[Constants.KeychainStrings.personUpgradePurchasedKey] = Constants.KeychainStrings.personUpgradePurchasedValue
+        
+        // send notification to any view listening that upgrade was purchased.
+        let notification = Notification(name: .WMUserDidUpgrade)
+        NotificationQueue.default.enqueue(notification, postingStyle: .asap)
     }
 }
 
@@ -102,6 +118,7 @@ extension IAPManager: SKPaymentTransactionObserver {
         transactions.forEach { transaction in
             switch transaction.transactionState {
             case .purchased:
+                updateKeychainWithPersonUpgradePurchase()
                 onBuyProductHandler?(.success(true))
                 SKPaymentQueue.default().finishTransaction(transaction)
                 
@@ -131,6 +148,7 @@ extension IAPManager: SKPaymentTransactionObserver {
     
     func paymentQueueRestoreCompletedTransactionsFinished(_ queue: SKPaymentQueue) {
         if totalRestoredPurchases != 0 {
+            updateKeychainWithPersonUpgradePurchase()
             onBuyProductHandler?(.success(true))
         } else {
             print("***** (IAP MANAGER) NO IAP PRODUCTS TO RESTORE")

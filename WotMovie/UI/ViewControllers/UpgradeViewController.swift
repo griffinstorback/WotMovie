@@ -10,6 +10,7 @@ import UIKit
 protocol UpgradeViewDelegate: NSObjectProtocol {
     func reloadData()
     func displayError()
+    func upgradeWasPurchased()
 }
 
 class UpgradeViewController: UIViewController {
@@ -53,8 +54,6 @@ class UpgradeViewController: UIViewController {
     }
     
     @objc func buyUpgradeButtonPressed() {
-        print("***** UPGRADE PURCHASE INITIATED")
-        
         if let deviceCanMakePayments = upgradePresenter.purchasePersonGuessingUpgrade() {
             if !deviceCanMakePayments {
                 print("***** DEVICE CANNOT MAKE PAYMENTS. SHOW ALERT")
@@ -73,12 +72,6 @@ class UpgradeViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-    }
 }
 
 extension UpgradeViewController: UpgradeViewDelegate {
@@ -87,6 +80,10 @@ extension UpgradeViewController: UpgradeViewDelegate {
     }
     
     func displayError() {
-        print("***** ERROR IN UPDATE VIEW CONTROLLER")
+        print("***** ERROR IN UPGRADE VIEW CONTROLLER: \(upgradePresenter.error)")
+    }
+    
+    func upgradeWasPurchased() {
+        self.dismiss(animated: true)
     }
 }

@@ -9,6 +9,7 @@ import Foundation
 
 protocol SettingsPresenterProtocol {
     func setViewDelegate(_ settingsViewDelegate: SettingsViewDelegate?)
+    func isPersonCategoryLocked() -> Bool
     func getNumberOfSections() -> Int
     func getTextForHeaderInSection(_ section: Int) -> String
     func getNumberOfItemsInSection(_ section: Int) -> Int
@@ -18,6 +19,7 @@ protocol SettingsPresenterProtocol {
 
 class SettingsPresenter: SettingsPresenterProtocol {
     let coreDataManager: CoreDataManagerProtocol
+    let keychain: Keychain
     weak var settingsViewDelegate: SettingsViewDelegate?
     
     // static cell data
@@ -27,8 +29,22 @@ class SettingsPresenter: SettingsPresenterProtocol {
         ["Delete all app data"]
     ]
     
-    init(coreDataManager: CoreDataManagerProtocol = CoreDataManager.shared) {
+    init(coreDataManager: CoreDataManagerProtocol = CoreDataManager.shared,
+         keychain: Keychain = Keychain.shared) {
         self.coreDataManager = coreDataManager
+        self.keychain = keychain
+        
+        // listen for notification that user has upgraded
+        NotificationCenter.default.addObserver(self, selector: #selector(upgradeStatusChanged), name: .WMUserDidUpgrade, object: nil)
+    }
+    
+    @objc private func upgradeStatusChanged() {
+        settingsViewDelegate?.reloadData()
+    }
+    
+    func isPersonCategoryLocked() -> Bool {
+        let userHasPurchasedUpgrade = keychain[Constants.KeychainStrings.personUpgradePurchasedKey] == Constants.KeychainStrings.personUpgradePurchasedValue
+        return !userHasPurchasedUpgrade
     }
     
     func setViewDelegate(_ settingsViewDelegate: SettingsViewDelegate?) {

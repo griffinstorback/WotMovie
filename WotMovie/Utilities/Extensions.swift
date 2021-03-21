@@ -107,7 +107,7 @@ extension UIView {
         insertSubview(blurEffectView, at: 0)
     }
     
-    // MARK: - "Scale down size" animation
+// MARK: - "Scale down size" animation
     
     func unselectIfTouchWithinBoundsOfView(_ touches: Set<UITouch>) {
         // if touch ended outside this view, ignore.
@@ -208,3 +208,10 @@ extension UIAlertController {
     }
 }
 */
+
+// MARK: - NOTIFICATIONS
+
+extension Notification.Name {
+    // send from UpgradePresenter when user upgrades - receive wherever upgrade status affects view
+    static let WMUserDidUpgrade = Notification.Name("WMUserDidUpgradeNotification")
+}

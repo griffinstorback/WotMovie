@@ -34,12 +34,14 @@ class GuessCategoryView: UIView {
     
     private let rightEdgeImageViewContainer: UIView
     private let rightPointingArrow: UIImageView
-    private let upgradeButton: ShrinkOnTouchButton // its a button, but we don't need button functionality (this whole view is like a big button already)
+    
+    private var categoryIsLocked: Bool = false // set to true for .person type when user hasn't upgraded yet
+    private let upgradeButton: ShrinkOnTouchButton // its a button, but functionality is same as pressing on view
     
     private let outerHorizontalStack: UIStackView
     
     
-    init(category: GuessCategory) {
+    init(category: GuessCategory, categoryIsLocked: Bool = false) {
         self.category = category
         
         categoryImageView = UIImageView(image: UIImage(named: category.imageName))
@@ -55,6 +57,8 @@ class GuessCategoryView: UIView {
         
         rightEdgeImageViewContainer = UIView()
         rightPointingArrow = UIImageView()
+        
+        self.categoryIsLocked = categoryIsLocked
         upgradeButton = ShrinkOnTouchButton()
         
         outerHorizontalStack = UIStackView()
@@ -73,10 +77,8 @@ class GuessCategoryView: UIView {
         layer.cornerRadius = 20
         layer.masksToBounds = true
         
-        //categoryImageView.tintColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue
         categoryImageView.contentMode = .scaleAspectFit
         
-        //categoryLabel.text = category.title
         categoryLabel.text = category.shortTitle
         categoryLabel.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         categoryLabel.numberOfLines = 2
@@ -114,16 +116,11 @@ class GuessCategoryView: UIView {
         
         outerHorizontalStack.addArrangedSubview(verticalStack)
         
-        // either show right pointing arrow to indicate category is selectable, or show a "Pro" button instead, indicating user needs to upgrade.
-        if category.type != .person {
-            rightEdgeImageViewContainer.addSubview(rightPointingArrow)
-            rightPointingArrow.anchor(top: nil, leading: rightEdgeImageViewContainer.leadingAnchor, bottom: nil, trailing: rightEdgeImageViewContainer.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5), size: CGSize(width: 20, height: 0))
-            rightPointingArrow.anchorToCenter(yAnchor: rightEdgeImageViewContainer.centerYAnchor, xAnchor: nil)
+        // either show right pointing arrow to indicate category is selectable, or show an upgrade button instead, indicating user needs to upgrade.
+        if categoryIsLocked {
+            addUpgradeButtonRemoveChevron()
         } else {
-            rightEdgeImageViewContainer.addSubview(upgradeButton)
-            upgradeButton.anchor(top: nil, leading: rightEdgeImageViewContainer.leadingAnchor, bottom: nil, trailing: rightEdgeImageViewContainer.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 10), size: CGSize(width: 90, height: 0))
-            //upgradeButton.anchor(top: nil, leading: rightEdgeImageViewContainer.leadingAnchor, bottom: nil, trailing: rightEdgeImageViewContainer.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 10))
-            upgradeButton.anchorToCenter(yAnchor: rightEdgeImageViewContainer.centerYAnchor, xAnchor: nil)
+            addChevronRemoveUpgradeButton()
         }
         outerHorizontalStack.addArrangedSubview(rightEdgeImageViewContainer)
         
@@ -192,6 +189,46 @@ class GuessCategoryView: UIView {
         }
     }
     
+    func setCategoryIsLocked(to locked: Bool) {
+        if locked {
+            categoryIsLocked = true
+            addUpgradeButtonRemoveChevron()
+        } else {
+            categoryIsLocked = false
+            addChevronRemoveUpgradeButton()
+        }
+    }
+    
+    private func addUpgradeButtonRemoveChevron() {
+        // remove right pointing chevron (if it exists)
+        if rightEdgeImageViewContainer.subviews.contains(rightPointingArrow) {
+            rightPointingArrow.removeFromSuperview()
+        }
+        
+        // return if upgrade button already exists
+        guard !rightEdgeImageViewContainer.subviews.contains(upgradeButton) else { return }
+        
+        // add upgrade button
+        rightEdgeImageViewContainer.addSubview(upgradeButton)
+        upgradeButton.anchor(top: nil, leading: rightEdgeImageViewContainer.leadingAnchor, bottom: nil, trailing: rightEdgeImageViewContainer.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 10), size: CGSize(width: 90, height: 0))
+        upgradeButton.anchorToCenter(yAnchor: rightEdgeImageViewContainer.centerYAnchor, xAnchor: nil)
+    }
+    
+    private func addChevronRemoveUpgradeButton() {
+        // remove upgrade button (if it exists)
+        if rightEdgeImageViewContainer.subviews.contains(upgradeButton) {
+            upgradeButton.removeFromSuperview()
+        }
+        
+        // return if right pointing chevron already exists
+        guard !rightEdgeImageViewContainer.subviews.contains(rightPointingArrow) else { return }
+        
+        // add right pointing chevron
+        rightEdgeImageViewContainer.addSubview(rightPointingArrow)
+        rightPointingArrow.anchor(top: nil, leading: rightEdgeImageViewContainer.leadingAnchor, bottom: nil, trailing: rightEdgeImageViewContainer.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5), size: CGSize(width: 20, height: 0))
+        rightPointingArrow.anchorToCenter(yAnchor: rightEdgeImageViewContainer.centerYAnchor, xAnchor: nil)
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -211,7 +248,12 @@ class GuessCategoryView: UIView {
         unselectIfTouchWithinBoundsOfView(touches)
         
         if touchIsWithinBoundsOfView(touches) {
-            delegate?.categoryWasSelected(category)
+            // if this category is .person and user hasn't upgraded, tapping category anywhere should display upgrade page
+            if categoryIsLocked {
+                delegate?.upgradeButtonPressed()
+            } else {
+                delegate?.categoryWasSelected(category)
+            }
         }
     }
     

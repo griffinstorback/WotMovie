@@ -22,7 +22,7 @@ class GuessViewController: UIViewController {
     private var guessCategoryViews: [GuessCategoryView]
     
     init(presenter: GuessPresenterProtocol? = nil) {
-        // use provider if provided, otherwise use default
+        // use presenter if provided, otherwise use default
         guessViewPresenter = presenter ?? GuessPresenter()
         scrollView = UIScrollView()
         
@@ -42,9 +42,6 @@ class GuessViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        self.navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.largeTitleDisplayMode = .always
         
         // hide nav bar on this view controller
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
@@ -86,7 +83,7 @@ class GuessViewController: UIViewController {
             guessCategoryViews.append(categoryView)
         }
         if let personCategory = guessViewPresenter.getCategoryFor(type: .person) {
-            categoryView = GuessCategoryView(category: personCategory)
+            categoryView = GuessCategoryView(category: personCategory, categoryIsLocked: guessViewPresenter.isPersonCategoryLocked())
             categoryView.setDelegate(self)
             guessCategoryViews.append(categoryView)
         }
@@ -137,6 +134,11 @@ extension GuessViewController: GuessViewDelegate {
         for categoryView in guessCategoryViews {
             if let category = guessViewPresenter.getCategoryFor(type: categoryView.category.type) {
                 categoryView.category = category
+                
+                // update purchase status for person category
+                if category.type == .person {
+                    categoryView.setCategoryIsLocked(to: guessViewPresenter.isPersonCategoryLocked())
+                }
             }
         }
     }

@@ -298,12 +298,12 @@ class DetailViewController: UIViewController {
     func presentRevealAndDismissConfirmation() {
         let alertController = UIAlertController(title: "Reveal", message: "Are you sure you want to reveal the answer?", preferredStyle: .alert)
         
+        // do nothing on cancel, just return to guess detail view
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
         alertController.addAction(UIAlertAction(title: "Reveal", style: .default) { [weak self] _ in
             self?.guessDetailPresenter.answerWasRevealedDuringAttemptToDismiss()
         })
-        
-        // do nothing on cancel, just return to guess detail view
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in })
         
         self.present(alertController, animated: true)
     }

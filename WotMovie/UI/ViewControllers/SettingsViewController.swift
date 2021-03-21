@@ -36,9 +36,6 @@ class SettingsViewController: UIViewController {
         navigationItem.title = "Settings"
         //self.navigationController?.navigationBar.prefersLargeTitles = true
         
-        let upgradeButton = UIBarButtonItem(title: "Upgrade", style: .done, target: self, action: #selector(upgradeButtonPressed))
-        navigationItem.rightBarButtonItem = upgradeButton
-        
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "SettingsTableViewCell")
         
         tableView.tableFooterView = UIView()
@@ -46,9 +43,21 @@ class SettingsViewController: UIViewController {
         tableView.dataSource = self
     }
     
+    func addUpgradeButton() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upgrade", style: .done, target: self, action: #selector(upgradeButtonPressed))
+    }
+    
+    func removeUpgradeButton() {
+        navigationItem.rightBarButtonItem = nil
+    }
+    
     private func layoutViews() {
         view.addSubview(tableView)
         tableView.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
+        
+        if settingsPresenter.isPersonCategoryLocked() {
+            addUpgradeButton()
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -111,6 +120,11 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
 extension SettingsViewController: SettingsViewDelegate {
     func reloadData() {
         tableView.reloadData()
+        
+        // if user has purchased upgrade, remove the upgrade button from top right.
+        if !settingsPresenter.isPersonCategoryLocked() {
+            removeUpgradeButton()
+        }
     }
     
     func presentDetailViewController(_ vc: UIViewController) {

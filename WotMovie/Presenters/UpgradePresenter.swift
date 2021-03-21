@@ -9,6 +9,7 @@ import Foundation
 import StoreKit
 
 protocol UpgradePresenterProtocol {
+    var error: Error? { get set }
     func setViewDelegate(_ upgradeViewDelegate: UpgradeViewDelegate?)
     func getLocalizedPrice() -> String?
     func purchasePersonGuessingUpgrade() -> Bool?
@@ -19,6 +20,7 @@ class UpgradePresenter: UpgradePresenterProtocol {
     private let imageDownloadManager: ImageDownloadManagerProtocol
     private let coreDataManager: CoreDataManager
     private let iapManager: IAPManager
+    private let keychain: Keychain
     weak var upgradeViewDelegate: UpgradeViewDelegate?
     
     var products: [SKProduct] = [] {
@@ -44,11 +46,13 @@ class UpgradePresenter: UpgradePresenterProtocol {
     init(networkManager: NetworkManagerProtocol = NetworkManager.shared,
          imageDownloadManager: ImageDownloadManagerProtocol = ImageDownloadManager.shared,
          coreDataManager: CoreDataManager = CoreDataManager.shared,
-         iapManager: IAPManager = IAPManager.shared) {
+         iapManager: IAPManager = IAPManager.shared,
+         keychain: Keychain = Keychain.shared) {
         self.networkManager = networkManager
         self.imageDownloadManager = imageDownloadManager
         self.coreDataManager = coreDataManager
         self.iapManager = iapManager
+        self.keychain = keychain
         
         loadIAPProducts()
     }
@@ -83,6 +87,9 @@ class UpgradePresenter: UpgradePresenterProtocol {
     
     // return nil if product not found - false if purchase() returns false (device can't make payments)
     func purchasePersonGuessingUpgrade() -> Bool? {
+        productPurchasedSuccessfully(SKProduct())
+        return nil
+        
         guard products.count > 0 else { return nil }
         return purchase(product: products[0])
     }
@@ -96,8 +103,10 @@ class UpgradePresenter: UpgradePresenterProtocol {
             //delegate.didFinishLoadingTransaction
             
             switch result {
-            case .success(_):
-                self.updateAppDataWithPurchasedProduct(product)
+            case .success(let success):
+                if success {
+                    self.productPurchasedSuccessfully(product)
+                }
             case .failure(let error):
                 self.error = error
             }
@@ -106,8 +115,17 @@ class UpgradePresenter: UpgradePresenterProtocol {
         return true
     }
     
-    private func updateAppDataWithPurchasedProduct(_ product: SKProduct) {
+    private func productPurchasedSuccessfully(_ product: SKProduct) {
         
+        upgradeViewDelegate?.upgradeWasPurchased()
+        
+        // TODO: DELETE THE KEYCHAIN LINE -- ITS DONE IN IAP MANAGER
+        // update keychain to reflect user has purchased the upgrade
+        keychain[Constants.KeychainStrings.personUpgradePurchasedKey] = Constants.KeychainStrings.personUpgradePurchasedValue
+        
+        // send notification to any view listening that upgrade was purchased.
+        let notification = Notification(name: .WMUserDidUpgrade)
+        NotificationQueue.default.enqueue(notification, postingStyle: .asap)
     }
     
     private func loadIAPProducts() {

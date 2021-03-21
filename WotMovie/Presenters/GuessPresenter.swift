@@ -11,11 +11,13 @@ protocol GuessPresenterProtocol {
     func setViewDelegate(guessViewDelegate: GuessViewDelegate?)
     func getCategoryFor(type: CategoryType) -> GuessCategory?
     func updateGuessedCounts()
+    func isPersonCategoryLocked() -> Bool
 }
 
 class GuessPresenter: GuessPresenterProtocol {
     private let networkManager: NetworkManagerProtocol
     private let coreDataManager: CoreDataManager
+    private let keychain: Keychain
     weak private var guessViewDelegate: GuessViewDelegate?
     
     // categories won't change, except for their 'numberGuessed' property, which changes when a user correctly answers a question somewhere else in app.
@@ -27,9 +29,18 @@ class GuessPresenter: GuessPresenterProtocol {
     ]
     
     init(networkManager: NetworkManagerProtocol = NetworkManager.shared,
-         coreDataManager: CoreDataManager = .shared) {
+         coreDataManager: CoreDataManager = .shared,
+         keychain: Keychain = .shared) {
         self.networkManager = networkManager
         self.coreDataManager = coreDataManager
+        self.keychain = keychain
+        
+        // listen for notification that user has upgraded
+        NotificationCenter.default.addObserver(self, selector: #selector(upgradeStatusChanged), name: .WMUserDidUpgrade, object: nil)
+    }
+    
+    @objc private func upgradeStatusChanged() {
+        guessViewDelegate?.reloadData()
     }
     
     func setViewDelegate(guessViewDelegate: GuessViewDelegate?) {
@@ -46,7 +57,11 @@ class GuessPresenter: GuessPresenterProtocol {
         categories[.tvShow]?.numberGuessed = coreDataManager.getNumberGuessedFor(category: .tvShow)
         categories[.person]?.numberGuessed = coreDataManager.getNumberGuessedFor(category: .person)
 
-        
         guessViewDelegate?.reloadData()
+    }
+    
+    func isPersonCategoryLocked() -> Bool {
+        let userHasPurchasedUpgrade = keychain[Constants.KeychainStrings.personUpgradePurchasedKey] == Constants.KeychainStrings.personUpgradePurchasedValue
+        return !userHasPurchasedUpgrade
     }
 }
