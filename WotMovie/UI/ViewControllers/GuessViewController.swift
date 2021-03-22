@@ -15,6 +15,7 @@ class GuessViewController: UIViewController {
     
     private let guessViewPresenter: GuessPresenterProtocol
     
+    private let statusBarCoverView: UIView
     private let scrollView: UIScrollView
     
     private let titleLabel: UILabel
@@ -24,6 +25,8 @@ class GuessViewController: UIViewController {
     init(presenter: GuessPresenterProtocol? = nil) {
         // use presenter if provided, otherwise use default
         guessViewPresenter = presenter ?? GuessPresenter()
+        
+        statusBarCoverView = UIView()
         scrollView = UIScrollView()
         
         titleLabel = UILabel()
@@ -61,6 +64,9 @@ class GuessViewController: UIViewController {
         scrollView.isUserInteractionEnabled = true
         scrollView.delaysContentTouches = false
         scrollView.bounces = true
+        scrollView.delegate = self
+        statusBarCoverView.giveBlurredBackground(style: .systemMaterial)
+        statusBarCoverView.alpha = 0
         
         titleLabel.text = "WotMovie"
         titleLabel.font = UIFont.systemFont(ofSize: 36, weight: .bold)
@@ -110,6 +116,22 @@ class GuessViewController: UIViewController {
         for categoryView in guessCategoryViews {
             guessCategoryStackView.addArrangedSubview(categoryView)
         }
+        
+        scrollView.addSubview(statusBarCoverView)
+        statusBarCoverView.anchor(top: scrollView.topAnchor, leading: scrollView.leadingAnchor, bottom: view.safeAreaLayoutGuide.topAnchor, trailing: scrollView.trailingAnchor)
+    }
+}
+
+extension GuessViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let contentOffset = scrollView.contentOffset.y
+        
+        // hide or unhide the opaque view under status bar, depending on if scrolled to top or not.
+        if contentOffset <= 5 {
+            statusBarCoverView.alpha = max(min(contentOffset/5, 1), 0)
+        } else {
+            statusBarCoverView.alpha = 1
+        }
     }
 }
 
@@ -122,7 +144,7 @@ extension GuessViewController: GuessCategoryViewDelegate {
     func upgradeButtonPressed() {
         let upgradeViewController = UpgradeViewController()
         let navigationController = UINavigationController(rootViewController: upgradeViewController)
-        navigationController.modalPresentationStyle = .formSheet
+        navigationController.modalPresentationStyle = .pageSheet
         
         present(navigationController, animated: true)
     }

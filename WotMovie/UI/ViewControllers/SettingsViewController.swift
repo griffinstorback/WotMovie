@@ -67,7 +67,7 @@ class SettingsViewController: UIViewController {
     @objc func upgradeButtonPressed() {
         let upgradeViewController = UpgradeViewController()
         let navigationController = UINavigationController(rootViewController: upgradeViewController)
-        navigationController.modalPresentationStyle = .formSheet
+        navigationController.modalPresentationStyle = .pageSheet
         
         present(navigationController, animated: true)
     }
@@ -78,7 +78,7 @@ class SettingsViewController: UIViewController {
         view.backgroundColor = .systemBackground
     }
     
-    // for deselecting row after returning from detail. it seems to do the same as just deselecting immediately though?
+    // for deselecting row (animated based on progress of dismissal) after returning from detail. it seems to do the same as just deselecting immediately though?
     /*override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if let selectedIndexPath = tableView.indexPathForSelectedRow {

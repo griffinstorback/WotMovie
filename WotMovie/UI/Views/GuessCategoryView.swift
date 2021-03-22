@@ -22,7 +22,14 @@ class GuessCategoryView: UIView {
     }
     
     static var categoryImageViewSize: CGSize {
-        return CGSize(width: 100, height: 100)
+        switch UIDevice.current.userInterfaceIdiom {
+        case .phone:
+            return CGSize(width: 100, height: 100)
+        case .pad:
+            return CGSize(width: 150, height: 150)
+        default:
+            return CGSize(width: 100, height: 100)
+        }
     }
     
     private let categoryImageView: UIImageView
