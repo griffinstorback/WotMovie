@@ -36,7 +36,7 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
     
     private var currentlyDisplayingGenre: Genre {
         didSet {
-            //
+            // reset items when genre changed
             nextPage = 1
             items.removeAll()
             loadNextPageOfItems()

@@ -17,12 +17,14 @@ class SettingsViewController: UIViewController {
     let settingsPresenter: SettingsPresenterProtocol
     
     let tableView: UITableView
+    let upgradeButton: ShrinkOnTouchButton
 
     init(presenter: SettingsPresenterProtocol? = nil) {
         
         settingsPresenter = presenter ?? SettingsPresenter()
         
         tableView = UITableView(frame: .zero, style: .insetGrouped)
+        upgradeButton = ShrinkOnTouchButton()
         
         super.init(nibName: nil, bundle: nil)
         
@@ -37,14 +39,31 @@ class SettingsViewController: UIViewController {
         //self.navigationController?.navigationBar.prefersLargeTitles = true
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "SettingsTableViewCell")
-        
         tableView.tableFooterView = UIView()
         tableView.delegate = self
         tableView.dataSource = self
+        
+        upgradeButton.setTitle("Upgrade", for: .normal)
+        upgradeButton.backgroundColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue
+        upgradeButton.titleEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+        upgradeButton.setTitleColor(.white, for: .normal)
+        upgradeButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        upgradeButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        upgradeButton.layer.cornerRadius = 10
+        upgradeButton.addTarget(self, action: #selector(upgradeButtonPressed), for: .touchUpInside)
+        
+        // TEMP - DELETE THIS AFTER TESTING IAP PURCHASES (OR COMMENT OUT)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "CLEAR KC", style: .plain, target: self, action: #selector(clearKeychain))
+    }
+    
+    @objc func clearKeychain() {
+        Keychain.shared[Constants.KeychainStrings.personUpgradePurchasedKey] = nil
     }
     
     func addUpgradeButton() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upgrade", style: .done, target: self, action: #selector(upgradeButtonPressed))
+        //navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upgrade", style: .done, target: self, action: #selector(upgradeButtonPressed))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: upgradeButton)
+        upgradeButton.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: CGSize(width: 80, height: 0))
     }
     
     func removeUpgradeButton() {

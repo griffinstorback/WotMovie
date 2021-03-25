@@ -22,6 +22,7 @@
 		8527827A25BD403F00FC257A /* GridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8527827925BD403F00FC257A /* GridViewController.swift */; };
 		8527827F25BF5AB300FC257A /* ListCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8527827E25BF5AB300FC257A /* ListCategory.swift */; };
 		8527828C25C0A96100FC257A /* RecentlyViewedCollectionViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8527828B25C0A96100FC257A /* RecentlyViewedCollectionViewHeader.swift */; };
+		852F44D1260AB2670068917F /* ExamplePersonGuessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 852F44D0260AB2670068917F /* ExamplePersonGuessView.swift */; };
 		8535962625D31DBF00F093BA /* SortParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8535962525D31DBF00F093BA /* SortParameters.swift */; };
 		8535962C25D76F1B00F093BA /* GuessGridPresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8535962B25D76F1B00F093BA /* GuessGridPresenterTests.swift */; };
 		8535963425D76F4900F093BA /* NetworkManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8535963325D76F4900F093BA /* NetworkManagerMock.swift */; };
@@ -152,6 +153,8 @@
 		8527827925BD403F00FC257A /* GridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridViewController.swift; sourceTree = "<group>"; };
 		8527827E25BF5AB300FC257A /* ListCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCategory.swift; sourceTree = "<group>"; };
 		8527828B25C0A96100FC257A /* RecentlyViewedCollectionViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentlyViewedCollectionViewHeader.swift; sourceTree = "<group>"; };
+		852F44BF260923570068917F /* PersonGuessing.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = PersonGuessing.storekit; sourceTree = "<group>"; };
+		852F44D0260AB2670068917F /* ExamplePersonGuessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamplePersonGuessView.swift; sourceTree = "<group>"; };
 		8535962525D31DBF00F093BA /* SortParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortParameters.swift; sourceTree = "<group>"; };
 		8535962B25D76F1B00F093BA /* GuessGridPresenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessGridPresenterTests.swift; sourceTree = "<group>"; };
 		8535963325D76F4900F093BA /* NetworkManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManagerMock.swift; sourceTree = "<group>"; };
@@ -533,6 +536,7 @@
 				856FF74A2602DF2700D438A6 /* IAP_ProductIDs.plist */,
 				856FF74F2602DF9500D438A6 /* IAPManager.swift */,
 				856FF75A2605725A00D438A6 /* Keychain.swift */,
+				852F44BF260923570068917F /* PersonGuessing.storekit */,
 			);
 			path = Application;
 			sourceTree = "<group>";
@@ -620,6 +624,7 @@
 				8588FD212560AAA90054EC17 /* CardCollectionViewCell.swift */,
 				8588FD262561E1BF0054EC17 /* CardView.swift */,
 				853C67B225CC8EF500EBEFBE /* LeftAlignedImageCenteredTextButton.swift */,
+				852F44D0260AB2670068917F /* ExamplePersonGuessView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -889,6 +894,7 @@
 				8535964D25D9DA3F00F093BA /* StatsViewController.swift in Sources */,
 				8501404D2548BAF10088FA3E /* EntityTableSectionHeaderView.swift in Sources */,
 				8535962625D31DBF00F093BA /* SortParameters.swift in Sources */,
+				852F44D1260AB2670068917F /* ExamplePersonGuessView.swift in Sources */,
 				854B3E912550DDBB003397E0 /* CoreDataManager.swift in Sources */,
 				85CF35DB2543A8AD00A101C9 /* HorizontalCollectionViewCell.swift in Sources */,
 				8588FD0E255F38D30054EC17 /* PresentCardAnimator.swift in Sources */,

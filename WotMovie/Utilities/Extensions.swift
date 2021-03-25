@@ -192,6 +192,30 @@ extension UIAlertController {
     }
 }
 
+extension UICollectionView {
+    static func createHorizontalLayout(absoluteHeight: CGFloat = 0) -> UICollectionViewLayout {
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        let groupSize: NSCollectionLayoutSize
+        if absoluteHeight == 0 { // no height was provided, make it fill
+            groupSize = NSCollectionLayoutSize(widthDimension: .absolute(100), heightDimension: .fractionalHeight(1))
+        } else {
+            groupSize = NSCollectionLayoutSize(widthDimension: .absolute(100), heightDimension: .absolute(absoluteHeight))
+        }
+
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        let section = NSCollectionLayoutSection(group: group)
+        section.interGroupSpacing = 5
+        
+        let config = UICollectionViewCompositionalLayoutConfiguration()
+        config.scrollDirection = .horizontal
+        
+        let layout = UICollectionViewCompositionalLayout(section: section, configuration: config)
+        return layout
+    }
+}
+
 // TODO: Trying to compare two arrays, returning indices where they differ, for reloading collection views (like in GuessGridPresenter)
 /*extension Array<T> {
     func differentIndices<T>(_ array1: [T], _ array2: [T]) where T:Comparable {

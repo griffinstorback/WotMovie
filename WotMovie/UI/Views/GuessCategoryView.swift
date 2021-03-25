@@ -21,6 +21,7 @@ class GuessCategoryView: UIView {
         }
     }
     
+    // Image view and Category text label size depend on size of device
     static var categoryImageViewSize: CGSize {
         switch UIDevice.current.userInterfaceIdiom {
         case .phone:
@@ -29,6 +30,16 @@ class GuessCategoryView: UIView {
             return CGSize(width: 150, height: 150)
         default:
             return CGSize(width: 100, height: 100)
+        }
+    }
+    static var categoryLabelFont: UIFont {
+        switch UIDevice.current.userInterfaceIdiom {
+        case .phone:
+            return UIFont.systemFont(ofSize: 20, weight: .bold)
+        case .pad:
+            return UIFont.systemFont(ofSize: 22, weight: .bold)
+        default:
+            return UIFont.systemFont(ofSize: 20, weight: .bold)
         }
     }
     
@@ -87,7 +98,8 @@ class GuessCategoryView: UIView {
         categoryImageView.contentMode = .scaleAspectFit
         
         categoryLabel.text = category.shortTitle
-        categoryLabel.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        //categoryLabel.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        categoryLabel.font = GuessCategoryView.categoryLabelFont
         categoryLabel.numberOfLines = 2
         
         horizontalStack.axis = .horizontal
