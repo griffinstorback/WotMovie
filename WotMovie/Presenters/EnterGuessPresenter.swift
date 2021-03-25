@@ -15,7 +15,7 @@ protocol EnterGuessPresenterProtocol {
     func loadImage(for index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
     func searchResult(for index: Int) -> Entity?
     func search(searchText: String)
-    func isCorrect(index: Int) -> Bool
+    func isCorrect(index: Int) -> Bool?
     func itemHasBeenGuessed(id: Int) -> Bool
     func getPlaceholderText() -> String
     func addItemToWatchlist() -> Bool
@@ -39,13 +39,30 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
         }
     }
     
-    private var searchResults: [Entity] = [] {
+    private func setSearchResults(_ entities: [Entity]) {
+        // Keep it so there are at least 20 results. this helps the tableview populate cells from bottom instead of top
+        // (e.g. if there are only 2 results, we want those two to be at bottom, with 18 blank cells above it)
+        var entities: [Entity?] = entities
+        if entities.count < 20 {
+            for _ in entities.count..<20 {
+                entities.append(nil)
+            }
+        }
+        searchResults = entities.reversed()
+    }
+    private var searchResults: [Entity?] = [] {
         didSet {
+            
+            
+            if searchResults.count < 20 {
+                
+            }
+            
             DispatchQueue.main.async {
                 self.enterGuessViewDelegate?.reloadResults()
             }
         }
-    }    
+    }
     var searchResultsCount: Int {
         return searchResults.count
     }
@@ -114,7 +131,8 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
                 }
                 
                 if let movies = movies {
-                    self?.searchResults = movies.reversed()
+                    self?.setSearchResults(movies)
+                    //self?.searchResults = movies.reversed()
                 }
             }
         case .tvShow:
@@ -125,7 +143,8 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
                 }
                 
                 if let tvShows = tvShows {
-                    self?.searchResults = tvShows.reversed()
+                    self?.setSearchResults(tvShows)
+                    //self?.searchResults = tvShows.reversed()
                 }
             }
         case .person:
@@ -136,15 +155,16 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
                 }
                 
                 if let people = people {
-                    self?.searchResults = people.reversed()
+                    self?.setSearchResults(people)
+                    //self?.searchResults = people.reversed()
                 }
             }
         }
     }
     
-    func isCorrect(index: Int) -> Bool {
+    func isCorrect(index: Int) -> Bool? {
         guard index < searchResults.count else { return false }
-        let selectedItem = searchResults[index]
+        guard let selectedItem = searchResults[index] else { return nil }
         let isCorrect = item.id == selectedItem.id
         
         if isCorrect {

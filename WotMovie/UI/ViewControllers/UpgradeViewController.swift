@@ -23,6 +23,9 @@ class UpgradeViewController: UIViewController {
     let examplePersonGuessView2: ExamplePersonGuessView
     let examplePersonGuessView3: ExamplePersonGuessView
     
+    let infoLabelsTitle: UILabel
+    
+    // kind of convoluted, but each bullet point needs its own view (for correct formatting).
     let infoLabelsStackView: UIStackView
     let infoLabel1Stack: UIStackView
     let infoLabel1Bullet: UILabel
@@ -44,6 +47,8 @@ class UpgradeViewController: UIViewController {
         examplePersonGuessView1 = ExamplePersonGuessView()
         examplePersonGuessView2 = ExamplePersonGuessView()
         examplePersonGuessView3 = ExamplePersonGuessView()
+        
+        infoLabelsTitle = UILabel()
         
         infoLabelsStackView = UIStackView()
         infoLabel1Stack = UIStackView()
@@ -80,27 +85,37 @@ class UpgradeViewController: UIViewController {
         examplePersonGuessView2.layer.cornerRadius = 5
         examplePersonGuessView3.layer.cornerRadius = 5
         
+        let proTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 24, weight: .bold), NSAttributedString.Key.foregroundColor: UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue]
+        let proText = NSMutableAttributedString(string: " PRO", attributes: proTextAttributes)
+        let upgradeToWotMovieTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 24, weight: .bold)]
+        let upgradeToWotMovieText = NSMutableAttributedString(string: upgradePresenter.getTextFor(item: 0), attributes: upgradeToWotMovieTextAttributes)
+        upgradeToWotMovieText.append(proText)
+        infoLabelsTitle.attributedText = upgradeToWotMovieText
+        
         infoLabelsStackView.axis = .vertical
         infoLabelsStackView.spacing = 15
         
         infoLabel1Stack.axis = .horizontal
         infoLabel1Bullet.text = "•"
+        infoLabel1Bullet.textColor = .secondaryLabel
         infoLabel1Bullet.font = UIFont.systemFont(ofSize: 32, weight: .bold)
-        infoLabel1.text = "Guess famous actors, actresses and directors"
+        infoLabel1.text = upgradePresenter.getTextFor(item: 1)
         infoLabel1.font = UIFont.systemFont(ofSize: 18)
         infoLabel1.numberOfLines = 0
         
         infoLabel2Stack.axis = .horizontal
         infoLabel2Bullet.text = "•"
+        infoLabel2Bullet.textColor = .secondaryLabel
         infoLabel2Bullet.font = UIFont.systemFont(ofSize: 32, weight: .bold)
-        infoLabel2.text = "Test your knowlege on THOUSANDS of celebrities"
+        infoLabel2.text = upgradePresenter.getTextFor(item: 2)
         infoLabel2.font = UIFont.systemFont(ofSize: 18)
         infoLabel2.numberOfLines = 0
         
         infoLabel3Stack.axis = .horizontal
         infoLabel3Bullet.text = "•"
+        infoLabel3Bullet.textColor = .secondaryLabel
         infoLabel3Bullet.font = UIFont.systemFont(ofSize: 32, weight: .bold)
-        infoLabel3.text = "Purchase ONCE, unlock PERMANENTLY"
+        infoLabel3.text = upgradePresenter.getTextFor(item: 3)
         infoLabel3.font = UIFont.systemFont(ofSize: 18)
         infoLabel3.numberOfLines = 0
         
@@ -136,7 +151,7 @@ class UpgradeViewController: UIViewController {
         examplePersonGuessViewsStackView.addArrangedSubview(examplePersonGuessView3)
         
         view.addSubview(infoLabelsStackView)
-        infoLabelsStackView.anchor(top: examplePersonGuessViewsStackView.bottomAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, padding: UIEdgeInsets(top: 20, left: 10, bottom: 0, right: 10))
+        infoLabelsStackView.anchor(top: examplePersonGuessViewsStackView.bottomAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, padding: UIEdgeInsets(top: 25, left: 10, bottom: 0, right: 10))
         
         infoLabel1Stack.addArrangedSubview(infoLabel1Bullet)
         infoLabel1Bullet.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: CGSize(width: 20, height: 0))
@@ -150,6 +165,7 @@ class UpgradeViewController: UIViewController {
         infoLabel3Bullet.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: CGSize(width: 20, height: 0))
         infoLabel3Stack.addArrangedSubview(infoLabel3)
         
+        infoLabelsStackView.addArrangedSubview(infoLabelsTitle)
         infoLabelsStackView.addArrangedSubview(infoLabel1Stack)
         infoLabelsStackView.addArrangedSubview(infoLabel2Stack)
         infoLabelsStackView.addArrangedSubview(infoLabel3Stack)

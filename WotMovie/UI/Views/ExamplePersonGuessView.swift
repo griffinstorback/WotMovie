@@ -36,7 +36,7 @@ class ExamplePersonGuessView: UIView {
         
         questionMarkLabel.text = "?"
         questionMarkLabel.textColor = .label
-        questionMarkLabel.font = UIFont.systemFont(ofSize: 28, weight: .bold)
+        questionMarkLabel.font = UIFont.systemFont(ofSize: 32, weight: .bold)
     }
     
     private func layoutViews() {
@@ -45,7 +45,7 @@ class ExamplePersonGuessView: UIView {
         imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: 2/3).isActive = true
         
         addSubview(questionMarkLabel)
-        questionMarkLabel.anchor(top: imageView.bottomAnchor, leading: nil, bottom: bottomAnchor, trailing: nil, size: CGSize(width: 0, height: 30))
+        questionMarkLabel.anchor(top: imageView.bottomAnchor, leading: nil, bottom: bottomAnchor, trailing: nil, size: CGSize(width: 0, height: 40))
         questionMarkLabel.anchorToCenter(yAnchor: nil, xAnchor: centerXAnchor)
     }
     

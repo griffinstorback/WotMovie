@@ -114,9 +114,15 @@ class EnterGuessViewController: UIViewController {
         let constraintHeight = view.frame.height - view.safeAreaInsets.bottom - keyboardHeight + spacingBetweenKeyboardAndTextView
         
         enterGuessControlsViewBottomConstraint.constant = -constraintHeight
-        UIView.animate(withDuration: 0.5) {
-            self.view.layoutIfNeeded()
-        }
+        UIView.animate(withDuration: 0.5,
+            animations: {
+                self.view.layoutIfNeeded()
+            },
+            completion: { [weak self] _ in
+                print("done animation")
+                self?.scrollToBottom(animated: true)
+            }
+        )
     }
     
     // Change constraint so it touches bottom of screen, but don't hide the results table view (see searchBar didEndEditing below)
@@ -161,6 +167,7 @@ extension EnterGuessViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ResultsCell") as! EntityTableViewCell
         
+        // return empty cell, if item is empty (nil)
         guard let item = enterGuessPresenter.searchResult(for: indexPath.row) else { return cell }
         
         cell.setName(text: item.name)
@@ -168,18 +175,29 @@ extension EnterGuessViewController: UITableViewDelegate, UITableViewDataSource {
         enterGuessPresenter.loadImage(for: indexPath.row, completion: cell.setImage)
         cell.backgroundColor = .clear
         
+        // need to set this here, because its set to .none in the cell's prepareForReuse (so that empty cells can't be tapped at all)
+        cell.selectionStyle = .default
+        
         // if this item already been guessed (cell was tapped), display 'X' on right, indicating not the answer (otherwise remove accessory view)
-        cell.accessoryView = enterGuessPresenter.itemHasBeenGuessed(id: item.id) ? UIImageView(image: UIImage(named: "wrong")) : .none
+        let xIconImageView = UIImageView(image: UIImage(systemName: "xmark", withConfiguration: UIImage.SymbolConfiguration(pointSize: 24, weight: .heavy))?.withRenderingMode(.alwaysTemplate))
+        xIconImageView.tintColor = .systemRed
+        cell.accessoryView = enterGuessPresenter.itemHasBeenGuessed(id: item.id) ? xIconImageView : .none
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // if nil is returned, it means this cell has no item in it (empty cell)
+        guard let isCorrect = enterGuessPresenter.isCorrect(index: indexPath.row) else {
+            tableView.deselectRow(at: indexPath, animated: false)
+            return
+        }
+        
         // haptic- give light single tap for attempt
         let generator = UIImpactFeedbackGenerator(style: .light)
         generator.impactOccurred()
         
-        if enterGuessPresenter.isCorrect(index: indexPath.row) {
+        if isCorrect {
             // additional success haptic if correct
             let generator = UINotificationFeedbackGenerator()
             generator.notificationOccurred(.success)
@@ -253,6 +271,7 @@ extension EnterGuessViewController: EnterGuessControlsDelegate {
         }
         
         enterGuessPresenter.search(searchText: query)
+        scrollToBottom()
     }
 }
 
@@ -276,10 +295,10 @@ extension EnterGuessViewController: EnterGuessViewDelegate {
     }
     
     // scroll to bottom when new results will be shown (because most relevant items start from bottom)
-    func scrollToBottom() {
+    func scrollToBottom(animated: Bool = false) {
         if enterGuessPresenter.searchResultsCount > 0 {
             let lastRow = IndexPath(row: enterGuessPresenter.searchResultsCount-1, section: 0)
-            resultsTableView.scrollToRow(at: lastRow, at: .bottom, animated: false)
+            resultsTableView.scrollToRow(at: lastRow, at: .bottom, animated: animated)
         }
     }
 }

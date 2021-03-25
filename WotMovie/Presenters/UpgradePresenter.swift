@@ -12,8 +12,7 @@ protocol UpgradePresenterProtocol {
     var error: Error? { get set }
     func setViewDelegate(_ upgradeViewDelegate: UpgradeViewDelegate?)
     
-    func getNumberOfPeopleInCarousel() -> Int
-    func getPersonInCarouselForIndex(_ index: Int) -> Person?
+    func getTextFor(item: Int) -> String
     func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?) -> Void)
     
     func getLocalizedPrice() -> String?
@@ -29,6 +28,14 @@ class UpgradePresenter: UpgradePresenterProtocol {
     private let iapManager: IAPManager
     private let keychain: Keychain
     weak var upgradeViewDelegate: UpgradeViewDelegate?
+    
+    // the text to display in the info labels. (first item is the title)
+    private let infoLabelTexts: [String] = [
+        "Upgrade to WotMovie",
+        "Guess famous actors, actresses and directors",
+        "Test your knowlege on THOUSANDS of celebrities",
+        "Purchase ONCE, unlock PERMANENTLY"
+    ]
     
     // this list should always contain 3 entries (if less than three, fill missing ones with empty person in VC)
     private var examplePeople: [Person] = [] {
@@ -79,17 +86,12 @@ class UpgradePresenter: UpgradePresenterProtocol {
         self.upgradeViewDelegate = upgradeViewDelegate
     }
     
-    func getNumberOfPeopleInCarousel() -> Int {
-        return max(3, examplePeople.count)
-    }
-    
-    func getPersonInCarouselForIndex(_ index: Int) -> Person? {
-        if index < examplePeople.count {
-            return examplePeople[index]
-        } else {
-            // if index is out of range, return nil, indicating a default image should be used in place of an actual person.
-            return nil
-        }
+    // we say ITEM not INDEX because index 0 is the title
+    func getTextFor(item: Int) -> String {
+        // guard statement should never be hit - we are explicitly calling the right indexes from VC
+        guard item < infoLabelTexts.count else { return "" }
+        
+        return infoLabelTexts[item]
     }
     
     func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?) -> Void) {
@@ -132,8 +134,10 @@ class UpgradePresenter: UpgradePresenterProtocol {
             case .success(let success):
                 if success {
                     // did finish restoring purchased products
+                    print("**** DID FINISH RESTORING PURCHASED PRODUCTS")
                 } else {
                     // did finish restoring purchases with 0 products
+                    print("**** DID FINISH RESTORING PURCHASED PRODUCTS WITH 0 PRODUCTS")
                 }
             case .failure(let error):
                 self.error = error
@@ -231,6 +235,8 @@ class UpgradePresenter: UpgradePresenterProtocol {
     private func productPurchasedSuccessfully(_ product: SKProduct) {
         
         upgradeViewDelegate?.upgradeWasPurchased()
+        
+        return
         
         // TODO: DELETE THE KEYCHAIN LINE -- ITS DONE IN IAP MANAGER
         // update keychain to reflect user has purchased the upgrade

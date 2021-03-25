@@ -15,10 +15,11 @@ class EntityTableViewCell: UITableViewCell {
     // stored to compare against incoming images in setImage (make sure they are correct image for path)
     private var imagePath: String = ""
     
+    private var profileImageBackgroundColor: UIColor = .systemGray4
     lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.backgroundColor = .systemGray4
+        imageView.backgroundColor = .clear // init as clear - but as soon as title, subtitle, image are set, set background to profileImageBackgroundColor to show its loading
         imageView.layer.cornerRadius = EntityTableViewCell.cellHeight * Constants.imageCornerRadiusRatio
         imageView.layer.masksToBounds = true
         return imageView
@@ -47,7 +48,12 @@ class EntityTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        setupViews()
         layoutViews()
+    }
+    
+    func setupViews() {
+        backgroundColor = .clear
         
         // TODO replace image with N/A image
         //setImage(image: UIImage(systemName: "x.circle.fill"))
@@ -77,8 +83,16 @@ class EntityTableViewCell: UITableViewCell {
     }
     
     override func prepareForReuse() {
+        backgroundColor = .clear
         profileImageView.image = nil
+        profileImageView.backgroundColor = .clear
         imagePath = ""
+        
+        nameLabel.text = ""
+        subtitleLabel.text = ""
+        
+        accessoryView = .none
+        selectionStyle = .none
     }
     
     func setImagePath(imagePath: String) {
@@ -86,16 +100,20 @@ class EntityTableViewCell: UITableViewCell {
     }
     
     func setImage(image: UIImage?, imagePath: String?) {
+        profileImageView.backgroundColor = profileImageBackgroundColor // the cell isn't empty, and we show this by showing a blank (or loading) image instead of clear
+        
         if let image = image, let imagePath = imagePath, self.imagePath == imagePath {
             profileImageView.image = image
         }
     }
     
     func setName(text: String) {
+        profileImageView.backgroundColor = profileImageBackgroundColor // the cell isn't empty, and we show this by showing a blank (or loading) image instead of clear
         nameLabel.text = text
     }
     
     func setSubtitle(text: String) {
+        profileImageView.backgroundColor = profileImageBackgroundColor // the cell isn't empty, and we show this by showing a blank (or loading) image instead of clear
         subtitleLabel.text = text
     }
 }
