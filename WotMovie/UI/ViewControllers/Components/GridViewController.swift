@@ -14,9 +14,11 @@ class GridViewController: DetailPresenterViewController {
     weak var transitionPresenter: TransitionPresenterProtocol?
     
     private let spacingAmount: CGFloat = 5
-    private let minimumCellWidth: CGFloat = 120 // max is (2 * minimum)
+    private let minimumCellWidth: CGFloat = 120 // max is (2 * minimum) - 1
     func screenWidth() -> CGFloat { collectionView.bounds.width }
-    func numberOfCellsPerRow() -> Int { Int(screenWidth()/minimumCellWidth) }
+    
+    // number of cells per row is as many as can fit (based on minimumCellWidth), but make it at least 3 (this only really affects iphone SE 1)
+    func numberOfCellsPerRow() -> Int { max(Int(screenWidth()/(minimumCellWidth)), 3) }
     func spacing() -> CGFloat { spacingAmount - spacingAmount/CGFloat(numberOfCellsPerRow()) }
     
     init() {
@@ -127,20 +129,33 @@ class GridViewController: DetailPresenterViewController {
         
         present(guessDetailViewController, fromCard: fromCard, startHidden: !item.isRevealed && !item.correctlyGuessed, transitionPresenter: transitionPresenter)
     }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        // for ipad specifically - when rotating, the layout doesnt correctly recalculate item sizes.
+        DispatchQueue.main.async {
+            self.collectionView.collectionViewLayout.invalidateLayout()
+        }
+    }
 }
 
 extension GridViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
+        // There is a possible rounding error when calculating width of cell.
+        // e.g. 3 items try to fit into space of 10 by all being 3.333334 (added together end up being 10.000001), leading to only 2 being shown with large gap in between
+        let possibleRoundingError: CGFloat = 0.01
+        let itemWidth = screenWidth()/CGFloat(numberOfCellsPerRow()) - spacing() - possibleRoundingError
         
-        return CGSize(width: screenWidth()/CGFloat(numberOfCellsPerRow()) - spacing(), height: (screenWidth()/CGFloat(numberOfCellsPerRow()))*1.5)
+        return CGSize(width: itemWidth, height: itemWidth * 1.5)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 5
+        return spacingAmount
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 5
+        return spacingAmount
     }
 }

@@ -104,7 +104,6 @@ class GuessCategoryView: UIView {
         categoryImageView.contentMode = .scaleAspectFit
         
         categoryLabel.text = category.shortTitle
-        //categoryLabel.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         categoryLabel.font = GuessCategoryView.categoryLabelFont
         categoryLabel.numberOfLines = 2
         
