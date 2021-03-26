@@ -101,11 +101,13 @@ class PersonDetailViewController: GuessDetailViewController {
     private func layoutViews() {
         addViewToStackView(personOverviewView)
         
-        switch state {
+        
+        switch self.state {
         case .fullyHidden:
             addShowHintButton()
         case .hintShown:
             addInfo()
+            break
         case .revealed, .revealedWithNoNextButton, .correct, .correctWithNoNextButton:
             addInfo()
             personOverviewView.setName(personDetailViewPresenter.getTitle())
@@ -115,9 +117,16 @@ class PersonDetailViewController: GuessDetailViewController {
                 addCheckMarkIcon(animated: false)
             }
         }
+        
+        // sometimes collectionviews sizes are wrong when added here (this method runs before view appears)
+        DispatchQueue.main.async {
+            self.reloadInfoCollectionViews()
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
         switch state {
         case .correct, .correctWithNoNextButton:
             personOverviewView.setPosterImageState(.correctlyGuessedWithoutCheckmark, animated: true)
@@ -126,6 +135,9 @@ class PersonDetailViewController: GuessDetailViewController {
         case .fullyHidden, .hintShown:
             personOverviewView.setPosterImageState(.revealWhileDetailOpenButHideOnGrid, animated: true)
         }
+        
+        // refresh collection views again, because sometimes sizing is wrong after view appears.
+        reloadInfoCollectionViews()
     }
     
     private func addInfo() {
@@ -162,6 +174,11 @@ class PersonDetailViewController: GuessDetailViewController {
         addChildToStackView(wroteCollectionView)
         
         // refresh and reload all the collection views. This fixes bug where collection view cells are sometimes wrong size/no label after being added
+        reloadInfoCollectionViews()
+    }
+    
+    // this method is called multiple times throughout the layout process, because the sizing of the collection views within the stack view can be buggy
+    func reloadInfoCollectionViews() {
         knownForCollectionView.reloadData()
         actorInCollectionView.reloadData()
         directedCollectionView.reloadData()
@@ -247,9 +264,7 @@ extension PersonDetailViewController: GuessDetailViewDelegate {
         wroteCollectionView.reloadData()
         updateItemOnEnterGuessView() // this is defined in parent class GuessDetailVC
         view.layoutIfNeeded()
-        
-        print("*** RELOADING DATA in PersonDetailVC: item: \(guessDetailViewPresenter.item)")
-        
+                
         // don't set state if it was presented from a non guess grid (i.e. Watching or Favorites)
         if state == .revealedWithNoNextButton || state == .correctWithNoNextButton {
             

@@ -935,7 +935,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
         personPageMO.lastUpdated = Date()
         personPageMO.region = Locale.autoupdatingCurrent.regionCode
         
-        // reset tvShow objects in this page, if there are any, then add the ones passed in.
+        // reset person objects in this page, if there are any, then add the ones passed in.
         personPageMO.removeAllObjects(for: "people")
         addPeopleToPersonPageMO(people: people, personPageMO: personPageMO)
 

@@ -145,6 +145,8 @@ class GuessDetailViewController: DetailViewController {
     }
     
     func addShowHintButton() {
+        guard !contentStackView.arrangedSubviews.contains(showHintButtonContainer) else { return }
+        
         contentStackView.addArrangedSubview(showHintButtonContainer)
         
         showHintButtonContainer.addSubview(showHintButton)
