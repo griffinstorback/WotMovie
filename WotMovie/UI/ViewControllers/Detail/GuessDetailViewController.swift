@@ -35,7 +35,11 @@ protocol GuessDetailViewDelegate: NSObjectProtocol {
 class GuessDetailViewController: DetailViewController {
     
     let guessDetailViewPresenter: GuessDetailPresenterProtocol
-    var state: GuessDetailViewState
+    override var state: GuessDetailViewState {
+        didSet {
+            print("&&* didset state in GussDetailViewController")
+        }
+    }
         
     // checkmark icon that is shown when correctly guessed
     private let checkMarkIconImageView: UIImageView
@@ -51,7 +55,7 @@ class GuessDetailViewController: DetailViewController {
     private var enterGuessContainerViewTopConstraint: NSLayoutConstraint!
     
     init(item: Entity, posterImageView: PosterImageView, state: GuessDetailViewState, presenter: GuessDetailPresenterProtocol) {
-        self.state = state
+        //self.state = state
         
         guessDetailViewPresenter = presenter
         
@@ -65,7 +69,7 @@ class GuessDetailViewController: DetailViewController {
         enterGuessViewController = EnterGuessViewController(item: item)
         enterGuessContainerView = UIView()
         
-        super.init(posterImageView: posterImageView, presenter: presenter)
+        super.init(posterImageView: posterImageView, state: state, presenter: presenter)
         
         navigationItem.largeTitleDisplayMode = .never
         self.title = "?"

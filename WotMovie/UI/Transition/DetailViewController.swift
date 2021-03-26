@@ -13,6 +13,7 @@ class DetailViewController: UIViewController {
     
     weak var transitionPresenter: TransitionPresenterProtocol?
     let guessDetailPresenter: GuessDetailPresenterProtocol
+    var state: GuessDetailViewState
     
     // amount view will change when dragging down or on screen edge
     static let targetShrinkScale: CGFloat = 0.85
@@ -60,7 +61,9 @@ class DetailViewController: UIViewController {
         return edgePan
     }()
     
-    init(posterImageView: PosterImageView, presenter: GuessDetailPresenterProtocol) {
+    init(posterImageView: PosterImageView, state: GuessDetailViewState, presenter: GuessDetailPresenterProtocol) {
+        self.state = state
+        
         guessDetailPresenter = presenter
         
         scrollView = UIScrollView()
@@ -232,7 +235,8 @@ class DetailViewController: UIViewController {
             
             let isDismissalSuccess = progress >= 1.0
             if isDismissalSuccess {
-                if guessDetailPresenter.item.isRevealed || guessDetailPresenter.item.correctlyGuessed {
+                //if guessDetailPresenter.item.isRevealed || guessDetailPresenter.item.correctlyGuessed {
+                if state != .fullyHidden && state != .hintShown {
                     dismissalAnimator?.stopAnimation(false)
                     dismissalAnimator?.addCompletion { [weak self] position in
                         switch position {
