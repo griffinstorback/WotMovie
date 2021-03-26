@@ -21,15 +21,22 @@ class GuessCategoryView: UIView {
         }
     }
     
-    // Image view and Category text label size depend on size of device
-    static var categoryImageViewSize: CGSize {
+    override var bounds: CGRect {
+        didSet {
+            // update corner radius when bounds change.
+            layer.cornerRadius = bounds.height * Constants.guessCategoryViewRadiusRatio
+        }
+    }
+    
+    // Image view width/height ratio, and Category text label size, depend on size of device
+    static var categoryImageViewSizeRatio: CGFloat {
         switch UIDevice.current.userInterfaceIdiom {
         case .phone:
-            return CGSize(width: 100, height: 100)
+            return 0.25
         case .pad:
-            return CGSize(width: 150, height: 150)
+            return 0.2
         default:
-            return CGSize(width: 100, height: 100)
+            return 0.25
         }
     }
     static var categoryLabelFont: UIFont {
@@ -92,7 +99,6 @@ class GuessCategoryView: UIView {
     
     private func setupViews() {
         backgroundColor = UIColor.systemGray6//.withAlphaComponent(0.9)
-        layer.cornerRadius = 20
         layer.masksToBounds = true
         
         categoryImageView.contentMode = .scaleAspectFit
@@ -141,45 +147,17 @@ class GuessCategoryView: UIView {
         } else {
             addChevronRemoveUpgradeButton()
         }
-        outerHorizontalStack.addArrangedSubview(rightEdgeImageViewContainer)
         
         verticalStack.addArrangedSubview(horizontalStack)
         horizontalStack.addArrangedSubview(categoryImageView)
-        categoryImageView.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: GuessCategoryView.categoryImageViewSize)
+        categoryImageView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: GuessCategoryView.categoryImageViewSizeRatio).isActive = true
+        categoryImageView.heightAnchor.constraint(equalTo: widthAnchor, multiplier: GuessCategoryView.categoryImageViewSizeRatio).isActive = true
+        
         horizontalStack.addArrangedSubview(categoryLabel)
         
         if let numberGuessedLabel = numberGuessedLabel {
             verticalStack.addArrangedSubview(numberGuessedLabel)
         }
-        
-        
-        // ALTERNATE ATTEMPT BELOW (using no stack views)
-        
-        /*addSubview(rightEdgeImageViewContainer)
-        rightEdgeImageViewContainer.anchor(top: topAnchor, leading: nil, bottom: bottomAnchor, trailing: trailingAnchor)
-        
-        rightEdgeImageViewContainer.addSubview(rightPointingArrow)
-        rightPointingArrow.anchor(top: nil, leading: rightEdgeImageViewContainer.leadingAnchor, bottom: nil, trailing: rightEdgeImageViewContainer.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5), size: CGSize(width: 20, height: 0))
-        rightPointingArrow.anchorToCenter(yAnchor: rightEdgeImageViewContainer.centerYAnchor, xAnchor: nil)
-        
-        let numberGuessedLabelContainer = UIView()
-        addSubview(numberGuessedLabelContainer)
-        if let numberGuessedLabel = numberGuessedLabel {
-            numberGuessedLabelContainer.addSubview(numberGuessedLabel)
-            numberGuessedLabel.anchor(top: numberGuessedLabelContainer.topAnchor, leading: numberGuessedLabelContainer.leadingAnchor, bottom: numberGuessedLabelContainer.bottomAnchor, trailing: numberGuessedLabelContainer.trailingAnchor)
-        }
-        numberGuessedLabelContainer.anchor(top: nil, leading: leadingAnchor, bottom: bottomAnchor, trailing: rightEdgeImageViewContainer.leadingAnchor)
-        
-        addSubview(categoryImageView)
-        categoryImageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: numberGuessedLabelContainer.topAnchor, trailing: nil)
-        
-        let categoryLabelContainer = UIView()
-        addSubview(categoryLabelContainer)
-        categoryLabelContainer.anchor(top: topAnchor, leading: categoryImageView.trailingAnchor, bottom: numberGuessedLabelContainer.topAnchor, trailing: rightEdgeImageViewContainer.leadingAnchor)
-        
-        categoryLabelContainer.addSubview(categoryLabel)
-        categoryLabel.anchor(top: nil, leading: categoryLabelContainer.leadingAnchor, bottom: nil, trailing: categoryLabelContainer.trailingAnchor)
-        categoryLabel.anchorToCenter(yAnchor: categoryLabelContainer.centerYAnchor, xAnchor: nil)*/
     }
     
     func setDelegate(_ delegate: GuessCategoryViewDelegate) {
@@ -220,27 +198,30 @@ class GuessCategoryView: UIView {
     
     private func addUpgradeButtonRemoveChevron() {
         // remove right pointing chevron (if it exists)
-        if rightEdgeImageViewContainer.subviews.contains(rightPointingArrow) {
+        if subviews.contains(rightEdgeImageViewContainer) {
+            outerHorizontalStack.removeArrangedSubview(rightEdgeImageViewContainer)
             rightPointingArrow.removeFromSuperview()
+            rightEdgeImageViewContainer.removeFromSuperview()
         }
         
-        // return if upgrade button already exists
-        guard !rightEdgeImageViewContainer.subviews.contains(upgradeButton) else { return }
+        guard !subviews.contains(upgradeButton) else { return }
         
-        // add upgrade button
-        rightEdgeImageViewContainer.addSubview(upgradeButton)
-        upgradeButton.anchor(top: nil, leading: rightEdgeImageViewContainer.leadingAnchor, bottom: nil, trailing: rightEdgeImageViewContainer.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 10), size: CGSize(width: 90, height: 0))
-        upgradeButton.anchorToCenter(yAnchor: rightEdgeImageViewContainer.centerYAnchor, xAnchor: nil)
+        // add upgrade button as overlay (so that it doesnt cramp the text fields)
+        addSubview(upgradeButton)
+        upgradeButton.anchor(top: nil, leading: nil, bottom: nil, trailing: trailingAnchor, padding: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10), size: CGSize(width: 90, height: 0))
+        upgradeButton.anchorToCenter(yAnchor: centerYAnchor, xAnchor: nil)
     }
     
     private func addChevronRemoveUpgradeButton() {
         // remove upgrade button (if it exists)
-        if rightEdgeImageViewContainer.subviews.contains(upgradeButton) {
+        if subviews.contains(upgradeButton) {
             upgradeButton.removeFromSuperview()
         }
         
-        // return if right pointing chevron already exists
-        guard !rightEdgeImageViewContainer.subviews.contains(rightPointingArrow) else { return }
+        // return if right pointing chevron already exists in horizontal stack view
+        guard !outerHorizontalStack.arrangedSubviews.contains(rightEdgeImageViewContainer) else { return }
+        
+        outerHorizontalStack.addArrangedSubview(rightEdgeImageViewContainer)
         
         // add right pointing chevron
         rightEdgeImageViewContainer.addSubview(rightPointingArrow)

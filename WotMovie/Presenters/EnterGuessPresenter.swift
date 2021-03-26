@@ -52,12 +52,6 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
     }
     private var searchResults: [Entity?] = [] {
         didSet {
-            
-            
-            if searchResults.count < 20 {
-                
-            }
-            
             DispatchQueue.main.async {
                 self.enterGuessViewDelegate?.reloadResults()
             }
@@ -132,7 +126,6 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
                 
                 if let movies = movies {
                     self?.setSearchResults(movies)
-                    //self?.searchResults = movies.reversed()
                 }
             }
         case .tvShow:
@@ -144,7 +137,6 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
                 
                 if let tvShows = tvShows {
                     self?.setSearchResults(tvShows)
-                    //self?.searchResults = tvShows.reversed()
                 }
             }
         case .person:
@@ -156,7 +148,6 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
                 
                 if let people = people {
                     self?.setSearchResults(people)
-                    //self?.searchResults = people.reversed()
                 }
             }
         }

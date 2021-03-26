@@ -19,6 +19,8 @@ class GuessViewController: UIViewController {
     private let scrollView: UIScrollView
     
     private let titleLabel: UILabel
+    
+    private let guessCategoryStackViewContainer: UIView
     private let guessCategoryStackView: UIStackView
     private var guessCategoryViews: [GuessCategoryView]
     
@@ -30,6 +32,8 @@ class GuessViewController: UIViewController {
         scrollView = UIScrollView()
         
         titleLabel = UILabel()
+        
+        guessCategoryStackViewContainer = UIView()
         guessCategoryStackView = UIStackView()
         guessCategoryViews = []
         
@@ -73,7 +77,7 @@ class GuessViewController: UIViewController {
         guessCategoryStackView.axis = .vertical
         guessCategoryStackView.alignment = .fill
         guessCategoryStackView.spacing = 20
-        guessCategoryStackView.layoutMargins = UIEdgeInsets(top: 30, left: 30, bottom: 30, right: 30)
+        guessCategoryStackView.layoutMargins = UIEdgeInsets(top: 30, left: 0, bottom: 30, right: 0)
         guessCategoryStackView.isLayoutMarginsRelativeArrangement = true
         
         // add categories to guessCategoryViews list
@@ -104,13 +108,18 @@ class GuessViewController: UIViewController {
         view.addSubview(scrollView)
         scrollView.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
         
-        scrollView.addSubview(guessCategoryStackView)
-        guessCategoryStackView.anchor(top: scrollView.topAnchor, leading: scrollView.leadingAnchor, bottom: scrollView.bottomAnchor, trailing: scrollView.trailingAnchor)
-        guessCategoryStackView.anchorSize(height: nil, width: scrollView.widthAnchor)
+        scrollView.addSubview(guessCategoryStackViewContainer)
+        guessCategoryStackViewContainer.anchor(top: scrollView.topAnchor, leading: scrollView.leadingAnchor, bottom: scrollView.bottomAnchor, trailing: scrollView.trailingAnchor)
+        guessCategoryStackViewContainer.anchorSize(height: nil, width: scrollView.widthAnchor)
         
-        //view.addSubview(guessCategoryStackView)
-        //guessCategoryStackView.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
-        
+        guessCategoryStackViewContainer.addSubview(guessCategoryStackView)
+        //guessCategoryStackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
+        //guessCategoryStackView.trailingAnchor.constraint(equalToSystemSpacingAfter: scrollView.trailingAnchor, multiplier: 0.1).isActive = true
+        //guessCategoryStackView.anchorSize(height: nil, width: scrollView.widthAnchor)
+        guessCategoryStackView.anchor(top: guessCategoryStackViewContainer.topAnchor, leading: nil, bottom: guessCategoryStackViewContainer.bottomAnchor, trailing: nil)
+        guessCategoryStackView.anchorToCenter(yAnchor: nil, xAnchor: guessCategoryStackViewContainer.centerXAnchor)
+        guessCategoryStackView.widthAnchor.constraint(equalTo: guessCategoryStackViewContainer.widthAnchor, multiplier: 0.9).isActive = true
+                
         guessCategoryStackView.addArrangedSubview(titleLabel)
         
         for categoryView in guessCategoryViews {

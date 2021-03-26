@@ -12,6 +12,9 @@ struct Constants {
     // ratio of cornerRadius/height
     static let imageCornerRadiusRatio: CGFloat = 1/20
     
+    // main screen boxes (Movies, TV Shows, People, along with their image) corner radius ratio
+    static let guessCategoryViewRadiusRatio: CGFloat = 1/7
+    
     struct DetailOverviewPosterImage {
         
         // TODO: return larger if running ipad?
