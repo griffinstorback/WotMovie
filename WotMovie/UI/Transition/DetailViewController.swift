@@ -248,7 +248,6 @@ class DetailViewController: UIViewController {
                     }
                     dismissalAnimator?.finishAnimation(at: .end)
                 } else {
-                    print("***** SHOULD NOT DISMISS \(Int.random(in: 0..<12))")
                     cancelGesture(gesture)
                     presentRevealAndDismissConfirmation()
                 }

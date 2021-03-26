@@ -37,7 +37,7 @@ class GuessDetailViewController: DetailViewController {
     let guessDetailViewPresenter: GuessDetailPresenterProtocol
     override var state: GuessDetailViewState {
         didSet {
-            print("&&* didset state in GussDetailViewController")
+            print("&&* didset state to \(state) in GussDetailViewController")
         }
     }
         

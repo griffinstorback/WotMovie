@@ -267,11 +267,6 @@ extension PersonDetailViewController: GuessDetailViewDelegate {
                 
         // don't set state if it was presented from a non guess grid (i.e. Watching or Favorites)
         if state == .revealedWithNoNextButton || state == .correctWithNoNextButton {
-            
-            // but if the presented entity has been guessed, still display the checkmark.
-            if guessDetailViewPresenter.isAnswerCorrectlyGuessed() {
-                state = .correctWithNoNextButton
-            }
             return
         }
         
