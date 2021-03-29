@@ -19,6 +19,9 @@ struct MovieOrTVShow: Title {
     let personsJob: Job? // if person wasn't acting but was producer, director or other job
     let character: String? // non-nil when person is actor in this movie/show
     
+    // not used right now, but could be used for sorting -- problem is their small roles in big films would show before a leading role in smaller film
+    let popularity: Double
+    
     // these properties are unused on movieortvshow, because user is never guessing this type.
     var lastViewedDate: Date?
     var isRevealed: Bool = false
@@ -41,9 +44,15 @@ extension MovieOrTVShow: Decodable {
         case name
         
         case overview
-        case releaseDate = "release_date"
+        
+        // tv show has no release_date field, use first air date instead.
+        case releaseDateMovie = "release_date"
+        case releaseDateTVShow = "first_air_date"
+        
         case personsJob = "job"
         case character = "character"
+        
+        case popularity
     }
     
     init(from decoder: Decoder) throws {
@@ -58,19 +67,22 @@ extension MovieOrTVShow: Decodable {
         if mediaType == "movie" {
             type = .movie
             name = try container.decode(String.self, forKey: .title)
+            releaseDate = try container.decodeIfPresent(String.self, forKey: .releaseDateMovie)
         } else if mediaType == "tv" {
             type = .tvShow
             name = try container.decode(String.self, forKey: .name)
+            releaseDate = try container.decodeIfPresent(String.self, forKey: .releaseDateTVShow)
         } else {
             // this case should never be hit
             print("*** WARNING: decoding a MovieOrTVShow object; mediaType came back null from api. Setting to type .person.")
             type = .person
-            name = ""
+            name = "-"
+            releaseDate = "-"
         }
         
         overview = try container.decode(String.self, forKey: .overview)
-        releaseDate = try container.decodeIfPresent(String.self, forKey: .releaseDate)
         personsJob = try container.decodeIfPresent(String.self, forKey: .personsJob)
         character = try container.decodeIfPresent(String.self, forKey: .character)
+        popularity = try container.decodeIfPresent(Double.self, forKey: .popularity) ?? 0
     }
 }

@@ -36,6 +36,9 @@ class DetailViewController: UIViewController {
     @objc func closeButtonPressed() {
         self.dismiss(animated: true)
     }
+    func closeAll(_ action: UIAction) {
+        UIApplication.shared.windows.filter { $0.isKeyWindow }.first?.rootViewController?.dismiss(animated: true)
+    }
     
     //var cardBottomToRootBottomConstraint: NSLayoutConstraint!
     
@@ -146,7 +149,7 @@ class DetailViewController: UIViewController {
         scrollView.delegate = self
         scrollView.contentInsetAdjustmentBehavior = .never
         scrollView.isUserInteractionEnabled = true
-        scrollView.delaysContentTouches = true
+        scrollView.delaysContentTouches = false
         scrollView.alwaysBounceVertical = true
         
         statusBarCoverView.giveBlurredBackground(style: .systemMaterial)
@@ -162,6 +165,13 @@ class DetailViewController: UIViewController {
         closeButton.imageView?.contentMode = .scaleAspectFit
         closeButton.tintColor = .systemGray
         closeButton.addTarget(self, action: #selector(closeButtonPressed), for: .touchUpInside)
+        
+        //let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(closeButtonHeldDown))
+        //closeButton.addGestureRecognizer(longTapGesture)
+        //closeButton.addTarget(self, action: #selector(closeButtonHeldDown), for: .touchDown)
+        
+        let interaction = UIContextMenuInteraction(delegate: self)
+        closeButton.addInteraction(interaction)
     }
     
     private func setupGestures() {
@@ -191,8 +201,7 @@ class DetailViewController: UIViewController {
         
         // init spacing from top to 50, but change when ad is displayed if its larger/smaller (e.g. ipad ad height is 70)
         contentStackView.addArrangedSubview(spacingFromTop)
-        spacingFromTop.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: CGSize(width: 0, height: 50))
-        spacingFromTopHeightConstraint = spacingFromTop.heightAnchor.constraint(equalToConstant: 70)
+        spacingFromTopHeightConstraint = spacingFromTop.heightAnchor.constraint(equalToConstant: 50)
         spacingFromTopHeightConstraint?.isActive = true
         spacingFromTop.isHidden = true
         
@@ -340,6 +349,21 @@ extension DetailViewController: UIScrollViewDelegate {
     
     func scrollToTop() {
         scrollView.setContentOffset(.zero, animated: true)
+    }
+}
+
+// Allows user to hold down the X button at top right, to close all modals (if they have 15 open, they shouldn't have to close each one by one)
+extension DetailViewController: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { _ in
+            let closeAllAction = self.makeCloseAllAction()
+            return UIMenu(title: "", children: [closeAllAction])
+        })
+    }
+    
+    func makeCloseAllAction() -> UIAction {
+        let closeAllAction = UIAction(title: "Close all", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: [], state: .off, handler: closeAll)
+        return closeAllAction
     }
 }
 

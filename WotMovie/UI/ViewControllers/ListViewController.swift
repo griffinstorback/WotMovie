@@ -166,7 +166,8 @@ extension ListViewController: LoadMoreGridViewDelegate {
     }
     
     func isPresentingFromGuessGrid() -> Bool {
-        return true
+        // Since this is not a GuessGrid, all items should appear revealed
+        return false
     }
     
     func didPresentEntityDetail() {

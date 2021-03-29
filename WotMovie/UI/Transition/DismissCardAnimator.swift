@@ -147,6 +147,9 @@ final class DismissCardTransitionDriver {
         cardDetailPosterImageViewCopy.frame = CGRect(x: 0, y: 0, width: parameters.fromView.frame.width, height: parameters.fromView.frame.height)
         cardDetailPosterImageViewCopy.layer.cornerRadius = parameters.fromView.layer.cornerRadius
         
+        cardDetailView.layer.cornerRadius = parameters.fromView.layer.cornerRadius
+        cardDetailView.layer.masksToBounds = true
+        
         // back to identity
         cardDetailView.transform = CGAffineTransform.identity
         animatedContainerTopConstraint.constant = parameters.fromCardFrameWithoutTransform.minY

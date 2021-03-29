@@ -107,7 +107,6 @@ class PersonDetailViewController: GuessDetailViewController {
             addShowHintButton()
         case .hintShown:
             addInfo()
-            break
         case .revealed, .revealedWithNoNextButton, .correct, .correctWithNoNextButton:
             addInfo()
             personOverviewView.setName(personDetailViewPresenter.getTitle())
@@ -124,6 +123,7 @@ class PersonDetailViewController: GuessDetailViewController {
         }
     }
     
+    var firstLoad: Bool = true
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -136,8 +136,12 @@ class PersonDetailViewController: GuessDetailViewController {
             personOverviewView.setPosterImageState(.revealWhileDetailOpenButHideOnGrid, animated: true)
         }
         
-        // refresh collection views again, because sometimes sizing is wrong after view appears.
-        reloadInfoCollectionViews()
+        // without fistload check, when dismissing a modal back to this view, the whole view flashes (kind of annoying)
+        if firstLoad {
+            // refresh collection views again, because sometimes sizing is wrong after view appears.
+            reloadInfoCollectionViews()
+            firstLoad = false
+        }
     }
     
     private func addInfo() {

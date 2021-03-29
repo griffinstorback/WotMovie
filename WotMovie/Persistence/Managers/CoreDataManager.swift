@@ -150,8 +150,8 @@ final class CoreDataManager: CoreDataManagerProtocol {
         }
     }
     
-    func fetchPageOfRecentlyViewed() -> [Entity] {
-        return fetchPageOfRecentlyViewedMovies() + fetchPageOfRecentlyViewedTVShows() + fetchPageOfRecentlyViewedPeople()
+    func fetchPageOfRecentlyViewed(limit: Int = 40) -> [Entity] {
+        return fetchPageOfRecentlyViewedMovies(limit: limit) + fetchPageOfRecentlyViewedTVShows(limit: limit) + fetchPageOfRecentlyViewedPeople(limit: limit)
     }
 
     func addEntityToWatchlistOrFavorites(entity: Entity) {

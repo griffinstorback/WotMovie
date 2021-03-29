@@ -47,7 +47,7 @@ class EntityTableViewController: DetailPresenterViewController {
     }
 }
 
-extension EntityTableViewController: UITableViewDelegate, UITableViewDataSource {
+extension EntityTableViewController: UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
     func setupTableView() {
         tableView.register(EntityTableViewCell.self, forCellReuseIdentifier: "EntityTableViewCell")
         tableView.register(EntityTableSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: "EntityTableSectionHeader")
@@ -59,7 +59,7 @@ extension EntityTableViewController: UITableViewDelegate, UITableViewDataSource 
         // doesn't register).
         tableView.delaysContentTouches = true
         tableView.isScrollEnabled = false
-        tableView.bounces = false
+        tableView.bounces = true
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -117,8 +117,13 @@ extension EntityTableViewController: UITableViewDelegate, UITableViewDataSource 
 
         return cell
     }
+
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        print("**** DID DESELECT ITEM: \(delegate?.getItem(for: indexPath.row, section: indexPath.section)?.name)")
+    }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("**** DID SELECT ITEM: \(delegate?.getItem(for: indexPath.row, section: indexPath.section)?.name)")
         let cell = tableView.cellForRow(at: indexPath) as! EntityTableViewCell
         let section = indexPath.section
         let index = indexPath.row

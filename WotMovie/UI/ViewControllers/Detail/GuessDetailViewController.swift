@@ -35,11 +35,7 @@ protocol GuessDetailViewDelegate: NSObjectProtocol {
 class GuessDetailViewController: DetailViewController {
     
     let guessDetailViewPresenter: GuessDetailPresenterProtocol
-    override var state: GuessDetailViewState {
-        didSet {
-            print("&&* didset state to \(state) in GussDetailViewController")
-        }
-    }
+    //var state: GuessDetailViewState -- this now resides in parent, DetailViewController, but can be overriden here for didSet functionality
         
     // checkmark icon that is shown when correctly guessed
     private let checkMarkIconImageView: UIImageView
