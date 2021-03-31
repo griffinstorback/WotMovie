@@ -84,8 +84,17 @@ class HorizontalCollectionViewCell: UICollectionViewCell {
     }
     
     public func setImage(_ image: UIImage?, _ imagePath: String?) {
+        // if image came back, we need to first make sure it matches imagePath that was set on this cell
+        // (otherwise, cells occasionally flash the wrong image  - due to glitches with reusable cells)
         if let image = image, let imagePath = imagePath, self.imagePath == imagePath {
             imageView.image = image
+            return
+        }
+        
+        // if nil image was sent back, we need to set the image view accordingly, so it can stop its loading animation.
+        if image == nil {
+            imageView.stopPosterImageLoadingAnimation()
+            imageView.image = nil
         }
     }
     

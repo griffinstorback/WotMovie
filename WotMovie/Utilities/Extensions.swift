@@ -149,6 +149,24 @@ extension UIView {
     }
 }
 
+// PUT THIS IN ITS OWN VIEW? FOR IMAGE VIEWS TO INHERIT FROM?
+extension UIImageView {
+    func startPosterImageLoadingAnimation() {
+        backgroundColor = .systemGray3
+        
+        let animation = UIView.animate(withDuration: 0.6, delay: 0, options: [.autoreverse, .repeat]) {
+            self.backgroundColor = .systemGray6
+        }
+    }
+    
+    func stopPosterImageLoadingAnimation() {
+        layer.removeAllAnimations()
+        UIView.animate(withDuration: 0.3) {
+            self.backgroundColor = .systemGray4
+        }
+    }
+}
+
 extension UIViewController {
     func addChildViewController(_ child: UIViewController) {
         guard !children.contains(child) else {

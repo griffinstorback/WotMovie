@@ -7,6 +7,27 @@
 
 import UIKit
 
+/*
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ THIS CLASS DEPRECATED.
+ 
+ Entity Table view component was replaced by CrewListView, a custom implementation of a table view,
+ becasuse of the innumerable bugs associated with adding a table view to a stack view inside a scroll
+ view.
+ 
+ 
+ 
+ 
+ 
+ 
+ */
+
 class EntityTableViewCell: UITableViewCell {
     
     static let cellHeight: CGFloat = 80

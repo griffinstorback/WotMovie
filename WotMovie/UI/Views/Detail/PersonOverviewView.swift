@@ -89,10 +89,11 @@ class PersonOverviewView: UIView {
     
     // don't really need to do check with imagePath for this view, as it isn't being reused
     public func setPosterImage(_ image: UIImage?, _ imagePath: String?) {
-        guard let image = image else {
+        // commented the below out, because we actually want to set poster image to nil, to signal network request has finished (stop loading animation)
+        /*guard let image = image else {
             posterImageView.setImage(UIImage())
             return
-        }
+        }*/
         posterImageView.setImage(image)
     }
     

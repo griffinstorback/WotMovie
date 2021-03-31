@@ -67,9 +67,8 @@ class CrewListRow: UIView {
     }
     
     public func setImage(image: UIImage?) {
-        if let image = image {
-            imageView.image = image
-        }
+        imageView.image = image
+        imageView.stopPosterImageLoadingAnimation()
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {

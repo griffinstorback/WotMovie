@@ -22,22 +22,6 @@ class HorizontalCollectionViewController: DetailPresenterViewController {
     private var collectionView: UICollectionView
     
     init(title: String?) {
-        /*func createLayout() -> UICollectionViewLayout {
-            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
-            let item = NSCollectionLayoutItem(layoutSize: itemSize)
-            
-            let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(100), heightDimension: .fractionalHeight(1))
-            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-            let section = NSCollectionLayoutSection(group: group)
-            section.interGroupSpacing = 5
-            
-            let config = UICollectionViewCompositionalLayoutConfiguration()
-            config.scrollDirection = .horizontal
-            
-            let layout = UICollectionViewCompositionalLayout(section: section, configuration: config)
-            return layout
-        }*/
-        
         if let title = title {
             titleLabel = UILabel()
             titleLabel?.text = title

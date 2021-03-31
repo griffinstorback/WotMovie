@@ -121,6 +121,7 @@
 		85CF35D32543912300A101C9 /* HorizontalCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF35D22543912300A101C9 /* HorizontalCollectionViewController.swift */; };
 		85CF35DB2543A8AD00A101C9 /* HorizontalCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF35DA2543A8AD00A101C9 /* HorizontalCollectionViewCell.swift */; };
 		85FBF2B42613E43F00B35C90 /* CrewListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85FBF2B32613E43F00B35C90 /* CrewListRow.swift */; };
+		85FBF2B92614F64400B35C90 /* LoadingIndicatorOrErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85FBF2B82614F64400B35C90 /* LoadingIndicatorOrErrorView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -261,6 +262,7 @@
 		85CF35D22543912300A101C9 /* HorizontalCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalCollectionViewController.swift; sourceTree = "<group>"; };
 		85CF35DA2543A8AD00A101C9 /* HorizontalCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalCollectionViewCell.swift; sourceTree = "<group>"; };
 		85FBF2B32613E43F00B35C90 /* CrewListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrewListRow.swift; sourceTree = "<group>"; };
+		85FBF2B82614F64400B35C90 /* LoadingIndicatorOrErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingIndicatorOrErrorView.swift; sourceTree = "<group>"; };
 		B440C96652CD7F56E957C187 /* Pods_WotMovie.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WotMovie.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE4326E5218B83187F9AB8DE /* Pods-WotMovie.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WotMovie.debug.xcconfig"; path = "Target Support Files/Pods-WotMovie/Pods-WotMovie.debug.xcconfig"; sourceTree = "<group>"; };
 		DAA8FF8869C850EFE4CC3B9A /* Pods-WotMovie.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WotMovie.release.xcconfig"; path = "Target Support Files/Pods-WotMovie/Pods-WotMovie.release.xcconfig"; sourceTree = "<group>"; };
@@ -631,6 +633,7 @@
 				8588FD262561E1BF0054EC17 /* CardView.swift */,
 				853C67B225CC8EF500EBEFBE /* LeftAlignedImageCenteredTextButton.swift */,
 				852F44D0260AB2670068917F /* ExamplePersonGuessView.swift */,
+				85FBF2B82614F64400B35C90 /* LoadingIndicatorOrErrorView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -935,6 +938,7 @@
 				85CF3498252E5E1700A101C9 /* EndPointType.swift in Sources */,
 				8527828C25C0A96100FC257A /* RecentlyViewedCollectionViewHeader.swift in Sources */,
 				85CF353A25365C5B00A101C9 /* GuessViewController.swift in Sources */,
+				85FBF2B92614F64400B35C90 /* LoadingIndicatorOrErrorView.swift in Sources */,
 				853C67B825CF759F00EBEFBE /* SortGridViewController.swift in Sources */,
 				853C679A25C5FBA500EBEFBE /* TransitionPresenterProtocol.swift in Sources */,
 				8588FD3B256887BC0054EC17 /* PersonDetailPresenter.swift in Sources */,

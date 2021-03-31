@@ -10,6 +10,7 @@ import UIKit
 
 protocol TitleDetailPresenterProtocol: GuessDetailPresenterProtocol {
     func loadCredits()
+    func creditsHaveLoaded() -> Bool
     func loadCastPersonImage(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
     
     func getOverview() -> String
@@ -96,6 +97,10 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
         
         // doesn't cache in core data right now - just gets from network
         getCreditsFromNetworkThenCacheInCoreData()
+    }
+    
+    func creditsHaveLoaded() -> Bool {
+        return credits != nil
     }
     
     func loadCastPersonImage(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
@@ -242,6 +247,7 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
         return nil
     }*/
     
+    // doesn't currently cache in core data.
     private func getCreditsFromNetworkThenCacheInCoreData() {
         switch item.type {
         case .movie:
@@ -249,7 +255,7 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
                 if let error = error {
                     print(error)
                     DispatchQueue.main.async {
-                        self?.detailViewDelegate?.displayError()
+                        self?.detailViewDelegate?.displayErrorLoadingCredits()
                     }
                     return
                 }
@@ -269,7 +275,7 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
                 if let error = error {
                     print(error)
                     DispatchQueue.main.async {
-                        self?.detailViewDelegate?.displayError()
+                        self?.detailViewDelegate?.displayErrorLoadingCredits()
                     }
                     return
                 }
@@ -279,7 +285,7 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
             
         case .person:
             DispatchQueue.main.async {
-                self.detailViewDelegate?.displayError()
+                self.detailViewDelegate?.displayErrorLoadingCredits()
             }
             return
         }

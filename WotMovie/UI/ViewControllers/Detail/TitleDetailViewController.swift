@@ -24,7 +24,7 @@ class TitleDetailViewController: GuessDetailViewController {
                 
             case .hintShown:
                 removeShowHintButton()
-                addLoadingIndicator()
+                addLoadingIndicatorOrErrorView()
                 addInfo()
                 
             case .revealed, .revealedWithNoNextButton, .correct, .correctWithNoNextButton:
@@ -80,6 +80,9 @@ class TitleDetailViewController: GuessDetailViewController {
         detailOverviewView.setOverviewText(titleDetailViewPresenter.getOverviewCensored())
         detailOverviewView.setReleaseDate(dateString: titleDetailViewPresenter.getReleaseDate())
         
+        // set self as delegate for the loading indicator/error view, to receive events like 'retry button pressed'
+        setLoadingIndicatorOrErrorViewDelegate(self)
+        
         castCollectionView.setDelegate(self)
         crewListViewController.setDelegate(self)
     }
@@ -91,11 +94,9 @@ class TitleDetailViewController: GuessDetailViewController {
         case .fullyHidden:
             addShowHintButton()
         case .hintShown:
-            //addInfo()
-            addLoadingIndicator()
+            addLoadingIndicatorOrErrorView()
         case .revealed, .revealedWithNoNextButton, .correct, .correctWithNoNextButton:
-            //addInfo()
-            addLoadingIndicator()
+            addLoadingIndicatorOrErrorView()
             
             detailOverviewView.setTitle(titleDetailViewPresenter.getTitle())
             detailOverviewView.setOverviewText(titleDetailViewPresenter.getOverview()) // uncensor title name from overview
@@ -109,13 +110,23 @@ class TitleDetailViewController: GuessDetailViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        if state == .hintShown || state == .revealed || state == .revealedWithNoNextButton || state == .correct || state == .correctWithNoNextButton {
-            addInfo()
+        
+        // only add info if credits have loaded. otherwise, wait until presenter tells us to reload.
+        if titleDetailViewPresenter.creditsHaveLoaded() {
+            if state == .hintShown || state == .revealed || state == .revealedWithNoNextButton || state == .correct || state == .correctWithNoNextButton {
+                addInfo()
+            }
         }
     }
     
+    var infoHasBeenAdded: Bool = false
     private func addInfo() {
-        removeLoadingIndicator()
+        // don't run addInfo twice
+        guard !infoHasBeenAdded else { return }
+        
+        if titleDetailViewPresenter.creditsHaveLoaded() {
+            removeLoadingIndicatorOrErrorView()
+        }
         removeShowHintButton()
         
         addChildToStackView(castCollectionView)
@@ -123,6 +134,8 @@ class TitleDetailViewController: GuessDetailViewController {
         
         // reload cast collection view (fixes bug where cells sometimes wrong size, or missing labels after being added)
         castCollectionView.reloadData()
+        
+        infoHasBeenAdded = true
     }
 }
 
@@ -173,11 +186,16 @@ extension TitleDetailViewController: CrewListViewDelegate {
 }
 
 extension TitleDetailViewController: GuessDetailViewDelegate {
-    func displayError() {
+    func displayErrorLoadingCredits() {
         print("** error loading detail view")
+        displayErrorInLoadingIndicatorOrErrorView()
     }
     
     func reloadData() {
+        if !infoHasBeenAdded && titleDetailViewPresenter.creditsHaveLoaded() {
+            addInfo()
+        }
+        
         castCollectionView.reloadData()
         crewListViewController.reloadData()
         updateItemOnEnterGuessView() // this is defined in parent class GuessDetailVC
@@ -206,4 +224,10 @@ extension TitleDetailViewController: GuessDetailViewDelegate {
     // FOLLOWING TWO METHODS ARE PART OF GuessDetailViewDelegate, but are satisfied in super class GuessDetailViewController (so don't implement here)
     // func updateItemOnEnterGuessView()
     // func answerWasRevealedDuringAttemptToDismiss()
+}
+
+extension TitleDetailViewController: LoadingIndicatorOrErrorViewDelegate {
+    func retryButtonPressed() {
+        titleDetailViewPresenter.loadCredits()
+    }
 }

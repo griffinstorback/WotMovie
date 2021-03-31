@@ -26,7 +26,7 @@ protocol EnterGuessProtocol: NSObjectProtocol {
 
 // this protocol is implemented by subclasses of GuessDetailVC (TitleDetailVC and PersonDetailVC)
 protocol GuessDetailViewDelegate: NSObjectProtocol {
-    func displayError()
+    func displayErrorLoadingCredits()
     func reloadData()
     func updateItemOnEnterGuessView()
     func answerWasRevealedDuringAttemptToDismiss()
@@ -46,7 +46,7 @@ class GuessDetailViewController: DetailViewController {
     private let showHintButton: ShrinkOnTouchButton
     
     // should be shown before info is added (to show network is loading, and also it should be there until view appears to prevent weird view size calculation of info views)
-    private let loadingIndicator: UIActivityIndicatorView
+    private let loadingIndicatorOrErrorView: LoadingIndicatorOrErrorView
     
     // enter guess field at bottom
     private let enterGuessViewController: EnterGuessViewController
@@ -65,29 +65,19 @@ class GuessDetailViewController: DetailViewController {
         showHintButton = ShrinkOnTouchButton()
         showHintButton.layer.cornerRadius = 10
         
-        loadingIndicator = UIActivityIndicatorView(style: .large)
+        loadingIndicatorOrErrorView = LoadingIndicatorOrErrorView(state: .loading)
         
         enterGuessViewController = EnterGuessViewController(item: item)
         enterGuessContainerView = UIView()
         
         super.init(posterImageView: posterImageView, state: state, presenter: presenter)
         
-        navigationItem.largeTitleDisplayMode = .never
-        self.title = "?"
-        view.backgroundColor = .systemBackground
         setupViews()
         layoutViews()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        //setupViews()
-        //layoutViews()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -104,6 +94,10 @@ class GuessDetailViewController: DetailViewController {
     }
     
     private func setupViews() {
+        navigationItem.largeTitleDisplayMode = .never
+        self.title = "?"
+        view.backgroundColor = .systemBackground
+        
         checkMarkIconImageView.contentMode = .scaleAspectFit
         checkMarkIconImageView.isHidden = true
         checkMarkIconImageView.alpha = 0
@@ -114,12 +108,8 @@ class GuessDetailViewController: DetailViewController {
         showHintButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         showHintButton.addTarget(self, action: #selector(showHintButtonPressed), for: .touchUpInside)
         
-        loadingIndicator.hidesWhenStopped = true
-        
         enterGuessViewController.setDelegate(self)
         enterGuessContainerView.giveBlurredBackground(style: .systemMaterial)
-        
-        
     }
     
     private func layoutViews() {
@@ -179,20 +169,27 @@ class GuessDetailViewController: DetailViewController {
         //addLoadingIndicator()
     }
     
-    func addLoadingIndicator() {
-        // don't add loading indicator if it has already been added - also, don't add if show hint button is present
-        guard !contentStackView.arrangedSubviews.contains(loadingIndicator) && !contentStackView.arrangedSubviews.contains(showHintButtonContainer) else { return }
-        
-        contentStackView.addArrangedSubview(loadingIndicator)
-        loadingIndicator.startAnimating()
+    // Call this from subclasses (title and person detail VC) so that they are sent info like 'Retry button was pressed'
+    func setLoadingIndicatorOrErrorViewDelegate(_ delegate: LoadingIndicatorOrErrorViewDelegate) {
+        loadingIndicatorOrErrorView.setDelegate(delegate)
     }
     
-    func removeLoadingIndicator() {
-        guard contentStackView.arrangedSubviews.contains(loadingIndicator) else { return }
+    func addLoadingIndicatorOrErrorView() {
+        // don't add loading indicator if it has already been added - also, don't add if show hint button is present
+        guard !contentStackView.arrangedSubviews.contains(loadingIndicatorOrErrorView) && !contentStackView.arrangedSubviews.contains(showHintButtonContainer) else { return }
         
-        contentStackView.removeArrangedSubview(loadingIndicator)
-        loadingIndicator.removeFromSuperview()
-        loadingIndicator.stopAnimating()
+        contentStackView.addArrangedSubview(loadingIndicatorOrErrorView)
+    }
+    
+    func displayErrorInLoadingIndicatorOrErrorView() {
+        loadingIndicatorOrErrorView.state = .error
+    }
+    
+    func removeLoadingIndicatorOrErrorView() {
+        guard contentStackView.arrangedSubviews.contains(loadingIndicatorOrErrorView) else { return }
+        
+        loadingIndicatorOrErrorView.state = .loaded
+        contentStackView.removeArrangedSubview(loadingIndicatorOrErrorView)
     }
     
     func addCheckMarkIcon(animated: Bool, duration: Double = 0.5) {

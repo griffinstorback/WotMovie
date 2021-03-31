@@ -86,6 +86,9 @@ class PersonDetailViewController: GuessDetailViewController {
         personDetailViewPresenter.loadPosterImage(completion: personOverviewView.setPosterImage)
         //personOverviewView.setOverviewText(personDetailViewPresenter.getOverview())
         
+        // set self as delegate for the loading indicator/error view, to receive events like 'retry button pressed'
+        setLoadingIndicatorOrErrorViewDelegate(self)
+        
         knownForCollectionView.setDelegate(self)
         actorInCollectionView.setDelegate(self)
         directedCollectionView.setDelegate(self)
@@ -101,11 +104,9 @@ class PersonDetailViewController: GuessDetailViewController {
         case .fullyHidden:
             addShowHintButton()
         case .hintShown:
-            //addInfo()
-            addLoadingIndicator()
+            addLoadingIndicatorOrErrorView()
         case .revealed, .revealedWithNoNextButton, .correct, .correctWithNoNextButton:
-            //addInfo()
-            addLoadingIndicator()
+            addLoadingIndicatorOrErrorView()
             personOverviewView.setName(personDetailViewPresenter.getTitle())
             
             // if item was correctly guessed, show check at top left
@@ -115,7 +116,6 @@ class PersonDetailViewController: GuessDetailViewController {
         }
     }
     
-    var firstLoad: Bool = true
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -129,17 +129,19 @@ class PersonDetailViewController: GuessDetailViewController {
             personOverviewView.setPosterImageState(.revealWhileDetailOpenButHideOnGrid, animated: true)
         }
         
-        // by checking if first load, avoids calling addInfo when modal presented from this view is dismissed back here (which reloads collections, causing flash)
-        if firstLoad {
+        if personDetailViewPresenter.creditsHaveLoaded() {
             if state == .hintShown || state == .revealed || state == .revealedWithNoNextButton || state == .correct || state == .correctWithNoNextButton {
                 addInfo()
             }
-            firstLoad = false
         }
     }
     
+    var infoHasBeenAdded: Bool = false
     private func addInfo() {
-        removeLoadingIndicator()
+        // don't run addInfo twice.
+        guard !infoHasBeenAdded else { return }
+        
+        removeLoadingIndicatorOrErrorView()
         removeShowHintButton()
         
         addChildToStackView(knownForCollectionView)
@@ -176,6 +178,8 @@ class PersonDetailViewController: GuessDetailViewController {
         
         // refresh and reload all the collection views. This fixes bug where collection view cells are sometimes wrong size/no label after being added
         reloadInfoCollectionViews()
+        
+        infoHasBeenAdded = true
     }
     
     // this method is called multiple times throughout the layout process, because the sizing of the collection views within the stack view can be buggy
@@ -253,11 +257,16 @@ extension PersonDetailViewController: HorizontalCollectionViewDelegate {
 }
 
 extension PersonDetailViewController: GuessDetailViewDelegate {
-    func displayError() {
+    func displayErrorLoadingCredits() {
         print("error loading detail view")
+        displayErrorInLoadingIndicatorOrErrorView()
     }
     
     func reloadData() {
+        if !infoHasBeenAdded && personDetailViewPresenter.creditsHaveLoaded() {
+            addInfo()
+        }
+        
         knownForCollectionView.reloadData()
         actorInCollectionView.reloadData()
         directedCollectionView.reloadData()
@@ -288,4 +297,10 @@ extension PersonDetailViewController: GuessDetailViewDelegate {
     // FOLLOWING TWO METHODS ARE PART OF GuessDetailViewDelegate, but are satisfied in super class GuessDetailViewController (so don't implement here)
     // func updateItemOnEnterGuessView()
     // func answerWasRevealedDuringAttemptToDismiss()
+}
+
+extension PersonDetailViewController: LoadingIndicatorOrErrorViewDelegate {
+    func retryButtonPressed() {
+        personDetailViewPresenter.loadCredits()
+    }
 }

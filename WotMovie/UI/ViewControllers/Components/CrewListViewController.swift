@@ -92,17 +92,17 @@ class CrewListViewController: DetailPresenterViewController {
         directorsTitleLabel.anchor(top: directorsTitleLabelContainer.topAnchor, leading: directorsTitleLabelContainer.leadingAnchor, bottom: directorsTitleLabelContainer.bottomAnchor, trailing: directorsTitleLabelContainer.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0))
         directorsStack.isHidden = true
         
-        mainStack.addArrangedSubview(producersStack)
-        producersStack.addArrangedSubview(producersTitleLabelContainer)
-        producersTitleLabelContainer.addSubview(producersTitleLabel)
-        producersTitleLabel.anchor(top: producersTitleLabelContainer.topAnchor, leading: producersTitleLabelContainer.leadingAnchor, bottom: producersTitleLabelContainer.bottomAnchor, trailing: producersTitleLabelContainer.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0))
-        producersStack.isHidden = true
-        
         mainStack.addArrangedSubview(writersStack)
         writersStack.addArrangedSubview(writersTitleLabelContainer)
         writersTitleLabelContainer.addSubview(writersTitleLabel)
         writersTitleLabel.anchor(top: writersTitleLabelContainer.topAnchor, leading: writersTitleLabelContainer.leadingAnchor, bottom: writersTitleLabelContainer.bottomAnchor, trailing: writersTitleLabelContainer.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0))
         writersStack.isHidden = true
+
+        mainStack.addArrangedSubview(producersStack)
+        producersStack.addArrangedSubview(producersTitleLabelContainer)
+        producersTitleLabelContainer.addSubview(producersTitleLabel)
+        producersTitleLabel.anchor(top: producersTitleLabelContainer.topAnchor, leading: producersTitleLabelContainer.leadingAnchor, bottom: producersTitleLabelContainer.bottomAnchor, trailing: producersTitleLabelContainer.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0))
+        producersStack.isHidden = true
     }
     
     required init?(coder: NSCoder) {
@@ -136,7 +136,7 @@ class CrewListViewController: DetailPresenterViewController {
                 writerRow.setNameLabel(text: writer.name)
                 delegate?.loadImage(for: index, section: .writer, completion: writerRow.setImage)
                 writerRow.setDelegate(self)
-                producersStack.addArrangedSubview(writerRow)
+                writersStack.addArrangedSubview(writerRow)
             }
             writersTitleLabel.text = delegate?.getCrewTypeStringToDisplay(for: .writer) ?? "Writer"
             writersStack.isHidden = false

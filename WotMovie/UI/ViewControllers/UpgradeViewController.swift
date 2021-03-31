@@ -86,7 +86,7 @@ class UpgradeViewController: UIViewController {
         examplePersonGuessView3.layer.cornerRadius = 5
         
         let proTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 24, weight: .bold), NSAttributedString.Key.foregroundColor: UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue]
-        let proText = NSMutableAttributedString(string: " PRO", attributes: proTextAttributes)
+        let proText = NSMutableAttributedString(string: " People", attributes: proTextAttributes)
         let upgradeToWotMovieTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 24, weight: .bold)]
         let upgradeToWotMovieText = NSMutableAttributedString(string: upgradePresenter.getTextFor(item: 0), attributes: upgradeToWotMovieTextAttributes)
         upgradeToWotMovieText.append(proText)

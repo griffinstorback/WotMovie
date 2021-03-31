@@ -57,7 +57,7 @@ class ExamplePersonGuessView: UIView {
         if let image = image {
             imageView.image = image
         } else {
-            // SET DEFAULT PERSON IMAGE
+            // TODO: SET DEFAULT PERSON IMAGE
             imageView.image = nil
         }
     }

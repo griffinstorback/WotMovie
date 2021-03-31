@@ -10,6 +10,8 @@ import UIKit
 
 protocol PersonDetailPresenterProtocol: GuessDetailPresenterProtocol {
     func loadCredits()
+    func creditsHaveLoaded() -> Bool
+    
     func loadKnownForTitleImage(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
     func loadActorInTitleImage(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
     func loadJobForTitleImage(index: Int, section: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
@@ -83,13 +85,17 @@ class PersonDetailPresenter: GuessDetailPresenter, PersonDetailPresenterProtocol
             if let error = error {
                 print(error)
                 DispatchQueue.main.async {
-                    self?.detailViewDelegate?.displayError()
+                    self?.detailViewDelegate?.displayErrorLoadingCredits()
                 }
                 return
             }
             
             self?.personCredits = credits
         }
+    }
+    
+    func creditsHaveLoaded() -> Bool {
+        return personCredits != nil
     }
     
     func loadKnownForTitleImage(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {

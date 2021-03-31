@@ -84,23 +84,30 @@ class PosterImageView: CardView {
     convenience init(state: PosterImageViewState) {
         self.init(frame: .zero)
         
-        // add the image view (where the poster image will be)
-        addImageView()
-        
         setState(state, animated: false)
     }
     
     override init(frame: CGRect) {
         imageView = UIImageView()
-        imageView.backgroundColor = .systemGray4
-        
-        // should it have border? if so, need to add cornerRadius code here. also, it looks kinda cool with no border
-        //imageView.layer.borderWidth = 1
-        //imageView.layer.borderColor = UIColor.systemGray4.cgColor
         
         super.init(frame: frame)
         
+        setupViews()
+        layoutViews()
+    }
+    
+    private func setupViews() {
         backgroundColor = .systemBackground
+        imageView.backgroundColor = .systemGray4
+        imageView.startPosterImageLoadingAnimation()
+        // should it have border? if so, need to add cornerRadius code here. also, it looks kinda cool with no border
+        //imageView.layer.borderWidth = 1
+        //imageView.layer.borderColor = UIColor.systemGray4.cgColor
+    }
+    
+    private func layoutViews() {
+        // add the image view (where the poster image will be)
+        addImageView()
     }
     
     required init?(coder: NSCoder) {
@@ -108,7 +115,13 @@ class PosterImageView: CardView {
     }
     
     func setImage(_ image: UIImage?) {
-        imageView.image = image
+        if let image = image {
+            imageView.image = image
+        } else {
+            // Image was set to nil, meaning the network request failed, or no image exists for this entity. Stop loading animation
+            imageView.image = nil
+            imageView.stopPosterImageLoadingAnimation()
+        }
     }
     
     // for creating copy of posterimageview (specifically, used in dismiss card animator)

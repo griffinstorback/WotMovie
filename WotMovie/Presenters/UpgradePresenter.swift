@@ -31,7 +31,7 @@ class UpgradePresenter: UpgradePresenterProtocol {
     
     // the text to display in the info labels. (first item is the title)
     private let infoLabelTexts: [String] = [
-        "Upgrade to WotMovie",
+        "Unlock WotMovie",
         "Guess famous actors, actresses and directors",
         "Test your knowlege on THOUSANDS of celebrities",
         "Purchase ONCE, unlock PERMANENTLY"
@@ -41,7 +41,7 @@ class UpgradePresenter: UpgradePresenterProtocol {
     private var examplePeople: [Person] = [] {
         didSet {
             if examplePeople.count > 3 {
-                examplePeople = Array(examplePeople[0..<3])
+                examplePeople = Array(examplePeople.shuffled()[0..<3])
             }
             
             upgradeViewDelegate?.reloadData()

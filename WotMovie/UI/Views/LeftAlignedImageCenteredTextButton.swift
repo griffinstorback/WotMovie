@@ -7,6 +7,15 @@
 
 import UIKit
 
+/*
+ 
+ Used for watchlist and favorites add/remove buttons in detail (in enter guess view).
+ This is needed for formatting to look good, because the button sometimes takes up half
+ the screen, and other times takes up the whole width of the screen, depending on whether
+ or not user is guessing or just viewing.
+ 
+ */
+
 class LeftAlignedImageCenteredTextButton: ShrinkOnTouchButton {
     private let leftAlignedImageView: UIImageView
     private let centeredTextLabel: UILabel
