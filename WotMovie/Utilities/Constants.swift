@@ -31,6 +31,10 @@ struct Constants {
         //static let defaultBlue: UIColor = UIColor(red: 107/255, green: 122/255, blue: 255/255, alpha: 1.0)
     }
     
+    struct Fonts {
+        static let detailViewSectionHeader = UIFont.systemFont(ofSize: 22, weight: .bold)
+    }
+    
     // When displaying grid, should omit these items below, for they have descriptions that are either impossible to
     // guess from, or way too easy; especially important for first impressions (don't want a first time user to see
     // multiple bad descriptions in a row)

@@ -122,7 +122,7 @@ class GuessCategoryView: UIView {
         
         upgradeButton.backgroundColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue
         upgradeButton.titleEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
-        upgradeButton.setTitle("Upgrade", for: .normal)
+        upgradeButton.setTitle("Unlock", for: .normal)
         upgradeButton.setTitleColor(.white, for: .normal)
         upgradeButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         upgradeButton.titleLabel?.adjustsFontSizeToFitWidth = true

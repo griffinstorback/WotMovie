@@ -193,7 +193,7 @@ class DetailViewController: UIViewController {
     private func layoutViews() {
         view.addSubview(scrollView)
         // must anchor to view.top, not safearea, so that statusBarCoverView covers status bar
-        scrollView.anchor(top: view.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, trailing: view.safeAreaLayoutGuide.trailingAnchor)
+        scrollView.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, trailing: view.trailingAnchor)
         
         scrollView.addSubview(contentStackView)
         contentStackView.anchor(top: scrollView.topAnchor, leading: scrollView.leadingAnchor, bottom: scrollView.bottomAnchor, trailing: scrollView.trailingAnchor)

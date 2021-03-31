@@ -45,6 +45,9 @@ class GuessDetailViewController: DetailViewController {
     private let showHintButtonContainer: UIView
     private let showHintButton: ShrinkOnTouchButton
     
+    // should be shown before info is added (to show network is loading, and also it should be there until view appears to prevent weird view size calculation of info views)
+    private let loadingIndicator: UIActivityIndicatorView
+    
     // enter guess field at bottom
     private let enterGuessViewController: EnterGuessViewController
     private let enterGuessContainerView: UIView
@@ -62,6 +65,8 @@ class GuessDetailViewController: DetailViewController {
         showHintButton = ShrinkOnTouchButton()
         showHintButton.layer.cornerRadius = 10
         
+        loadingIndicator = UIActivityIndicatorView(style: .large)
+        
         enterGuessViewController = EnterGuessViewController(item: item)
         enterGuessContainerView = UIView()
         
@@ -70,6 +75,8 @@ class GuessDetailViewController: DetailViewController {
         navigationItem.largeTitleDisplayMode = .never
         self.title = "?"
         view.backgroundColor = .systemBackground
+        setupViews()
+        layoutViews()
     }
     
     required init?(coder: NSCoder) {
@@ -79,8 +86,8 @@ class GuessDetailViewController: DetailViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupViews()
-        layoutViews()
+        //setupViews()
+        //layoutViews()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -107,10 +114,12 @@ class GuessDetailViewController: DetailViewController {
         showHintButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         showHintButton.addTarget(self, action: #selector(showHintButtonPressed), for: .touchUpInside)
         
+        loadingIndicator.hidesWhenStopped = true
+        
         enterGuessViewController.setDelegate(self)
         enterGuessContainerView.giveBlurredBackground(style: .systemMaterial)
         
-        // if next button pressed 3 times in a row, show interstitial.
+        
     }
     
     private func layoutViews() {
@@ -147,6 +156,9 @@ class GuessDetailViewController: DetailViewController {
     func addShowHintButton() {
         guard !contentStackView.arrangedSubviews.contains(showHintButtonContainer) else { return }
         
+        // can't have loading indicator and show hint button on page at the same time
+        //removeLoadingIndicator()
+        
         contentStackView.addArrangedSubview(showHintButtonContainer)
         
         showHintButtonContainer.addSubview(showHintButton)
@@ -157,10 +169,30 @@ class GuessDetailViewController: DetailViewController {
     }
     
     func removeShowHintButton() {
-        if contentStackView.subviews.contains(showHintButtonContainer) {
-            contentStackView.removeArrangedSubview(showHintButtonContainer)
-            showHintButtonContainer.removeFromSuperview()
-        }
+        guard contentStackView.arrangedSubviews.contains(showHintButtonContainer) else { return }
+        
+        contentStackView.removeArrangedSubview(showHintButtonContainer)
+        showHintButtonContainer.removeFromSuperview()
+        
+        // Add the loading indicator immediately, to show info is loading. in most all cases, loading indicator will only show for a glimpse,
+        // but if there is a network error, its important that the indicator be there.
+        //addLoadingIndicator()
+    }
+    
+    func addLoadingIndicator() {
+        // don't add loading indicator if it has already been added - also, don't add if show hint button is present
+        guard !contentStackView.arrangedSubviews.contains(loadingIndicator) && !contentStackView.arrangedSubviews.contains(showHintButtonContainer) else { return }
+        
+        contentStackView.addArrangedSubview(loadingIndicator)
+        loadingIndicator.startAnimating()
+    }
+    
+    func removeLoadingIndicator() {
+        guard contentStackView.arrangedSubviews.contains(loadingIndicator) else { return }
+        
+        contentStackView.removeArrangedSubview(loadingIndicator)
+        loadingIndicator.removeFromSuperview()
+        loadingIndicator.stopAnimating()
     }
     
     func addCheckMarkIcon(animated: Bool, duration: Double = 0.5) {

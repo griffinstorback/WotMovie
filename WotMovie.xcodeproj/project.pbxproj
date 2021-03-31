@@ -70,6 +70,7 @@
 		8588FD3B256887BC0054EC17 /* PersonDetailPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8588FD3A256887BC0054EC17 /* PersonDetailPresenter.swift */; };
 		85905C3F256B01AF00443348 /* PersonEndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85905C3E256B01AF00443348 /* PersonEndPoint.swift */; };
 		85905C44256B046A00443348 /* NetworkEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85905C43256B046A00443348 /* NetworkEnvironment.swift */; };
+		85AAA33E2613A8C1002BBA20 /* CrewListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85AAA33D2613A8C1002BBA20 /* CrewListViewController.swift */; };
 		85CF3457252D430C00A101C9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF3456252D430C00A101C9 /* AppDelegate.swift */; };
 		85CF3459252D430C00A101C9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF3458252D430C00A101C9 /* SceneDelegate.swift */; };
 		85CF3461252D430C00A101C9 /* WotMovie.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 85CF345F252D430C00A101C9 /* WotMovie.xcdatamodeld */; };
@@ -119,6 +120,7 @@
 		85CF35C12541F9DD00A101C9 /* EntityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF35C02541F9DD00A101C9 /* EntityTableViewCell.swift */; };
 		85CF35D32543912300A101C9 /* HorizontalCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF35D22543912300A101C9 /* HorizontalCollectionViewController.swift */; };
 		85CF35DB2543A8AD00A101C9 /* HorizontalCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF35DA2543A8AD00A101C9 /* HorizontalCollectionViewCell.swift */; };
+		85FBF2B42613E43F00B35C90 /* CrewListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85FBF2B32613E43F00B35C90 /* CrewListRow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -202,6 +204,7 @@
 		8588FD3A256887BC0054EC17 /* PersonDetailPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonDetailPresenter.swift; sourceTree = "<group>"; };
 		85905C3E256B01AF00443348 /* PersonEndPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonEndPoint.swift; sourceTree = "<group>"; };
 		85905C43256B046A00443348 /* NetworkEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkEnvironment.swift; sourceTree = "<group>"; };
+		85AAA33D2613A8C1002BBA20 /* CrewListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrewListViewController.swift; sourceTree = "<group>"; };
 		85CF3453252D430C00A101C9 /* WotMovie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WotMovie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		85CF3456252D430C00A101C9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		85CF3458252D430C00A101C9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -257,6 +260,7 @@
 		85CF35C02541F9DD00A101C9 /* EntityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityTableViewCell.swift; sourceTree = "<group>"; };
 		85CF35D22543912300A101C9 /* HorizontalCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalCollectionViewController.swift; sourceTree = "<group>"; };
 		85CF35DA2543A8AD00A101C9 /* HorizontalCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalCollectionViewCell.swift; sourceTree = "<group>"; };
+		85FBF2B32613E43F00B35C90 /* CrewListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrewListRow.swift; sourceTree = "<group>"; };
 		B440C96652CD7F56E957C187 /* Pods_WotMovie.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WotMovie.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE4326E5218B83187F9AB8DE /* Pods-WotMovie.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WotMovie.debug.xcconfig"; path = "Target Support Files/Pods-WotMovie/Pods-WotMovie.debug.xcconfig"; sourceTree = "<group>"; };
 		DAA8FF8869C850EFE4CC3B9A /* Pods-WotMovie.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WotMovie.release.xcconfig"; path = "Target Support Files/Pods-WotMovie/Pods-WotMovie.release.xcconfig"; sourceTree = "<group>"; };
@@ -317,6 +321,7 @@
 				850140542549E7350088FA3E /* EnterGuessViewController.swift */,
 				85CF35A92540B3F600A101C9 /* EntityTableViewController.swift */,
 				8527827425BD3FF100FC257A /* LoadMoreGridViewController.swift */,
+				85AAA33D2613A8C1002BBA20 /* CrewListViewController.swift */,
 				8527827925BD403F00FC257A /* GridViewController.swift */,
 			);
 			path = Components;
@@ -365,6 +370,7 @@
 				8586DF492555DE100066EE65 /* PersonOverviewView.swift */,
 				85CF359A253E0CFB00A101C9 /* DetailOverviewView.swift */,
 				85014068254C7F1D0088FA3E /* EnterGuessControlsView.swift */,
+				85FBF2B32613E43F00B35C90 /* CrewListRow.swift */,
 			);
 			path = Detail;
 			sourceTree = "<group>";
@@ -858,6 +864,7 @@
 				8527827A25BD403F00FC257A /* GridViewController.swift in Sources */,
 				85CF35B72540E1D000A101C9 /* Credits.swift in Sources */,
 				853C67BD25D30E7D00EBEFBE /* SortGridPresenter.swift in Sources */,
+				85FBF2B42613E43F00B35C90 /* CrewListRow.swift in Sources */,
 				85CF35752538DA5700A101C9 /* GuessGridPresenter.swift in Sources */,
 				8586DF3325539C3F0066EE65 /* GuessCategoryView.swift in Sources */,
 				8588FD13255F390F0054EC17 /* DismissCardAnimator.swift in Sources */,
@@ -933,6 +940,7 @@
 				8588FD3B256887BC0054EC17 /* PersonDetailPresenter.swift in Sources */,
 				85CF358C253A32D700A101C9 /* ImageDownloadManager.swift in Sources */,
 				85CF356B25377D0200A101C9 /* Genre.swift in Sources */,
+				85AAA33E2613A8C1002BBA20 /* CrewListViewController.swift in Sources */,
 				8535964825D8A97000F093BA /* SettingsPresenter.swift in Sources */,
 				85905C44256B046A00443348 /* NetworkEnvironment.swift in Sources */,
 				85CF35302536301F00A101C9 /* PropertyWrappers.swift in Sources */,

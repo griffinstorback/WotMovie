@@ -59,7 +59,7 @@ class HorizontalCollectionViewController: DetailPresenterViewController {
         collectionView.delaysContentTouches = false
         
         if titleLabel != nil {
-            titleLabel?.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+            titleLabel?.font = Constants.Fonts.detailViewSectionHeader
         }
         
         setupCollectionView()

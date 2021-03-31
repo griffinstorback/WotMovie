@@ -7,6 +7,23 @@
 
 import UIKit
 
+
+
+
+
+
+/*
+
+ THIS CLASS HAS BEEN REPLACED BY CrewListViewController
+    Because of innumerable bugs with table views when they are added to a stack view,
+    within a scroll view.
+
+ */
+
+
+
+
+
 protocol EntityTableViewDelegate: NSObjectProtocol {
     func getSectionsCount() -> Int
     func getCountForSection(section: Int) -> Int
@@ -19,12 +36,12 @@ class EntityTableViewController: DetailPresenterViewController {
     
     private weak var delegate: EntityTableViewDelegate?
     
-    private var tableView: ContentSizedTableView!
+    private var tableView: ContentSizedTableView
     
     init() {
-        super.init(nibName: nil, bundle: nil)
-        
         tableView = ContentSizedTableView()
+        
+        super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -44,6 +61,10 @@ class EntityTableViewController: DetailPresenterViewController {
     
     func reloadData() {
         tableView.reloadData()
+    }
+    
+    override func viewWillLayoutSubviews() {
+        tableView.isScrollEnabled = false
     }
 }
 
@@ -117,13 +138,8 @@ extension EntityTableViewController: UITableViewDelegate, UITableViewDataSource,
 
         return cell
     }
-
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        print("**** DID DESELECT ITEM: \(delegate?.getItem(for: indexPath.row, section: indexPath.section)?.name)")
-    }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("**** DID SELECT ITEM: \(delegate?.getItem(for: indexPath.row, section: indexPath.section)?.name)")
         let cell = tableView.cellForRow(at: indexPath) as! EntityTableViewCell
         let section = indexPath.section
         let index = indexPath.row

@@ -73,7 +73,7 @@ class UpgradeViewController: UIViewController {
     private func setupViews() {
         upgradePresenter.setViewDelegate(self)
         
-        title = "Upgrade"
+        title = "Unlock"
         
         view.backgroundColor = .systemBackground
         
@@ -121,7 +121,7 @@ class UpgradeViewController: UIViewController {
         
         buyUpgradeButtonContainer.giveBlurredBackground(style: .systemMaterial)
         
-        buyUpgradeButton.setTitle("Buy Upgrade $1.99", for: .normal)
+        buyUpgradeButton.setTitle("Unlock now - $1.99", for: .normal)
         buyUpgradeButton.setTitleColor(.white, for: .normal)
         buyUpgradeButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         buyUpgradeButton.backgroundColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue

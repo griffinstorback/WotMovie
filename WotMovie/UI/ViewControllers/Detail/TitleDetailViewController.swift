@@ -24,6 +24,7 @@ class TitleDetailViewController: GuessDetailViewController {
                 
             case .hintShown:
                 removeShowHintButton()
+                addLoadingIndicator()
                 addInfo()
                 
             case .revealed, .revealedWithNoNextButton, .correct, .correctWithNoNextButton:
@@ -47,9 +48,9 @@ class TitleDetailViewController: GuessDetailViewController {
     }
     
     // stackview items
-    private let detailOverviewView: DetailOverviewView!
-    private let castCollectionView: HorizontalCollectionViewController!
-    private let crewTableView: EntityTableViewController!
+    private let detailOverviewView: DetailOverviewView
+    private let castCollectionView: HorizontalCollectionViewController
+    private let crewListViewController: CrewListViewController
     
     init(item: Entity, state: GuessDetailViewState, presenter: TitleDetailPresenterProtocol? = nil) {
         // use passed in presenter if provided (used in tests)
@@ -57,7 +58,7 @@ class TitleDetailViewController: GuessDetailViewController {
         
         detailOverviewView = DetailOverviewView(frame: .zero, guessState: state)
         castCollectionView = HorizontalCollectionViewController(title: "Cast")
-        crewTableView = EntityTableViewController()
+        crewListViewController = CrewListViewController()
         
         super.init(item: item, posterImageView: detailOverviewView.posterImageView, state: state, presenter: titleDetailViewPresenter)
         
@@ -80,7 +81,7 @@ class TitleDetailViewController: GuessDetailViewController {
         detailOverviewView.setReleaseDate(dateString: titleDetailViewPresenter.getReleaseDate())
         
         castCollectionView.setDelegate(self)
-        crewTableView.setDelegate(self)
+        crewListViewController.setDelegate(self)
     }
     
     private func layoutViews() {
@@ -90,9 +91,12 @@ class TitleDetailViewController: GuessDetailViewController {
         case .fullyHidden:
             addShowHintButton()
         case .hintShown:
-            addInfo()
+            //addInfo()
+            addLoadingIndicator()
         case .revealed, .revealedWithNoNextButton, .correct, .correctWithNoNextButton:
-            addInfo()
+            //addInfo()
+            addLoadingIndicator()
+            
             detailOverviewView.setTitle(titleDetailViewPresenter.getTitle())
             detailOverviewView.setOverviewText(titleDetailViewPresenter.getOverview()) // uncensor title name from overview
             
@@ -103,9 +107,19 @@ class TitleDetailViewController: GuessDetailViewController {
         }
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if state == .hintShown || state == .revealed || state == .revealedWithNoNextButton || state == .correct || state == .correctWithNoNextButton {
+            addInfo()
+        }
+    }
+    
     private func addInfo() {
+        removeLoadingIndicator()
+        removeShowHintButton()
+        
         addChildToStackView(castCollectionView)
-        addChildToStackView(crewTableView)
+        addChildToStackView(crewListViewController)
         
         // reload cast collection view (fixes bug where cells sometimes wrong size, or missing labels after being added)
         castCollectionView.reloadData()
@@ -132,26 +146,29 @@ extension TitleDetailViewController: HorizontalCollectionViewDelegate {
     }
 }
 
-extension TitleDetailViewController: EntityTableViewDelegate {
-    
-    func getSectionsCount() -> Int {
-        return titleDetailViewPresenter.getCrewTypesToDisplayCount()
+extension TitleDetailViewController: CrewListViewDelegate {
+    func getCrewTypeStringToDisplay(for section: CrewTypeSection) -> String? {
+        titleDetailViewPresenter.getCrewTypeStringToDisplay(for: section)
     }
     
-    func getCountForSection(section: Int) -> Int {
-        return titleDetailViewPresenter.getCrewCountForType(section: section)
-    }
-
-    func getSectionTitle(for index: Int) -> String? {
-        return titleDetailViewPresenter.getCrewTypeToDisplay(for: index)
+    func getDirectors() -> [CrewMember] {
+        titleDetailViewPresenter.getDirectors()
     }
     
-    func getItem(for index: Int, section: Int) -> Entity? {
+    func getProducers() -> [CrewMember] {
+        titleDetailViewPresenter.getProducers()
+    }
+    
+    func getWriters() -> [CrewMember] {
+        titleDetailViewPresenter.getWriters()
+    }
+    
+    func loadImage(for index: Int, section: CrewTypeSection, completion: @escaping (UIImage?) -> Void) {
+        titleDetailViewPresenter.loadCrewMemberImageFor(index: index, section: section, completion: completion)
+    }
+    
+    func getCrewMember(for index: Int, section: CrewTypeSection) -> CrewMember? {
         return titleDetailViewPresenter.getCrewMember(for: index, section: section)
-    }
-    
-    func loadImage(for index: Int, section: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
-        titleDetailViewPresenter.loadCrewPersonImage(index: index, section: section, completion: completion)
     }
 }
 
@@ -162,7 +179,7 @@ extension TitleDetailViewController: GuessDetailViewDelegate {
     
     func reloadData() {
         castCollectionView.reloadData()
-        crewTableView.reloadData()
+        crewListViewController.reloadData()
         updateItemOnEnterGuessView() // this is defined in parent class GuessDetailVC
         
         print("*** RELOADING DATA in TitleDetailVC: item: \(guessDetailViewPresenter.item)")

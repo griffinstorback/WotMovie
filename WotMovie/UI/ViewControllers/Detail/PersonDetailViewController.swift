@@ -71,19 +71,14 @@ class PersonDetailViewController: GuessDetailViewController {
         super.init(item: item, posterImageView: personOverviewView.posterImageView, state: state, presenter: personDetailViewPresenter)
         
         personDetailViewPresenter.setViewDelegate(detailViewDelegate: self)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
         personDetailViewPresenter.loadCredits()
         
         setupViews()
         layoutViews()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     private func setupViews() {
@@ -106,9 +101,11 @@ class PersonDetailViewController: GuessDetailViewController {
         case .fullyHidden:
             addShowHintButton()
         case .hintShown:
-            addInfo()
+            //addInfo()
+            addLoadingIndicator()
         case .revealed, .revealedWithNoNextButton, .correct, .correctWithNoNextButton:
-            addInfo()
+            //addInfo()
+            addLoadingIndicator()
             personOverviewView.setName(personDetailViewPresenter.getTitle())
             
             // if item was correctly guessed, show check at top left
@@ -116,17 +113,13 @@ class PersonDetailViewController: GuessDetailViewController {
                 addCheckMarkIcon(animated: false)
             }
         }
-        
-        // sometimes collectionviews sizes are wrong when added here (this method runs before view appears)
-        DispatchQueue.main.async {
-            self.reloadInfoCollectionViews()
-        }
     }
     
     var firstLoad: Bool = true
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        // Set correct poster image state, based on guess state
         switch state {
         case .correct, .correctWithNoNextButton:
             personOverviewView.setPosterImageState(.correctlyGuessedWithoutCheckmark, animated: true)
@@ -136,15 +129,19 @@ class PersonDetailViewController: GuessDetailViewController {
             personOverviewView.setPosterImageState(.revealWhileDetailOpenButHideOnGrid, animated: true)
         }
         
-        // without fistload check, when dismissing a modal back to this view, the whole view flashes (kind of annoying)
+        // by checking if first load, avoids calling addInfo when modal presented from this view is dismissed back here (which reloads collections, causing flash)
         if firstLoad {
-            // refresh collection views again, because sometimes sizing is wrong after view appears.
-            reloadInfoCollectionViews()
+            if state == .hintShown || state == .revealed || state == .revealedWithNoNextButton || state == .correct || state == .correctWithNoNextButton {
+                addInfo()
+            }
             firstLoad = false
         }
     }
     
     private func addInfo() {
+        removeLoadingIndicator()
+        removeShowHintButton()
+        
         addChildToStackView(knownForCollectionView)
         
         // first section after 'knownFor' should be the department the Person is known for (knownForDepartment)

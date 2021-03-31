@@ -14,7 +14,7 @@ class EntityTableSectionHeaderView: UITableViewHeaderFooterView {
 
     override init(reuseIdentifier: String?) {
         title = UILabel()
-        title.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+        title.font = Constants.Fonts.detailViewSectionHeader
         
         super.init(reuseIdentifier: reuseIdentifier)
 

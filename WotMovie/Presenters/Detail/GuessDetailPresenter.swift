@@ -18,7 +18,7 @@ protocol GuessDetailPresenterProtocol {
     
     func setViewDelegate(detailViewDelegate: GuessDetailViewDelegate?)
     func loadPosterImage(completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
-    func loadCrewTypes()
+    //func loadCrewTypes()
     func getID() -> Int
     func getTitle() -> String // should rename getName()?
     
@@ -55,6 +55,8 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
             print(crewTypes)
         }
     }
+    
+    // TODO: Currently, PersonDetail uses this, but TitleDetail has been refactored to use CrewTypeSection enum. Make PersonDetail do same.
     let crewTypeForSection: [String] = [
         "Director",
         "Writer",
@@ -114,7 +116,7 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
         }
     }
     
-    func loadCrewTypes() {
+    /*func loadCrewTypes() {
         networkManager.getJobsList { [weak self] departments, error in
             if let error = error {
                 print(error)
@@ -128,7 +130,7 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
                 self?.crewTypes = departments
             }
         }
-    }
+    }*/
     
     func getID() -> Int {
         return item.id

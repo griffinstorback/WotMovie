@@ -11,18 +11,30 @@ import UIKit
 protocol TitleDetailPresenterProtocol: GuessDetailPresenterProtocol {
     func loadCredits()
     func loadCastPersonImage(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
-    func loadCrewPersonImage(index: Int, section: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
+    
     func getOverview() -> String
     func getOverviewCensored() -> String
     func getReleaseDate() -> String
     func getGenres(completion: @escaping (_ genres: String?) -> Void)
+    
     func getCastCount() -> Int
     func getCastMember(for index: Int) -> CastMember?
     func getCharacterForCastMember(for index: Int) -> String?
-    func getCrewTypesToDisplayCount() -> Int
-    func getCrewCountForType(section: Int) -> Int
-    func getCrewTypeToDisplay(for section: Int) -> String?
-    func getCrewMember(for index: Int, section: Int) -> CrewMember?
+    
+    func getCrewTypeStringToDisplay(for section: CrewTypeSection) -> String?
+    func getCrewMember(for index: Int, section: CrewTypeSection) -> CrewMember?
+    func loadCrewMemberImageFor(index: Int, section: CrewTypeSection, completion: @escaping (UIImage?) -> Void)
+
+    func getDirectors() -> [CrewMember]
+    func getProducers() -> [CrewMember]
+    func getWriters() -> [CrewMember]
+}
+
+// corresponds with property in super class GuessDetailPresenter - crewTypeForSection
+enum CrewTypeSection: String, CaseIterable {
+    case director = "Director"
+    case writer = "Writer"
+    case producer = "Producer"
 }
 
 class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
@@ -43,12 +55,12 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
     private func setCrewToDisplay() {
         if let credits = credits {
             for crewMember in credits.crew {
-                for crewType in crewTypeForSection {
-                    if crewMember.job == crewType {
-                        if crewToDisplay[crewType] == nil {
-                            crewToDisplay[crewType] = [crewMember]
+                for crewType in CrewTypeSection.allCases {
+                    if crewMember.job == crewType.rawValue {
+                        if crewToDisplay[crewType.rawValue] == nil {
+                            crewToDisplay[crewType.rawValue] = [crewMember]
                         } else {
-                            crewToDisplay[crewType]?.append(crewMember)
+                            crewToDisplay[crewType.rawValue]?.append(crewMember)
                         }
                     }
                 }
@@ -76,33 +88,18 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
     }
     
     func loadCredits() {
-        // first try to get credits from core data
-        if let credits = getCreditsFromCoreData() {
+        // first try to get credits from core data ( NOT IMPLEMENTED )
+        /*if let credits = getCreditsFromCoreData() {
             self.credits = credits
             return
-        }
+        }*/
         
+        // doesn't cache in core data right now - just gets from network
         getCreditsFromNetworkThenCacheInCoreData()
     }
     
     func loadCastPersonImage(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
         guard let credits = credits, let profilePath = credits.cast[index].posterPath else {
-            completion(nil, nil)
-            return
-        }
-        
-        loadImage(path: profilePath, completion: completion)
-    }
-    
-    func loadCrewPersonImage(index: Int, section: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
-        let crewType = crewTypeForSection[section]
-        
-        guard let crewMember = crewToDisplay[crewType]?[index] else {
-            completion(nil, nil)
-            return
-        }
-        
-        guard let profilePath = crewMember.posterPath else {
             completion(nil, nil)
             return
         }
@@ -163,18 +160,8 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
         return credits?.cast[index].character
     }
     
-    func getCrewTypesToDisplayCount() -> Int {
-        return crewTypeForSection.count
-    }
-    
-    func getCrewCountForType(section: Int) -> Int {
-        let crewType = crewTypeForSection[section]
-        
-        return crewToDisplay[crewType]?.count ?? 0
-    }
-    
-    func getCrewTypeToDisplay(for section: Int) -> String? {
-        let crewType = crewTypeForSection[section]
+    func getCrewTypeStringToDisplay(for section: CrewTypeSection) -> String? {
+        let crewType = section.rawValue
         
         guard let crewTypeCount = crewToDisplay[crewType]?.count else {
             return nil
@@ -190,9 +177,11 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
         }
     }
     
-    func getCrewMember(for index: Int, section: Int) -> CrewMember? {
-        let crewType = crewTypeForSection[section]
+    func getCrewMember(for index: Int, section: CrewTypeSection) -> CrewMember? {
+        let crewType = section.rawValue
         
+        // don't let index go out of range
+        guard index < crewToDisplay[crewType]?.count ?? -1 else { return nil }
         return crewToDisplay[crewType]?[index]
     }
     
@@ -209,14 +198,49 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
         getGenresFromNetworkThenCacheInCoreData(completion: completion)
     }
     
+    func getDirectors() -> [CrewMember] {
+        return crewToDisplay[CrewTypeSection.director.rawValue] ?? []
+    }
+    
+    func getWriters() -> [CrewMember] {
+        return crewToDisplay[CrewTypeSection.writer.rawValue] ?? []
+    }
+    
+    func getProducers() -> [CrewMember] {
+        return crewToDisplay[CrewTypeSection.producer.rawValue] ?? []
+    }
+    
+    func loadCrewMemberImageFor(index: Int, section: CrewTypeSection, completion: @escaping (UIImage?) -> Void) {
+        let crewType = section.rawValue
+        
+        // don't let go out of range
+        guard index < crewToDisplay[crewType]?.count ?? -1 else {
+            completion(nil)
+            return
+        }
+        guard let crewMember = crewToDisplay[crewType]?[index] else {
+            completion(nil)
+            return
+        }
+        
+        guard let profilePath = crewMember.posterPath else {
+            completion(nil)
+            return
+        }
+        
+        loadImage(path: profilePath) { image, _ in
+            completion(image)
+        }
+    }
+    
     
     // MARK: - Private
     
-    private func getCreditsFromCoreData() -> Credits? {
+    /*private func getCreditsFromCoreData() -> Credits? {
         //let credits = coreDataManager.getCreditsFor(type: item.type, id: item.id)
         //return credits
         return nil
-    }
+    }*/
     
     private func getCreditsFromNetworkThenCacheInCoreData() {
         switch item.type {
@@ -231,13 +255,9 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
                 }
                 
                 if let credits = credits {
-                    if let strongSelf = self {
-                        DispatchQueue.main.async {
-                            //self?
-                            //strongSelf.coreDataManager.updateOrCreateCredits(type: strongSelf.item.type, credits: credits)
-                        }
-                    }
-                    
+                    /*DispatchQueue.main.async {
+                        self?.coreDataManager.updateOrCreateCredits(type: strongSelf.item.type, credits: credits)
+                    }*/
                     
                     self?.credits = credits
                 }
