@@ -77,6 +77,24 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
         return items.count - (items.count % numberOfItemsPerRow)
     }
     
+    // number of cells in grid that haven't been guessed yet
+    var hiddenItemsCount: Int {
+        // sums up the items which are not revealed or guessed (they're hidden)
+        return items.reduce(0) { $0 + ((!$1.isRevealed && !$1.correctlyGuessed) ? 1 : 0 )}
+    }
+    
+    // returns the max number of hidden items to show, in order to prevent users from endlessly scrolling for no reason.
+    var maxNumberOfHiddenItemsToShow: Int {
+        guard let numberOfItemsPerRow = guessGridViewDelegate?.numberOfItemsPerRow() else {
+            print("** WARNING: in GuessGridPresenter, could not get # items per row (view delegate is likely nil).")
+            return 0
+        }
+        
+        let numberOfRowsToShow = 10
+        
+        return numberOfItemsPerRow * numberOfRowsToShow
+    }
+    
     // filter out entities user has guessed on already, as well as undesirables (e.g. movie with no overview)
     private func addItems(_ items: [Entity]) {
         var newItems = items
@@ -214,6 +232,13 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
         // before loading next page, if genres haven't been loaded yet, load them.
         if genresList.isEmpty {
             loadGenresList()
+        }
+        
+        // if there are too many hidden items on the page, tell user to guess some before loading more.
+        if hiddenItemsCount > maxNumberOfHiddenItemsToShow {
+            print("***** Reveal or guess some before loading more!")
+            // TODO: Show alert to user
+            return
         }
         
         loadNextPageOfItems()
