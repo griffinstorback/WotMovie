@@ -242,6 +242,10 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
         }
         
         loadNextPageOfItems()
+        
+        // TODO: At this point, a new page has been loaded, or started to load.
+        //       So, we should check if there are over say 1000 items in the list, and
+        //       prune the first page off if there is, in order to avoid memory problems.
     }
     
     

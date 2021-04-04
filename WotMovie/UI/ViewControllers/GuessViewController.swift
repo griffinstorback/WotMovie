@@ -68,6 +68,7 @@ class GuessViewController: UIViewController {
         scrollView.isUserInteractionEnabled = true
         scrollView.delaysContentTouches = false
         scrollView.bounces = true
+        scrollView.alwaysBounceVertical = true
         scrollView.delegate = self
         statusBarCoverView.giveBlurredBackground(style: .systemMaterial)
         statusBarCoverView.alpha = 0

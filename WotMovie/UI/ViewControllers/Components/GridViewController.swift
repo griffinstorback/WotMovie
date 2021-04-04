@@ -39,6 +39,9 @@ class GridViewController: DetailPresenterViewController {
         collectionView.backgroundColor = .systemBackground
         collectionView.delaysContentTouches = false
         
+        collectionView.bounces = true
+        collectionView.alwaysBounceVertical = true
+        
         collectionView.register(GridCollectionViewCell.self, forCellWithReuseIdentifier: "GridCollectionViewCell")
         collectionView.register(GridCollectionViewFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footer")
     }

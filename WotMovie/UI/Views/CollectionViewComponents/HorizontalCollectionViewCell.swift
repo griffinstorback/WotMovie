@@ -30,12 +30,10 @@ class HorizontalCollectionViewCell: UICollectionViewCell {
         
         nameLabel = UILabel()
         nameLabel.numberOfLines = 0
-        nameLabel.font = UIFont.systemFont(ofSize: 14.0)
         nameLabel.textAlignment = .center
         
         subtitleLabel = UILabel()
         subtitleLabel.numberOfLines = 0
-        subtitleLabel.font = UIFont.systemFont(ofSize: 13.0)
         subtitleLabel.textAlignment = .center
         subtitleLabel.textColor = .secondaryLabel
         
@@ -100,9 +98,16 @@ class HorizontalCollectionViewCell: UICollectionViewCell {
     
     public func setName(_ text: String) {
         nameLabel.text = text
+        nameLabel.font = UIFont.systemFont(ofSize: 14.0)
+    }
+    
+    public func setNameHidden() {
+        nameLabel.text = "?"
+        nameLabel.font = UIFont.systemFont(ofSize: 18.0, weight: .medium)
     }
     
     public func setSubtitle(_ text: String) {
         subtitleLabel.text = text
+        subtitleLabel.font = UIFont.systemFont(ofSize: 13.0)
     }
 }

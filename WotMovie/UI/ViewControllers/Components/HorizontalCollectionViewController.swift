@@ -14,8 +14,20 @@ protocol HorizontalCollectionViewDelegate: NSObjectProtocol {
     func loadImageFor(_ horizontalCollectionViewController: HorizontalCollectionViewController, index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
 }
 
+enum HorizontalCollectionViewState {
+    case namesHidden
+    case namesShown
+}
+
 class HorizontalCollectionViewController: DetailPresenterViewController {
 
+    // is hidden to start - reload when changed
+    var state: HorizontalCollectionViewState = .namesHidden {
+        didSet {
+            collectionView.reloadData()
+        }
+    }
+    
     private weak var delegate: HorizontalCollectionViewDelegate?
     
     private var titleLabel: UILabel?
@@ -107,10 +119,14 @@ extension HorizontalCollectionViewController: UICollectionViewDataSource, UIColl
             return cell
         }
         
-        cell.setName(item.name)
+        if state == .namesHidden {
+            cell.setNameHidden()
+        } else {
+            cell.setName(item.name)
+        }
         
-        // set the subtitle if one exists for this item
-        if let subtitle = delegate?.getSubtitleFor(self, index: indexPath.row) {
+        // set the subtitle if one exists for this item (and if state isn't hidden)
+        if let subtitle = delegate?.getSubtitleFor(self, index: indexPath.row), state == .namesShown {
             cell.setSubtitle(subtitle)
         }
         

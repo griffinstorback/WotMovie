@@ -45,8 +45,7 @@ class GuessGridViewController: DetailPresenterViewController {
         
         // make button on right side of navigation bar be for genre selection (except for People, obviously)
         if guessGridViewPresenter.category == .movie || guessGridViewPresenter.category == .tvShow {
-            let genreSelectionButton = UIBarButtonItem(title: guessGridViewPresenter.getGenreCurrentlyDisplaying().name, style: .done, target: self, action: #selector(selectGenresToDisplay))
-            navigationItem.rightBarButtonItem = genreSelectionButton
+            addGenreSelectionBarButton()
         }
         
         
@@ -57,6 +56,11 @@ class GuessGridViewController: DetailPresenterViewController {
     private func layoutViews() {
         addChildViewController(gridView)
         gridView.view.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
+    }
+    
+    private func addGenreSelectionBarButton() {
+        let genreSelectionButton = UIBarButtonItem(title: guessGridViewPresenter.getGenreCurrentlyDisplaying().name, style: .done, target: self, action: #selector(selectGenresToDisplay))
+        navigationItem.rightBarButtonItem = genreSelectionButton
     }
     
     // right bar item pressed

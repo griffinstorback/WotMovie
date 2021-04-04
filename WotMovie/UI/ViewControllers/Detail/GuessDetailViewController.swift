@@ -70,7 +70,7 @@ class GuessDetailViewController: DetailViewController {
         enterGuessViewController = EnterGuessViewController(item: item)
         enterGuessContainerView = UIView()
         
-        super.init(posterImageView: posterImageView, state: state, presenter: presenter)
+        super.init(entityType: item.type, posterImageView: posterImageView, state: state, presenter: presenter)
         
         setupViews()
         layoutViews()

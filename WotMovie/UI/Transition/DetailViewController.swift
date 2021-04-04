@@ -12,7 +12,8 @@ import Appodeal
 class DetailViewController: UIViewController {
     
     weak var transitionPresenter: TransitionPresenterProtocol?
-    let guessDetailPresenter: GuessDetailPresenterProtocol
+    let guessDetailPresenter: GuessDetailPresenterProtocol // CURRENTLY NOT BEING USED. Is a ref here necessary?
+    let entityType: EntityType
     var state: GuessDetailViewState
     
     // amount view will change when dragging down or on screen edge
@@ -64,7 +65,8 @@ class DetailViewController: UIViewController {
         return edgePan
     }()
     
-    init(posterImageView: PosterImageView, state: GuessDetailViewState, presenter: GuessDetailPresenterProtocol) {
+    init(entityType: EntityType, posterImageView: PosterImageView, state: GuessDetailViewState, presenter: GuessDetailPresenterProtocol) {
+        self.entityType = entityType
         self.state = state
         
         guessDetailPresenter = presenter
@@ -161,7 +163,7 @@ class DetailViewController: UIViewController {
         contentStackView.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 150, right: 0)
         contentStackView.isLayoutMarginsRelativeArrangement = true
         
-        closeButton.setImage(UIImage(systemName: "xmark.circle.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 22, weight: .semibold)), for: .normal)
+        closeButton.setImage(UIImage(systemName: "xmark.circle.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 24, weight: .semibold)), for: .normal)
         closeButton.imageView?.contentMode = .scaleAspectFit
         closeButton.tintColor = .systemGray
         closeButton.addTarget(self, action: #selector(closeButtonPressed), for: .touchUpInside)
@@ -258,6 +260,7 @@ class DetailViewController: UIViewController {
                     dismissalAnimator?.finishAnimation(at: .end)
                 } else {
                     cancelGesture(gesture)
+                    cancelCurrentScroll()
                     presentRevealAndDismissConfirmation()
                 }
             }
@@ -301,13 +304,42 @@ class DetailViewController: UIViewController {
         }
     }
     
-    func cancelGesture(_ gesture: UIGestureRecognizer) {
+    // optionally wait a specified amount of time before reenabling the gesture
+    func cancelGesture(_ gesture: UIGestureRecognizer, reEnableAfter delay: TimeInterval? = nil) {
         gesture.isEnabled = false
-        gesture.isEnabled = true
+        
+        if let delay = delay {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                gesture.isEnabled = true
+            }
+        } else {
+            gesture.isEnabled = true
+        }
+    }
+    
+    // makes it so user has to lift their finger and press again, to begin scrolling again.
+    func cancelCurrentScroll() {
+        scrollView.isScrollEnabled = false
+        scrollView.isScrollEnabled = true
     }
     
     // called when user tries to dismiss detail view without revealing/guessing
     func presentRevealAndDismissConfirmation() {
+        
+        switch entityType {
+        case .movie:
+            BriefAlertView(title: "Guess or reveal the Movie before closing").present(duration: 2.0)
+        case .tvShow:
+            BriefAlertView(title: "Guess or reveal the TV Show before closing").present(duration: 2.0)
+        case .person:
+            BriefAlertView(title: "Guess or reveal the Person before closing").present(duration: 2.0)
+        }
+    
+        /* OLD WAY not used now, because a single brief message is better:
+                - This way, user doesn't feel burdened by an immediate choice: Give up or cancel.
+                - Also, getting the user familiar with the "Reveal" button at the bottom left, instead of in an alert, will prepare
+                        them better for next guess view they open.
+         
         let alertController = UIAlertController(title: "Reveal", message: "Are you sure you want to reveal the answer?", preferredStyle: .alert)
         
         // do nothing on cancel, just return to guess detail view
@@ -317,7 +349,7 @@ class DetailViewController: UIViewController {
             self?.guessDetailPresenter.answerWasRevealedDuringAttemptToDismiss()
         })
         
-        self.present(alertController, animated: true)
+        self.present(alertController, animated: true)*/
     }
 }
 

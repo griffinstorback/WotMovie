@@ -138,11 +138,26 @@ class PersonDetailViewController: GuessDetailViewController {
     
     var infoHasBeenAdded: Bool = false
     private func addInfo() {
-        // don't run addInfo twice.
-        guard !infoHasBeenAdded else { return }
+        guard state != .fullyHidden else {
+            print("** WARNING: in TitleDetail, addInfo() was attempted while state was still .fullyHidden.")
+            return
+        }
         
-        removeLoadingIndicatorOrErrorView()
+        // remove show hint button for sure - only remove loading indicator/error if credits have actually loaded.
+        if personDetailViewPresenter.creditsHaveLoaded() {
+            removeLoadingIndicatorOrErrorView()
+        }
         removeShowHintButton()
+        
+        // if horizontal collectionview items haven't been revealed, reveal them.
+        revealHorizontalCollectionViewCellsIfStateIsHidden(knownForCollectionView)
+        revealHorizontalCollectionViewCellsIfStateIsHidden(actorInCollectionView)
+        revealHorizontalCollectionViewCellsIfStateIsHidden(directedCollectionView)
+        revealHorizontalCollectionViewCellsIfStateIsHidden(producedCollectionView)
+        revealHorizontalCollectionViewCellsIfStateIsHidden(wroteCollectionView)
+        
+        // don't add/reload info collection views if they've already been added (otherwise will cause views to flash, annoyingly)
+        guard !infoHasBeenAdded else { return }
         
         addChildToStackView(knownForCollectionView)
         
@@ -180,6 +195,13 @@ class PersonDetailViewController: GuessDetailViewController {
         reloadInfoCollectionViews()
         
         infoHasBeenAdded = true
+    }
+    
+    // makes addInfo() more readable, saves some lines
+    func revealHorizontalCollectionViewCellsIfStateIsHidden(_ horizontalCollectionView: HorizontalCollectionViewController) {
+        if horizontalCollectionView.state == .namesHidden && state != .hintShown {
+            horizontalCollectionView.state = .namesShown
+        }
     }
     
     // this method is called multiple times throughout the layout process, because the sizing of the collection views within the stack view can be buggy
@@ -263,7 +285,7 @@ extension PersonDetailViewController: GuessDetailViewDelegate {
     }
     
     func reloadData() {
-        if !infoHasBeenAdded && personDetailViewPresenter.creditsHaveLoaded() {
+        if state != .fullyHidden && !infoHasBeenAdded && personDetailViewPresenter.creditsHaveLoaded() {
             addInfo()
         }
         

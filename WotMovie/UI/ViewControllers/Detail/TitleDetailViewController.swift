@@ -121,13 +121,24 @@ class TitleDetailViewController: GuessDetailViewController {
     
     var infoHasBeenAdded: Bool = false
     private func addInfo() {
-        // don't run addInfo twice
-        guard !infoHasBeenAdded else { return }
+        guard state != .fullyHidden else {
+            print("** WARNING: in TitleDetail, addInfo() was attempted while state was still .fullyHidden.")
+            return
+        }
         
+        // remove show hint button for sure - only remove loading indicator/error if credits have actually loaded.
         if titleDetailViewPresenter.creditsHaveLoaded() {
             removeLoadingIndicatorOrErrorView()
         }
         removeShowHintButton()
+        
+        // if collectionview items haven't been revealed (cast member names and their characters names), reveal them.
+        if castCollectionView.state == .namesHidden && state != .hintShown {
+            castCollectionView.state = .namesShown
+        }
+        
+        // don't add/reload info views if they have already been added (otherwise will cause views to flash, annoyingly)
+        guard !infoHasBeenAdded else { return }
         
         addChildToStackView(castCollectionView)
         addChildToStackView(crewListViewController)
@@ -192,7 +203,7 @@ extension TitleDetailViewController: GuessDetailViewDelegate {
     }
     
     func reloadData() {
-        if !infoHasBeenAdded && titleDetailViewPresenter.creditsHaveLoaded() {
+        if state != .fullyHidden && !infoHasBeenAdded && titleDetailViewPresenter.creditsHaveLoaded() {
             addInfo()
         }
         
