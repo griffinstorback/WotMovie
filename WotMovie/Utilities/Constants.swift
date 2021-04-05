@@ -35,16 +35,29 @@ struct Constants {
         static let detailViewSectionHeader = UIFont.systemFont(ofSize: 22, weight: .bold)
     }
     
-    // When displaying grid, should omit these items below, for they have descriptions that are either impossible to
-    // guess from, or way too easy; especially important for first impressions (don't want a first time user to see
-    // multiple bad descriptions in a row)
-    struct BadDescriptions {
+    // When displaying grid, should omit these categories below, for they have descriptions that are either impossible to
+    // guess from, or way too easy.
+    struct BadCategories {
         static let movies: Set<Int> = [
-            -1, // MovieName
+            // format: ID int, // Movie category name commented out
         ]
         
         static let tvShows: Set<Int> = [
-            -1, // TVShowName
+            10767, // Talk
+            
+        ]
+    }
+    
+    // Same as bad categories defined above, but for individual items. Only terrible descriptions shouls be added, and this should be reviewed each release of
+    // the app.
+    // TODO: Convert this to a list on TMDB under my account, which each user would query, to allow updates without updating the app?
+    //          note: this would require adhering to the v4 api, which would mean slightly rethinking how networking is done.
+    struct BadDescriptions {
+        static let movies: Set<Int> = [
+            
+        ]
+        static let tvShows: Set<Int> = [
+            
         ]
     }
     

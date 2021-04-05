@@ -632,9 +632,9 @@
 				8586DF4E255613360066EE65 /* ShrinkOnTouchView.swift */,
 				8586DF53255A15970066EE65 /* ShrinkOnTouchButton.swift */,
 				8588FD212560AAA90054EC17 /* CardCollectionViewCell.swift */,
-				8588FD262561E1BF0054EC17 /* CardView.swift */,
 				853C67B225CC8EF500EBEFBE /* LeftAlignedImageCenteredTextButton.swift */,
 				852F44D0260AB2670068917F /* ExamplePersonGuessView.swift */,
+				8588FD262561E1BF0054EC17 /* CardView.swift */,
 				85FBF2B82614F64400B35C90 /* LoadingIndicatorOrErrorView.swift */,
 				85FBF2BD2616B4FE00B35C90 /* BriefAlertView.swift */,
 			);

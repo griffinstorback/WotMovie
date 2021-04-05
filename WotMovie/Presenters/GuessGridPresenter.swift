@@ -22,6 +22,7 @@ protocol GuessGridPresenterProtocol: TransitionPresenterProtocol {
     func getTVShowGenresAvailableToDisplay() -> [TVShowGenre]
     func setGenreToDisplay(genreID: Int)
     
+    func shouldNotLoadMoreItems() -> Bool
     func loadItems()
 }
 
@@ -43,6 +44,17 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
         }
     }
     private var genresList: [Genre] = []
+    private func setGenres(_ genres: [Genre]) {
+        if category == .movie {
+            // filter out movie categories that don't make sense to guess from
+            let goodMovieCategories = genres.filter { !Constants.BadCategories.movies.contains($0.id) }
+            genresList = goodMovieCategories
+        } else if category == .tvShow {
+            // filter out tv show categories that don't make sense to guess from (like "talk" shows, which are simply named after the host)
+            let goodTVShowCategories = genres.filter { !Constants.BadCategories.tvShows.contains($0.id) }
+            genresList = goodTVShowCategories
+        }
+    }
     
     // the items currently being displayed
     private var items: [Entity] = [] {
@@ -97,7 +109,15 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
     
     // filter out entities user has guessed on already, as well as undesirables (e.g. movie with no overview)
     private func addItems(_ items: [Entity]) {
-        var newItems = items
+        // first of all, if any of the movies or tv shows have "BadDescriptions", filter them out.
+        var newItems: [Entity] = []
+        items.forEach { item in
+            if item.type == .movie && !Constants.BadDescriptions.movies.contains(item.id) {
+                newItems.append(item)
+            } else if item.type == .tvShow && !Constants.BadDescriptions.tvShows.contains(item.id) {
+                newItems.append(item)
+            }
+        }
         
         if let movies = newItems as? [Movie] {
             newItems = movies.filter { !$0.overview.isEmpty }
@@ -227,6 +247,10 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
         }
     }
     
+    func shouldNotLoadMoreItems() -> Bool {
+        return hiddenItemsCount > maxNumberOfHiddenItemsToShow
+    }
+    
     // call when want to load another page of items.
     func loadItems() {
         // before loading next page, if genres haven't been loaded yet, load them.
@@ -235,9 +259,8 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
         }
         
         // if there are too many hidden items on the page, tell user to guess some before loading more.
-        if hiddenItemsCount > maxNumberOfHiddenItemsToShow {
-            print("***** Reveal or guess some before loading more!")
-            // TODO: Show alert to user
+        if shouldNotLoadMoreItems() {
+            guessGridViewDelegate?.displayLoadMoreItemsAlert(text: "Guess/Reveal some items before loading more!")
             return
         }
         
@@ -279,7 +302,11 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
                     print("*** GuessGridPresenter.loadNextPageOfItems() - got page \(self.nextPage-1) from network")
                     if self.items.count < 20 {
                         print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is only \(self.items.count), so loading another page (page \(self.nextPage))...")
-                        self.loadNextPageOfItems()
+                        
+                        // dispatch the request on main queue, so that isLoading semaphore is thread safe
+                        DispatchQueue.main.async {
+                            self.loadNextPageOfItems()
+                        }
                     } else {
                         print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is \(self.items.count), so we're done.")
                     }
@@ -398,10 +425,10 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
     // returns true if got results from core data.
     private func getGenreListFromCoreData() -> Bool {
         if category == .movie {
-            genresList = coreDataManager.fetchMovieGenres()
+            setGenres(coreDataManager.fetchMovieGenres())
             return !genresList.isEmpty
         } else if category == .tvShow {
-            genresList = coreDataManager.fetchTVShowGenres()
+            setGenres(coreDataManager.fetchTVShowGenres())
             return !genresList.isEmpty
         }
         
@@ -416,7 +443,7 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
                     return
                 }
                 if let genres = genres {
-                    self?.genresList = genres
+                    self?.setGenres(genres)
                     
                     // cache result in core data
                     DispatchQueue.main.async {
@@ -431,7 +458,7 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
                     return
                 }
                 if let genres = genres {
-                    self?.genresList = genres
+                    self?.setGenres(genres)
                     
                     // cache result in core data
                     DispatchQueue.main.async {

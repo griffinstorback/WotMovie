@@ -48,18 +48,18 @@ extension PersonApi: EndPointType {
     var task: HTTPTask {
         switch self {
         case .popularPeople(let page):
-            let urlParameters: [String: Any] = ["api_key": NetworkManager.MovieAPIKey, "page": page]
+            let urlParameters: [String: Any] = ["api_key": NetworkManager.api3Key, "page": page]
             return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
                         
         case .personDetail, .personCredits:
-            let urlParameters: [String: Any] = ["api_key": NetworkManager.MovieAPIKey]
+            let urlParameters: [String: Any] = ["api_key": NetworkManager.api3Key]
             return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
         case .personDetailAndCredits:
-            let urlParameters: [String: Any] = ["api_key": NetworkManager.MovieAPIKey, "append_to_response": "combined_credits"]
+            let urlParameters: [String: Any] = ["api_key": NetworkManager.api3Key, "append_to_response": "combined_credits"]
             return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
             
         case .searchPeople(let text):
-            let urlParameters: [String: Any] = ["api_key": NetworkManager.MovieAPIKey, "query": text]
+            let urlParameters: [String: Any] = ["api_key": NetworkManager.api3Key, "query": text]
             return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
             
         //default:

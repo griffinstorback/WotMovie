@@ -8,6 +8,7 @@
 import UIKit
 
 protocol GuessGridViewDelegate: NSObjectProtocol {
+    func displayLoadMoreItemsAlert(text: String)
     func displayItems()
     func displayErrorLoadingItems()
     func reloadData()
@@ -116,6 +117,10 @@ class GuessGridViewController: DetailPresenterViewController {
 }
 
 extension GuessGridViewController: GuessGridViewDelegate {
+    func displayLoadMoreItemsAlert(text: String) {
+        BriefAlertView(title: text).present()
+    }
+    
     func displayItems() {
         print("displayitems")
     }
@@ -192,6 +197,13 @@ extension GuessGridViewController: LoadMoreGridViewDelegate {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        // nothing
+        /*let bottomEdge = scrollView.contentOffset.y + scrollView.frame.size.height
+        print("***** bottomEdge: \(bottomEdge)")
+        print("***** scrollView.contentSize.height: \(scrollView.contentSize.height)")
+        if bottomEdge >= scrollView.contentSize.height {
+            if guessGridViewPresenter.shouldNotLoadMoreItems() {
+                BriefAlertView(title: "HEY! YOU THERE!").present()
+            }
+        }*/
     }
 }
