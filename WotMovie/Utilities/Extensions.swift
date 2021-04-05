@@ -108,7 +108,14 @@ extension UIView {
     }
     
 // MARK: - "Scale down size" animation
-    
+    /*
+     THIS METHOD SHOULD NOT BE USED - Previously, it was used to only unselect an object if the touch was within bounds of its view,
+     but this meant if object was tapped on very edge, it would not detect as within its bounds, because the view shrinks from the tap,
+     so the object would remain shrunk after being tapped. There was also no benefit here: there's no point in not unshrinking an object
+     after a tap is recognized.
+     
+     It's commented out now, in case I want to reference it for some reason in the future. But if you're reading this, it likely can be deleted.
+     
     func unselectIfTouchWithinBoundsOfView(_ touches: Set<UITouch>) {
         // if touch ended outside this view, ignore.
         guard touchIsWithinBoundsOfView(touches) else {
@@ -116,7 +123,7 @@ extension UIView {
         }
         
         self.setSelected(false)
-    }
+    }*/
     
     func setSelectedIfTouchWithinBoundsOfView(_ touches: Set<UITouch>) {
         if touchIsWithinBoundsOfView(touches) {

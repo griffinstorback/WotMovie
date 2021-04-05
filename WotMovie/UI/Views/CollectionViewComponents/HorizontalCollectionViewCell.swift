@@ -7,12 +7,12 @@
 
 import UIKit
 
-class HorizontalCollectionViewCell: UICollectionViewCell {
+class HorizontalCollectionViewCell: ShrinkOnTouchCollectionViewCell {
     
     static let cellHeight: CGFloat = 150
     
     private var imagePath: String = ""
-    
+        
     var imageView: UIImageView!
     
     private var labelStackView: UIStackView!
@@ -52,11 +52,14 @@ class HorizontalCollectionViewCell: UICollectionViewCell {
     }
     
     private func layoutViews() {
+        anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
+        
         addSubview(imageView)
         imageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor, size: CGSize(width: 0, height: HorizontalCollectionViewCell.cellHeight))
         
         addSubview(labelStackView)
         labelStackView.anchor(top: imageView.bottomAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
+        
         /*addSubview(nameLabel)
         nameLabel.anchor(top: imageView.bottomAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor)
         addSubview(subtitleLabel)

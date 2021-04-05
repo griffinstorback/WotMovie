@@ -20,8 +20,8 @@ class ShrinkOnTouchButton: UIButton {
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.setSelected(false)
         super.touchesEnded(touches, with: event)
-        unselectIfTouchWithinBoundsOfView(touches)
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {

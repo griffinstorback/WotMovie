@@ -243,8 +243,8 @@ class GuessCategoryView: UIView {
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.setSelected(false)
         super.touchesEnded(touches, with: event)
-        unselectIfTouchWithinBoundsOfView(touches)
         
         if touchIsWithinBoundsOfView(touches) {
             // if this category is .person and user hasn't upgraded, tapping category anywhere should display upgrade page

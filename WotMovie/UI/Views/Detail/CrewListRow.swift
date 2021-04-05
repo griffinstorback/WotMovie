@@ -71,9 +71,24 @@ class CrewListRow: UIView {
         imageView.stopPosterImageLoadingAnimation()
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        setSelected(true)
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesMoved(touches, with: event)
+        setSelectedIfTouchWithinBoundsOfView(touches)
+    }
+    
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesCancelled(touches, with: event)
+        setSelected(false)
+    }
+    
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.setSelected(false)
         super.touchesEnded(touches, with: event)
-        unselectIfTouchWithinBoundsOfView(touches)
         
         if touchIsWithinBoundsOfView(touches) {
             delegate?.present(index: id, section: section, fromCard: imageView)

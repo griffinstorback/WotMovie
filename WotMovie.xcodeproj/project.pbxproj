@@ -62,8 +62,6 @@
 		8588FD13255F390F0054EC17 /* DismissCardAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8588FD12255F390F0054EC17 /* DismissCardAnimator.swift */; };
 		8588FD18255F51670054EC17 /* DetailPresenterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8588FD17255F51670054EC17 /* DetailPresenterViewController.swift */; };
 		8588FD1D256059D10054EC17 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8588FD1C256059D10054EC17 /* DetailViewController.swift */; };
-		8588FD222560AAA90054EC17 /* CardCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8588FD212560AAA90054EC17 /* CardCollectionViewCell.swift */; };
-		8588FD272561E1BF0054EC17 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8588FD262561E1BF0054EC17 /* CardView.swift */; };
 		8588FD2C256883800054EC17 /* MovieOrTVShow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8588FD2B2568837F0054EC17 /* MovieOrTVShow.swift */; };
 		8588FD31256884660054EC17 /* Job.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8588FD30256884660054EC17 /* Job.swift */; };
 		8588FD36256887AC0054EC17 /* TitleDetailPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8588FD35256887AC0054EC17 /* TitleDetailPresenter.swift */; };
@@ -198,8 +196,6 @@
 		8588FD12255F390F0054EC17 /* DismissCardAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DismissCardAnimator.swift; sourceTree = "<group>"; };
 		8588FD17255F51670054EC17 /* DetailPresenterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailPresenterViewController.swift; sourceTree = "<group>"; };
 		8588FD1C256059D10054EC17 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
-		8588FD212560AAA90054EC17 /* CardCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCollectionViewCell.swift; sourceTree = "<group>"; };
-		8588FD262561E1BF0054EC17 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		8588FD2B2568837F0054EC17 /* MovieOrTVShow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieOrTVShow.swift; sourceTree = "<group>"; };
 		8588FD30256884660054EC17 /* Job.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Job.swift; sourceTree = "<group>"; };
 		8588FD35256887AC0054EC17 /* TitleDetailPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleDetailPresenter.swift; sourceTree = "<group>"; };
@@ -631,10 +627,8 @@
 				8586DF3225539C3F0066EE65 /* GuessCategoryView.swift */,
 				8586DF4E255613360066EE65 /* ShrinkOnTouchView.swift */,
 				8586DF53255A15970066EE65 /* ShrinkOnTouchButton.swift */,
-				8588FD212560AAA90054EC17 /* CardCollectionViewCell.swift */,
 				853C67B225CC8EF500EBEFBE /* LeftAlignedImageCenteredTextButton.swift */,
 				852F44D0260AB2670068917F /* ExamplePersonGuessView.swift */,
-				8588FD262561E1BF0054EC17 /* CardView.swift */,
 				85FBF2B82614F64400B35C90 /* LoadingIndicatorOrErrorView.swift */,
 				85FBF2BD2616B4FE00B35C90 /* BriefAlertView.swift */,
 			);
@@ -917,7 +911,6 @@
 				85CF359B253E0CFB00A101C9 /* DetailOverviewView.swift in Sources */,
 				8586DF3825547C810066EE65 /* GuessCategory.swift in Sources */,
 				8501403B2544E22F0088FA3E /* GridCollectionViewFooterView.swift in Sources */,
-				8588FD222560AAA90054EC17 /* CardCollectionViewCell.swift in Sources */,
 				856FF75B2605725B00D438A6 /* Keychain.swift in Sources */,
 				85CF34A0252E5EE400A101C9 /* HTTPMethod.swift in Sources */,
 				8586DF54255A15970066EE65 /* ShrinkOnTouchButton.swift in Sources */,
@@ -965,7 +958,6 @@
 				8527826525BCF67A00FC257A /* ListViewController.swift in Sources */,
 				85CF35C12541F9DD00A101C9 /* EntityTableViewCell.swift in Sources */,
 				8588FD01255F27E50054EC17 /* CardPresentationController.swift in Sources */,
-				8588FD272561E1BF0054EC17 /* CardView.swift in Sources */,
 				85CF34D1252F97C400A101C9 /* MovieEndPoint.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

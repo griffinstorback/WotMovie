@@ -48,16 +48,21 @@ struct Constants {
         ]
     }
     
-    // Same as bad categories defined above, but for individual items. Only terrible descriptions shouls be added, and this should be reviewed each release of
-    // the app.
-    // TODO: Convert this to a list on TMDB under my account, which each user would query, to allow updates without updating the app?
-    //          note: this would require adhering to the v4 api, which would mean slightly rethinking how networking is done.
+    // Same as bad categories defined above, but for individual items. This should be reviewed each release of
+    // the app, especially those listed under PRETTY BAD.
     struct BadDescriptions {
+        // TODO??: Convert this to a list on TMDB under my account, which each user would query, to allow updates without updating the app?
+        //          note: this would require adhering to the v4 api, which would mean slightly rethinking how networking is done.
+        
         static let movies: Set<Int> = [
+            // TERRIBLE
             
+            // PRETTY BAD
         ]
         static let tvShows: Set<Int> = [
+            // TERRIBLE
             
+            // PRETTY BAD
         ]
     }
     

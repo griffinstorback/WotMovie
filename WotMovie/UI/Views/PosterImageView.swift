@@ -30,7 +30,7 @@ enum PosterImageViewState {
     }
 }
 
-class PosterImageView: CardView {
+class PosterImageView: ShrinkOnTouchView {
 
     // don't set state directly, use setState() instance method
     var state: PosterImageViewState = .hidden
