@@ -65,6 +65,7 @@ class GuessPresenter: GuessPresenterProtocol {
         guessViewDelegate?.reloadData()
     }
     
+    // don't call this unless the person category is actually locked - otherwise user might get the congrats message more than once
     func updateUnlockProgress() {
         let unlockProgress = coreDataManager.getNumberOfGuessedAndRevealedMoviesAndTVShows()
         if unlockProgress >= 500 {

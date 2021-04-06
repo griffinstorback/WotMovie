@@ -55,7 +55,14 @@ class ExamplePersonGuessView: UIView {
     
     public func setImage(_ image: UIImage?) {
         if let image = image {
-            imageView.image = image
+            // if image being set for first time, just set it - otherwise, animate the change in image (to help produce carousel effect in upgrade view)
+            if imageView.image == nil {
+                imageView.image = image
+            } else {
+                UIView.transition(with: self, duration: 2.0, options: .transitionCrossDissolve) {
+                    self.imageView.image = image
+                }
+            }
         } else {
             // TODO: SET DEFAULT PERSON IMAGE
             imageView.image = nil

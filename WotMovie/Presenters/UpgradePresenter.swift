@@ -13,6 +13,8 @@ protocol UpgradePresenterProtocol {
     func setViewDelegate(_ upgradeViewDelegate: UpgradeViewDelegate?)
     
     func getTextFor(item: Int) -> String
+    
+    func examplePeopleCount() -> Int
     func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?) -> Void)
     
     func getLocalizedPrice() -> String?
@@ -34,7 +36,7 @@ class UpgradePresenter: UpgradePresenterProtocol {
     private let infoLabelTexts: [String] = [
         "WotMovie",
         "THOUSANDS of celebrities to guess from",
-        "UNLOCK BY PLAYING: You don't have to guess correctly - simply guess or reveal 500 Movies or TV Shows"
+        "UNLOCK BY PLAYING: Guess or reveal 500 Movies or TV Shows - you don't have to guess correctly!"
         /*"Guess famous actors, actresses and directors",
         "Test your knowlege on THOUSANDS of celebrities",
         "Unlock by PLAYING, or pay to unlock instantly (CURRENT PROGRESS: 3/500)"*/
@@ -43,12 +45,20 @@ class UpgradePresenter: UpgradePresenterProtocol {
     // this list should always contain 3 entries (if less than three, fill missing ones with empty person in VC)
     private var examplePeople: [Person] = [] {
         didSet {
-            if examplePeople.count > 3 {
+            /*if examplePeople.count > 3 {
                 examplePeople = Array(examplePeople.shuffled()[0..<3])
-            }
-            
+            }*/
+                        
             upgradeViewDelegate?.reloadData()
         }
+    }
+    
+    private func setExamplePeople(_ people: [Person]) {
+        examplePeople = people.shuffled()
+    }
+    
+    func examplePeopleCount() -> Int {
+        return examplePeople.count
     }
     
     var products: [SKProduct] = [] {
@@ -188,7 +198,8 @@ class UpgradePresenter: UpgradePresenterProtocol {
     private func loadExamplePeopleFromCoreData() -> Bool {
         if let items = coreDataManager.fetchEntityPage(category: .person, pageNumber: 1, genreID: -1) {
             if items.count != 0 {
-                examplePeople = items as? [Person] ?? []
+                setExamplePeople(items as? [Person] ?? [])
+                //examplePeople = items as? [Person] ?? []
                 return true
             }
         }
@@ -210,7 +221,8 @@ class UpgradePresenter: UpgradePresenterProtocol {
                     DispatchQueue.main.async {
                         
                         let newlyAddedPeople = strongSelf.coreDataManager.updateOrCreatePersonPage(people: people, pageNumber: 1)
-                        strongSelf.examplePeople = newlyAddedPeople ?? []
+                        //strongSelf.examplePeople = newlyAddedPeople ?? []
+                        strongSelf.setExamplePeople(newlyAddedPeople ?? [])
                         completion(true)
                         return
                     }

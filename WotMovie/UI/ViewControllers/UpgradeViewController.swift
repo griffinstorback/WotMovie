@@ -271,6 +271,86 @@ class UpgradeViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    
+    
+    // MARK:- Functionality to create a sort of carousel effect with the images
+    // It's a bit convoluted, and won't scale for more images - but it works for three quite well.
+    
+    private var loadDifferentImageTimer: Timer?
+    private var imageCarouselLoadingInitiated: Bool = false // once this is set to true, don't allow loadExamplePersonImages to be called again, so timers aren't reset
+    private func loadExamplePersonImages() {
+        guard !imageCarouselLoadingInitiated else { return }
+        imageCarouselLoadingInitiated = true
+        
+        // first, load the initial images for each example view
+        upgradePresenter.loadImageFor(index: examplePersonGuessView1Index, completion: examplePersonGuessView1.setImage)
+        upgradePresenter.loadImageFor(index: examplePersonGuessView2Index, completion: examplePersonGuessView2.setImage)
+        upgradePresenter.loadImageFor(index: examplePersonGuessView3Index, completion: examplePersonGuessView3.setImage)
+        
+        // start the timer - choose a random view to switch the image out for each time, but make sure its not the same twice in a row
+        var previousExamplePersonGuessViewReloaded = 1
+        loadDifferentImageTimer = Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { [weak self] timer in
+            let rand = Bool.random()
+            if previousExamplePersonGuessViewReloaded == 1 {
+                if rand {
+                    self?.changeImageForExamplePersonGuessView2()
+                    previousExamplePersonGuessViewReloaded = 2
+                } else {
+                    self?.changeImageForExamplePersonGuessView3()
+                    previousExamplePersonGuessViewReloaded = 3
+                }
+            } else if previousExamplePersonGuessViewReloaded == 2 {
+                if rand {
+                    self?.changeImageForExamplePersonGuessView1()
+                    previousExamplePersonGuessViewReloaded = 1
+                } else {
+                    self?.changeImageForExamplePersonGuessView3()
+                    previousExamplePersonGuessViewReloaded = 3
+                }
+            } else if previousExamplePersonGuessViewReloaded == 3 {
+                if rand {
+                    self?.changeImageForExamplePersonGuessView1()
+                    previousExamplePersonGuessViewReloaded = 1
+                } else {
+                    self?.changeImageForExamplePersonGuessView2()
+                    previousExamplePersonGuessViewReloaded = 2
+                }
+            }
+        }
+        loadDifferentImageTimer?.tolerance = 0.2
+    }
+    
+    // start each example person view's index at the first three of the array, then increment each by 3 each time they want to update.
+    private var examplePersonGuessView1Index: Int = 0
+    private func changeImageForExamplePersonGuessView1() {
+        examplePersonGuessView1Index += 3
+        if examplePersonGuessView1Index >= upgradePresenter.examplePeopleCount() {
+            examplePersonGuessView1Index = 0
+        }
+        
+        upgradePresenter.loadImageFor(index: examplePersonGuessView1Index, completion: examplePersonGuessView1.setImage)
+    }
+    
+    private var examplePersonGuessView2Index: Int = 1
+    private func changeImageForExamplePersonGuessView2() {
+        examplePersonGuessView2Index += 3
+        if examplePersonGuessView2Index >= upgradePresenter.examplePeopleCount() {
+            examplePersonGuessView2Index = 1
+        }
+        
+        upgradePresenter.loadImageFor(index: examplePersonGuessView2Index, completion: examplePersonGuessView2.setImage)
+    }
+    
+    private var examplePersonGuessView3Index: Int = 2
+    private func changeImageForExamplePersonGuessView3() {
+        examplePersonGuessView3Index += 3
+        if examplePersonGuessView3Index >= upgradePresenter.examplePeopleCount() {
+            examplePersonGuessView3Index = 2
+        }
+        
+        upgradePresenter.loadImageFor(index: examplePersonGuessView3Index, completion: examplePersonGuessView3.setImage)
+    }
 }
 
 extension UpgradeViewController: UpgradeViewDelegate {
@@ -278,9 +358,7 @@ extension UpgradeViewController: UpgradeViewDelegate {
         print("***** UPGRADE VIEW reload data")
         
         // set the three example person images.
-        upgradePresenter.loadImageFor(index: 0, completion: examplePersonGuessView1.setImage)
-        upgradePresenter.loadImageFor(index: 1, completion: examplePersonGuessView2.setImage)
-        upgradePresenter.loadImageFor(index: 2, completion: examplePersonGuessView3.setImage)
+        loadExamplePersonImages()
     }
     
     func displayError() {
