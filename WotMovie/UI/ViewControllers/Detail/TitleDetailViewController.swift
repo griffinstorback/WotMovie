@@ -56,7 +56,7 @@ class TitleDetailViewController: GuessDetailViewController {
         // use passed in presenter if provided (used in tests)
         titleDetailViewPresenter = presenter ?? TitleDetailPresenter(item: item)
         
-        detailOverviewView = DetailOverviewView(frame: .zero, guessState: state)
+        detailOverviewView = DetailOverviewView(frame: .zero, guessState: state, typeString: titleDetailViewPresenter.getTypeString())
         castCollectionView = HorizontalCollectionViewController(title: "Cast")
         crewListViewController = CrewListViewController()
         

@@ -11,19 +11,40 @@ import UIKit
 class DetailOverviewView: UIView {
         
     let posterImageView: PosterImageView
+    let typeString: String // should be either MOVIE or TV SHOW, as type .person doesn't use this view
     
     private lazy var genreListView: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
+        label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         return label
     }()
     private lazy var horizontalStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.addArrangedSubview(posterImageView)
-        stackView.addArrangedSubview(genreListView)
+        
+        stackView.addArrangedSubview(metaInfoVerticalStackView)
+        //stackView.addArrangedSubview(genreListView)
         stackView.axis = .horizontal
+        stackView.alignment = .center
         stackView.spacing = 10
+        return stackView
+    }()
+    
+    // contains meta info (such as entity type, genres, etc.), displayed on right of poster image.
+    private lazy var metaInfoVerticalStackView: UIStackView = {
+        let stackView = UIStackView()
+        
+        let tempTypeLabel = UILabel()
+        tempTypeLabel.text = typeString
+        tempTypeLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        tempTypeLabel.textColor = .secondaryLabel
+        stackView.addArrangedSubview(tempTypeLabel)
+        
+        stackView.addArrangedSubview(genreListView)
+        
+        stackView.axis = .vertical
+        stackView.spacing = 5
         return stackView
     }()
     
@@ -61,10 +82,12 @@ class DetailOverviewView: UIView {
         return stackView
     }()
     
-    init(frame: CGRect, guessState: GuessDetailViewState) {
+    init(frame: CGRect, guessState: GuessDetailViewState, typeString: String) {
         posterImageView = PosterImageView(state: PosterImageViewState(guessDetailState: guessState))
         posterImageView.layer.cornerRadius = Constants.DetailOverviewPosterImage.size.height * Constants.imageCornerRadiusRatio
         posterImageView.layer.masksToBounds = true
+        
+        self.typeString = typeString
         
         super.init(frame: frame)
         

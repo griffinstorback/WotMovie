@@ -13,6 +13,7 @@ protocol TitleDetailPresenterProtocol: GuessDetailPresenterProtocol {
     func creditsHaveLoaded() -> Bool
     func loadCastPersonImage(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
     
+    func getTypeString() -> String
     func getOverview() -> String
     func getOverviewCensored() -> String
     func getReleaseDate() -> String
@@ -110,6 +111,18 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
         }
         
         loadImage(path: profilePath, completion: completion)
+    }
+    
+    func getTypeString() -> String {
+        switch item.type {
+        case .movie:
+            return "MOVIE"
+        case .tvShow:
+            return "TV SHOW"
+        case .person:
+            print("** WARNING: TitleDetailPresenter.getTypeString attempted but item.type was found to be .person")
+            return ""
+        }
     }
     
     func getOverview() -> String {

@@ -44,7 +44,7 @@ struct Constants {
         
         static let tvShows: Set<Int> = [
             10767, // Talk
-            
+            10763, // News
         ]
     }
     
