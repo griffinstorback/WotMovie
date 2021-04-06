@@ -15,6 +15,10 @@ struct GuessCategory {
     
     // numberGuessed is nil if category isn't leading to guess grid - e.g. "see stats button"
     var numberGuessed: Int?
+    
+    // unlockProgress is NOT nil if category is .person and user hasn't unlocked it yet
+    var unlockProgress: Int?
+    
     let imageName: String
 }
 

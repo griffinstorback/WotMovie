@@ -71,6 +71,13 @@ final class CoreDataManager: CoreDataManagerProtocol {
         }
     }
     
+    // for main landing page and within Upgrade view, to show unlock progress for the .person category
+    func getNumberOfGuessedAndRevealedMoviesAndTVShows() -> Int {
+        let guessedAndRevealedMoviesCount = getNumberGuessedFor(category: .movie) + getNumberRevealedFor(category: .movie)
+        let guessedAndRevealedTVShowsCount = getNumberGuessedFor(category: .tvShow) + getNumberRevealedFor(category: .tvShow)
+        return guessedAndRevealedMoviesCount + guessedAndRevealedTVShowsCount
+    }
+    
     // for List page (i.e. "watchlist", "favorites", "guessed"
     func getCountForListCategory(listCategory: ListCategoryType) -> Int {
         switch listCategory {

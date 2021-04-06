@@ -43,7 +43,7 @@ class SettingsViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         
-        upgradeButton.setTitle("Upgrade", for: .normal)
+        upgradeButton.setTitle("People", for: .normal)
         upgradeButton.backgroundColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue
         upgradeButton.titleEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
         upgradeButton.setTitleColor(.white, for: .normal)
@@ -63,7 +63,7 @@ class SettingsViewController: UIViewController {
     func addUpgradeButton() {
         //navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upgrade", style: .done, target: self, action: #selector(upgradeButtonPressed))
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: upgradeButton)
-        upgradeButton.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: CGSize(width: 80, height: 0))
+        upgradeButton.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: CGSize(width: 75, height: 0))
     }
     
     func removeUpgradeButton() {

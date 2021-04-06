@@ -82,14 +82,26 @@ class IAPManager: NSObject {
         SKPaymentQueue.default().remove(self)
     }
     
+    // essentially does the same as the method below it, but separated them for clarity, for public function scope, and for possible future updates
+    func userUnlockedPersonUpgradeByPlaying() {
+        print("***** (IAP MANAGER) UPDATING KEYCHAIN WITH PERSON UPGRADE UNLOCK VIA PLAYING.")
+        
+        // update keychain to reflect user has UNLOCKED the upgrade
+        Keychain.shared[Constants.KeychainStrings.personUpgradePurchasedKey] = Constants.KeychainStrings.personUpgradePurchasedValue
+        
+        // send notification to any view listening that upgrade was UNLOCKED.
+        let notification = Notification(name: .WMUserDidUpgrade)
+        NotificationQueue.default.enqueue(notification, postingStyle: .asap)
+    }
+    
     // call when user purchases/restores the person category upgrade.
     private func updateKeychainWithPersonUpgradePurchase() {
         print("***** (IAP MANAGER) UPDATING KEYCHAIN WITH PERSON UPGRADE PURCHASE, AND SENDING NOTIFICATION THAT USER UPGRADED.")
         
-        // update keychain to reflect user has purchased the upgrade
+        // update keychain to reflect user has PURCHASED the upgrade
         Keychain.shared[Constants.KeychainStrings.personUpgradePurchasedKey] = Constants.KeychainStrings.personUpgradePurchasedValue
         
-        // send notification to any view listening that upgrade was purchased.
+        // send notification to any view listening that upgrade was PURCHASED.
         let notification = Notification(name: .WMUserDidUpgrade)
         NotificationQueue.default.enqueue(notification, postingStyle: .asap)
     }

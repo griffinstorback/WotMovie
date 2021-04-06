@@ -9,6 +9,7 @@ import UIKit
 
 protocol GuessViewDelegate: NSObjectProtocol {
     func reloadData()
+    func presentBriefAlertThatUserUnlockedPersonGuessing()
 }
 
 class GuessViewController: UIViewController {
@@ -54,6 +55,11 @@ class GuessViewController: UIViewController {
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
         
         guessViewPresenter.updateGuessedCounts()
+        
+        // only update progress number if the person category hasn't been unlocked yet (obviously)
+        if guessViewPresenter.isPersonCategoryLocked() {
+            guessViewPresenter.updateUnlockProgress()
+        }
     }
     
     func setupViews() {
@@ -173,5 +179,10 @@ extension GuessViewController: GuessViewDelegate {
                 }
             }
         }
+    }
+    
+    func presentBriefAlertThatUserUnlockedPersonGuessing() {
+        // TODO: MAKE THE BRIEF ALERT DO HAPTIC SUCCESS
+        BriefAlertView(title: "Congratulations!\nYou've unlocked People").present(duration: 4.0)
     }
 }

@@ -19,6 +19,7 @@ protocol UpgradePresenterProtocol {
     func purchasePersonGuessingUpgrade() -> Bool?
     
     func loadExamplePeople()
+    func getUnlockProgress() -> Int
 }
 
 class UpgradePresenter: UpgradePresenterProtocol {
@@ -31,10 +32,12 @@ class UpgradePresenter: UpgradePresenterProtocol {
     
     // the text to display in the info labels. (first item is the title)
     private let infoLabelTexts: [String] = [
-        "Unlock WotMovie",
-        "Guess famous actors, actresses and directors",
+        "WotMovie",
+        "THOUSANDS of celebrities to guess from",
+        "UNLOCK BY PLAYING: You don't have to guess correctly - simply guess or reveal 500 Movies or TV Shows"
+        /*"Guess famous actors, actresses and directors",
         "Test your knowlege on THOUSANDS of celebrities",
-        "Purchase ONCE, unlock PERMANENTLY"
+        "Unlock by PLAYING, or pay to unlock instantly (CURRENT PROGRESS: 3/500)"*/
     ]
     
     // this list should always contain 3 entries (if less than three, fill missing ones with empty person in VC)
@@ -173,6 +176,14 @@ class UpgradePresenter: UpgradePresenterProtocol {
             print("**** GOT EXAMPLE PEOPLE FROM CORE DATA. (\(examplePeople.count))")
         }
     }
+    
+    func getUnlockProgress() -> Int {
+        return coreDataManager.getNumberOfGuessedAndRevealedMoviesAndTVShows()
+    }
+    
+    
+    
+    // MARK: -- Private methods
     
     private func loadExamplePeopleFromCoreData() -> Bool {
         if let items = coreDataManager.fetchEntityPage(category: .person, pageNumber: 1, genreID: -1) {

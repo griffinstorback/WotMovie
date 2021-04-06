@@ -17,7 +17,7 @@ class GuessCategoryView: UIView {
     
     var category: GuessCategory {
         didSet {
-            setNumberGuessed()
+            setBottomText()
         }
     }
     
@@ -94,7 +94,7 @@ class GuessCategoryView: UIView {
         layoutViews()
         
         // need to explicitly call because the 'didSet' of 'category' is not called before super.init().
-        setNumberGuessed()
+        setBottomText()
     }
     
     private func setupViews() {
@@ -122,7 +122,7 @@ class GuessCategoryView: UIView {
         
         upgradeButton.backgroundColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue
         upgradeButton.titleEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
-        upgradeButton.setTitle("Unlock", for: .normal)
+        upgradeButton.setTitle("See info", for: .normal)
         upgradeButton.setTitleColor(.white, for: .normal)
         upgradeButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         upgradeButton.titleLabel?.adjustsFontSizeToFitWidth = true
@@ -163,7 +163,16 @@ class GuessCategoryView: UIView {
         self.delegate = delegate
     }
     
-    func setNumberGuessed() {
+    // calls one of the two methods to set bottom text, depending on if category is locked.
+    func setBottomText() {
+        if categoryIsLocked {
+            setProgressUntilUnlock()
+        } else {
+            setNumberGuessed()
+        }
+    }
+    
+    private func setNumberGuessed() {
         // if category has number to display (e.g. stats doesn't)
         if let numberGuessed = category.numberGuessed {
             
@@ -185,6 +194,31 @@ class GuessCategoryView: UIView {
         }
     }
     
+    private func setProgressUntilUnlock() {
+        if let unlockProgress = category.unlockProgress {
+            
+            // first, show a label saying "Progress:"
+            let textAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .medium)]
+            let progressText = NSMutableAttributedString(string: "Unlock progress ", attributes: textAttributes)
+            
+            // if at least one has been guessed or revealed, make the number blue instead of black
+            let numberTextAttributes: [NSAttributedString.Key : NSObject]
+            if unlockProgress > 0 {
+                numberTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 18, weight: .bold), NSAttributedString.Key.foregroundColor: UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue]
+            } else {
+                numberTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 18, weight: .bold)]
+            }
+            let numberText = NSMutableAttributedString(string: "\(unlockProgress)", attributes: numberTextAttributes)
+            
+            // text after explaining what the number represents, "#/1000 guessed/revealed"
+            let numberGuessedOrRevealedText = NSMutableAttributedString(string: "/500", attributes: textAttributes)
+            
+            numberText.append(numberGuessedOrRevealedText)
+            progressText.append(numberText)
+            numberGuessedLabel?.attributedText = progressText
+        }
+    }
+    
     func setCategoryIsLocked(to locked: Bool) {
         if locked {
             categoryIsLocked = true
@@ -193,6 +227,9 @@ class GuessCategoryView: UIView {
             categoryIsLocked = false
             addChevronRemoveUpgradeButton()
         }
+        
+        // re-set the bottom text, because it's contents are dependent on the state of category lock
+        setBottomText()
     }
     
     private func addUpgradeButtonRemoveChevron() {

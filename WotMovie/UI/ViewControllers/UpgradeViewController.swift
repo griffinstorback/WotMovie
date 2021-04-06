@@ -17,6 +17,9 @@ class UpgradeViewController: UIViewController {
     
     let upgradePresenter: UpgradePresenterProtocol
     
+    let scrollView: UIScrollView
+    let mainStackView: UIStackView
+    
     // show three examples of (broadly) what guess view looks like for people
     let examplePersonGuessViewsStackView: UIStackView
     let examplePersonGuessView1: ExamplePersonGuessView
@@ -33,15 +36,23 @@ class UpgradeViewController: UIViewController {
     let infoLabel2Stack: UIStackView
     let infoLabel2Bullet: UILabel
     let infoLabel2: UILabel
-    let infoLabel3Stack: UIStackView
+    /*let infoLabel3Stack: UIStackView
     let infoLabel3Bullet: UILabel
-    let infoLabel3: UILabel
+    let infoLabel3: UILabel*/
     
-    let buyUpgradeButtonContainer: UIView
+    let bottomSpacingView: UIView // empty view at bottom of mainStack view, made equal to height of the bottom container, so that can scroll all the way down.
+    
+    let bottomContainer: UIView
+    let unlockByPlayingLabel: UILabel
+    let currentProgressLabel: UILabel
+    let bottomContainerItemSeparator: UILabel // the label (with title - OR -) which separates unlockByPlayingLabel and buyUpgradeButton within the bottomContainer.
     let buyUpgradeButton: ShrinkOnTouchButton
     
     init(presenter: UpgradePresenterProtocol? = nil) {
         upgradePresenter = presenter ?? UpgradePresenter()
+        
+        scrollView = UIScrollView()
+        mainStackView = UIStackView()
         
         examplePersonGuessViewsStackView = UIStackView()
         examplePersonGuessView1 = ExamplePersonGuessView()
@@ -57,11 +68,16 @@ class UpgradeViewController: UIViewController {
         infoLabel2Stack = UIStackView()
         infoLabel2Bullet = UILabel()
         infoLabel2 = UILabel()
-        infoLabel3Stack = UIStackView()
+        /*infoLabel3Stack = UIStackView()
         infoLabel3Bullet = UILabel()
-        infoLabel3 = UILabel()
+        infoLabel3 = UILabel()*/
         
-        buyUpgradeButtonContainer = UIView()
+        bottomSpacingView = UIView()
+        
+        bottomContainer = UIView()
+        unlockByPlayingLabel = UILabel()
+        currentProgressLabel = UILabel()
+        bottomContainerItemSeparator = UILabel()
         buyUpgradeButton = ShrinkOnTouchButton()
         
         super.init(nibName: nil, bundle: nil)
@@ -73,17 +89,23 @@ class UpgradeViewController: UIViewController {
     private func setupViews() {
         upgradePresenter.setViewDelegate(self)
         
-        title = "Unlock"
+        title = "People"
         
         view.backgroundColor = .systemBackground
         
+        scrollView.alwaysBounceVertical = true
+        scrollView.bounces = true
+        
+        mainStackView.axis = .vertical
+        mainStackView.alignment = .fill
+        mainStackView.spacing = 20
+        
         examplePersonGuessViewsStackView.axis = .horizontal
         examplePersonGuessViewsStackView.distribution = .fillEqually
-        examplePersonGuessViewsStackView.spacing = 20
+        examplePersonGuessViewsStackView.spacing = 10
         examplePersonGuessViewsStackView.backgroundColor = .clear
-        examplePersonGuessView1.layer.cornerRadius = 5
-        examplePersonGuessView2.layer.cornerRadius = 5
-        examplePersonGuessView3.layer.cornerRadius = 5
+        examplePersonGuessViewsStackView.layoutMargins = UIEdgeInsets(top: 10, left: examplePersonGuessViewsStackViewLeftRightMargins, bottom: 5, right: examplePersonGuessViewsStackViewLeftRightMargins)
+        examplePersonGuessViewsStackView.isLayoutMarginsRelativeArrangement = true
         
         let proTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 24, weight: .bold), NSAttributedString.Key.foregroundColor: UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue]
         let proText = NSMutableAttributedString(string: " People", attributes: proTextAttributes)
@@ -93,35 +115,55 @@ class UpgradeViewController: UIViewController {
         infoLabelsTitle.attributedText = upgradeToWotMovieText
         
         infoLabelsStackView.axis = .vertical
+        infoLabelsStackView.layoutMargins = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        infoLabelsStackView.isLayoutMarginsRelativeArrangement = true
         infoLabelsStackView.spacing = 15
         
         infoLabel1Stack.axis = .horizontal
         infoLabel1Bullet.text = "•"
-        infoLabel1Bullet.textColor = .secondaryLabel
+        //infoLabel1Bullet.textColor = .secondaryLabel
         infoLabel1Bullet.font = UIFont.systemFont(ofSize: 32, weight: .bold)
         infoLabel1.text = upgradePresenter.getTextFor(item: 1)
-        infoLabel1.font = UIFont.systemFont(ofSize: 18)
+        //infoLabel1.textColor = .secondaryLabel
+        infoLabel1.font = UIFont.systemFont(ofSize: 17, weight: .medium)
         infoLabel1.numberOfLines = 0
         
         infoLabel2Stack.axis = .horizontal
         infoLabel2Bullet.text = "•"
-        infoLabel2Bullet.textColor = .secondaryLabel
+        //infoLabel2Bullet.textColor = .secondaryLabel
         infoLabel2Bullet.font = UIFont.systemFont(ofSize: 32, weight: .bold)
         infoLabel2.text = upgradePresenter.getTextFor(item: 2)
-        infoLabel2.font = UIFont.systemFont(ofSize: 18)
+        infoLabel2.font = UIFont.systemFont(ofSize: 17, weight: .medium)
         infoLabel2.numberOfLines = 0
         
-        infoLabel3Stack.axis = .horizontal
+        /*infoLabel3Stack.axis = .horizontal
         infoLabel3Bullet.text = "•"
         infoLabel3Bullet.textColor = .secondaryLabel
         infoLabel3Bullet.font = UIFont.systemFont(ofSize: 32, weight: .bold)
         infoLabel3.text = upgradePresenter.getTextFor(item: 3)
         infoLabel3.font = UIFont.systemFont(ofSize: 18)
-        infoLabel3.numberOfLines = 0
+        infoLabel3.numberOfLines = 0*/
         
-        buyUpgradeButtonContainer.giveBlurredBackground(style: .systemMaterial)
+        bottomContainer.giveBlurredBackground(style: .systemMaterial)
         
-        buyUpgradeButton.setTitle("Unlock now - $1.99", for: .normal)
+        unlockByPlayingLabel.text = "Unlock by playing 500 times"
+        unlockByPlayingLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        unlockByPlayingLabel.textAlignment = .center
+        unlockByPlayingLabel.numberOfLines = 1
+        
+        let unlockProgress = upgradePresenter.getUnlockProgress()
+        currentProgressLabel.text = "Current progress: \(unlockProgress)/500"
+        currentProgressLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        currentProgressLabel.textAlignment = .center
+        currentProgressLabel.numberOfLines = 1
+        currentProgressLabel.textColor = .secondaryLabel
+        
+        bottomContainerItemSeparator.text = "- OR -"
+        bottomContainerItemSeparator.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        bottomContainerItemSeparator.textColor = .secondaryLabel
+        bottomContainerItemSeparator.textAlignment = .center
+        
+        buyUpgradeButton.setTitle("Unlock now - $1.29", for: .normal)
         buyUpgradeButton.setTitleColor(.white, for: .normal)
         buyUpgradeButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         buyUpgradeButton.backgroundColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue
@@ -143,15 +185,23 @@ class UpgradeViewController: UIViewController {
         }
     }
     private func layoutViews() {
-        view.addSubview(examplePersonGuessViewsStackView)
-        examplePersonGuessViewsStackView.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, padding: UIEdgeInsets(top: 10, left: examplePersonGuessViewsStackViewLeftRightMargins, bottom: 0, right: examplePersonGuessViewsStackViewLeftRightMargins))
+        view.addSubview(scrollView)
+        scrollView.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
         
+        scrollView.addSubview(mainStackView)
+        mainStackView.anchor(top: scrollView.topAnchor, leading: scrollView.leadingAnchor, bottom: scrollView.bottomAnchor, trailing: scrollView.trailingAnchor)
+        mainStackView.anchorSize(height: nil, width: scrollView.widthAnchor)
+        
+        mainStackView.addArrangedSubview(examplePersonGuessViewsStackView)
         examplePersonGuessViewsStackView.addArrangedSubview(examplePersonGuessView1)
         examplePersonGuessViewsStackView.addArrangedSubview(examplePersonGuessView2)
         examplePersonGuessViewsStackView.addArrangedSubview(examplePersonGuessView3)
         
-        view.addSubview(infoLabelsStackView)
-        infoLabelsStackView.anchor(top: examplePersonGuessViewsStackView.bottomAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, padding: UIEdgeInsets(top: 25, left: 10, bottom: 0, right: 10))
+        
+        
+        // Info labels
+        
+        mainStackView.addArrangedSubview(infoLabelsStackView)
         
         infoLabel1Stack.addArrangedSubview(infoLabel1Bullet)
         infoLabel1Bullet.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: CGSize(width: 20, height: 0))
@@ -161,21 +211,39 @@ class UpgradeViewController: UIViewController {
         infoLabel2Bullet.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: CGSize(width: 20, height: 0))
         infoLabel2Stack.addArrangedSubview(infoLabel2)
         
-        infoLabel3Stack.addArrangedSubview(infoLabel3Bullet)
+        /*infoLabel3Stack.addArrangedSubview(infoLabel3Bullet)
         infoLabel3Bullet.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: CGSize(width: 20, height: 0))
-        infoLabel3Stack.addArrangedSubview(infoLabel3)
+        infoLabel3Stack.addArrangedSubview(infoLabel3)*/
         
         infoLabelsStackView.addArrangedSubview(infoLabelsTitle)
         infoLabelsStackView.addArrangedSubview(infoLabel1Stack)
         infoLabelsStackView.addArrangedSubview(infoLabel2Stack)
-        infoLabelsStackView.addArrangedSubview(infoLabel3Stack)
+        //infoLabelsStackView.addArrangedSubview(infoLabel3Stack)
         infoLabelsStackView.addArrangedSubview(UIView())
         
-        view.addSubview(buyUpgradeButtonContainer)
-        buyUpgradeButtonContainer.anchor(top: infoLabelsStackView.bottomAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
         
-        buyUpgradeButtonContainer.addSubview(buyUpgradeButton)
-        buyUpgradeButton.anchor(top: buyUpgradeButtonContainer.topAnchor, leading: buyUpgradeButtonContainer.leadingAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, trailing: buyUpgradeButtonContainer.trailingAnchor, padding: UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5), size: CGSize(width: 0, height: 50))
+        
+        // Bottom Container View
+        
+        view.addSubview(bottomContainer)
+        bottomContainer.anchor(top: nil, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
+        
+        bottomContainer.addSubview(unlockByPlayingLabel)
+        unlockByPlayingLabel.anchor(top: bottomContainer.topAnchor, leading: bottomContainer.leadingAnchor, bottom: nil, trailing: bottomContainer.trailingAnchor, padding: UIEdgeInsets(top: 10, left: 10, bottom: 0, right: 10))
+        
+        bottomContainer.addSubview(currentProgressLabel)
+        currentProgressLabel.anchor(top: unlockByPlayingLabel.bottomAnchor, leading: bottomContainer.leadingAnchor, bottom: nil, trailing: bottomContainer.trailingAnchor)
+        
+        bottomContainer.addSubview(bottomContainerItemSeparator)
+        bottomContainerItemSeparator.anchor(top: currentProgressLabel.bottomAnchor, leading: bottomContainer.leadingAnchor, bottom: nil, trailing: bottomContainer.trailingAnchor, padding: UIEdgeInsets(top: 10, left: 10, bottom: 0, right: 10))
+        
+        bottomContainer.addSubview(buyUpgradeButton)
+        buyUpgradeButton.anchor(top: bottomContainerItemSeparator.bottomAnchor, leading: bottomContainer.leadingAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, trailing: bottomContainer.trailingAnchor, padding: UIEdgeInsets(top: 10, left: 5, bottom: 5, right: 5), size: CGSize(width: 0, height: 50))
+        
+        
+        // extra space at bottom of mainstack view to offset the height of the bottomcontainer.
+        mainStackView.addArrangedSubview(bottomSpacingView)
+        bottomSpacingView.anchorSize(height: bottomContainer.heightAnchor, width: nil)
     }
     
     override func viewDidLoad() {
