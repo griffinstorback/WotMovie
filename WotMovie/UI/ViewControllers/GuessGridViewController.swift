@@ -197,12 +197,15 @@ extension GuessGridViewController: LoadMoreGridViewDelegate {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // INSTEAD OF BELOW, currently what happens is when the footer is loaded, it shows the brief alert view.
+        //      - the issue with that being, footer is loaded before its in view, so *could* be confusing.
+        
         /*let bottomEdge = scrollView.contentOffset.y + scrollView.frame.size.height
         print("***** bottomEdge: \(bottomEdge)")
         print("***** scrollView.contentSize.height: \(scrollView.contentSize.height)")
         if bottomEdge >= scrollView.contentSize.height {
             if guessGridViewPresenter.shouldNotLoadMoreItems() {
-                BriefAlertView(title: "HEY! YOU THERE!").present()
+                BriefAlertView(title: "Guess some before loading more").present()
             }
         }*/
     }

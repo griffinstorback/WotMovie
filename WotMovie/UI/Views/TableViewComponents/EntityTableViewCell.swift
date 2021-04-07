@@ -7,31 +7,10 @@
 
 import UIKit
 
-/*
- 
- 
- 
- 
- 
- 
- 
- THIS CLASS DEPRECATED.
- 
- Entity Table view component was replaced by CrewListView, a custom implementation of a table view,
- becasuse of the innumerable bugs associated with adding a table view to a stack view inside a scroll
- view.
- 
- 
- 
- 
- 
- 
- */
-
-class EntityTableViewCell: UITableViewCell {
+class EntityTableViewCell: ShrinkOnTouchTableViewCell {
     
-    static let cellHeight: CGFloat = 80
-    private let profileImageViewSize = CGSize(width: 50, height: 75)
+    static let cellHeight: CGFloat = 90
+    private let profileImageViewSize = CGSize(width: 56, height: 84)
     
     // stored to compare against incoming images in setImage (make sure they are correct image for path)
     private var imagePath: String = ""

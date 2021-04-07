@@ -7,21 +7,11 @@
 
 import UIKit
 
-
-
-
-
-
 /*
-
- THIS CLASS HAS BEEN REPLACED BY CrewListViewController
-    Because of innumerable bugs with table views when they are added to a stack view,
-    within a scroll view.
-
+ 
+ THIS CLASS used for the search view controller results.
+ 
  */
-
-
-
 
 
 protocol EntityTableViewDelegate: NSObjectProtocol {
@@ -30,6 +20,8 @@ protocol EntityTableViewDelegate: NSObjectProtocol {
     func getSectionTitle(for index: Int) -> String?
     func getItem(for index: Int, section: Int) -> Entity?
     func loadImage(for index: Int, section: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
+    
+    func tableViewScrollViewDidScroll(_ scrollView: UIScrollView)
 }
 
 class EntityTableViewController: DetailPresenterViewController {
@@ -62,13 +54,9 @@ class EntityTableViewController: DetailPresenterViewController {
     func reloadData() {
         tableView.reloadData()
     }
-    
-    override func viewWillLayoutSubviews() {
-        tableView.isScrollEnabled = false
-    }
 }
 
-extension EntityTableViewController: UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
+extension EntityTableViewController: UITableViewDelegate, UITableViewDataSource {
     func setupTableView() {
         tableView.register(EntityTableViewCell.self, forCellReuseIdentifier: "EntityTableViewCell")
         tableView.register(EntityTableSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: "EntityTableSectionHeader")
@@ -78,9 +66,13 @@ extension EntityTableViewController: UITableViewDelegate, UITableViewDataSource,
         
         // Set scroll to enabled after view appears (otherwise theres a bug where first tap on cell
         // doesn't register).
-        tableView.delaysContentTouches = true
-        tableView.isScrollEnabled = false
+        tableView.delaysContentTouches = false
+        tableView.isScrollEnabled = true
         tableView.bounces = true
+        
+        tableView.backgroundColor = .systemBackground
+        
+        tableView.tableFooterView = UIView()
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -106,6 +98,11 @@ extension EntityTableViewController: UITableViewDelegate, UITableViewDataSource,
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        // if there is no title for this section, return 0
+        guard delegate?.getSectionTitle(for: section) != nil else {
+            return 0
+        }
+        
         // if there is no data in this section, display no header
         guard tableView.dataSource?.tableView(tableView, numberOfRowsInSection: section) ?? -1 > 0 else {
             return 0
@@ -161,5 +158,11 @@ extension EntityTableViewController: UITableViewDelegate, UITableViewDataSource,
         // to call setRevealed() to update posterimage.
         present(guessDetailViewController, fromCard: cell.profileImageView, startHidden: false, transitionPresenter: nil)
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+}
+
+extension EntityTableViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        delegate?.tableViewScrollViewDidScroll(scrollView)
     }
 }

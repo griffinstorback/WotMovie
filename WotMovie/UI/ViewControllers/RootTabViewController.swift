@@ -28,11 +28,15 @@ class RootTabViewController: UITabBarController {
         let listImage = UIImage(named: "list_icon")
         listViewController.tabBarItem = UITabBarItem(title: nil, image: listImage?.withTintColor(.systemGray), selectedImage: listImage?.withTintColor(UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue))
         
+        let searchViewController = UINavigationController(rootViewController: SearchViewController())
+        let searchImage = UIImage(named: "search_icon")
+        searchViewController.tabBarItem = UITabBarItem(title: nil, image: searchImage?.withTintColor(.systemGray), selectedImage: searchImage?.withTintColor(UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue))
+        
         let settingsViewController = UINavigationController(rootViewController: SettingsViewController())
         let settingsImage = UIImage(named: "settings_icon")
         settingsViewController.tabBarItem = UITabBarItem(title: nil, image: settingsImage?.withTintColor(.systemGray), selectedImage: settingsImage?.withTintColor(UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue))
         
-        self.setViewControllers([listViewController, guessViewController, settingsViewController], animated: true)
+        self.setViewControllers([guessViewController, listViewController, searchViewController, settingsViewController], animated: true)
         self.selectedViewController = guessViewController
     }
 }

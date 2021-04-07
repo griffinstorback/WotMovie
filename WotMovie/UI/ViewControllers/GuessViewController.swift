@@ -20,6 +20,7 @@ class GuessViewController: UIViewController {
     private let scrollView: UIScrollView
     
     private let titleLabel: UILabel
+    private let subtitleLabel: UILabel
     
     private let guessCategoryStackViewContainer: UIView
     private let guessCategoryStackView: UIStackView
@@ -33,6 +34,7 @@ class GuessViewController: UIViewController {
         scrollView = UIScrollView()
         
         titleLabel = UILabel()
+        subtitleLabel = UILabel()
         
         guessCategoryStackViewContainer = UIView()
         guessCategoryStackView = UIStackView()
@@ -81,9 +83,15 @@ class GuessViewController: UIViewController {
         
         titleLabel.text = "WotMovie"
         titleLabel.font = UIFont.systemFont(ofSize: 36, weight: .bold)
+        
+        subtitleLabel.text = "Choose a category to guess from"
+        subtitleLabel.font = UIFont.systemFont(ofSize: 20, weight: .regular)
+        //subtitleLabel.numberOfLines = 0
+        subtitleLabel.adjustsFontSizeToFitWidth = true
+        
         guessCategoryStackView.axis = .vertical
         guessCategoryStackView.alignment = .fill
-        guessCategoryStackView.spacing = 20
+        guessCategoryStackView.spacing = 12
         guessCategoryStackView.layoutMargins = UIEdgeInsets(top: 30, left: 0, bottom: 30, right: 0)
         guessCategoryStackView.isLayoutMarginsRelativeArrangement = true
         
@@ -129,7 +137,30 @@ class GuessViewController: UIViewController {
                 
         guessCategoryStackView.addArrangedSubview(titleLabel)
         
+        let spacingView = UIView()
+        guessCategoryStackView.addArrangedSubview(spacingView)
+        // has height=1, because spacing comes from inter item spacing in stack view
+        spacingView.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: CGSize(width: 0, height: 1))
+        
+        guessCategoryStackView.addArrangedSubview(subtitleLabel)
+        
+        
+        
         for categoryView in guessCategoryViews {
+            // add separator before adding stats
+            if categoryView.category.type == .stats {
+                let spacingView = UIView()
+                guessCategoryStackView.addArrangedSubview(spacingView)
+                spacingView.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: CGSize(width: 0, height: 20))
+                
+                let statsLabel = UILabel()
+                statsLabel.text = "See stats for each category"
+                statsLabel.font = UIFont.systemFont(ofSize: 20, weight: .regular)
+                statsLabel.numberOfLines = 0
+                //statsLabel.adjustsFontSizeToFitWidth = true
+                guessCategoryStackView.addArrangedSubview(statsLabel)
+            }
+            
             guessCategoryStackView.addArrangedSubview(categoryView)
         }
         
@@ -152,9 +183,14 @@ extension GuessViewController: UIScrollViewDelegate {
 }
 
 extension GuessViewController: GuessCategoryViewDelegate {
-    func categoryWasSelected(_ type: GuessCategory) {        
-        let guessGridViewController = GuessGridViewController(for: type)
-        navigationController?.pushViewController(guessGridViewController, animated: true)
+    func categoryWasSelected(_ category: GuessCategory) {
+        if category.type == .stats {
+            let statsViewController = StatsViewController()
+            navigationController?.pushViewController(statsViewController, animated: true)
+        } else {
+            let guessGridViewController = GuessGridViewController(for: category)
+            navigationController?.pushViewController(guessGridViewController, animated: true)
+        }
     }
     
     func upgradeButtonPressed() {

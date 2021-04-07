@@ -118,6 +118,8 @@
 		85CF35C12541F9DD00A101C9 /* EntityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF35C02541F9DD00A101C9 /* EntityTableViewCell.swift */; };
 		85CF35D32543912300A101C9 /* HorizontalCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF35D22543912300A101C9 /* HorizontalCollectionViewController.swift */; };
 		85CF35DB2543A8AD00A101C9 /* HorizontalCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF35DA2543A8AD00A101C9 /* HorizontalCollectionViewCell.swift */; };
+		85D1787A261E698800B940C0 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D17879261E698800B940C0 /* SearchViewController.swift */; };
+		85D1787F261E69A300B940C0 /* SearchPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D1787E261E69A300B940C0 /* SearchPresenter.swift */; };
 		85FBF2B42613E43F00B35C90 /* CrewListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85FBF2B32613E43F00B35C90 /* CrewListRow.swift */; };
 		85FBF2B92614F64400B35C90 /* LoadingIndicatorOrErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85FBF2B82614F64400B35C90 /* LoadingIndicatorOrErrorView.swift */; };
 		85FBF2BE2616B4FF00B35C90 /* BriefAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85FBF2BD2616B4FE00B35C90 /* BriefAlertView.swift */; };
@@ -258,6 +260,8 @@
 		85CF35C02541F9DD00A101C9 /* EntityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityTableViewCell.swift; sourceTree = "<group>"; };
 		85CF35D22543912300A101C9 /* HorizontalCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalCollectionViewController.swift; sourceTree = "<group>"; };
 		85CF35DA2543A8AD00A101C9 /* HorizontalCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalCollectionViewCell.swift; sourceTree = "<group>"; };
+		85D17879261E698800B940C0 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
+		85D1787E261E69A300B940C0 /* SearchPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPresenter.swift; sourceTree = "<group>"; };
 		85FBF2B32613E43F00B35C90 /* CrewListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrewListRow.swift; sourceTree = "<group>"; };
 		85FBF2B82614F64400B35C90 /* LoadingIndicatorOrErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingIndicatorOrErrorView.swift; sourceTree = "<group>"; };
 		85FBF2BD2616B4FE00B35C90 /* BriefAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BriefAlertView.swift; sourceTree = "<group>"; };
@@ -561,6 +565,7 @@
 				853C67B725CF759F00EBEFBE /* SortGridViewController.swift */,
 				8535964C25D9DA3F00F093BA /* StatsViewController.swift */,
 				856FF74526028AE300D438A6 /* UpgradeViewController.swift */,
+				85D17879261E698800B940C0 /* SearchViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -648,6 +653,7 @@
 				8535964725D8A97000F093BA /* SettingsPresenter.swift */,
 				8535965125D9DA6800F093BA /* StatsPresenter.swift */,
 				856FF75426041BF400D438A6 /* UpgradePresenter.swift */,
+				85D1787E261E69A300B940C0 /* SearchPresenter.swift */,
 			);
 			path = Presenters;
 			sourceTree = "<group>";
@@ -873,6 +879,7 @@
 				853C67B325CC8EF500EBEFBE /* LeftAlignedImageCenteredTextButton.swift in Sources */,
 				8588FD18255F51670054EC17 /* DetailPresenterViewController.swift in Sources */,
 				8586DF422555CC540066EE65 /* PersonDetailViewController.swift in Sources */,
+				85D1787A261E698800B940C0 /* SearchViewController.swift in Sources */,
 				85905C3F256B01AF00443348 /* PersonEndPoint.swift in Sources */,
 				856FF7502602DF9500D438A6 /* IAPManager.swift in Sources */,
 				8588FD09255F2A8E0054EC17 /* CardTransition.swift in Sources */,
@@ -942,6 +949,7 @@
 				85CF356B25377D0200A101C9 /* Genre.swift in Sources */,
 				85AAA33E2613A8C1002BBA20 /* CrewListViewController.swift in Sources */,
 				8535964825D8A97000F093BA /* SettingsPresenter.swift in Sources */,
+				85D1787F261E69A300B940C0 /* SearchPresenter.swift in Sources */,
 				85905C44256B046A00443348 /* NetworkEnvironment.swift in Sources */,
 				85CF35302536301F00A101C9 /* PropertyWrappers.swift in Sources */,
 				853C679F25CB388E00EBEFBE /* ListCategoryTableViewCell.swift in Sources */,

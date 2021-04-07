@@ -41,7 +41,6 @@ class ListViewController: UIViewController {
     }
     
     private func setupViews() {
-        //navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationItem.backBarButtonItem = UIBarButtonItem(image: UIImage(named: "list_icon"), style: .plain, target: nil, action: nil)
         
         listPresenter.setViewDelegate(self)

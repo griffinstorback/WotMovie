@@ -33,6 +33,10 @@ class StatsViewController: UIViewController {
         
         //tableView.register(UITableViewCell.self, forCellReuseIdentifier: "StatsTableViewCell")
         
+        // need line below to remove empty space which appears above tableview when style == grouped (or insetgrouped)
+        //tableView.contentInsetAdjustmentBehavior = .never
+        
+        tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat.leastNonzeroMagnitude, height: CGFloat.leastNonzeroMagnitude))
         tableView.tableFooterView = UIView()
         tableView.delegate = self
         tableView.dataSource = self
@@ -49,10 +53,11 @@ class StatsViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // unhide nav bar if it was hidden (it was hidden in viewWillAppear of parent, GuessVC, but not of parent SettingsVC)
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
     override func viewDidAppear(_ animated: Bool) {

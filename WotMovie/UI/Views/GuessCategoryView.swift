@@ -168,7 +168,7 @@ class GuessCategoryView: UIView {
         if categoryIsLocked {
             setProgressUntilUnlock()
         } else {
-            setNumberGuessed()
+            //setNumberGuessed()
         }
     }
     
@@ -198,15 +198,15 @@ class GuessCategoryView: UIView {
         if let unlockProgress = category.unlockProgress {
             
             // first, show a label saying "Progress:"
-            let textAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .medium)]
+            let textAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: .regular), NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel]
             let progressText = NSMutableAttributedString(string: "Unlock progress ", attributes: textAttributes)
             
             // if at least one has been guessed or revealed, make the number blue instead of black
             let numberTextAttributes: [NSAttributedString.Key : NSObject]
             if unlockProgress > 0 {
-                numberTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 18, weight: .bold), NSAttributedString.Key.foregroundColor: UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue]
+                numberTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: .bold), NSAttributedString.Key.foregroundColor: UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue]
             } else {
-                numberTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 18, weight: .bold)]
+                numberTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: .bold)]
             }
             let numberText = NSMutableAttributedString(string: "\(unlockProgress)", attributes: numberTextAttributes)
             

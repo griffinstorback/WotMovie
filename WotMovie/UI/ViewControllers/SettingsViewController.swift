@@ -36,7 +36,7 @@ class SettingsViewController: UIViewController {
         settingsPresenter.setViewDelegate(self)
         
         navigationItem.title = "Settings"
-        //self.navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.backBarButtonItem = UIBarButtonItem(image: UIImage(named: "settings_icon"), style: .plain, target: nil, action: nil)
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "SettingsTableViewCell")
         tableView.tableFooterView = UIView()
