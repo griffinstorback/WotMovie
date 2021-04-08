@@ -8,6 +8,8 @@
 import Foundation
 
 // Used for person results (knownFor array objects, combined credits objects)
+// -- WE NEED THIS TYPE, for the character and personsJob properties that aren't present on regular person/title objects
+
 struct MovieOrTVShow: Title {
     let id: Int
     let type: EntityType

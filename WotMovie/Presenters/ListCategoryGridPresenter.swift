@@ -8,24 +8,23 @@
 import Foundation
 import UIKit
 
-enum ListCategoryDisplayTypes: String {
+enum CategoryDisplayTypes: String {
     case movies = "Movies"
     case tvShows = "TV Shows"
     case people = "People"
-    case all = "All types"
+    case all = "All"
     case moviesAndTVShows = "Movies & TV"
 }
 
 protocol ListCategoryGridPresenterProtocol: TransitionPresenterProtocol {
-    var sortParameters: SortParameters { get set }
     var itemsCount: Int { get }
     
     func loadItems()
     func setViewDelegate(_ listCategoryGridViewDelegate: ListCategoryGridViewDelegate?)
     func itemFor(index: Int) -> Entity
-    func getTypesCurrentlyDisplaying() -> ListCategoryDisplayTypes
-    func getTypesAvailableToDisplay() -> [(String,ListCategoryDisplayTypes)]
-    func setTypesToDisplay(listCategoryDisplayTypes: ListCategoryDisplayTypes)
+    func getTypesCurrentlyDisplaying() -> CategoryDisplayTypes
+    func getTypesAvailableToDisplay() -> [(String,CategoryDisplayTypes)]
+    func setTypesToDisplay(listCategoryDisplayTypes: CategoryDisplayTypes)
     func setSearchText(_ text: String?)
     func getSortParameters() -> SortParameters
     func setSortParameters(_ sortParameters: SortParameters)
@@ -39,18 +38,18 @@ class ListCategoryGridPresenter: NSObject, ListCategoryGridPresenterProtocol {
     private let coreDataManager: CoreDataManager
     weak var listCategoryGridViewDelegate: ListCategoryGridViewDelegate?
     
-    var sortParameters: SortParameters {
+    private var sortParameters: SortParameters {
         didSet {
             updateFilter()
         }
     }
     
-    var typesDisplayed: ListCategoryDisplayTypes {
+    private var typesDisplayed: CategoryDisplayTypes {
         didSet {
             updateFilter()
         }
     }
-    var searchString: String = "" {
+    private var searchString: String = "" {
         didSet {
             updateFilter()
         }
@@ -136,33 +135,33 @@ class ListCategoryGridPresenter: NSObject, ListCategoryGridPresenterProtocol {
         return items[index]
     }
     
-    func getTypesCurrentlyDisplaying() -> ListCategoryDisplayTypes {
+    func getTypesCurrentlyDisplaying() -> CategoryDisplayTypes {
         return typesDisplayed
     }
     
     // types to display in drop down menu at top right (right bar item)
-    func getTypesAvailableToDisplay() -> [(String,ListCategoryDisplayTypes)] {
+    func getTypesAvailableToDisplay() -> [(String,CategoryDisplayTypes)] {
         
         switch sortParameters.listCategoryType {
         case .allGuessed, .allRevealed:
             return [
-                (ListCategoryDisplayTypes.all.rawValue, .all),
-                (ListCategoryDisplayTypes.movies.rawValue, .movies),
-                (ListCategoryDisplayTypes.tvShows.rawValue, .tvShows),
-                (ListCategoryDisplayTypes.people.rawValue, .people)
+                (CategoryDisplayTypes.all.rawValue, .all),
+                (CategoryDisplayTypes.movies.rawValue, .movies),
+                (CategoryDisplayTypes.tvShows.rawValue, .tvShows),
+                (CategoryDisplayTypes.people.rawValue, .people)
             ]
         case .movieOrTvShowWatchlist:
             return [
-                (ListCategoryDisplayTypes.moviesAndTVShows.rawValue, .moviesAndTVShows),
-                (ListCategoryDisplayTypes.movies.rawValue, .movies),
-                (ListCategoryDisplayTypes.tvShows.rawValue, .tvShows)
+                (CategoryDisplayTypes.moviesAndTVShows.rawValue, .moviesAndTVShows),
+                (CategoryDisplayTypes.movies.rawValue, .movies),
+                (CategoryDisplayTypes.tvShows.rawValue, .tvShows)
             ]
         case .personFavorites:
             return []
         }
     }
     
-    func setTypesToDisplay(listCategoryDisplayTypes: ListCategoryDisplayTypes) {
+    func setTypesToDisplay(listCategoryDisplayTypes: CategoryDisplayTypes) {
         guard sortParameters.listCategoryType != .personFavorites else { return } // person favorites has only people type.
         
         typesDisplayed = listCategoryDisplayTypes
@@ -224,6 +223,7 @@ class ListCategoryGridPresenter: NSObject, ListCategoryGridPresenterProtocol {
 
 // TransitionPresenterProtocol - called when dismissing modal detail (if item was revealed/added to watchlist while modal was up)
 extension ListCategoryGridPresenter {
+    // this shouldn't ever be called here - there shouldn't be any hidden itemy in any ListCategoryGridView
     func setEntityAsRevealed(id: Int, isCorrect: Bool) {
         if let index = items.firstIndex(where: { $0.id == id }) {
             if isCorrect { // if entity was correctly guessed

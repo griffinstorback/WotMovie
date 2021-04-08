@@ -19,11 +19,11 @@ protocol SearchPresenterProtocol {
     func setSearchText(_ searchText: String?)
     func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
     
-    //func getTypesCurrentlyDisplaying() -> ListCategoryDisplayTypes
-    //func getTypesAvailableToDisplay() -> [(String,ListCategoryDisplayTypes)]
-    //func setTypesToDisplay(listCategoryDisplayTypes: ListCategoryDisplayTypes)
-    //func getSortParameters() -> SortParameters
-    //func setSortParameters(_ sortParameters: SortParameters)
+    func getTypesCurrentlyDisplaying() -> CategoryDisplayTypes
+    func getTypesAvailableToDisplay() -> [(String,CategoryDisplayTypes)]
+    func setTypesToDisplay(categoryDisplayTypes: CategoryDisplayTypes)
+    func getSortParameters() -> SortParameters
+    func setSortParameters(_ sortParameters: SortParameters)
 }
 
 class SearchPresenter: SearchPresenterProtocol {
@@ -32,6 +32,31 @@ class SearchPresenter: SearchPresenterProtocol {
     private let coreDataManager: CoreDataManager
     weak var searchViewDelegate: SearchViewDelegate?
     
+    private var sortParameters: SortParameters {
+        didSet {
+            // no use performing search if nothing to search
+            if !searchString.isEmpty {
+                performSearch()
+            }
+        }
+    }
+    
+    private var typesDisplayed: CategoryDisplayTypes {
+        didSet {
+            // no use performing search if nothing to search
+            if !searchString.isEmpty {
+                performSearch()
+            }
+        }
+    }
+    private var searchString: String = "" {
+        didSet {
+            // no use performing search if nothing to search
+            if !searchString.isEmpty {
+                performSearch()
+            }
+        }
+    }
     private func setSearchResults(_ entities: [Entity]) {
         searchResults = entities
     }
@@ -52,6 +77,11 @@ class SearchPresenter: SearchPresenterProtocol {
         self.networkManager = networkManager
         self.imageDownloadManager = imageDownloadManager
         self.coreDataManager = coreDataManager
+        
+        typesDisplayed = .all
+        
+        // TODO: do something about sort paramters - see what's avaible for searching, what's feasible, what's worth it to implement, whether or not to just scrap it.
+        sortParameters = SortParameters(categoryType: .allGuessed)
     }
     
     /*func loadItems() {
@@ -70,25 +100,29 @@ class SearchPresenter: SearchPresenterProtocol {
     
     func setSearchText(_ searchText: String?) {
         guard let searchText = searchText, !searchText.isEmpty else {
+            searchString = ""
             searchResults = []
             return
         }
         
-        // MAKE THIS SEARCH ALL
-        networkManager.searchMovies(searchText: searchText) { [weak self] movies, error in
-            if let error = error {
-                print(error)
-                return
+        searchString = searchText
+    }
+    
+    private func performSearch() {
+        switch typesDisplayed {
+        case .all, .moviesAndTVShows: // should never be movies & tv shows here, so if it is (for some bugged reason), just treat as all
+            networkManager.searchAll(searchText: searchString) { [weak self] entities, error in
+                if let error = error {
+                    print(error)
+                    return
+                }
+                
+                if let entities = entities {
+                    self?.setSearchResults(entities)
+                }
             }
-            
-            if let movies = movies {
-                self?.setSearchResults(movies)
-            }
-        }
-        
-        /*switch item.type {
-        case .movie:
-            networkManager.searchMovies(searchText: searchText) { [weak self] movies, error in
+        case .movies:
+            networkManager.searchMovies(searchText: searchString) { [weak self] movies, error in
                 if let error = error {
                     print(error)
                     return
@@ -98,8 +132,8 @@ class SearchPresenter: SearchPresenterProtocol {
                     self?.setSearchResults(movies)
                 }
             }
-        case .tvShow:
-            networkManager.searchTVShows(searchText: searchText) { [weak self] tvShows, error in
+        case .tvShows:
+            networkManager.searchTVShows(searchText: searchString) { [weak self] tvShows, error in
                 if let error = error {
                     print(error)
                     return
@@ -109,8 +143,8 @@ class SearchPresenter: SearchPresenterProtocol {
                     self?.setSearchResults(tvShows)
                 }
             }
-        case .person:
-            networkManager.searchPeople(searchText: searchText) { [weak self] people, error in
+        case .people:
+            networkManager.searchPeople(searchText: searchString) { [weak self] people, error in
                 if let error = error {
                     print(error)
                     return
@@ -120,7 +154,7 @@ class SearchPresenter: SearchPresenterProtocol {
                     self?.setSearchResults(people)
                 }
             }
-        }*/
+        }
     }
     
     func loadImageFor(index: Int, completion: @escaping (UIImage?, String?) -> Void) {
@@ -141,5 +175,30 @@ class SearchPresenter: SearchPresenterProtocol {
                 }
             }
         }
+    }
+    
+    func getTypesCurrentlyDisplaying() -> CategoryDisplayTypes {
+        return typesDisplayed
+    }
+    
+    func getTypesAvailableToDisplay() -> [(String, CategoryDisplayTypes)] {
+        return [
+            (CategoryDisplayTypes.all.rawValue, .all),
+            (CategoryDisplayTypes.movies.rawValue, .movies),
+            (CategoryDisplayTypes.tvShows.rawValue, .tvShows),
+            (CategoryDisplayTypes.people.rawValue, .people)
+        ]
+    }
+    
+    func setTypesToDisplay(categoryDisplayTypes: CategoryDisplayTypes) {
+        self.typesDisplayed = categoryDisplayTypes
+    }
+    
+    func getSortParameters() -> SortParameters {
+        return sortParameters
+    }
+    
+    func setSortParameters(_ sortParameters: SortParameters) {
+        self.sortParameters = sortParameters
     }
 }

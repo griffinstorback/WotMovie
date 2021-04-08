@@ -49,14 +49,6 @@ class SearchViewController: UIViewController {
     }
     
     private func layoutViews() {
-        // Had to move this to viewDidLoad for some reason but don't remember why... something about needing to call loadItems first?
-        //addChildViewController(gridView)
-        //gridView.view.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-                
         addChildViewController(resultsTableView)
         resultsTableView.view.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
     }
@@ -75,8 +67,9 @@ class SearchViewController: UIViewController {
     
     // method needs to be called in view will appear.
     func setupNavBarAndSearchBar() {
-        /*let entityTypesSelectionButton = UIBarButtonItem(title: listCategoryGridPresenter.getTypesCurrentlyDisplaying().rawValue, style: .done, target: self, action: #selector(selectEntityTypesToDisplay))
-        navigationItem.rightBarButtonItem = entityTypesSelectionButtonswitch*/
+        // set right bar button item to select types to show (movie, tv, person)
+        let entityTypesSelectionButton = UIBarButtonItem(title: searchPresenter.getTypesCurrentlyDisplaying().rawValue, style: .done, target: self, action: #selector(selectEntityTypesToDisplay))
+        navigationItem.rightBarButtonItem = entityTypesSelectionButton
         
         // bookmark button is actually the sort button.
         searchController.searchBar.setImage(UIImage(named: "sort_icon")?.withTintColor(UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue), for: .bookmark, state: .normal)
@@ -84,11 +77,11 @@ class SearchViewController: UIViewController {
     }
     
     // right bar item
-    /*@objc func selectEntityTypesToDisplay() {
-        let typesDisplayedSelections = listCategoryGridPresenter.getTypesAvailableToDisplay()
+    @objc func selectEntityTypesToDisplay() {
+        let typesDisplayedSelections = searchPresenter.getTypesAvailableToDisplay()
         let typesDisplayedSelectionController = UIAlertController.actionSheetWithItems(controllerTitle: "Display", items: typesDisplayedSelections) { selectedValue in
             // set the type on presenter to filter items
-            self.listCategoryGridPresenter.setTypesToDisplay(listCategoryDisplayTypes: selectedValue)
+            self.searchPresenter.setTypesToDisplay(categoryDisplayTypes: selectedValue)
             
             // set the button string to update what type we are now seeing
             self.navigationItem.rightBarButtonItem?.title = selectedValue.rawValue
@@ -96,7 +89,7 @@ class SearchViewController: UIViewController {
         
         typesDisplayedSelectionController.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
         present(typesDisplayedSelectionController, animated: true)
-    }*/
+    }
 }
 
 extension SearchViewController: SearchViewDelegate {

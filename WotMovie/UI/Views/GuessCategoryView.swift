@@ -15,11 +15,7 @@ protocol GuessCategoryViewDelegate: NSObjectProtocol {
 class GuessCategoryView: UIView {
     private weak var delegate: GuessCategoryViewDelegate?
     
-    var category: GuessCategory {
-        didSet {
-            setBottomText()
-        }
-    }
+    var category: GuessCategory
     
     override var bounds: CGRect {
         didSet {
@@ -44,7 +40,7 @@ class GuessCategoryView: UIView {
         case .phone:
             return UIFont.systemFont(ofSize: 20, weight: .bold)
         case .pad:
-            return UIFont.systemFont(ofSize: 22, weight: .bold)
+            return UIFont.systemFont(ofSize: 24, weight: .bold)
         default:
             return UIFont.systemFont(ofSize: 20, weight: .bold)
         }
@@ -54,7 +50,7 @@ class GuessCategoryView: UIView {
     private let categoryLabel: UILabel
     private let horizontalStack: UIStackView
 
-    private var numberGuessedLabel: UILabel?
+    //private var numberGuessedLabel: UILabel?
     private let verticalStack: UIStackView
     
     private let rightEdgeImageViewContainer: UIView
@@ -74,9 +70,9 @@ class GuessCategoryView: UIView {
         horizontalStack = UIStackView()
         
         // if category is 'stats' (e.g. numberGuessed is set to nil), don't display numberGuessedLabel
-        if category.numberGuessed != nil {
+        /*if category.numberGuessed != nil {
             numberGuessedLabel = UILabel()
-        }
+        }*/
         
         verticalStack = UIStackView()
         
@@ -94,7 +90,7 @@ class GuessCategoryView: UIView {
         layoutViews()
         
         // need to explicitly call because the 'didSet' of 'category' is not called before super.init().
-        setBottomText()
+        //setBottomText()
     }
     
     private func setupViews() {
@@ -109,6 +105,8 @@ class GuessCategoryView: UIView {
         
         horizontalStack.axis = .horizontal
         horizontalStack.spacing = 20
+        horizontalStack.layoutMargins = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+        horizontalStack.isLayoutMarginsRelativeArrangement = true
         
         verticalStack.axis = .vertical
         verticalStack.spacing = 10
@@ -154,21 +152,22 @@ class GuessCategoryView: UIView {
         
         horizontalStack.addArrangedSubview(categoryLabel)
         
-        if let numberGuessedLabel = numberGuessedLabel {
+        /*if let numberGuessedLabel = numberGuessedLabel {
             verticalStack.addArrangedSubview(numberGuessedLabel)
-        }
+        }*/
     }
     
     func setDelegate(_ delegate: GuessCategoryViewDelegate) {
         self.delegate = delegate
     }
     
+    // DECIDED AGAINST SHOWING TEXT IN CATEGORY DUE TO TOO MUCH INFO, SEEMED CROWDED
     // calls one of the two methods to set bottom text, depending on if category is locked.
-    func setBottomText() {
+    /*func setBottomText() {
         if categoryIsLocked {
             setProgressUntilUnlock()
         } else {
-            //setNumberGuessed()
+            setNumberGuessed()
         }
     }
     
@@ -217,7 +216,7 @@ class GuessCategoryView: UIView {
             progressText.append(numberText)
             numberGuessedLabel?.attributedText = progressText
         }
-    }
+    }*/
     
     func setCategoryIsLocked(to locked: Bool) {
         if locked {
@@ -229,7 +228,7 @@ class GuessCategoryView: UIView {
         }
         
         // re-set the bottom text, because it's contents are dependent on the state of category lock
-        setBottomText()
+        //setBottomText()
     }
     
     private func addUpgradeButtonRemoveChevron() {

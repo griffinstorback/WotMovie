@@ -86,6 +86,7 @@ class GuessViewController: UIViewController {
         
         subtitleLabel.text = "Choose a category to guess from"
         subtitleLabel.font = UIFont.systemFont(ofSize: 20, weight: .regular)
+        subtitleLabel.textColor = .secondaryLabel
         //subtitleLabel.numberOfLines = 0
         subtitleLabel.adjustsFontSizeToFitWidth = true
         
@@ -157,6 +158,7 @@ class GuessViewController: UIViewController {
                 statsLabel.text = "See stats for each category"
                 statsLabel.font = UIFont.systemFont(ofSize: 20, weight: .regular)
                 statsLabel.numberOfLines = 0
+                statsLabel.textColor = .secondaryLabel
                 //statsLabel.adjustsFontSizeToFitWidth = true
                 guessCategoryStackView.addArrangedSubview(statsLabel)
             }

@@ -18,7 +18,7 @@ struct SortParameters {
     let listCategoryType: ListCategoryType
     
     // the types being displayed e.g. "Movies", "People", "Movies & TV", etc.
-    var displayingTypes: ListCategoryDisplayTypes
+    var displayingTypes: CategoryDisplayTypes
     
     var sortBy: SortBy {
         didSet {

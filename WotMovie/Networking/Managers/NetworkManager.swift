@@ -22,6 +22,7 @@ protocol NetworkManagerProtocol {
     func searchMovies(searchText: String, completion: @escaping (_ movies: [Movie]?, _ error: String?) -> ())
     func searchTVShows(searchText: String, completion: @escaping (_ tvShows: [TVShow]?, _ error: String?) -> ())
     func searchPeople(searchText: String, completion: @escaping (_ people: [Person]?, _ error: String?) -> ())
+    func searchAll(searchText: String, completion: @escaping (_ entities: [Entity]?, _ error: String?) -> ())
 }
 
 final class NetworkManager: NetworkManagerProtocol {
@@ -481,6 +482,42 @@ final class NetworkManager: NetworkManagerProtocol {
                         //print(jsonData)
                         let apiResponse = try JSONDecoder().decode(PersonApiResponse.self, from: responseData)
                         completion(apiResponse.people, nil)
+                    } catch {
+                        print(error)
+                        completion(nil, NetworkResponse.unableToDecode.rawValue)
+                    }
+                case .failure(let networkFailureError):
+                    print(networkFailureError)
+                    completion(nil, networkFailureError)
+                }
+            }
+        }
+    }
+    
+    public func searchAll(searchText: String, completion: @escaping (_ entities: [Entity]?, _ error: String?) -> ()) {
+        movieRouter.request(.searchAll(text: searchText)) { data, response, error in
+            if error != nil {
+                completion(nil, NetworkResponse.checkNetworkConnection.rawValue)
+            }
+            
+            if let response = response as? HTTPURLResponse {
+                let result = NetworkResponse.handleNetworkResponse(response)
+                
+                switch result {
+                case .success:
+                    guard let responseData = data else {
+                        completion(nil, NetworkResponse.noData.rawValue)
+                        return
+                    }
+                    do {
+                        //let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
+                        //print(jsonData)
+                        
+                        // Uses static func of empty type EntitySearch, instead of decodable object, because each results in the results
+                        // array has a type called media_type which is either person, tv or movie, and I couldn't figure out how to decode
+                        // to an object in that way (i.e. need to check the type field on an object BEFORE decoding the object)
+                        let results = try EntitySearch.decodeSearchData(data: responseData)
+                        completion(results, nil)
                     } catch {
                         print(error)
                         completion(nil, NetworkResponse.unableToDecode.rawValue)

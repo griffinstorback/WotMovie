@@ -82,7 +82,7 @@ class ListCategoryGridViewController: UIViewController {
     
     // method needs to be called in view will appear.
     func setupNavBarAndSearchBar() {
-        let category = listCategoryGridPresenter.sortParameters.listCategoryType
+        let category = listCategoryGridPresenter.getSortParameters().listCategoryType
         
         switch category {
         case .movieOrTvShowWatchlist:

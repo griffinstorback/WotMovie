@@ -28,6 +28,7 @@ public enum MovieApi {
     
     case searchMovies(text: String)
     case searchTVShows(text: String)
+    case searchAll(text: String)
 }
 
 extension MovieApi: EndPointType {
@@ -64,6 +65,7 @@ extension MovieApi: EndPointType {
             
         case .searchMovies: return "search/movie"
         case .searchTVShows: return "search/tv"
+        case .searchAll: return "search/multi"
         }
     }
     
@@ -97,7 +99,7 @@ extension MovieApi: EndPointType {
             let urlParameters: [String: Any] = ["api_key": NetworkManager.api3Key]
             return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
         
-        case .searchMovies(let text), .searchTVShows(let text):
+        case .searchMovies(let text), .searchTVShows(let text), .searchAll(let text):
             let urlParameters: [String: Any] = ["api_key": NetworkManager.api3Key, "query": text]
             return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
             

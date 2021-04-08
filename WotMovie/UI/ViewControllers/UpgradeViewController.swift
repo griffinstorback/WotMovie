@@ -20,6 +20,9 @@ class UpgradeViewController: UIViewController {
     let scrollView: UIScrollView
     let mainStackView: UIStackView
     
+    // at very top is big label saying what current progress is
+    let unlockProgressLabel: UILabel
+    
     // show three examples of (broadly) what guess view looks like for people
     let examplePersonGuessViewsStackView: UIStackView
     let examplePersonGuessView1: ExamplePersonGuessView
@@ -44,7 +47,6 @@ class UpgradeViewController: UIViewController {
     
     let bottomContainer: UIView
     let unlockByPlayingLabel: UILabel
-    let currentProgressLabel: UILabel
     let bottomContainerItemSeparator: UILabel // the label (with title - OR -) which separates unlockByPlayingLabel and buyUpgradeButton within the bottomContainer.
     let buyUpgradeButton: ShrinkOnTouchButton
     
@@ -53,6 +55,8 @@ class UpgradeViewController: UIViewController {
         
         scrollView = UIScrollView()
         mainStackView = UIStackView()
+        
+        unlockProgressLabel = UILabel()
         
         examplePersonGuessViewsStackView = UIStackView()
         examplePersonGuessView1 = ExamplePersonGuessView()
@@ -76,7 +80,6 @@ class UpgradeViewController: UIViewController {
         
         bottomContainer = UIView()
         unlockByPlayingLabel = UILabel()
-        currentProgressLabel = UILabel()
         bottomContainerItemSeparator = UILabel()
         buyUpgradeButton = ShrinkOnTouchButton()
         
@@ -98,7 +101,12 @@ class UpgradeViewController: UIViewController {
         
         mainStackView.axis = .vertical
         mainStackView.alignment = .fill
+        mainStackView.layoutMargins = UIEdgeInsets(top: 30, left: 10, bottom: 0, right: 10)
+        mainStackView.isLayoutMarginsRelativeArrangement = true
         mainStackView.spacing = 20
+        
+        unlockProgressLabel.attributedText = getUnlockProgressString()
+        unlockProgressLabel.textAlignment = .center
         
         examplePersonGuessViewsStackView.axis = .horizontal
         examplePersonGuessViewsStackView.distribution = .fillEqually
@@ -107,16 +115,12 @@ class UpgradeViewController: UIViewController {
         examplePersonGuessViewsStackView.layoutMargins = UIEdgeInsets(top: 10, left: examplePersonGuessViewsStackViewLeftRightMargins, bottom: 5, right: examplePersonGuessViewsStackViewLeftRightMargins)
         examplePersonGuessViewsStackView.isLayoutMarginsRelativeArrangement = true
         
-        let proTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 24, weight: .bold), NSAttributedString.Key.foregroundColor: UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue]
-        let proText = NSMutableAttributedString(string: " People", attributes: proTextAttributes)
-        let upgradeToWotMovieTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 24, weight: .bold)]
-        let upgradeToWotMovieText = NSMutableAttributedString(string: upgradePresenter.getTextFor(item: 0), attributes: upgradeToWotMovieTextAttributes)
-        upgradeToWotMovieText.append(proText)
-        infoLabelsTitle.attributedText = upgradeToWotMovieText
+        // set the attributed text "WotMovie People" where people is standard blue color
+        infoLabelsTitle.attributedText = getWotMoviePeopleTitleString()
         
         infoLabelsStackView.axis = .vertical
-        infoLabelsStackView.layoutMargins = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
-        infoLabelsStackView.isLayoutMarginsRelativeArrangement = true
+        //infoLabelsStackView.layoutMargins = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        //infoLabelsStackView.isLayoutMarginsRelativeArrangement = true
         infoLabelsStackView.spacing = 15
         
         infoLabel1Stack.axis = .horizontal
@@ -151,13 +155,6 @@ class UpgradeViewController: UIViewController {
         unlockByPlayingLabel.textAlignment = .center
         unlockByPlayingLabel.numberOfLines = 1
         
-        let unlockProgress = upgradePresenter.getUnlockProgress()
-        currentProgressLabel.text = "Current progress: \(unlockProgress)/500"
-        currentProgressLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-        currentProgressLabel.textAlignment = .center
-        currentProgressLabel.numberOfLines = 1
-        currentProgressLabel.textColor = .secondaryLabel
-        
         bottomContainerItemSeparator.text = "- OR -"
         bottomContainerItemSeparator.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         bottomContainerItemSeparator.textColor = .secondaryLabel
@@ -177,11 +174,11 @@ class UpgradeViewController: UIViewController {
     var examplePersonGuessViewsStackViewLeftRightMargins: CGFloat {
         switch UIDevice.current.userInterfaceIdiom {
         case .phone:
-            return 20
+            return 10
         case .pad:
             return 50
         default:
-            return 20
+            return 10
         }
     }
     private func layoutViews() {
@@ -191,6 +188,8 @@ class UpgradeViewController: UIViewController {
         scrollView.addSubview(mainStackView)
         mainStackView.anchor(top: scrollView.topAnchor, leading: scrollView.leadingAnchor, bottom: scrollView.bottomAnchor, trailing: scrollView.trailingAnchor)
         mainStackView.anchorSize(height: nil, width: scrollView.widthAnchor)
+        
+        mainStackView.addArrangedSubview(unlockProgressLabel)
         
         mainStackView.addArrangedSubview(examplePersonGuessViewsStackView)
         examplePersonGuessViewsStackView.addArrangedSubview(examplePersonGuessView1)
@@ -231,11 +230,11 @@ class UpgradeViewController: UIViewController {
         bottomContainer.addSubview(unlockByPlayingLabel)
         unlockByPlayingLabel.anchor(top: bottomContainer.topAnchor, leading: bottomContainer.leadingAnchor, bottom: nil, trailing: bottomContainer.trailingAnchor, padding: UIEdgeInsets(top: 10, left: 10, bottom: 0, right: 10))
         
-        bottomContainer.addSubview(currentProgressLabel)
-        currentProgressLabel.anchor(top: unlockByPlayingLabel.bottomAnchor, leading: bottomContainer.leadingAnchor, bottom: nil, trailing: bottomContainer.trailingAnchor)
+        //bottomContainer.addSubview(currentProgressLabel)
+        //currentProgressLabel.anchor(top: unlockByPlayingLabel.bottomAnchor, leading: bottomContainer.leadingAnchor, bottom: nil, trailing: bottomContainer.trailingAnchor)
         
         bottomContainer.addSubview(bottomContainerItemSeparator)
-        bottomContainerItemSeparator.anchor(top: currentProgressLabel.bottomAnchor, leading: bottomContainer.leadingAnchor, bottom: nil, trailing: bottomContainer.trailingAnchor, padding: UIEdgeInsets(top: 10, left: 10, bottom: 0, right: 10))
+        bottomContainerItemSeparator.anchor(top: unlockByPlayingLabel.bottomAnchor, leading: bottomContainer.leadingAnchor, bottom: nil, trailing: bottomContainer.trailingAnchor, padding: UIEdgeInsets(top: 10, left: 10, bottom: 0, right: 10))
         
         bottomContainer.addSubview(buyUpgradeButton)
         buyUpgradeButton.anchor(top: bottomContainerItemSeparator.bottomAnchor, leading: bottomContainer.leadingAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, trailing: bottomContainer.trailingAnchor, padding: UIEdgeInsets(top: 10, left: 5, bottom: 5, right: 5), size: CGSize(width: 0, height: 50))
@@ -244,6 +243,33 @@ class UpgradeViewController: UIViewController {
         // extra space at bottom of mainstack view to offset the height of the bottomcontainer.
         mainStackView.addArrangedSubview(bottomSpacingView)
         bottomSpacingView.anchorSize(height: bottomContainer.heightAnchor, width: nil)
+    }
+    
+    private func getWotMoviePeopleTitleString() -> NSMutableAttributedString {
+        let proTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 24, weight: .bold), NSAttributedString.Key.foregroundColor: UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue]
+        let proText = NSMutableAttributedString(string: " People", attributes: proTextAttributes)
+        let upgradeToWotMovieTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 24, weight: .bold)]
+        let upgradeToWotMovieText = NSMutableAttributedString(string: upgradePresenter.getTextFor(item: 0), attributes: upgradeToWotMovieTextAttributes)
+        upgradeToWotMovieText.append(proText)
+        return upgradeToWotMovieText
+    }
+    
+    private func getUnlockProgressString() -> NSMutableAttributedString {
+        // highlight the number itself in blue
+        let unlockProgress = upgradePresenter.getUnlockProgress()
+        let unlockProgressNumberAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 24, weight: .bold), NSAttributedString.Key.foregroundColor: UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue]
+        let unlockProgressNumber = NSMutableAttributedString(string: "\(unlockProgress)", attributes: unlockProgressNumberAttributes)
+        
+        // make other text regular black (or white)
+        let unlockProgressTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 24, weight: .bold)]
+        let unlockProgressText = NSMutableAttributedString(string: "Unlock progress: ", attributes: unlockProgressTextAttributes)
+        
+        // make /500 text after the number regular black too (or white)
+        let unlockProgressTrailingNumber = NSMutableAttributedString(string: "/500", attributes: unlockProgressTextAttributes)
+        
+        unlockProgressText.append(unlockProgressNumber)
+        unlockProgressText.append(unlockProgressTrailingNumber)
+        return unlockProgressText
     }
     
     override func viewDidLoad() {
