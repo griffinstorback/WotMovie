@@ -12,6 +12,7 @@ protocol SearchPresenterProtocol {
     //var sortParameters: SortParameters { get set }
     var searchResultsCount: Int { get }
     
+    var stringToShowWhenNoResultsShown: String { get }
     //func loadItems()
     
     func setViewDelegate(_ searchViewDelegate: SearchViewDelegate?)
@@ -71,6 +72,27 @@ class SearchPresenter: SearchPresenterProtocol {
         return searchResults.count
     }
     
+    // the string message to show when no results are shown - either because nothing was searched, or because no results were returned.
+    var stringToShowWhenNoResultsShown: String {
+        // there shouldn't be a message if there are results shown.
+        guard searchResults.isEmpty else { return "" }
+        
+        if searchString.isEmpty {
+            switch typesDisplayed {
+            case .all, .moviesAndTVShows: // should never be movies & tv shows here, so if it is (for some bugged reason), just treat as '.all'
+                return "Search Movies, TV Shows, and People"
+            case .movies:
+                return "Search Movies"
+            case .tvShows:
+                return "Search TV Shows"
+            case .people:
+                return "Search People"
+            }
+        } else {
+            return "No results"
+        }
+    }
+    
     init(networkManager: NetworkManager = NetworkManager.shared,
             imageDownloadManager: ImageDownloadManager = ImageDownloadManager.shared,
             coreDataManager: CoreDataManager = CoreDataManager.shared) {
@@ -110,7 +132,7 @@ class SearchPresenter: SearchPresenterProtocol {
     
     private func performSearch() {
         switch typesDisplayed {
-        case .all, .moviesAndTVShows: // should never be movies & tv shows here, so if it is (for some bugged reason), just treat as all
+        case .all, .moviesAndTVShows: // should never be movies & tv shows here, so if it is (for some bugged reason), just treat as '.all'
             networkManager.searchAll(searchText: searchString) { [weak self] entities, error in
                 if let error = error {
                     print(error)

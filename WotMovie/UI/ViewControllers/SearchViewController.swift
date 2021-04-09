@@ -17,11 +17,15 @@ class SearchViewController: UIViewController {
     private let resultsTableView: EntityTableViewController
     private let searchController: UISearchController
     
+    private let placeholderLabelWhenNoResultsShown: UILabel
+    
     init(presenter: SearchPresenterProtocol? = nil) {
         searchPresenter = presenter ?? SearchPresenter()
         
         resultsTableView = EntityTableViewController()
         searchController = UISearchController(searchResultsController: nil)
+        
+        placeholderLabelWhenNoResultsShown = UILabel()
         
         super.init(nibName: nil, bundle: nil)
         
@@ -45,12 +49,37 @@ class SearchViewController: UIViewController {
         searchController.isActive = true
         searchController.searchBar.delegate = self
         
+        placeholderLabelWhenNoResultsShown.textAlignment = .center
+        placeholderLabelWhenNoResultsShown.textColor = .secondaryLabel
+        placeholderLabelWhenNoResultsShown.font = UIFont.systemFont(ofSize: 20, weight: .regular)
+        placeholderLabelWhenNoResultsShown.numberOfLines = 0
+        
         searchPresenter.setViewDelegate(self)
     }
     
     private func layoutViews() {
         addChildViewController(resultsTableView)
         resultsTableView.view.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
+        
+        if searchPresenter.searchResultsCount == 0 {
+            addOrUpdatePlaceholderLabelWhenNoResultsShown()
+        }
+    }
+    
+    // even if the label is already on screen, this function can still be called to update its text
+    private func addOrUpdatePlaceholderLabelWhenNoResultsShown() {
+        placeholderLabelWhenNoResultsShown.text = searchPresenter.stringToShowWhenNoResultsShown
+        
+        guard !view.subviews.contains(placeholderLabelWhenNoResultsShown) else { return }
+        
+        view.addSubview(placeholderLabelWhenNoResultsShown)
+        placeholderLabelWhenNoResultsShown.anchor(top: nil, leading: resultsTableView.view.leadingAnchor, bottom: nil, trailing: resultsTableView.view.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 40, bottom: 0, right: 40))
+        placeholderLabelWhenNoResultsShown.anchorToCenter(yAnchor: resultsTableView.view.centerYAnchor, xAnchor: nil)
+    }
+    
+    private func removePlaceholderLabelBecauseResultsWereShown() {
+        guard view.subviews.contains(placeholderLabelWhenNoResultsShown) else { return }
+        placeholderLabelWhenNoResultsShown.removeFromSuperview()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -85,6 +114,9 @@ class SearchViewController: UIViewController {
             
             // set the button string to update what type we are now seeing
             self.navigationItem.rightBarButtonItem?.title = selectedValue.rawValue
+            
+            // update text for label shown when no results yet
+            self.addOrUpdatePlaceholderLabelWhenNoResultsShown()
         }
         
         typesDisplayedSelectionController.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
@@ -111,7 +143,16 @@ extension SearchViewController: EntityTableViewDelegate {
     }
     
     func getCountForSection(section: Int) -> Int {
-        return searchPresenter.searchResultsCount
+        let searchResultsCount = searchPresenter.searchResultsCount
+        
+        if searchResultsCount > 0 {
+            // results available to show, so remove the placeholder label
+            removePlaceholderLabelBecauseResultsWereShown()
+        } else {
+            // add or update text for label shown when no results
+            addOrUpdatePlaceholderLabelWhenNoResultsShown()
+        }
+        return searchResultsCount
     }
     
     func getSectionTitle(for index: Int) -> String? {

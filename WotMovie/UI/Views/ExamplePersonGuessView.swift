@@ -59,7 +59,7 @@ class ExamplePersonGuessView: UIView {
             if imageView.image == nil {
                 imageView.image = image
             } else {
-                UIView.transition(with: self, duration: 2.0, options: [.transitionCrossDissolve, .allowUserInteraction]) {
+                UIView.transition(with: self, duration: 1.0, options: [.transitionCrossDissolve, .allowUserInteraction]) {
                     self.imageView.image = image
                 }
             }

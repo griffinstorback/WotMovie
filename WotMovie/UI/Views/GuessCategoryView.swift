@@ -28,11 +28,11 @@ class GuessCategoryView: UIView {
     static var categoryImageViewSizeRatio: CGFloat {
         switch UIDevice.current.userInterfaceIdiom {
         case .phone:
-            return 0.25
+            return 0.3
         case .pad:
             return 0.2
         default:
-            return 0.25
+            return 0.3
         }
     }
     static var categoryLabelFont: UIFont {
@@ -105,8 +105,8 @@ class GuessCategoryView: UIView {
         
         horizontalStack.axis = .horizontal
         horizontalStack.spacing = 20
-        horizontalStack.layoutMargins = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
-        horizontalStack.isLayoutMarginsRelativeArrangement = true
+        //horizontalStack.layoutMargins = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+        //horizontalStack.isLayoutMarginsRelativeArrangement = true
         
         verticalStack.axis = .vertical
         verticalStack.spacing = 10

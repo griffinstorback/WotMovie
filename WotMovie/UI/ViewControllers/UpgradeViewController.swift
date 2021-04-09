@@ -316,7 +316,7 @@ class UpgradeViewController: UIViewController {
         
         // start the timer - choose a random view to switch the image out for each time, but make sure its not the same twice in a row
         var previousExamplePersonGuessViewReloaded = 1
-        loadDifferentImageTimer = Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { [weak self] timer in
+        loadDifferentImageTimer = Timer.scheduledTimer(withTimeInterval: 2.5, repeats: true) { [weak self] timer in
             let rand = Bool.random()
             if previousExamplePersonGuessViewReloaded == 1 {
                 if rand {
