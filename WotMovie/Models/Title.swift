@@ -13,5 +13,11 @@ protocol Title: Entity {
     override var type: EntityType { get }
     override var name: String { get }
     override var posterPath: String? { get }
+    override var popularity: Double? { get }
+    
+    var overview: String? { get }
+    var releaseDate: String? { get }
     var genreIDs: [Int] { get }
+    var voteAverage: Double? { get }
+    var backdrop: String? { get }
 }

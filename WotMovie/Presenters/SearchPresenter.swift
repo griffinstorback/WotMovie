@@ -104,6 +104,19 @@ class SearchPresenter: SearchPresenterProtocol {
         
         // TODO: do something about sort paramters - see what's avaible for searching, what's feasible, what's worth it to implement, whether or not to just scrap it.
         sortParameters = SortParameters(categoryType: .allGuessed)
+        
+        
+        // TESTING! DELETE THIS CODE BELOW
+        /*DispatchQueue.global().async {
+            self.coreDataManager.performBackgroundFetch { movies in
+                if let movies = movies {
+                    print("&&& movies returned! here they are: \(movies)")
+                } else {
+                    print("&&& movies came back nil")
+                }
+            }
+        }*/
+        
     }
     
     /*func loadItems() {

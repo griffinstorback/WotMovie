@@ -7,6 +7,17 @@
 
 import Foundation
 
+protocol BasePerson: Entity {
+    override var id: Int { get }
+    override var type: EntityType { get }
+    override var name: String { get }
+    override var posterPath: String? { get }
+    override var popularity: Double? { get }
+    
+    var gender: Int? { get }
+    var knownForDepartment: String? { get }
+}
+
 // MARK: - "Person" is used for full person object (like when guessing people, getting popular people, searching people, etc.)
 
 struct Person: BasePerson {
@@ -14,13 +25,16 @@ struct Person: BasePerson {
     var type: EntityType = .person
     var name: String
     var posterPath: String?
+    var popularity: Double?
+    
     var gender: Int?
-    var knownForDepartment: String
+    var knownForDepartment: String?
     
     let knownFor: [Title]
     let birthday: String?
     let deathday: String?
     
+    // these need to be retrieved from core data
     var lastViewedDate: Date?
     var isHintShown: Bool = false
     var isRevealed: Bool = false
@@ -56,10 +70,20 @@ struct Person: BasePerson {
         name = personMO.name ?? ""
         posterPath = personMO.posterImageURL
         gender = Int(personMO.gender)
-        knownForDepartment = personMO.knownForDepartment ?? ""
+        knownForDepartment = personMO.knownForDepartment
+        
+        knownFor = Person.parseKnownForTitlesFromPersonMO(personMO)
         birthday = personMO.birthday
         deathday = personMO.deathday
         
+        lastViewedDate = personMO.lastViewedDate
+        isHintShown = personMO.isHintShown
+        isRevealed = personMO.revealed != nil || personMO.guessed != nil
+        correctlyGuessed = personMO.guessed != nil
+        isFavorite = personMO.favorite != nil
+    }
+    
+    static private func parseKnownForTitlesFromPersonMO(_ personMO: PersonMO) -> [Title] {
         // parse movies and tv shows person is known for, and add to knownFor.
         var knownForTitles: [Title] = []
         if let knownForMovies = personMO.knownForMovies?.allObjects as? [MovieMO] {
@@ -72,14 +96,7 @@ struct Person: BasePerson {
                 knownForTitles.append(TVShow(tvShowMO: knownForTVShow))
             }
         }
-        knownFor = knownForTitles
-        
-        
-        lastViewedDate = personMO.lastViewedDate
-        isHintShown = personMO.isHintShown
-        isRevealed = personMO.revealed != nil || personMO.guessed != nil
-        correctlyGuessed = personMO.guessed != nil
-        isFavorite = personMO.favorite != nil
+        return knownForTitles
     }
 }
 
@@ -103,9 +120,9 @@ extension Person: Decodable {
         name = try container.decode(String.self, forKey: .name)
         posterPath = try container.decodeIfPresent(String.self, forKey: .posterPath)
         gender = try container.decodeIfPresent(Int.self, forKey: .gender)
-        knownForDepartment = try container.decode(String.self, forKey: .knownForDepartment)
+        knownForDepartment = try container.decodeIfPresent(String.self, forKey: .knownForDepartment)
         
-        knownFor = try container.decode([MovieOrTVShow].self, forKey: .knownFor)
+        knownFor = try container.decodeIfPresent([MovieOrTVShow].self, forKey: .knownFor) ?? []
         birthday = try container.decodeIfPresent(String.self, forKey: .birthday)
         deathday = try container.decodeIfPresent(String.self, forKey: .deathday)
     }
@@ -137,26 +154,20 @@ extension PersonApiResponse: Decodable {
 }
 
 
-// MARK: - "BasePerson" and implementations of it are person stubs (like when getting credits)
-
-protocol BasePerson: Entity {
-    var id: Int { get }
-    var type: EntityType { get }
-    var name: String { get }
-    var posterPath: String? { get }
-    var gender: Int? { get }
-    var knownForDepartment: String { get }
-}
+// MARK: - Cast and crew members are person stubs (like when getting credits)
 
 struct CastMember: BasePerson {
     var id: Int
     var type: EntityType = .person
     var name: String
     var posterPath: String?
-    var gender: Int?
-    var knownForDepartment: String
+    var popularity: Double?
     
-    var character: String
+    var gender: Int?
+    var knownForDepartment: String?
+    
+    // this field is unique to Cast members
+    var character: String?
     
     // these properties are unused on castmember, as user is never guessing castmembers.
     var lastViewedDate: Date?
@@ -171,11 +182,14 @@ struct CrewMember: BasePerson {
     var type: EntityType = .person
     var name: String
     var posterPath: String?
-    var gender: Int?
-    var knownForDepartment: String
+    var popularity: Double?
     
-    var department: String
-    var job: String
+    var gender: Int?
+    var knownForDepartment: String?
+    
+    // these two fields are unique to Crew members
+    var department: String?
+    var job: String?
     
     // these properties are unused on crewmember, as user is never guessing crewmembers.
     var lastViewedDate: Date?
@@ -190,6 +204,8 @@ extension CastMember: Decodable {
         case id
         case name
         case posterPath = "profile_path"
+        case popularity
+        
         case gender
         case knownForDepartment = "known_for_department"
         
@@ -201,11 +217,13 @@ extension CastMember: Decodable {
         
         id = try container.decode(Int.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)
-        posterPath = try container.decode(String?.self, forKey: .posterPath)
-        gender = try container.decodeIfPresent(Int.self, forKey: .gender)
-        knownForDepartment = try container.decode(String.self, forKey: .knownForDepartment)
+        posterPath = try container.decodeIfPresent(String.self, forKey: .posterPath)
+        popularity = try container.decodeIfPresent(Double.self, forKey: .popularity)
         
-        character = try container.decode(String.self, forKey: .character)
+        gender = try container.decodeIfPresent(Int.self, forKey: .gender)
+        knownForDepartment = try container.decodeIfPresent(String.self, forKey: .knownForDepartment)
+        
+        character = try container.decodeIfPresent(String.self, forKey: .character)
     }
 }
 
@@ -214,6 +232,8 @@ extension CrewMember: Decodable {
         case id
         case name
         case posterPath = "profile_path"
+        case popularity
+        
         case gender
         case knownForDepartment = "known_for_department"
         
@@ -226,11 +246,13 @@ extension CrewMember: Decodable {
         
         id = try container.decode(Int.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)
-        posterPath = try container.decode(String?.self, forKey: .posterPath)
-        gender = try container.decodeIfPresent(Int.self, forKey: .gender)
-        knownForDepartment = try container.decode(String.self, forKey: .knownForDepartment)
+        posterPath = try container.decodeIfPresent(String.self, forKey: .posterPath)
+        popularity = try container.decodeIfPresent(Double.self, forKey: .popularity)
         
-        department = try container.decode(String.self, forKey: .department)
-        job = try container.decode(String.self, forKey: .job)
+        gender = try container.decodeIfPresent(Int.self, forKey: .gender)
+        knownForDepartment = try container.decodeIfPresent(String.self, forKey: .knownForDepartment)
+        
+        department = try container.decodeIfPresent(String.self, forKey: .department)
+        job = try container.decodeIfPresent(String.self, forKey: .job)
     }
 }

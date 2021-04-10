@@ -106,6 +106,7 @@ class UpgradeViewController: UIViewController {
         mainStackView.spacing = 20
         
         unlockProgressLabel.attributedText = getUnlockProgressString()
+        unlockProgressLabel.adjustsFontSizeToFitWidth = true
         unlockProgressLabel.textAlignment = .center
         
         examplePersonGuessViewsStackView.axis = .horizontal
@@ -257,11 +258,11 @@ class UpgradeViewController: UIViewController {
     private func getUnlockProgressString() -> NSMutableAttributedString {
         // highlight the number itself in blue
         let unlockProgress = upgradePresenter.getUnlockProgress()
-        let unlockProgressNumberAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 24, weight: .bold), NSAttributedString.Key.foregroundColor: UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue]
+        let unlockProgressNumberAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 28, weight: .bold), NSAttributedString.Key.foregroundColor: UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue]
         let unlockProgressNumber = NSMutableAttributedString(string: "\(unlockProgress)", attributes: unlockProgressNumberAttributes)
         
         // make other text regular black (or white)
-        let unlockProgressTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 24, weight: .bold)]
+        let unlockProgressTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 28, weight: .bold)]
         let unlockProgressText = NSMutableAttributedString(string: "Unlock progress: ", attributes: unlockProgressTextAttributes)
         
         // make /500 text after the number regular black too (or white)

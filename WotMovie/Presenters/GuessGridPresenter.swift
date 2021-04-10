@@ -119,12 +119,13 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
             }
         }
         
+        // the filter looks a bit convoluted, but simply evaluates to: if overview is empty or nil
         if let movies = newItems as? [Movie] {
-            newItems = movies.filter { !$0.overview.isEmpty }
-            print("Movie objects with nil overview: ", movies.filter { $0.overview.isEmpty })
+            newItems = movies.filter { !($0.overview?.isEmpty ?? true) }
+            print("Movie objects with nil overview: ", movies.filter { $0.overview?.isEmpty ?? true })
         } else if let tvShows = newItems as? [TVShow] {
-            newItems = tvShows.filter { !$0.overview.isEmpty }
-            print("TV objects with nil posterPath: ", tvShows.filter { $0.overview.isEmpty })
+            newItems = tvShows.filter { !($0.overview?.isEmpty ?? true) }
+            print("TV objects with nil posterPath: ", tvShows.filter { $0.overview?.isEmpty ?? true })
         } else if let people = newItems as? [Person] {
             
             // TODO? : Filter out any Person object with undesirable attributes

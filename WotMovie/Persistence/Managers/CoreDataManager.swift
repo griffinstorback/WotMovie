@@ -10,8 +10,12 @@ import CoreData
 import UIKit
 
 protocol CoreDataManagerProtocol {
+    // should just have two functions: perform on background, or on main thread, and pass enum value for function
+    
     func getNumberGuessedFor(category: CategoryType) -> Int
 }
+
+
 
 final class CoreDataManager: CoreDataManagerProtocol {
     
@@ -20,6 +24,29 @@ final class CoreDataManager: CoreDataManagerProtocol {
     private init() {}
 
 
+    func performBackgroundUpdate() {
+        let privateMOC = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        privateMOC.parent = coreDataStack.persistentContainer.viewContext
+        privateMOC.performAndWait {
+            //do some coredata stuff, but dont carry on beyond this block, until the code
+            //in this block has finished executed (sync, not async)
+            coreDataStack.saveContext(privateMOC)
+        }
+        
+        // now save the main context with the changes from the private context
+        coreDataStack.saveContext()
+    }
+    
+    func performBackgroundFetch(completion: @escaping (_ movies: [Movie]?) -> Void) {
+        let privateMOC = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        privateMOC.parent = coreDataStack.persistentContainer.viewContext
+        privateMOC.perform { [weak self] in
+            completion(self?.fetchMoviePage(1, -1))
+        }
+        print("&&& perform block started.")
+    }
+    
+    
 // MARK: -- GENERIC METHODS
 
     func getTotalNumberGuessed() -> Int {
@@ -138,8 +165,6 @@ final class CoreDataManager: CoreDataManagerProtocol {
         }
         
         return nil
-        // TODO : DELETE THIS after implementing updateOrCreate person?
-        //return Movie(movieOrTVShow: MovieOrTVShow(id: -1, type: .movie, name: "ERROR", posterPath: nil, overview: "THIS SHOULD NOT BE SEEN EVER!", releaseDate: "NEVER!", genreIDs: [], personsJob: nil, character: nil))!
     }
     
     // returns empty list if page doesnt exist. returns nil if there was an error
@@ -403,10 +428,15 @@ final class CoreDataManager: CoreDataManagerProtocol {
         // (in case movie overview in api has changed since last stored).
         movieMO.language = Locale.autoupdatingCurrent.identifier
         movieMO.lastUpdated = Date()
+        
         movieMO.name = movie.name
-        movieMO.overview = movie.overview
         movieMO.posterImageURL = movie.posterPath
+        if let popularity = movie.popularity { movieMO.popularity = popularity }
+        
+        movieMO.overview = movie.overview
         movieMO.releaseDate = movie.releaseDate
+        if let voteAverage = movie.voteAverage { movieMO.voteAverage = voteAverage }
+        movieMO.backdropImageURL = movie.backdrop
         
         // Set this to false if creating a movie but not opening it. (i.e. when creating a page of movies, we don't want
         // the movies to have a lastViewedDate if they haven't been viewed (opened in detail view))
@@ -450,56 +480,6 @@ final class CoreDataManager: CoreDataManagerProtocol {
         coreDataStack.saveContext()
         return movieMO
     }
-    
-    /*
-    @discardableResult
-    private func createMovie(movie: Movie, shouldSetLastViewedDate: Bool = true) -> MovieMO {
-        let movieMO = MovieMO(context: coreDataStack.persistentContainer.viewContext)
-        
-        movieMO.id = Int64(movie.id)
-        movieMO.language = Locale.autoupdatingCurrent.identifier
-        movieMO.lastUpdated = Date()
-        movieMO.name = movie.name
-        movieMO.overview = movie.overview
-        movieMO.posterImageURL = movie.posterPath
-        movieMO.releaseDate = movie.releaseDate
-        
-        // Set this to false if creating a movie but not opening it. (i.e. when creating a page of movies, we don't want
-        // the movies to have a lastViewedDate if they haven't been viewed (opened in detail view))
-        if shouldSetLastViewedDate {
-            movieMO.lastViewedDate = Date()
-        }
-        
-        // Only set these to true; don't allow it to be set from true to false, that should never have to happen.
-        if movie.isHintShown {
-            movieMO.isHintShown = movie.isHintShown
-        }
-        if movie.isRevealed {
-            let movieRevealedMO = MovieRevealedMO(context: coreDataStack.persistentContainer.viewContext)
-            movieRevealedMO.dateAdded = Date()
-            movieMO.revealed = movieRevealedMO
-        }
-        if movie.correctlyGuessed {
-            let movieGuessedMO = MovieGuessedMO(context: coreDataStack.persistentContainer.viewContext)
-            movieGuessedMO.dateAdded = Date()
-            movieMO.guessed = movieGuessedMO
-        }
-        
-        // attach genre mo objects, either by fetching or by creating them.
-        for genreID in movie.genreIDs {
-            if let genreMO = fetchMovieGenre(id: genreID) {
-                genreMO.addObject(value: movieMO, for: "movies")
-            } else {
-                let genreMO = MovieGenreMO(context: coreDataStack.persistentContainer.viewContext)
-                genreMO.id = Int64(genreID)
-                genreMO.addObject(value: movieMO, for: "movies")
-            }
-        }
-        
-        coreDataStack.saveContext()
-        return movieMO
-    }
-    */
     
     func fetchMovie(id: Int, context: NSManagedObjectContext? = nil) -> MovieMO? {
         let moc = context ?? coreDataStack.persistentContainer.viewContext
@@ -548,10 +528,15 @@ final class CoreDataManager: CoreDataManagerProtocol {
         // (in case tv show in api has changed since last stored, or if user changes language).
         tvShowMO.language = Locale.autoupdatingCurrent.identifier
         tvShowMO.lastUpdated = Date()
+        
         tvShowMO.name = tvShow.name
-        tvShowMO.overview = tvShow.overview
         tvShowMO.posterImageURL = tvShow.posterPath
+        if let popularity = tvShow.popularity { tvShowMO.popularity = popularity}
+        
+        tvShowMO.overview = tvShow.overview
         tvShowMO.releaseDate = tvShow.releaseDate
+        if let voteAverage = tvShow.voteAverage { tvShowMO.voteAverage = voteAverage }
+        tvShowMO.backdropImageURL = tvShow.backdrop
         
         // Set this to false if creating a tv show but not opening it. (i.e. when creating a page of tv shows, we don't want
         // the tv shows to have a lastViewedDate if they haven't been viewed (opened in detail view))
@@ -640,13 +625,16 @@ final class CoreDataManager: CoreDataManagerProtocol {
         // update all values except id, in case tv show in api has changed since last stored, or if user changes language
         personMO.language = Locale.autoupdatingCurrent.identifier
         personMO.lastUpdated = Date()
+        
         personMO.name = person.name
         personMO.posterImageURL = person.posterPath
+        if let popularity = person.popularity { personMO.popularity = popularity }
+        
+        if let gender = person.gender { personMO.gender = Int16(gender) }
+        personMO.knownForDepartment = person.knownForDepartment
         
         if let birthday = person.birthday { personMO.birthday = birthday }
         if let deathday = person.deathday { personMO.deathday = deathday }
-        personMO.gender = Int16(person.gender ?? 0)
-        personMO.knownForDepartment = person.knownForDepartment
         
         // Set this to false if creating a person but not opening it. (i.e. when creating a page of people, we don't want
         // the people to have a lastViewedDate if they haven't been viewed (opened in detail view))

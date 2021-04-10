@@ -42,7 +42,7 @@ class CoreDataStack {
 
     // MARK: - Core Data Saving support
 
-    func saveContext() {
+    /*func saveContext() {
         let context = persistentContainer.viewContext
         if context.hasChanges {
             do {
@@ -54,9 +54,11 @@ class CoreDataStack {
                 fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
         }
-    }
+    }*/
     
-    func saveContext(_ context: NSManagedObjectContext) {
+    // if no context passed in, save on view context.
+    func saveContext(_ context: NSManagedObjectContext? = nil) {
+        let context = context ?? persistentContainer.viewContext
         if context.hasChanges {
             do {
                 try context.save()

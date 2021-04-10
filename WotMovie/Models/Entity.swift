@@ -18,7 +18,9 @@ protocol Entity {
     var type: EntityType { get }
     var name: String { get }
     var posterPath: String? { get }
+    var popularity: Double? { get }
     
+    // meta info, not provided by api
     var lastViewedDate: Date? { get set }
     var isHintShown: Bool { get set }
     var isRevealed: Bool { get set }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17709" systemVersion="20C69" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Movie" representedClassName="MovieMO" syncable="YES" codeGenerationType="class">
+        <attribute name="backdropImageURL" optional="YES" attributeType="String"/>
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="isHintShown" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="language" optional="YES" attributeType="String"/>
@@ -8,8 +9,10 @@
         <attribute name="lastViewedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="overview" optional="YES" attributeType="String"/>
+        <attribute name="popularity" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="posterImageURL" optional="YES" attributeType="String"/>
         <attribute name="releaseDate" optional="YES" attributeType="String"/>
+        <attribute name="voteAverage" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <relationship name="genres" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MovieGenre" inverseName="movies" inverseEntity="MovieGenre"/>
         <relationship name="guessed" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MovieGuessed" inverseName="movie" inverseEntity="MovieGuessed"/>
         <relationship name="pages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MoviePage" inverseName="movies" inverseEntity="MoviePage"/>
@@ -55,6 +58,7 @@
         <attribute name="lastViewedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="overview" optional="YES" attributeType="String"/>
+        <attribute name="popularity" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="posterImageURL" optional="YES" attributeType="String"/>
         <relationship name="favorite" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PersonFavorites" inverseName="person" inverseEntity="PersonFavorites"/>
         <relationship name="guessed" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PersonGuessed" inverseName="person" inverseEntity="PersonGuessed"/>
@@ -82,6 +86,7 @@
         <relationship name="person" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Person" inverseName="revealed" inverseEntity="Person"/>
     </entity>
     <entity name="TVShow" representedClassName="TVShowMO" syncable="YES" codeGenerationType="class">
+        <attribute name="backdropImageURL" optional="YES" attributeType="String"/>
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="isHintShown" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="language" optional="YES" attributeType="String"/>
@@ -89,8 +94,10 @@
         <attribute name="lastViewedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="overview" optional="YES" attributeType="String"/>
+        <attribute name="popularity" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="posterImageURL" optional="YES" attributeType="String"/>
         <attribute name="releaseDate" optional="YES" attributeType="String"/>
+        <attribute name="voteAverage" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <relationship name="genres" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TVShowGenre" inverseName="tvShows" inverseEntity="TVShowGenre"/>
         <relationship name="guessed" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TVShowGuessed" inverseName="tvShow" inverseEntity="TVShowGuessed"/>
         <relationship name="pages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TVShowPage" inverseName="tvShows" inverseEntity="TVShowPage"/>
@@ -125,18 +132,18 @@
         <relationship name="tvShow" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TVShow" inverseName="watchlist" inverseEntity="TVShow"/>
     </entity>
     <elements>
-        <element name="Movie" positionX="-281.3125" positionY="-0.4765625" width="128" height="254"/>
+        <element name="Movie" positionX="-281.3125" positionY="-0.4765625" width="128" height="299"/>
         <element name="MovieGenre" positionX="-99" positionY="-9" width="128" height="104"/>
         <element name="MovieGuessed" positionX="-72" positionY="18" width="128" height="59"/>
         <element name="MoviePage" positionX="-119.234375" positionY="-163.359375" width="128" height="104"/>
         <element name="MovieRevealed" positionX="-99" positionY="-9" width="128" height="59"/>
         <element name="MovieWatchlist" positionX="-285.08203125" positionY="287.3984375" width="128" height="59"/>
-        <element name="Person" positionX="30.09375" positionY="223.15625" width="128" height="299"/>
+        <element name="Person" positionX="30.09375" positionY="223.15625" width="128" height="314"/>
         <element name="PersonFavorites" positionX="-81" positionY="9" width="128" height="59"/>
         <element name="PersonGuessed" positionX="-63" positionY="27" width="128" height="59"/>
         <element name="PersonPage" positionX="228.36328125" positionY="418.796875" width="128" height="89"/>
         <element name="PersonRevealed" positionX="-90" positionY="0" width="128" height="59"/>
-        <element name="TVShow" positionX="411.35546875" positionY="29.5390625" width="128" height="254"/>
+        <element name="TVShow" positionX="411.35546875" positionY="29.5390625" width="128" height="299"/>
         <element name="TVShowGenre" positionX="31.734375" positionY="29.5625" width="128" height="104"/>
         <element name="TVShowGuessed" positionX="-54" positionY="36" width="128" height="59"/>
         <element name="TVShowPage" positionX="231.09765625" positionY="-111.44921875" width="128" height="104"/>
