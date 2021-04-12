@@ -21,6 +21,11 @@ protocol CrewListViewDelegate: NSObjectProtocol {
 
 class CrewListViewController: DetailPresenterViewController {
     
+    // e.g, if 10, and there are 15 producers, will only show first 10. Set to nil if should remove limit. Limit is there because was worried
+    // about putting limits in case there was some show with 1000 producers or something ridiculous - this is not a table view, so it's not optimized
+    // for large amounts of data (also, why would user want to see a list of 1000 producers?)
+    static let maxAmountToDisplayInEachJobSection: Int? = 15
+    
     weak var delegate: CrewListViewDelegate?
     
     let mainStack: UIStackView
@@ -122,6 +127,9 @@ class CrewListViewController: DetailPresenterViewController {
                 delegate?.loadImage(for: index, section: .director, completion: directorRow.setImage)
                 directorRow.setDelegate(self)
                 directorsStack.addArrangedSubview(directorRow)
+                
+                // break if there is a limit set, and if it has been reached.
+                if let max = CrewListViewController.maxAmountToDisplayInEachJobSection, index+1 >= max { break }
             }
             directorsTitleLabel.text = delegate?.getCrewTypeStringToDisplay(for: .director) ?? "Director"
             directorsStack.isHidden = false
@@ -137,6 +145,9 @@ class CrewListViewController: DetailPresenterViewController {
                 delegate?.loadImage(for: index, section: .writer, completion: writerRow.setImage)
                 writerRow.setDelegate(self)
                 writersStack.addArrangedSubview(writerRow)
+                
+                // break if there is a limit set, and if it has been reached.
+                if let max = CrewListViewController.maxAmountToDisplayInEachJobSection, index+1 >= max { break }
             }
             writersTitleLabel.text = delegate?.getCrewTypeStringToDisplay(for: .writer) ?? "Writer"
             writersStack.isHidden = false
@@ -152,6 +163,9 @@ class CrewListViewController: DetailPresenterViewController {
                 delegate?.loadImage(for: index, section: .producer, completion: producerRow.setImage)
                 producerRow.setDelegate(self)
                 producersStack.addArrangedSubview(producerRow)
+                
+                // break if there is a limit set, and if it has been reached.
+                if let max = CrewListViewController.maxAmountToDisplayInEachJobSection, index+1 >= max { break }
             }
             producersTitleLabel.text = delegate?.getCrewTypeStringToDisplay(for: .producer) ?? "Producer"
             producersStack.isHidden = false

@@ -28,10 +28,10 @@ class EntityTableViewController: DetailPresenterViewController {
     
     private weak var delegate: EntityTableViewDelegate?
     
-    private var tableView: ContentSizedTableView
+    private var tableView: UITableView
     
     init() {
-        tableView = ContentSizedTableView()
+        tableView = UITableView()
         
         super.init(nibName: nil, bundle: nil)
     }

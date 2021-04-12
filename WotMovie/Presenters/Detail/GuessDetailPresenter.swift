@@ -20,7 +20,7 @@ protocol GuessDetailPresenterProtocol {
     func loadPosterImage(completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
     //func loadCrewTypes()
     func getID() -> Int
-    func getTitle() -> String // should rename getName()?
+    func getName() -> String
     
     func isHintShown() -> Bool
     func isAnswerRevealed() -> Bool
@@ -136,7 +136,7 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
         return item.id
     }
     
-    func getTitle() -> String {
+    func getName() -> String {
         return item.name
     }
     

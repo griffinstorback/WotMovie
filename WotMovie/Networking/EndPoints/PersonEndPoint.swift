@@ -62,8 +62,7 @@ extension PersonApi: EndPointType {
             let urlParameters: [String: Any] = ["api_key": NetworkManager.api3Key, "query": text]
             return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
             
-        //default:
-        //    return .request
+        //default: return .request
         }
     }
     

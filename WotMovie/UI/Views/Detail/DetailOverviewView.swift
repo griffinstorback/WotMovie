@@ -13,39 +13,101 @@ class DetailOverviewView: UIView {
     let posterImageView: PosterImageView
     let typeString: String // should be either MOVIE or TV SHOW, as type .person doesn't use this view
     
+    // contains meta info (such as entity type, genres, etc.), displayed on right of poster image.
+    private lazy var metaInfoVerticalStackView: UIStackView = {
+        let stackView = UIStackView()
+        
+        /*let tempTypeLabel = UILabel()
+        tempTypeLabel.text = typeString
+        tempTypeLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        tempTypeLabel.textColor = .secondaryLabel*/
+        stackView.addArrangedSubview(typeLabel)
+        stackView.addArrangedSubview(genreListView)
+        stackView.addArrangedSubview(ratingButtonContainerView)
+        
+        stackView.axis = .vertical
+        stackView.spacing = 5
+        return stackView
+    }()
+    private lazy var typeLabel: UILabel = {
+        let label = UILabel()
+        label.text = typeString
+        label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        label.textColor = .secondaryLabel
+        return label
+    }()
     private lazy var genreListView: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         return label
     }()
-    private lazy var horizontalStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.addArrangedSubview(posterImageView)
+    
+    private lazy var ratingButton: UIButton = {
+        // A button because it will link to the TMDB page - also don't show when hidden.
+        let button = UIButton()
+        button.backgroundColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue
+        button.layer.masksToBounds = true
+        button.layer.cornerRadius = 10
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        button.titleEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
         
+        return button
+    }()
+    private lazy var ratingButtonContainerView: UIView = {
+        let buttonContainer = UIView()
+        
+        buttonContainer.addSubview(ratingButton)
+        ratingButton.anchor(top: buttonContainer.topAnchor, leading: buttonContainer.leadingAnchor, bottom: buttonContainer.bottomAnchor, trailing: nil)
+        
+        // initialize hidden - unhide when a rating is set.
+        buttonContainer.isHidden = true
+        
+        return buttonContainer
+    }()
+    
+    
+    
+    private lazy var posterImageAndMetaInfoHorizontalStackView: UIStackView = {
+        let stackView = UIStackView()
+        
+        stackView.addArrangedSubview(posterImageView)
         stackView.addArrangedSubview(metaInfoVerticalStackView)
-        //stackView.addArrangedSubview(genreListView)
+        
         stackView.axis = .horizontal
         stackView.alignment = .center
         stackView.spacing = 10
         return stackView
     }()
     
-    // contains meta info (such as entity type, genres, etc.), displayed on right of poster image.
-    private lazy var metaInfoVerticalStackView: UIStackView = {
+    
+    private lazy var releaseDateAndContentLengthStackView: UIStackView = {
         let stackView = UIStackView()
         
-        let tempTypeLabel = UILabel()
-        tempTypeLabel.text = typeString
-        tempTypeLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
-        tempTypeLabel.textColor = .secondaryLabel
-        stackView.addArrangedSubview(tempTypeLabel)
+        stackView.addArrangedSubview(releaseDateLabel)
+        stackView.addArrangedSubview(UIView())
+        stackView.addArrangedSubview(contentLengthLabel)
         
-        stackView.addArrangedSubview(genreListView)
-        
-        stackView.axis = .vertical
+        stackView.axis = .horizontal
         stackView.spacing = 5
         return stackView
+    }()
+    private lazy var releaseDateLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 17)
+        label.textColor = .secondaryLabel
+        label.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+        return label
+    }()
+    // contains either movie length in minutes, or tv show length in episodes (and seasons)
+    private lazy var contentLengthLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 17)
+        label.textColor = .secondaryLabel
+        label.adjustsFontSizeToFitWidth = true
+        label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        return label
     }()
     
     private lazy var titleLabel: UILabel = {
@@ -55,12 +117,7 @@ class DetailOverviewView: UIView {
         label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
         return label
     }()
-    private lazy var releaseDateLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 17)
-        label.textColor = .secondaryLabel
-        return label
-    }()
+    
     private lazy var overviewTextView: UITextView = {
         let textView = UITextView()
         textView.font = UIFont.systemFont(ofSize: 17, weight: .regular)
@@ -73,8 +130,8 @@ class DetailOverviewView: UIView {
     private lazy var verticalStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.addArrangedSubview(titleLabel)
-        stackView.addArrangedSubview(releaseDateLabel)
-        stackView.addArrangedSubview(horizontalStackView)
+        stackView.addArrangedSubview(releaseDateAndContentLengthStackView)
+        stackView.addArrangedSubview(posterImageAndMetaInfoHorizontalStackView)
         stackView.addArrangedSubview(overviewTextView)
         stackView.axis = .vertical
         stackView.spacing = 5
@@ -105,8 +162,6 @@ class DetailOverviewView: UIView {
     
     private func layoutViews() {
         addSubview(verticalStackView)
-
-        //posterImageView.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: Constants.DetailOverviewPosterImage.size)
         
         posterImageView.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.DetailOverviewPosterImage.size.width).isActive = true
         posterImageView.widthAnchor.constraint(equalTo: posterImageView.heightAnchor, multiplier: 2/3).isActive = true
@@ -121,7 +176,25 @@ class DetailOverviewView: UIView {
         releaseDateLabel.text = dateString
     }
     
-    // don't really need to do check with imagePath for this view, as it isn't being reused
+    public func setContentLength(contentLengthString: String) {
+        contentLengthLabel.text = contentLengthString
+    }
+    
+    public func addRating(rating: Double?) {
+        if let rating = rating {
+            ratingButton.setTitle(String(format: "%.1f", rating), for: .normal)
+            ratingButtonContainerView.isHidden = false
+        } else {
+            // if nil was passed, don't show a rating at all.
+            removeRating()
+        }
+    }
+    
+    public func removeRating() {
+        ratingButtonContainerView.isHidden = true
+    }
+    
+    // don't need to deal with image loading states here - they're handled in PosterImageView
     public func setPosterImage(_ image: UIImage?, _ imagePath: String?) {
         posterImageView.setImage(image)
     }

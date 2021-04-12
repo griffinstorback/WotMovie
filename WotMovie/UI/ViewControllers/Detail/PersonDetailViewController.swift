@@ -28,8 +28,10 @@ class PersonDetailViewController: GuessDetailViewController {
                 // scroll to top of view to show title being revealed
                 scrollToTop()
                 
-                personOverviewView.setName(personDetailViewPresenter.getTitle())     //   // TODO *** animate this
-                //personOverviewView.setOverviewText(personDetailViewPresenter.getOverview())
+                personOverviewView.setName(personDetailViewPresenter.getName())     //   // TODO *** animate this
+                personOverviewView.setOverviewText(personDetailViewPresenter.getOverview())
+                personOverviewView.setBirthday(personDetailViewPresenter.getBirthdayText())
+                personOverviewView.setDeathday(personDetailViewPresenter.getDeathdayText())
             
                 // depending if correct or not, reflect in state of poster image view
                 if state == .revealed || state == .revealedWithNoNextButton {
@@ -62,10 +64,10 @@ class PersonDetailViewController: GuessDetailViewController {
         actorInCollectionView.restorationIdentifier = "Actor"
         directedCollectionView = HorizontalCollectionViewController(title: "Director")
         directedCollectionView.restorationIdentifier = "Director"
-        producedCollectionView = HorizontalCollectionViewController(title: "Producer")
-        producedCollectionView.restorationIdentifier = "Producer"
         wroteCollectionView = HorizontalCollectionViewController(title: "Writer")
         wroteCollectionView.restorationIdentifier = "Writer"
+        producedCollectionView = HorizontalCollectionViewController(title: "Producer")
+        producedCollectionView.restorationIdentifier = "Producer"
         
         //super.init(item: item, posterImageView: personOverviewView.posterImageView, startHidden: startHidden, fromGuessGrid: false, presenter: personDetailViewPresenter)
         super.init(item: item, posterImageView: personOverviewView.posterImageView, state: state, presenter: personDetailViewPresenter)
@@ -107,7 +109,9 @@ class PersonDetailViewController: GuessDetailViewController {
             addLoadingIndicatorOrErrorView()
         case .revealed, .revealedWithNoNextButton, .correct, .correctWithNoNextButton:
             addLoadingIndicatorOrErrorView()
-            personOverviewView.setName(personDetailViewPresenter.getTitle())
+            
+            personOverviewView.setName(personDetailViewPresenter.getName())
+            personOverviewView.setOverviewText(personDetailViewPresenter.getOverview())
             
             // if item was correctly guessed, show check at top left
             if state == .correct || state == .correctWithNoNextButton {
@@ -153,8 +157,8 @@ class PersonDetailViewController: GuessDetailViewController {
         revealHorizontalCollectionViewCellsIfStateIsHidden(knownForCollectionView)
         revealHorizontalCollectionViewCellsIfStateIsHidden(actorInCollectionView)
         revealHorizontalCollectionViewCellsIfStateIsHidden(directedCollectionView)
-        revealHorizontalCollectionViewCellsIfStateIsHidden(producedCollectionView)
         revealHorizontalCollectionViewCellsIfStateIsHidden(wroteCollectionView)
+        revealHorizontalCollectionViewCellsIfStateIsHidden(producedCollectionView)
         
         // don't add/reload info collection views if they've already been added (otherwise will cause views to flash, annoyingly)
         guard !infoHasBeenAdded else { return }
@@ -188,8 +192,8 @@ class PersonDetailViewController: GuessDetailViewController {
         // if person is known for acting, OR if the knownForDepartment is null or there is some other error, show acting credits first.
         addChildToStackView(actorInCollectionView)
         addChildToStackView(directedCollectionView)
-        addChildToStackView(producedCollectionView)
         addChildToStackView(wroteCollectionView)
+        addChildToStackView(producedCollectionView)
         
         // refresh and reload all the collection views. This fixes bug where collection view cells are sometimes wrong size/no label after being added
         reloadInfoCollectionViews()
@@ -209,8 +213,8 @@ class PersonDetailViewController: GuessDetailViewController {
         knownForCollectionView.reloadData()
         actorInCollectionView.reloadData()
         directedCollectionView.reloadData()
-        producedCollectionView.reloadData()
         wroteCollectionView.reloadData()
+        producedCollectionView.reloadData()
     }
 }
 
@@ -223,9 +227,9 @@ extension PersonDetailViewController: HorizontalCollectionViewDelegate {
             return personDetailViewPresenter.getActorInCount()
         case "Director":
             return personDetailViewPresenter.getCountForJob(section: 0)
-        case "Producer":
-            return personDetailViewPresenter.getCountForJob(section: 1)
         case "Writer":
+            return personDetailViewPresenter.getCountForJob(section: 1)
+        case "Producer":
             return personDetailViewPresenter.getCountForJob(section: 2)
         default:
             return 0
@@ -240,9 +244,9 @@ extension PersonDetailViewController: HorizontalCollectionViewDelegate {
             return personDetailViewPresenter.getActorInTitle(for: index)
         case "Director":
             return personDetailViewPresenter.getJobForTitle(for: index, section: 0)
-        case "Producer":
-            return personDetailViewPresenter.getJobForTitle(for: index, section: 1)
         case "Writer":
+            return personDetailViewPresenter.getJobForTitle(for: index, section: 1)
+        case "Producer":
             return personDetailViewPresenter.getJobForTitle(for: index, section: 2)
         default:
             return nil
@@ -268,9 +272,9 @@ extension PersonDetailViewController: HorizontalCollectionViewDelegate {
             personDetailViewPresenter.loadActorInTitleImage(index: index, completion: completion)
         case "Director":
             personDetailViewPresenter.loadJobForTitleImage(index: index, section: 0, completion: completion)
-        case "Producer":
-            personDetailViewPresenter.loadJobForTitleImage(index: index, section: 1, completion: completion)
         case "Writer":
+            personDetailViewPresenter.loadJobForTitleImage(index: index, section: 1, completion: completion)
+        case "Producer":
             personDetailViewPresenter.loadJobForTitleImage(index: index, section: 2, completion: completion)
         default:
             return
@@ -285,15 +289,28 @@ extension PersonDetailViewController: GuessDetailViewDelegate {
     }
     
     func reloadData() {
-        if state != .fullyHidden && !infoHasBeenAdded && personDetailViewPresenter.creditsHaveLoaded() {
-            addInfo()
+        if personDetailViewPresenter.creditsHaveLoaded() {
+            
+            // TODO: Move setOverviewText out here too - then add little bit of state to PersonOverviewView, and deal with hiding there.
+            personOverviewView.setBirthday(personDetailViewPresenter.getBirthdayText())
+            personOverviewView.setDeathday(personDetailViewPresenter.getDeathdayText())
+            
+            // only show overview when fully revealed - don't show as hint
+            if state != .fullyHidden && state != .hintShown {
+                personOverviewView.setOverviewText(personDetailViewPresenter.getOverview())
+            }
+            
+            // add info if hint hasn't been shown and still guessing - also don't call addinfo more than once.
+            if state != .fullyHidden && !infoHasBeenAdded {
+                addInfo()
+            }
         }
         
         knownForCollectionView.reloadData()
         actorInCollectionView.reloadData()
         directedCollectionView.reloadData()
-        producedCollectionView.reloadData()
         wroteCollectionView.reloadData()
+        producedCollectionView.reloadData()
         updateItemOnEnterGuessView() // this is defined in parent class GuessDetailVC
         view.layoutIfNeeded()
                 

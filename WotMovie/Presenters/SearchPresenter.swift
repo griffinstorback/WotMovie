@@ -116,7 +116,6 @@ class SearchPresenter: SearchPresenterProtocol {
                 }
             }
         }*/
-        
     }
     
     /*func loadItems() {

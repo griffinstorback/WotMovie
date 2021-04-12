@@ -17,7 +17,7 @@ protocol Title: Entity {
     
     var overview: String? { get }
     var releaseDate: String? { get }
-    var genreIDs: [Int] { get }
+    var genreIDs: [Int] { get } // Be careful - Check 'type' before converting these to strings (tv and movie types have different genre names)
     var voteAverage: Double? { get }
     var backdrop: String? { get }
 }

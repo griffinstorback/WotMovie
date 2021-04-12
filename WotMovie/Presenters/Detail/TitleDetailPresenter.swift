@@ -17,6 +17,8 @@ protocol TitleDetailPresenterProtocol: GuessDetailPresenterProtocol {
     func getOverview() -> String
     func getOverviewCensored() -> String
     func getReleaseDate() -> String
+    func getContentLength() -> String
+    func getRating() -> Double?
     func getGenres(completion: @escaping (_ genres: String?) -> Void)
     
     func getCastCount() -> Int
@@ -41,11 +43,9 @@ enum CrewTypeSection: String, CaseIterable {
 
 class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
     private var movie: Movie?
-    private var tvShow: TVShow?
-    
-    private var credits: Credits? {
+    private var movieDetails: MovieDetails? {
         didSet {
-            setCrewToDisplay()
+            setCrewToDisplay(from: movieDetails?.credits)
             
             DispatchQueue.main.async {
                 self.detailViewDelegate?.reloadData()
@@ -53,8 +53,29 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
         }
     }
     
+    private var tvShow: TVShow?
+    private var tvShowDetails: TVShowDetails? {
+        didSet {
+            setCrewToDisplay(from: tvShowDetails?.credits)
+            
+            DispatchQueue.main.async {
+                self.detailViewDelegate?.reloadData()
+            }
+        }
+    }
+    
+    /*private var credits: Details? {
+        didSet {
+            setCrewToDisplay()
+            
+            DispatchQueue.main.async {
+                self.detailViewDelegate?.reloadData()
+            }
+        }
+    }*/
+    
     private var crewToDisplay: [String:[CrewMember]] = [:]
-    private func setCrewToDisplay() {
+    private func setCrewToDisplay(from credits: Credits?) {
         if let credits = credits {
             for crewMember in credits.crew {
                 for crewType in CrewTypeSection.allCases {
@@ -101,11 +122,34 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
     }
     
     func creditsHaveLoaded() -> Bool {
-        return credits != nil
+        switch item.type {
+        case .movie:
+            return movieDetails?.credits != nil
+        case .tvShow:
+            return tvShowDetails?.credits != nil
+        case .person:
+            DispatchQueue.main.async {
+                self.detailViewDelegate?.displayErrorLoadingCredits()
+            }
+            return false
+        }
     }
     
     func loadCastPersonImage(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
-        guard let credits = credits, let profilePath = credits.cast[index].posterPath else {
+        let movieOrTVShowCredits: Credits?
+        switch item.type {
+        case .movie:
+            movieOrTVShowCredits = movieDetails?.credits
+        case .tvShow:
+            movieOrTVShowCredits = tvShowDetails?.credits
+        case .person:
+            DispatchQueue.main.async {
+                self.detailViewDelegate?.displayErrorLoadingCredits()
+            }
+            return
+        }
+        
+        guard let credits = movieOrTVShowCredits, let profilePath = credits.cast[index].posterPath else {
             completion(nil, nil)
             return
         }
@@ -162,20 +206,80 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
         case .tvShow:
             return tvShow?.releaseDate ?? "-"
         case .person:
-            return "Error - no release date for type .person"
+            print("** ERROR - item type found to be .person while retrieving release date string (TitleDetailPresenter)")
+            return "-"
+        }
+    }
+    
+    func getContentLength() -> String {
+        switch item.type {
+        case .movie:
+            guard let runtime = movieDetails?.runtime else { return "" }
+            return "\(runtime) mins"
+        case .tvShow:
+            guard let episodeCount = tvShowDetails?.numberOfEpisodes else { return "" }
+            return "\(episodeCount) episodes"
+        case .person:
+            print("** ERROR - item type found to be .person while retrieving content length string (TitleDetailPresenter)")
+            return ""
+        }
+    }
+    
+    func getRating() -> Double? {
+        // guard will only fail when
+        guard let title = item as? Title else {
+            print("** ERROR - getting rating in TitleDetailPresenter, could not cast item as Title (it must be type .person)")
+            return nil
+        }
+        
+        // if the voteAverage is 0.0, just treat as nil (something about core data storing optional doubles, they don't return as nil even if not set)
+        if let rating = title.voteAverage, rating > 0.0 {
+            return rating
+        } else {
+            return nil
         }
     }
     
     func getCastCount() -> Int {
-        return credits?.cast.count ?? 0
+        switch item.type {
+        case .movie:
+            return movieDetails?.credits.cast.count ?? 0
+        case .tvShow:
+            return tvShowDetails?.credits.cast.count ?? 0
+        case .person:
+            DispatchQueue.main.async {
+                self.detailViewDelegate?.displayErrorLoadingCredits()
+            }
+            return 0
+        }
     }
     
     func getCastMember(for index: Int) -> CastMember? {
-        return credits?.cast[index]
+        switch item.type {
+        case .movie:
+            return movieDetails?.credits.cast[index]
+        case .tvShow:
+            return tvShowDetails?.credits.cast[index]
+        case .person:
+            DispatchQueue.main.async {
+                self.detailViewDelegate?.displayErrorLoadingCredits()
+            }
+            return nil
+        }
     }
     
     func getCharacterForCastMember(for index: Int) -> String? {
-        return credits?.cast[index].character
+        switch item.type {
+        case .movie:
+            return movieDetails?.credits.cast[index].character
+        case .tvShow:
+            return tvShowDetails?.credits.cast[index].character
+        case .person:
+            DispatchQueue.main.async {
+                self.detailViewDelegate?.displayErrorLoadingCredits()
+            }
+            return nil
+        }
     }
     
     func getCrewTypeStringToDisplay(for section: CrewTypeSection) -> String? {
@@ -264,7 +368,7 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
     private func getCreditsFromNetworkThenCacheInCoreData() {
         switch item.type {
         case .movie:
-            networkManager.getCreditsForMovie(id: item.id) { [weak self] credits, error in
+            networkManager.getMovieDetailsAndCredits(id: item.id) { [weak self] details, error in
                 if let error = error {
                     print(error)
                     DispatchQueue.main.async {
@@ -273,18 +377,12 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
                     return
                 }
                 
-                if let credits = credits {
-                    /*DispatchQueue.main.async {
-                        self?.coreDataManager.updateOrCreateCredits(type: strongSelf.item.type, credits: credits)
-                    }*/
-                    
-                    self?.credits = credits
-                }
+                self?.movieDetails = details
             }
         
         
         case .tvShow:
-            networkManager.getCreditsForTVShow(id: item.id) { [weak self] credits, error in
+            networkManager.getTVShowDetailsAndCredits(id: item.id) { [weak self] details, error in
                 if let error = error {
                     print(error)
                     DispatchQueue.main.async {
@@ -293,7 +391,7 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
                     return
                 }
                 
-                self?.credits = credits
+                self?.tvShowDetails = details
             }
             
         case .person:

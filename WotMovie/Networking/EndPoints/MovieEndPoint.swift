@@ -24,7 +24,9 @@ public enum MovieApi {
     case jobs
     
     case movieCredits(id: Int)
+    case movieDetailsAndCredits(id: Int)
     case tvShowCredits(id: Int)
+    case tvShowDetailsAndCredits(id: Int)
     
     case searchMovies(text: String)
     case searchTVShows(text: String)
@@ -61,7 +63,9 @@ extension MovieApi: EndPointType {
         case .jobs: return "configuration/jobs"
             
         case .movieCredits(let id): return "movie/\(id)/credits"
+        case .movieDetailsAndCredits(let id): return "movie/\(id)"
         case .tvShowCredits(let id): return "tv/\(id)/credits"
+        case .tvShowDetailsAndCredits(let id): return "tv/\(id)"
             
         case .searchMovies: return "search/movie"
         case .searchTVShows: return "search/tv"
@@ -97,6 +101,10 @@ extension MovieApi: EndPointType {
             
         case .movieCredits, .tvShowCredits:
             let urlParameters: [String: Any] = ["api_key": NetworkManager.api3Key]
+            return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
+            
+        case .movieDetailsAndCredits, .tvShowDetailsAndCredits:
+            let urlParameters: [String: Any] = ["api_key": NetworkManager.api3Key, "append_to_response": "credits"]
             return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
         
         case .searchMovies(let text), .searchTVShows(let text), .searchAll(let text):

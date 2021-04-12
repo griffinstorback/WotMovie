@@ -34,8 +34,9 @@ class TitleDetailViewController: GuessDetailViewController {
                 // scroll to top of view to show title being revealed
                 scrollToTop()
                 
-                detailOverviewView.setTitle(titleDetailViewPresenter.getTitle())     //   // TODO *** animate this
+                detailOverviewView.setTitle(titleDetailViewPresenter.getName())     //   // TODO *** animate this
                 detailOverviewView.setOverviewText(titleDetailViewPresenter.getOverview()) // uncensor title name from overview
+                detailOverviewView.addRating(rating: titleDetailViewPresenter.getRating())
             
                 // depending if correct or not, reflect in state of poster image view
                 if state == .revealed || state == .revealedWithNoNextButton {
@@ -98,7 +99,7 @@ class TitleDetailViewController: GuessDetailViewController {
         case .revealed, .revealedWithNoNextButton, .correct, .correctWithNoNextButton:
             addLoadingIndicatorOrErrorView()
             
-            detailOverviewView.setTitle(titleDetailViewPresenter.getTitle())
+            detailOverviewView.setTitle(titleDetailViewPresenter.getName())
             detailOverviewView.setOverviewText(titleDetailViewPresenter.getOverview()) // uncensor title name from overview
             
             // if item was correctly guessed, show check at top left
@@ -203,8 +204,20 @@ extension TitleDetailViewController: GuessDetailViewDelegate {
     }
     
     func reloadData() {
-        if state != .fullyHidden && !infoHasBeenAdded && titleDetailViewPresenter.creditsHaveLoaded() {
-            addInfo()
+        if titleDetailViewPresenter.creditsHaveLoaded() {
+            
+            // we set content length (movie length in mins or tv show length in episodes) as soon as possible, even if item is hidden
+            detailOverviewView.setContentLength(contentLengthString: titleDetailViewPresenter.getContentLength())
+            
+            // we don't want to show rating until it has been revealed/guessed
+            if state != .fullyHidden && state != .hintShown {
+                detailOverviewView.addRating(rating: titleDetailViewPresenter.getRating())
+            }
+            
+            // don't add info yet as the item hasn't been revealed, even though it has been loaded. (this prevents flash of all imageviews which looks jarring)
+            if state != .fullyHidden && !infoHasBeenAdded {
+                addInfo()
+            }
         }
         
         castCollectionView.reloadData()

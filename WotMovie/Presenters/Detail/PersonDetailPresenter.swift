@@ -12,6 +12,10 @@ protocol PersonDetailPresenterProtocol: GuessDetailPresenterProtocol {
     func loadCredits()
     func creditsHaveLoaded() -> Bool
     
+    func getOverview() -> String
+    func getBirthdayText() -> String?
+    func getDeathdayText() -> String?
+    
     func loadKnownForTitleImage(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
     func loadActorInTitleImage(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
     func loadJobForTitleImage(index: Int, section: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
@@ -31,7 +35,7 @@ protocol PersonDetailPresenterProtocol: GuessDetailPresenterProtocol {
 class PersonDetailPresenter: GuessDetailPresenter, PersonDetailPresenterProtocol {
     private var person: Person?
     
-    private var personCredits: PersonCredits? {
+    private var personDetails: PersonDetails? {
         didSet {
             setPersonCrewToDisplay()
             
@@ -42,7 +46,7 @@ class PersonDetailPresenter: GuessDetailPresenter, PersonDetailPresenterProtocol
     }
     private var personCrewToDisplay: [String:[MovieOrTVShow]] = [:]
     private func setPersonCrewToDisplay() {
-        if let personCredits = personCredits {
+        if let personCredits = personDetails?.personCredits {
             
             // for each project the Person has worked on as a crew member (e.g. writer)
             for projectAsCrew in personCredits.crew {
@@ -81,7 +85,7 @@ class PersonDetailPresenter: GuessDetailPresenter, PersonDetailPresenterProtocol
     }
     
     func loadCredits() {
-        networkManager.getCombinedCreditsForPerson(id: item.id) { [weak self] credits, error in
+        networkManager.getPersonDetailsAndCredits(id: item.id) { [weak self] details, error in
             if let error = error {
                 print(error)
                 DispatchQueue.main.async {
@@ -90,12 +94,28 @@ class PersonDetailPresenter: GuessDetailPresenter, PersonDetailPresenterProtocol
                 return
             }
             
-            self?.personCredits = credits
+            self?.personDetails = details
         }
     }
     
     func creditsHaveLoaded() -> Bool {
-        return personCredits != nil
+        return personDetails != nil
+    }
+    
+    func getOverview() -> String {
+        return personDetails?.overview ?? ""
+    }
+    
+    func getBirthdayText() -> String? {
+        guard let birthday = personDetails?.person.birthday else { return nil }
+        
+        return "Born: " + birthday
+    }
+    
+    func getDeathdayText() -> String? {
+        guard let deathday = personDetails?.person.deathday else { return nil }
+        
+        return "Died: " + deathday
     }
     
     func loadKnownForTitleImage(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
@@ -108,7 +128,7 @@ class PersonDetailPresenter: GuessDetailPresenter, PersonDetailPresenterProtocol
     }
     
     func loadActorInTitleImage(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
-        guard let profilePath = personCredits?.cast[index].posterPath else {
+        guard let profilePath = personDetails?.personCredits.cast[index].posterPath else {
             completion(nil, nil)
             return
         }
@@ -121,7 +141,7 @@ class PersonDetailPresenter: GuessDetailPresenter, PersonDetailPresenterProtocol
             return
         }
         
-        guard let personCrewOnTitles = personCredits?.crew else {
+        guard let personCrewOnTitles = personDetails?.personCredits.crew else {
             return
         }
         
@@ -147,7 +167,7 @@ class PersonDetailPresenter: GuessDetailPresenter, PersonDetailPresenterProtocol
     }
     
     func getActorInCount() -> Int {
-        return personCredits?.cast.count ?? 0
+        return personDetails?.personCredits.cast.count ?? 0
     }
     
     func getCountForJob(section: Int) -> Int {
@@ -155,7 +175,7 @@ class PersonDetailPresenter: GuessDetailPresenter, PersonDetailPresenterProtocol
             return 0
         }
         
-        guard let personCrewOnTitles = personCredits?.crew else {
+        guard let personCrewOnTitles = personDetails?.personCredits.crew else {
             return 0
         }
         
@@ -174,7 +194,7 @@ class PersonDetailPresenter: GuessDetailPresenter, PersonDetailPresenterProtocol
     }
     
     func getActorInTitle(for index: Int) -> Title? {
-        return personCredits?.cast[index]
+        return personDetails?.personCredits.cast[index]
     }
     
     func getJobForTitle(for index: Int, section: Int) -> Title? {
@@ -182,7 +202,7 @@ class PersonDetailPresenter: GuessDetailPresenter, PersonDetailPresenterProtocol
             return nil
         }
         
-        guard let personCrewOnTitles = personCredits?.crew else {
+        guard let personCrewOnTitles = personDetails?.personCredits.crew else {
             return nil
         }
         
@@ -202,16 +222,16 @@ class PersonDetailPresenter: GuessDetailPresenter, PersonDetailPresenterProtocol
     }
     
     func getActorInSubtitle(for index: Int) -> String? {
-        return personCredits?.cast[index].character
+        return personDetails?.personCredits.cast[index].character
     }
     
     func personIsKnownForDirecting() -> Bool {
-        return person?.knownForDepartment == "Director"
+        return person?.knownForDepartment == "Directing"
     }
     func personIsKnownForProducing() -> Bool {
-        return person?.knownForDepartment == "Producer"
+        return person?.knownForDepartment == "Producing"
     }
     func personIsKnownForWriting() -> Bool {
-        return person?.knownForDepartment == "Writer"
+        return person?.knownForDepartment == "Writing"
     }
 }

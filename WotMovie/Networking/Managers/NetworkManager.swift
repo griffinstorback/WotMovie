@@ -16,8 +16,10 @@ protocol NetworkManagerProtocol {
     func getListOfTVShowsByGenre(id: Int, page: Int, completion: @escaping (_ tvShows: [TVShow]?, _ error: String?) -> ())
     func getPopularPeople(page: Int, completion: @escaping (_ people: [Person]?, _ error: String?) -> ())
     func getCreditsForMovie(id: Int, completion: @escaping (_ credits: Credits?, _ error: String?) -> ())
+    func getMovieDetailsAndCredits(id: Int, completion: @escaping (_ details: MovieDetails?, _ error: String?) -> ())
     func getCreditsForTVShow(id: Int, completion: @escaping (_ credits: Credits?, _ error: String?) -> ())
-    func getPersonDetailAndCredits(id: Int, completion: @escaping (_ credits: PersonCredits?, _ error: String?) -> ())
+    func getTVShowDetailsAndCredits(id: Int, completion: @escaping (_ details: TVShowDetails?, _ error: String?) -> ())
+    func getPersonDetailsAndCredits(id: Int, completion: @escaping (_ details: PersonDetails?, _ error: String?) -> ())
     func getCombinedCreditsForPerson(id: Int, completion: @escaping (_ credits: PersonCredits?, _ error: String?) -> ())
     func searchMovies(searchText: String, completion: @escaping (_ movies: [Movie]?, _ error: String?) -> ())
     func searchTVShows(searchText: String, completion: @escaping (_ tvShows: [TVShow]?, _ error: String?) -> ())
@@ -302,6 +304,38 @@ final class NetworkManager: NetworkManagerProtocol {
         }
     }
     
+    public func getMovieDetailsAndCredits(id: Int, completion: @escaping (_ details: MovieDetails?, _ error: String?) -> ()) {
+        movieRouter.request(.movieDetailsAndCredits(id: id)) { data, response, error in
+            if error != nil {
+                completion(nil, NetworkResponse.checkNetworkConnection.rawValue)
+            }
+            
+            if let response = response as? HTTPURLResponse {
+                let result = NetworkResponse.handleNetworkResponse(response)
+                
+                switch result {
+                case .success:
+                    guard let responseData = data else {
+                        completion(nil, NetworkResponse.noData.rawValue)
+                        return
+                    }
+                    do {
+                        //let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
+                        //print(jsonData)
+                        let apiResponse = try JSONDecoder().decode(MovieDetails.self, from: responseData)
+                        completion(apiResponse, nil)
+                    } catch {
+                        print(error)
+                        completion(nil, NetworkResponse.unableToDecode.rawValue)
+                    }
+                case .failure(let networkFailureError):
+                    print(networkFailureError)
+                    completion(nil, networkFailureError)
+                }
+            }
+        }
+    }
+    
     public func getCreditsForTVShow(id: Int, completion: @escaping (_ credits: Credits?, _ error: String?) -> ()) {
         movieRouter.request(.tvShowCredits(id: id)) { data, response, error in
             if error != nil {
@@ -334,7 +368,39 @@ final class NetworkManager: NetworkManagerProtocol {
         }
     }
     
-    public func getPersonDetailAndCredits(id: Int, completion: @escaping (_ credits: PersonCredits?, _ error: String?) -> ()) {
+    public func getTVShowDetailsAndCredits(id: Int, completion: @escaping (_ details: TVShowDetails?, _ error: String?) -> ()) {
+        movieRouter.request(.tvShowDetailsAndCredits(id: id)) { data, response, error in
+            if error != nil {
+                completion(nil, NetworkResponse.checkNetworkConnection.rawValue)
+            }
+            
+            if let response = response as? HTTPURLResponse {
+                let result = NetworkResponse.handleNetworkResponse(response)
+                
+                switch result {
+                case .success:
+                    guard let responseData = data else {
+                        completion(nil, NetworkResponse.noData.rawValue)
+                        return
+                    }
+                    do {
+                        //let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
+                        //print(jsonData)
+                        let apiResponse = try JSONDecoder().decode(TVShowDetails.self, from: responseData)
+                        completion(apiResponse, nil)
+                    } catch {
+                        print(error)
+                        completion(nil, NetworkResponse.unableToDecode.rawValue)
+                    }
+                case .failure(let networkFailureError):
+                    print(networkFailureError)
+                    completion(nil, networkFailureError)
+                }
+            }
+        }
+    }
+    
+    public func getPersonDetailsAndCredits(id: Int, completion: @escaping (_ details: PersonDetails?, _ error: String?) -> ()) {
         personRouter.request(.personDetailAndCredits(id: id)) { data, response, error in
             if error != nil {
                 completion(nil, NetworkResponse.checkNetworkConnection.rawValue)
@@ -350,10 +416,10 @@ final class NetworkManager: NetworkManagerProtocol {
                         return
                     }
                     do {
-                        let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
-                        print(jsonData)
-                        //let apiResponse = try JSONDecoder().decode(PersonCredits.self, from: responseData)
-                        //completion(apiResponse, nil)
+                        //let jsonData = try JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
+                        //print(jsonData)
+                        let apiResponse = try JSONDecoder().decode(PersonDetails.self, from: responseData)
+                        completion(apiResponse, nil)
                     } catch {
                         print(error)
                         completion(nil, NetworkResponse.unableToDecode.rawValue)
