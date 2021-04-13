@@ -40,7 +40,7 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
             // reset items when genre changed
             nextPage = 1
             items.removeAll()
-            loadNextPageOfItems()
+            loadNextPageOfItemsAsync()
         }
     }
     private var genresList: [Genre] = []
@@ -116,6 +116,8 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
                 newItems.append(item)
             } else if item.type == .tvShow && !Constants.BadDescriptions.tvShows.contains(item.id) {
                 newItems.append(item)
+            } else if item.type == .person {
+                newItems.append(item)
             }
         }
         
@@ -164,7 +166,9 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
         
         self.items += newItems
         
-        print("*** GuessGridPresenter.addItems() - added \(newItems.count) new items, with \(dupCount) new dups. New total: \(self.items.count). Total dups: \(totalDups)")
+        if totalDups > 0 {
+            print("&&& ******* DUPS FOUND - GuessGridPresenter.addItems() - added \(newItems.count) new items, with \(dupCount) new dups. New total: \(self.items.count). Total dups: \(totalDups)")
+        }
     }
     
     init(networkManager: NetworkManagerProtocol = NetworkManager.shared,
@@ -265,7 +269,7 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
             return
         }
         
-        loadNextPageOfItems()
+        loadNextPageOfItemsAsync()
         
         // TODO: At this point, a new page has been loaded, or started to load.
         //       So, we should check if there are over say 1000 items in the list, and
@@ -284,7 +288,7 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
 
     
     private var isLoading = false // semaphore
-    private func loadNextPageOfItems() {
+    private func loadNextPageOfItemsAsync() { // call this method from main thread, it will make a background thread for itself after checking isLoading
         guard nextPage < 1000 else { return } // in case of bug, don't just keep trying to load new pages forever.
         
         if isLoading {
@@ -293,6 +297,55 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
         }
         isLoading = true
         
+        DispatchQueue.global().async {
+            self.getPageFromCoreDataAsync(page: self.nextPage) { success in
+                if success {
+                    self.nextPage += 1
+                    self.isLoading = false
+                    
+                    print("*** GuessGridPresenter.loadNextPageOfItems() - got page \(self.nextPage-1) from core data")
+                    if self.items.count < 20 {
+                        print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is only \(self.items.count), so loading another page (page \(self.nextPage))...")
+                        
+                        // dispatch the request on main queue, so that isLoading semaphore is thread safe
+                        DispatchQueue.main.async {
+                            self.loadNextPageOfItemsAsync()
+                        }
+                    } else {
+                        print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is \(self.items.count), so we're done.")
+                    }
+                } else {
+                    // page from core data came back nil or empty - get it from the network.
+                    self.getPageFromNetworkThenCacheInCoreData(page: self.nextPage) { success in
+                        if success {
+                            self.nextPage += 1
+                            self.isLoading = false
+                            
+                            print("*** GuessGridPresenter.loadNextPageOfItems() - got page \(self.nextPage-1) from network")
+                            if self.items.count < 20 {
+                                print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is only \(self.items.count), so loading another page (page \(self.nextPage))...")
+                                
+                                // dispatch the request on main queue, so that isLoading semaphore is thread safe
+                                DispatchQueue.main.async {
+                                    self.loadNextPageOfItemsAsync()
+                                }
+                            } else {
+                                print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is \(self.items.count), so we're done.")
+                            }
+                        } else {
+                            // network request failed - still increment nextPage, in case there was trouble with just that one page.
+                            print("** ERROR: trouble loading page \(self.nextPage) for type \(self.category) - incrementing to page \(self.nextPage + 1), but not retrying here.")
+                            self.nextPage += 1
+                            self.isLoading = false
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // loads as many pages as it can find from Core Data synchronously - then starts loading new pages from network asynchronously
+    private func loadNextPageOfItemsSync() {
         // first, try to load the current page from core data
         if !getPageFromCoreData(page: nextPage) {
             getPageFromNetworkThenCacheInCoreData(page: nextPage) { success in
@@ -306,14 +359,17 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
                         
                         // dispatch the request on main queue, so that isLoading semaphore is thread safe
                         DispatchQueue.main.async {
-                            self.loadNextPageOfItems()
+                            self.loadNextPageOfItemsSync()
                         }
                     } else {
                         print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is \(self.items.count), so we're done.")
                     }
+                } else {
+                    // network request failed - still increment nextPage, in case there was trouble with just that one page.
+                    print("** ERROR: trouble loading page \(self.nextPage) for type \(self.category) - incrementing to page \(self.nextPage + 1), but not retrying here.")
+                    self.nextPage += 1
+                    self.isLoading = false
                 }
-                
-                self.isLoading = false
             }
         } else {
             nextPage += 1
@@ -322,7 +378,7 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
             print("*** GuessGridPresenter.loadNextPageOfItems() - got page \(nextPage-1) from core data")
             if self.items.count < 20 {
                 print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is only \(self.items.count), so loading another page (page \(nextPage))...")
-                loadNextPageOfItems()
+                loadNextPageOfItemsSync()
             } else {
                 print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is \(self.items.count), so we're done.")
             }
@@ -331,7 +387,7 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
         //isLoading = false
     }
     
-    // returns true if successful
+    // DON'T USE - FETCH FROM BACKGROUND!
     private func getPageFromCoreData(page: Int) -> Bool {
         if let items = coreDataManager.fetchEntityPage(category: category, pageNumber: page, genreID: currentlyDisplayingGenre.id) {
             if items.count != 0 {
@@ -341,6 +397,23 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
         }
         
         return false
+    }
+    
+    private func getPageFromCoreDataAsync(page: Int, completion: @escaping (_ success: Bool) -> Void) {
+        coreDataManager.backgroundFetchEntityPage(category: category, page: page, genreID: currentlyDisplayingGenre.id) { [weak self] items in
+            
+            // simulate delay
+            DispatchQueue.main.asyncAfter(deadline: .now()) {
+                if let items = items, items.count > 0 {
+                    self?.addItems(items)
+                    completion(true)
+                    return
+                } else {
+                    completion(false)
+                    return
+                }
+            }
+        }
     }
     
     // returns true if successful

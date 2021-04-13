@@ -70,11 +70,35 @@ class ListPresenter: NSObject, ListPresenterProtocol {
         return categoryTableViewRows[index].count
     }
     
+    let numberOfRecentlyViewedToDisplay: Int = 60
+    var firstLoad: Bool = true
     func loadRecentlyViewed() {
-        // Retrieve page of recently viewed, then sort by recently viewed (otherwise RV movies show first, then TV then person when we want it to be mixed, not sorted by type)
-        let amount = 60
-        let items = coreDataManager.fetchPageOfRecentlyViewed(limit: amount).sorted { $0.lastViewedDate ?? Date.distantPast > $1.lastViewedDate ?? Date.distantPast }
-        setRecentlyViewedItems(items: Array(items.prefix(amount)))
+        // Should use the async method for first load, then sync method as it needs to be there as soon as possible
+        // (using async to update means the user will see a flash after tab has ostensibly loaded)
+        
+        // TODO: cache query (using nsfetchedresultscontroller?) so sync method runs faster
+        if firstLoad {
+            loadRecentlyViewedAsync()
+            firstLoad = false
+        } else {
+            loadRecentlyViewedSync()
+        }
+    }
+    
+    private func loadRecentlyViewedAsync() {
+        DispatchQueue.global().async {
+            self.coreDataManager.backgroundFetchRecentlyViewed(limit: self.numberOfRecentlyViewedToDisplay) { [weak self] entities in
+                if let items = entities, let amount = self?.numberOfRecentlyViewedToDisplay {
+                    self?.setRecentlyViewedItems(items: Array(items.prefix(amount)))
+                } else {
+                    print("** ERROR retrieving recently viewed asynchronously")
+                }
+            }
+        }
+    }
+    private func loadRecentlyViewedSync() {
+        let items = coreDataManager.fetchPageOfRecentlyViewed(limit: numberOfRecentlyViewedToDisplay).sorted { $0.lastViewedDate ?? Date.distantPast > $1.lastViewedDate ?? Date.distantPast }
+        setRecentlyViewedItems(items: Array(items.prefix(numberOfRecentlyViewedToDisplay)))
     }
     
     func loadCategoryCounts() {

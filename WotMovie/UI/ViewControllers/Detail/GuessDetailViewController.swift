@@ -54,7 +54,7 @@ class GuessDetailViewController: DetailViewController {
     private var enterGuessContainerViewTopConstraint: NSLayoutConstraint!
     
     init(item: Entity, posterImageView: PosterImageView, state: GuessDetailViewState, presenter: GuessDetailPresenterProtocol) {
-        //self.state = state
+        //self.state = state // state is now held in parent, DetailViewController
         
         guessDetailViewPresenter = presenter
         

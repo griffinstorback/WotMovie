@@ -10,7 +10,11 @@ import UIKit
 
 // Collection view displaying a grid of PosterImageView's, number of columns depending on screen width
 class GridViewController: DetailPresenterViewController {
-    let collectionView: ContentSizedCollectionView
+    let collectionView: UICollectionView
+    
+    // this should be shown only while loading first page, then footer loading view (see load more grid vc) should take over as loading indicator
+    private let loadingIndicatorOrErrorView: LoadingIndicatorOrErrorView
+    
     weak var transitionPresenter: TransitionPresenterProtocol?
     
     private let spacingAmount: CGFloat = 5
@@ -22,7 +26,9 @@ class GridViewController: DetailPresenterViewController {
     func spacing() -> CGFloat { spacingAmount - spacingAmount/CGFloat(numberOfCellsPerRow()) }
     
     init() {
-        collectionView = ContentSizedCollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        
+        loadingIndicatorOrErrorView = LoadingIndicatorOrErrorView(state: .loading)
         
         super.init(nibName: nil, bundle: nil)
         
@@ -49,6 +55,26 @@ class GridViewController: DetailPresenterViewController {
     private func layoutViews() {
         view.addSubview(collectionView)
         collectionView.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
+        
+        addLoadingIndicatorOrErrorView()
+    }
+    
+    func addLoadingIndicatorOrErrorView() {
+        // don't add loading indicator if it has already been added - also, don't add if show hint button is present
+        guard !view.subviews.contains(loadingIndicatorOrErrorView) else { return }
+        
+        view.addSubview(loadingIndicatorOrErrorView)
+        loadingIndicatorOrErrorView.anchorToCenter(yAnchor: collectionView.centerYAnchor, xAnchor: collectionView.centerXAnchor)
+    }
+    
+    func displayErrorInLoadingIndicatorOrErrorView() {
+        loadingIndicatorOrErrorView.state = .error
+    }
+    
+    // should remove the loading view as soon as first items load.
+    func removeLoadingIndicatorOrErrorView() {
+        loadingIndicatorOrErrorView.state = .loaded
+        loadingIndicatorOrErrorView.removeFromSuperview()
     }
     
     // CHECK customHeaderClass before deqeueing a header (need to call registerClassAsCollectionViewHeader before)

@@ -59,7 +59,7 @@ struct Movie: Title {
         isFavorite = movieMO.watchlist != nil
     }
     
-    
+    // todo: this caused crash, i think because of threading issues (it was on a background thread when it crashed)
     static private func parseGenreIDsFromMovieMO(_ movieMO: MovieMO) -> [Int] {
         if let genres = movieMO.genres?.allObjects as? [MovieGenreMO] {
             var genreIDs = [Int]()

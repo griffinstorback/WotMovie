@@ -124,7 +124,7 @@ class ListCategoryGridPresenter: NSObject, ListCategoryGridPresenterProtocol {
     }
     
     func loadItems() {
-        getNextPageFromCoreData()
+        getNextPageFromCoreDataAsync()
     }
     
     func setViewDelegate(_ listCategoryGridViewDelegate: ListCategoryGridViewDelegate?) {
@@ -203,6 +203,7 @@ class ListCategoryGridPresenter: NSObject, ListCategoryGridPresenterProtocol {
         }
     }
     
+    // should use the async method.
     private func getNextPageFromCoreData() {
         switch sortParameters.listCategoryType {
         case .movieOrTvShowWatchlist:
@@ -217,6 +218,16 @@ class ListCategoryGridPresenter: NSObject, ListCategoryGridPresenterProtocol {
         case .allRevealed:
             let items = coreDataManager.fetchRevealedEntities()
             allItems = items
+        }
+    }
+    
+    private func getNextPageFromCoreDataAsync() {
+        DispatchQueue.global().async {
+            self.coreDataManager.backgroundFetchListCategoryPage(listCategory: self.sortParameters.listCategoryType) { [weak self] entities in
+                if let entities = entities {
+                    self?.allItems = entities
+                }
+            }
         }
     }
 }
