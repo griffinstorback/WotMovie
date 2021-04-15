@@ -27,6 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         IAPManager.shared.stopObserving()
     }
+    
 
     // MARK: UISceneSession Lifecycle
 

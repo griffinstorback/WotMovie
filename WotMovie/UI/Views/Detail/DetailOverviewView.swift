@@ -43,15 +43,12 @@ class DetailOverviewView: UIView {
         return label
     }()
     
-    private lazy var ratingButton: UIButton = {
+    private lazy var ratingButton: RatingButton = {
         // A button because it will link to the TMDB page - also don't show when hidden.
-        let button = UIButton()
+        let button = RatingButton()
         button.backgroundColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue
         button.layer.masksToBounds = true
-        button.layer.cornerRadius = 10
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
-        button.titleEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
-        button.titleLabel?.adjustsFontSizeToFitWidth = true
+        button.layer.cornerRadius = 6
         
         return button
     }()
@@ -182,7 +179,8 @@ class DetailOverviewView: UIView {
     
     public func addRating(rating: Double?) {
         if let rating = rating {
-            ratingButton.setTitle(String(format: "%.1f", rating), for: .normal)
+            //ratingButton.setTitle(String(format: "%.1f on TMDb", rating), for: .normal)
+            ratingButton.setRating(rating: rating)
             ratingButtonContainerView.isHidden = false
         } else {
             // if nil was passed, don't show a rating at all.

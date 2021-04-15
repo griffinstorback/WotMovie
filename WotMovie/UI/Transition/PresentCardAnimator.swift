@@ -182,10 +182,12 @@ final class PresentCardTransitionDriver {
         
         container.addSubview(cardDetailView)
         
-        cardDetailView.removeConstraints([cardWidthConstraint, cardHeightConstraint])
-        cardDetailView.anchor(top: container.topAnchor, leading: container.leadingAnchor, bottom: container.bottomAnchor, trailing: container.trailingAnchor)
-                
+        // I want to cry. Commenting out these two lines and just assigning the presented view to cardDetailView fixed the issue with returning from ad click hiding the view.
+        //cardDetailView.removeConstraints([cardWidthConstraint, cardHeightConstraint])
+        //cardDetailView.anchor(top: container.topAnchor, leading: container.leadingAnchor, bottom: container.bottomAnchor, trailing: container.trailingAnchor)
         //screens.presented.cardBottomToRootBottomConstraint.isActive = false
+        
+        screens.presented.view = cardDetailView
         screens.presented.scrollView.isScrollEnabled = true
         
         let success = !context.transitionWasCancelled

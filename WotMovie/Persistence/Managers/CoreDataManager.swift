@@ -327,6 +327,57 @@ final class CoreDataManager: CoreDataManagerProtocol {
     
     
     
+// MARK: -- RESET DATA
+    
+    func resetMovieData(context: NSManagedObjectContext? = nil) {
+        let context = context ?? coreDataStack.persistentContainer.viewContext
+        print("***** RESET MOVIE DATA")
+        // delete all MovieGuessed objects
+        
+        // delete all MovieRevealed objects
+        
+        // set isHintShown to false on all Movie objects
+    }
+    
+    func resetTVShowData(context: NSManagedObjectContext? = nil) {
+        let context = context ?? coreDataStack.persistentContainer.viewContext
+        print("***** RESET TV SHOW DATA")
+    }
+    
+    func resetPersonData(context: NSManagedObjectContext? = nil) {
+        let context = context ?? coreDataStack.persistentContainer.viewContext
+        print("***** RESET PERSON DATA")
+    }
+    
+    func resetWatchlistData(context: NSManagedObjectContext? = nil) {
+        let context = context ?? coreDataStack.persistentContainer.viewContext
+        print("***** RESET WATCHLIST DATA")
+    }
+    
+    func resetFavoritesData(context: NSManagedObjectContext? = nil) {
+        let context = context ?? coreDataStack.persistentContainer.viewContext
+        print("***** RESET FAVORITES DATA")
+    }
+    
+    // warning: will reset watchlist and favorites data as well.
+    func resetAllData(context: NSManagedObjectContext? = nil) {
+        let context = context ?? coreDataStack.persistentContainer.viewContext
+        print("******* ALL:")
+        
+        resetMovieData(context: context)
+        resetTVShowData(context: context)
+        resetPersonData(context: context)
+        
+        resetWatchlistData()
+        resetFavoritesData()
+        
+        // delete grid pages?
+    }
+    
+    
+    
+    
+    
 // MARK: -- COUNT QUERIES
     
     func fetchWatchlistCount() -> Int {

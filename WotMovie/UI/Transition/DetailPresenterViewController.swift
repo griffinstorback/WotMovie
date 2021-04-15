@@ -13,6 +13,9 @@ class DetailPresenterViewController: UIViewController {
     private var transition: CardTransition?
     
     func present(_ viewController: DetailViewController, fromCard: UIView, startHidden: Bool, transitionPresenter: TransitionPresenterProtocol?) {
+        // For testing whether a given bug is caused by the custom transition
+        //present(viewController, animated: true)
+        //return
         
         // Freeze highlighted state or else it will bounce back??
         //cell.freezeAnimations()

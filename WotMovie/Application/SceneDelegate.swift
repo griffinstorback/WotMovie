@@ -22,9 +22,39 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
         
         window?.tintColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue
+        
+        // TODO: Check SettingsManager - if user hasn't seen intro pages, show intro pages view (swipe through) instead of RootTabView
+        
         window?.rootViewController = RootTabViewController()
         
+        // keep reference to the scene delegate in settings manager, so it can change user interface style.
+        SettingsManager.shared.mainSceneDelegate = self
+        
         window?.makeKeyAndVisible()
+    }
+    
+    // check if user has set dark/light mode manually (i.e. doesn't want to reflect device setting)
+    func setDarkMode() {
+        if !SettingsManager.shared.darkModeSetAutomatic {
+            setDarkModeTo(darkMode: SettingsManager.shared.isDarkMode)
+        } else {
+            setDarkModeToReflectDeviceSettings()
+        }
+    }
+    
+    // call when changes to dark mode settings are made (see SettingsManager)
+    func setDarkModeToReflectDeviceSettings() {
+        window?.overrideUserInterfaceStyle = UIScreen.main.traitCollection.userInterfaceStyle
+        
+        // in case dark mode pref was changed when app backgrounded, now that it is foregrounded, make sure isDarkMode reflects current interface appearance
+        SettingsManager.shared.makeSureIsDarkModeReflectsCurrentSetting()
+    }
+    func setDarkModeTo(darkMode: Bool) {
+        if darkMode {
+            window?.overrideUserInterfaceStyle = .dark
+        } else {
+            window?.overrideUserInterfaceStyle = .light
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -37,6 +67,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidBecomeActive(_ scene: UIScene) {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
+        
+        // update dark mode val in case user changed preferences while app was backgrounded
+        setDarkMode()
     }
 
     func sceneWillResignActive(_ scene: UIScene) {

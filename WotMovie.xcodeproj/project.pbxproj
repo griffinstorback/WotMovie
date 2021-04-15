@@ -16,6 +16,7 @@
 		8501405F254B50C20088FA3E /* EnterGuessPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8501405E254B50C20088FA3E /* EnterGuessPresenter.swift */; };
 		85014064254B53AC0088FA3E /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85014063254B53AC0088FA3E /* Entity.swift */; };
 		85014069254C7F1D0088FA3E /* EnterGuessControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85014068254C7F1D0088FA3E /* EnterGuessControlsView.swift */; };
+		850890C12627BC31001F4548 /* RatingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850890C02627BC31001F4548 /* RatingButton.swift */; };
 		8527826525BCF67A00FC257A /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8527826425BCF67A00FC257A /* ListViewController.swift */; };
 		8527826A25BCF6C300FC257A /* ListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8527826925BCF6C300FC257A /* ListPresenter.swift */; };
 		8527827525BD3FF100FC257A /* LoadMoreGridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8527827425BD3FF100FC257A /* LoadMoreGridViewController.swift */; };
@@ -40,6 +41,8 @@
 		853C67BD25D30E7D00EBEFBE /* SortGridPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853C67BC25D30E7D00EBEFBE /* SortGridPresenter.swift */; };
 		854B3E912550DDBB003397E0 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854B3E902550DDBA003397E0 /* CoreDataManager.swift */; };
 		854B3E9625537F55003397E0 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854B3E9525537F55003397E0 /* CoreDataStack.swift */; };
+		854BD1DF26279C3D0034E2EB /* DataResetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854BD1DE26279C3D0034E2EB /* DataResetViewController.swift */; };
+		854BD1E426279CD50034E2EB /* DataResetPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854BD1E326279CD50034E2EB /* DataResetPresenter.swift */; };
 		856FF74125FC362700D438A6 /* ImageCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856FF74025FC362700D438A6 /* ImageCacheManager.swift */; };
 		856FF74626028AE400D438A6 /* UpgradeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856FF74526028AE300D438A6 /* UpgradeViewController.swift */; };
 		856FF74B2602DF2700D438A6 /* IAP_ProductIDs.plist in Resources */ = {isa = PBXBuildFile; fileRef = 856FF74A2602DF2700D438A6 /* IAP_ProductIDs.plist */; };
@@ -124,6 +127,8 @@
 		85D178892624035B00B940C0 /* TVShowDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D178882624035B00B940C0 /* TVShowDetails.swift */; };
 		85D1788E2624036D00B940C0 /* PersonDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D1788D2624036D00B940C0 /* PersonDetails.swift */; };
 		85D178932624037600B940C0 /* PersonCredits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D178922624037600B940C0 /* PersonCredits.swift */; };
+		85D178A0262613C700B940C0 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D1789F262613C700B940C0 /* SettingsManager.swift */; };
+		85D178AD262687F000B940C0 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D178AC262687F000B940C0 /* AboutViewController.swift */; };
 		85FBF2B42613E43F00B35C90 /* CrewListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85FBF2B32613E43F00B35C90 /* CrewListRow.swift */; };
 		85FBF2B92614F64400B35C90 /* LoadingIndicatorOrErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85FBF2B82614F64400B35C90 /* LoadingIndicatorOrErrorView.swift */; };
 		85FBF2BE2616B4FF00B35C90 /* BriefAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85FBF2BD2616B4FE00B35C90 /* BriefAlertView.swift */; };
@@ -155,6 +160,7 @@
 		8501405E254B50C20088FA3E /* EnterGuessPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterGuessPresenter.swift; sourceTree = "<group>"; };
 		85014063254B53AC0088FA3E /* Entity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
 		85014068254C7F1D0088FA3E /* EnterGuessControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterGuessControlsView.swift; sourceTree = "<group>"; };
+		850890C02627BC31001F4548 /* RatingButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingButton.swift; sourceTree = "<group>"; };
 		8527826425BCF67A00FC257A /* ListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
 		8527826925BCF6C300FC257A /* ListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListPresenter.swift; sourceTree = "<group>"; };
 		8527827425BD3FF100FC257A /* LoadMoreGridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadMoreGridViewController.swift; sourceTree = "<group>"; };
@@ -180,6 +186,8 @@
 		853C67BC25D30E7D00EBEFBE /* SortGridPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortGridPresenter.swift; sourceTree = "<group>"; };
 		854B3E902550DDBA003397E0 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		854B3E9525537F55003397E0 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		854BD1DE26279C3D0034E2EB /* DataResetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataResetViewController.swift; sourceTree = "<group>"; };
+		854BD1E326279CD50034E2EB /* DataResetPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataResetPresenter.swift; sourceTree = "<group>"; };
 		856FF74025FC362700D438A6 /* ImageCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacheManager.swift; sourceTree = "<group>"; };
 		856FF74526028AE300D438A6 /* UpgradeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradeViewController.swift; sourceTree = "<group>"; };
 		856FF74A2602DF2700D438A6 /* IAP_ProductIDs.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = IAP_ProductIDs.plist; sourceTree = "<group>"; };
@@ -270,6 +278,8 @@
 		85D178882624035B00B940C0 /* TVShowDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVShowDetails.swift; sourceTree = "<group>"; };
 		85D1788D2624036D00B940C0 /* PersonDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonDetails.swift; sourceTree = "<group>"; };
 		85D178922624037600B940C0 /* PersonCredits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonCredits.swift; sourceTree = "<group>"; };
+		85D1789F262613C700B940C0 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
+		85D178AC262687F000B940C0 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		85FBF2B32613E43F00B35C90 /* CrewListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrewListRow.swift; sourceTree = "<group>"; };
 		85FBF2B82614F64400B35C90 /* LoadingIndicatorOrErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingIndicatorOrErrorView.swift; sourceTree = "<group>"; };
 		85FBF2BD2616B4FE00B35C90 /* BriefAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BriefAlertView.swift; sourceTree = "<group>"; };
@@ -362,6 +372,7 @@
 			children = (
 				854B3E902550DDBA003397E0 /* CoreDataManager.swift */,
 				856FF74025FC362700D438A6 /* ImageCacheManager.swift */,
+				85D1789F262613C700B940C0 /* SettingsManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -383,6 +394,7 @@
 				85CF359A253E0CFB00A101C9 /* DetailOverviewView.swift */,
 				85014068254C7F1D0088FA3E /* EnterGuessControlsView.swift */,
 				85FBF2B32613E43F00B35C90 /* CrewListRow.swift */,
+				850890C02627BC31001F4548 /* RatingButton.swift */,
 			);
 			path = Detail;
 			sourceTree = "<group>";
@@ -578,6 +590,8 @@
 				8535964C25D9DA3F00F093BA /* StatsViewController.swift */,
 				856FF74526028AE300D438A6 /* UpgradeViewController.swift */,
 				85D17879261E698800B940C0 /* SearchViewController.swift */,
+				85D178AC262687F000B940C0 /* AboutViewController.swift */,
+				854BD1DE26279C3D0034E2EB /* DataResetViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -666,6 +680,7 @@
 				8535965125D9DA6800F093BA /* StatsPresenter.swift */,
 				856FF75426041BF400D438A6 /* UpgradePresenter.swift */,
 				85D1787E261E69A300B940C0 /* SearchPresenter.swift */,
+				854BD1E326279CD50034E2EB /* DataResetPresenter.swift */,
 			);
 			path = Presenters;
 			sourceTree = "<group>";
@@ -899,10 +914,12 @@
 				85CF35702538D38600A101C9 /* TVShow.swift in Sources */,
 				85CF34B4252E739B00A101C9 /* JSONParameterEncoder.swift in Sources */,
 				85791AD625C0FCA100F8FE75 /* ListCategoryGridPresenter.swift in Sources */,
+				850890C12627BC31001F4548 /* RatingButton.swift in Sources */,
 				85CF35B22540D92900A101C9 /* ContentSizedTableView.swift in Sources */,
 				85CF34B9252E8CEE00A101C9 /* NetworkRouter.swift in Sources */,
 				85CF354425365CBB00A101C9 /* SettingsViewController.swift in Sources */,
 				85CF34A5252E5F3A00A101C9 /* HTTPTask.swift in Sources */,
+				854BD1E426279CD50034E2EB /* DataResetPresenter.swift in Sources */,
 				8527827F25BF5AB300FC257A /* ListCategory.swift in Sources */,
 				8588FD2C256883800054EC17 /* MovieOrTVShow.swift in Sources */,
 				85CF3582253A181F00A101C9 /* ImageEndPoint.swift in Sources */,
@@ -927,6 +944,7 @@
 				85CF3457252D430C00A101C9 /* AppDelegate.swift in Sources */,
 				85014064254B53AC0088FA3E /* Entity.swift in Sources */,
 				85D178842624033800B940C0 /* MovieDetails.swift in Sources */,
+				85D178AD262687F000B940C0 /* AboutViewController.swift in Sources */,
 				8588FD31256884660054EC17 /* Job.swift in Sources */,
 				85CF359B253E0CFB00A101C9 /* DetailOverviewView.swift in Sources */,
 				8586DF3825547C810066EE65 /* GuessCategory.swift in Sources */,
@@ -941,6 +959,7 @@
 				857B353B25B74BB0004CC310 /* CoreData+Extensions.swift in Sources */,
 				8588FD36256887AC0054EC17 /* TitleDetailPresenter.swift in Sources */,
 				85014048254795660088FA3E /* Constants.swift in Sources */,
+				854BD1DF26279C3D0034E2EB /* DataResetViewController.swift in Sources */,
 				85CF3459252D430C00A101C9 /* SceneDelegate.swift in Sources */,
 				85CF35A0253E48A300A101C9 /* PosterImageView.swift in Sources */,
 				856FF74125FC362700D438A6 /* ImageCacheManager.swift in Sources */,
@@ -980,6 +999,7 @@
 				850140552549E7350088FA3E /* EnterGuessViewController.swift in Sources */,
 				8535965725DC410000F093BA /* EntityStats.swift in Sources */,
 				8527826525BCF67A00FC257A /* ListViewController.swift in Sources */,
+				85D178A0262613C700B940C0 /* SettingsManager.swift in Sources */,
 				85CF35C12541F9DD00A101C9 /* EntityTableViewCell.swift in Sources */,
 				8588FD01255F27E50054EC17 /* CardPresentationController.swift in Sources */,
 				85CF34D1252F97C400A101C9 /* MovieEndPoint.swift in Sources */,
