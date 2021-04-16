@@ -29,6 +29,9 @@ protocol ListCategoryGridPresenterProtocol: TransitionPresenterProtocol {
     func getSortParameters() -> SortParameters
     func setSortParameters(_ sortParameters: SortParameters)
     func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
+    
+    func addItemToWatchlistOrFavorites(_ indexPath: IndexPath)
+    func removeItemFromWatchlistOrFavorites(_ indexPath: IndexPath)
 }
 
 // TODO: Should make all presenters conform to a BasePresenter class, which should contain
@@ -201,6 +204,22 @@ class ListCategoryGridPresenter: NSObject, ListCategoryGridPresenterProtocol {
                 completion(nil, nil)
             }
         }
+    }
+    
+    func addItemToWatchlistOrFavorites(_ indexPath: IndexPath) {
+        let index = indexPath.row
+        guard index < items.count else { return }
+        
+        coreDataManager.addEntityToWatchlistOrFavorites(entity: items[index])
+        items[index].isFavorite = true
+    }
+    
+    func removeItemFromWatchlistOrFavorites(_ indexPath: IndexPath) {
+        let index = indexPath.row
+        guard index < items.count else { return }
+        
+        coreDataManager.removeEntityFromWatchlistOrFavorites(entity: items[index])
+        items[index].isFavorite = false
     }
     
     // should use the async method.

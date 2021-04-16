@@ -168,10 +168,6 @@ class DetailViewController: UIViewController {
         closeButton.tintColor = .systemGray
         closeButton.addTarget(self, action: #selector(closeButtonPressed), for: .touchUpInside)
         
-        //let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(closeButtonHeldDown))
-        //closeButton.addGestureRecognizer(longTapGesture)
-        //closeButton.addTarget(self, action: #selector(closeButtonHeldDown), for: .touchDown)
-        
         let interaction = UIContextMenuInteraction(delegate: self)
         closeButton.addInteraction(interaction)
     }
@@ -384,7 +380,7 @@ extension DetailViewController: UIScrollViewDelegate {
     }
 }
 
-// Allows user to hold down the X button at top right, to close all modals (if they have 15 open, they shouldn't have to close each one by one)
+// Allows user to hold down the X button at top right, to close all modals (if they have say 15 open, they shouldn't have to close each one by one)
 extension DetailViewController: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { _ in

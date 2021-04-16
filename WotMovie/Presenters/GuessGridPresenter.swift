@@ -24,6 +24,9 @@ protocol GuessGridPresenterProtocol: TransitionPresenterProtocol {
     
     func shouldNotLoadMoreItems() -> Bool
     func loadItems()
+    
+    func addItemToWatchlistOrFavorites(_ indexPath: IndexPath)
+    func removeItemFromWatchlistOrFavorites(_ indexPath: IndexPath)
 }
 
 class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
@@ -541,6 +544,22 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
                 }
             }
         }
+    }
+    
+    func addItemToWatchlistOrFavorites(_ indexPath: IndexPath) {
+        let index = indexPath.row
+        guard index < items.count else { return }
+        
+        coreDataManager.addEntityToWatchlistOrFavorites(entity: items[index])
+        items[index].isFavorite = true
+    }
+    
+    func removeItemFromWatchlistOrFavorites(_ indexPath: IndexPath) {
+        let index = indexPath.row
+        guard index < items.count else { return }
+        
+        coreDataManager.removeEntityFromWatchlistOrFavorites(entity: items[index])
+        items[index].isFavorite = false
     }
 }
 

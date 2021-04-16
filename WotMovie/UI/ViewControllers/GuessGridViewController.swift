@@ -209,4 +209,12 @@ extension GuessGridViewController: LoadMoreGridViewDelegate {
             }
         }*/
     }
+    
+    func addItemToWatchlistOrFavorites(_ indexPath: IndexPath) {
+        guessGridViewPresenter.addItemToWatchlistOrFavorites(indexPath)
+    }
+    
+    func removeItemFromWatchlistOrFavorites(_ indexPath: IndexPath) {
+        guessGridViewPresenter.removeItemFromWatchlistOrFavorites(indexPath)
+    }
 }

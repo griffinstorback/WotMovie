@@ -18,6 +18,9 @@ protocol ListPresenterProtocol: TransitionPresenterProtocol {
     func getNumberOfRecentlyViewed() -> Int
     func getRecentlyViewedFor(index: Int) -> Entity
     func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
+    
+    func addItemToWatchlistOrFavorites(_ indexPath: IndexPath)
+    func removeItemFromWatchlistOrFavorites(_ indexPath: IndexPath)
 }
 
 class ListPresenter: NSObject, ListPresenterProtocol {
@@ -137,6 +140,22 @@ class ListPresenter: NSObject, ListPresenterProtocol {
                 completion(nil, nil)
             }
         }
+    }
+    
+    func addItemToWatchlistOrFavorites(_ indexPath: IndexPath) {
+        let index = indexPath.row
+        guard index < recentlyViewedItems.count else { return }
+        
+        coreDataManager.addEntityToWatchlistOrFavorites(entity: recentlyViewedItems[index])
+        recentlyViewedItems[index].isFavorite = true
+    }
+    
+    func removeItemFromWatchlistOrFavorites(_ indexPath: IndexPath) {
+        let index = indexPath.row
+        guard index < recentlyViewedItems.count else { return }
+        
+        coreDataManager.removeEntityFromWatchlistOrFavorites(entity: recentlyViewedItems[index])
+        recentlyViewedItems[index].isFavorite = false
     }
 }
 

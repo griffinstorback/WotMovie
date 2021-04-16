@@ -184,6 +184,14 @@ extension ListViewController: LoadMoreGridViewDelegate {
             statusBarCoverView.alpha = 1
         }
     }
+    
+    func addItemToWatchlistOrFavorites(_ indexPath: IndexPath) {
+        listPresenter.addItemToWatchlistOrFavorites(indexPath)
+    }
+    
+    func removeItemFromWatchlistOrFavorites(_ indexPath: IndexPath) {
+        listPresenter.removeItemFromWatchlistOrFavorites(indexPath)
+    }
 }
 
 extension ListViewController: ListViewDelegate {

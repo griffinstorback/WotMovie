@@ -25,6 +25,10 @@ protocol LoadMoreGridViewDelegate: NSObjectProtocol {
     
     func didPresentEntityDetail()
     func scrollViewDidScroll(_ scrollView: UIScrollView)
+    
+    // these methods called from cells, passed through the extension conforming to GridCollectionViewCellDelegate
+    func addItemToWatchlistOrFavorites(_ indexPath: IndexPath)
+    func removeItemFromWatchlistOrFavorites(_ indexPath: IndexPath)
 }
 
 // Builds on GridViewController to provide an optional footer view which loads more items when in view. Also has optional header
@@ -89,6 +93,10 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
         if item.correctlyGuessed {
             cell.revealAsCorrect(animated: false)
         }
+        
+        // need to set these so that cell can get information for displaying and interacting with context menu
+        cell.indexPath = indexPath
+        cell.delegate = self
         
         return cell
     }
@@ -180,5 +188,24 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         delegate?.scrollViewDidScroll(scrollView)
+    }
+}
+
+// this enables context menu interactions with cells (cells that aren't hidden, that is)
+extension LoadMoreGridViewController: GridCollectionViewCellDelegate {
+    func getItemType(_ indexPath: IndexPath) -> EntityType? {
+        return delegate?.getItemFor(self, index: indexPath.row)?.type
+    }
+    
+    func isItemInWatchlistOrFavorites(_ indexPath: IndexPath) -> Bool {
+        return delegate?.getItemFor(self, index: indexPath.row)?.isFavorite ?? false
+    }
+    
+    func addItemToWatchlistOrFavorites(_ indexPath: IndexPath) {
+        delegate?.addItemToWatchlistOrFavorites(indexPath)
+    }
+    
+    func removeItemFromWatchlistOrFavorites(_ indexPath: IndexPath) {
+        delegate?.removeItemFromWatchlistOrFavorites(indexPath)
     }
 }

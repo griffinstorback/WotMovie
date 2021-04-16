@@ -21,6 +21,8 @@ protocol EnterGuessProtocol: NSObjectProtocol {
     func hideResults(animated: Bool)
     func revealAnswer()
     func revealAsCorrect()
+    func addToFavoritesOrWatchlist()
+    func removeFromFavoritesOrWatchlist()
     func nextQuestion()
 }
 
@@ -266,6 +268,14 @@ extension GuessDetailViewController: EnterGuessProtocol {
         addCheckMarkIcon(animated: true)
         
         transitionPresenter?.setEntityAsRevealed(id: guessDetailViewPresenter.getID(), isCorrect: true)
+    }
+    
+    func addToFavoritesOrWatchlist() {
+        transitionPresenter?.setEntityAsFavorite(id: guessDetailViewPresenter.getID(), entityWasAdded: true)
+    }
+    
+    func removeFromFavoritesOrWatchlist() {
+        transitionPresenter?.setEntityAsFavorite(id: guessDetailViewPresenter.getID(), entityWasAdded: false)
     }
     
     func nextQuestion() {

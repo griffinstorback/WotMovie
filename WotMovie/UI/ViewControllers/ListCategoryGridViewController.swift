@@ -174,6 +174,14 @@ extension ListCategoryGridViewController: LoadMoreGridViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         // nothing
     }
+    
+    func addItemToWatchlistOrFavorites(_ indexPath: IndexPath) {
+        listCategoryGridPresenter.addItemToWatchlistOrFavorites(indexPath)
+    }
+    
+    func removeItemFromWatchlistOrFavorites(_ indexPath: IndexPath) {
+        listCategoryGridPresenter.removeItemFromWatchlistOrFavorites(indexPath)
+    }
 }
 
 extension ListCategoryGridViewController: ListCategoryGridViewDelegate {
