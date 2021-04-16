@@ -12,15 +12,22 @@ class PersonOverviewView: UIView {
         
     let posterImageView: PosterImageView
     
-    // horizontal stack view containing poster image in middle, with spacing on either side.
-    private lazy var posterImageHorizontalContainerStackView: UIStackView = {
+    // stack view containing poster image in middle, with spacing on either side.
+    // (This is a ridiculous solutionbut it is the only way i could get it to work correctly with the custom dismissal animation;
+    //   what kept happening was the poster image would suddenly teleport to the right edge as it was dismissing)
+    private lazy var posterImageVerticalContainerStackView: UIStackView = {
         let stackView = UIStackView()
         
-        stackView.addArrangedSubview(UIView())
-        stackView.addArrangedSubview(posterImageView)
-        stackView.addArrangedSubview(UIView())
+        let innerHorizontalStackView = UIStackView()
+        innerHorizontalStackView.addArrangedSubview(UIView())
+        innerHorizontalStackView.addArrangedSubview(posterImageView)
+        innerHorizontalStackView.addArrangedSubview(UIView())
+        innerHorizontalStackView.axis = .horizontal
         
-        stackView.axis = .horizontal
+        stackView.addArrangedSubview(innerHorizontalStackView)
+        
+        stackView.axis = .vertical
+        stackView.alignment = .center
         return stackView
     }()
     
@@ -53,18 +60,16 @@ class PersonOverviewView: UIView {
         textView.backgroundColor = .systemBackground
         textView.font = UIFont.systemFont(ofSize: 17.0)
         textView.textContainer.maximumNumberOfLines = 3
-        textView.textContainer.lineBreakMode = .byWordWrapping
+        textView.textContainer.lineBreakMode = .byTruncatingTail
         return textView
     }()
     private lazy var birthdayLabel: UILabel = {
         let label = UILabel()
-        label.text = "Born: 1941-04-01"
         label.isHidden = true
         return label
     }()
     private lazy var deathdayLabel: UILabel = {
         let label = UILabel()
-        label.text = "Died: 2020-04-20"
         label.isHidden = true
         return label
     }()
@@ -101,22 +106,16 @@ class PersonOverviewView: UIView {
         }
     }
     
+    // contains all info except the poster image
     private lazy var verticalStackView: UIStackView = {
         let stackView = UIStackView()
         
-        //let imageContainerView = UIView()
-        //imageContainerView.addSubview(posterImageView)
-        //imageContainerView.heightAnchor.constraint(equalToConstant: 220).isActive = true
-        //posterImageView.anchor(top: posterImageView.topAnchor, leading: nil, bottom: posterImageView.bottomAnchor, trailing: nil)
-        //posterImageView.anchorToCenter(yAnchor: nil, xAnchor: posterImageView.centerXAnchor)
-        
-        stackView.addArrangedSubview(posterImageHorizontalContainerStackView)
         stackView.addArrangedSubview(nameLabel)
         stackView.addArrangedSubview(metaInfoStackView)
         stackView.axis = .vertical
         stackView.spacing = 5
         stackView.backgroundColor = .systemBackground
-        stackView.alignment = .center
+        stackView.alignment = .fill
         
         return stackView
     }()
@@ -141,15 +140,19 @@ class PersonOverviewView: UIView {
     }
     
     private func layoutViews() {
-        addSubview(verticalStackView)
+        addSubview(posterImageVerticalContainerStackView)
+        posterImageVerticalContainerStackView.anchor(top: topAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor)
         
-        // cant use this, or image aspect ratio will change and look wonky while being presented
         posterImageView.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: Constants.PersonOverviewPosterImage.size)
         
-        //posterImageView.heightAnchor.constraint(lessThanOrEqualToConstant: Constants.PersonOverviewPosterImage.size.height).isActive = true
-        //posterImageView.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.DetailOverviewPosterImage.size.width).isActive = true
+        // image aspect ratio will change and look wonky while being presented if we don't have this aspect ratio constraint
         posterImageView.widthAnchor.constraint(equalTo: posterImageView.heightAnchor, multiplier: 2/3).isActive = true
-        verticalStackView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor, padding: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10))
+        
+        // centerXAnchor solutions for this layout kept causing image to teleport to right edge as it was being dismissed (custom dismissal animation)
+        //posterImageView.anchorToCenter(yAnchor: nil, xAnchor: centerXAnchor)
+        
+        addSubview(verticalStackView)
+        verticalStackView.anchor(top: posterImageVerticalContainerStackView.bottomAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor, padding: UIEdgeInsets(top: 5, left: 10, bottom: 0, right: 10))
     }
     
     public func setName(_ text: String) {

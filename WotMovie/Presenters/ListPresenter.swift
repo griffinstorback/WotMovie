@@ -92,7 +92,8 @@ class ListPresenter: NSObject, ListPresenterProtocol {
         DispatchQueue.global().async {
             self.coreDataManager.backgroundFetchRecentlyViewed(limit: self.numberOfRecentlyViewedToDisplay) { [weak self] entities in
                 if let items = entities, let amount = self?.numberOfRecentlyViewedToDisplay {
-                    self?.setRecentlyViewedItems(items: Array(items.prefix(amount)))
+                    let sortedItems = items.sorted { $0.lastViewedDate ?? Date.distantPast > $1.lastViewedDate ?? Date.distantPast }
+                    self?.setRecentlyViewedItems(items: Array(sortedItems.prefix(amount)))
                 } else {
                     print("** ERROR retrieving recently viewed asynchronously")
                 }
@@ -193,6 +194,6 @@ extension ListPresenter {
     }
     
     func presentNextQuestion(currentQuestionID: Int) {
-        // nothing
+        // nothing - there shouldn't be a Next question button displayed for details opened from recently viewed.
     }
 }
