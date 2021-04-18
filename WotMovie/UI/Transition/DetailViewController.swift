@@ -20,7 +20,7 @@ class DetailViewController: UIViewController {
     static let targetShrinkScale: CGFloat = 0.85
     static let targetCornerRadius: CGFloat = 20
     
-    let scrollView: UIScrollView
+    let scrollView: ButtonScrollView
     
     let statusBarCoverView: UIView
     var topBannerAdView: UIView
@@ -71,7 +71,7 @@ class DetailViewController: UIViewController {
         
         guessDetailPresenter = presenter
         
-        scrollView = UIScrollView()
+        scrollView = ButtonScrollView()
         
         statusBarCoverView = UIView()
         topBannerAdView = UIView()

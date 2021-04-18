@@ -63,11 +63,26 @@ final class CoreDataManager: CoreDataManagerProtocol {
                 return
             }
             
-            // probably already saved, but might as check again.
+            // probably already saved, but might as well check again.
             coreDataStack.saveContext(privateMOC)
         }
         
-        // now save the main context with the changes from the private context
+        // now save the main context (parent) with the changes from the private context
+        coreDataStack.saveContext()
+    }
+    
+    func backgroundUpdateOrCreateEntity(entity: Entity) {
+        let privateMOC = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        privateMOC.parent = coreDataStack.persistentContainer.viewContext
+        privateMOC.performAndWait {
+            
+            updateOrCreateEntity(entity: entity, context: privateMOC)
+            
+            // probably already saved, but might as well check again.
+            coreDataStack.saveContext(privateMOC)
+        }
+        
+        // now save the main context (parent) with the changes from the private context
         coreDataStack.saveContext()
     }
     

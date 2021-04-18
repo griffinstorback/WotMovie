@@ -87,6 +87,16 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
         }
     }
     
+    // this is called from sub classes, title and person when details (credits) are retrieved from network (details come with credits, so may as well update CD)
+    func updateEntityInCoreData(_ entity: Entity?) {
+        if let entity = entity {
+            DispatchQueue.global().async {
+                print("***** entity of type \(entity.type) (name: \(entity.name)) retrieved from details object, updating entity in Core Data now, on BG thread.")
+                self.coreDataManager.backgroundUpdateOrCreateEntity(entity: entity)
+            }
+        }
+    }
+    
     func setViewDelegate(detailViewDelegate: GuessDetailViewDelegate?) {
         self.detailViewDelegate = detailViewDelegate
     }

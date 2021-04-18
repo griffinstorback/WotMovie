@@ -378,6 +378,9 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
                 }
                 
                 self?.movieDetails = details
+                
+                // update the movie in core data if it was retrieved (method defined in super GuessDetailPresenter)
+                self?.updateEntityInCoreData(details?.movie)
             }
         
         
@@ -392,6 +395,9 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
                 }
                 
                 self?.tvShowDetails = details
+                
+                // update the tv show in core data if it was retrieved (method defined in super GuessDetailPresenter)
+                self?.updateEntityInCoreData(details?.tvShow)
             }
             
         case .person:

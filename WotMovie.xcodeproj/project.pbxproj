@@ -69,6 +69,7 @@
 		8588FD31256884660054EC17 /* Job.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8588FD30256884660054EC17 /* Job.swift */; };
 		8588FD36256887AC0054EC17 /* TitleDetailPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8588FD35256887AC0054EC17 /* TitleDetailPresenter.swift */; };
 		8588FD3B256887BC0054EC17 /* PersonDetailPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8588FD3A256887BC0054EC17 /* PersonDetailPresenter.swift */; };
+		858A1867262A5225007D0B25 /* ButtonScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A1866262A5225007D0B25 /* ButtonScrollView.swift */; };
 		85905C3F256B01AF00443348 /* PersonEndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85905C3E256B01AF00443348 /* PersonEndPoint.swift */; };
 		85905C44256B046A00443348 /* NetworkEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85905C43256B046A00443348 /* NetworkEnvironment.swift */; };
 		85AAA33E2613A8C1002BBA20 /* CrewListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85AAA33D2613A8C1002BBA20 /* CrewListViewController.swift */; };
@@ -214,6 +215,7 @@
 		8588FD30256884660054EC17 /* Job.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Job.swift; sourceTree = "<group>"; };
 		8588FD35256887AC0054EC17 /* TitleDetailPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleDetailPresenter.swift; sourceTree = "<group>"; };
 		8588FD3A256887BC0054EC17 /* PersonDetailPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonDetailPresenter.swift; sourceTree = "<group>"; };
+		858A1866262A5225007D0B25 /* ButtonScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonScrollView.swift; sourceTree = "<group>"; };
 		85905C3E256B01AF00443348 /* PersonEndPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonEndPoint.swift; sourceTree = "<group>"; };
 		85905C43256B046A00443348 /* NetworkEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkEnvironment.swift; sourceTree = "<group>"; };
 		85AAA33D2613A8C1002BBA20 /* CrewListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrewListViewController.swift; sourceTree = "<group>"; };
@@ -395,6 +397,7 @@
 				85014068254C7F1D0088FA3E /* EnterGuessControlsView.swift */,
 				85FBF2B32613E43F00B35C90 /* CrewListRow.swift */,
 				850890C02627BC31001F4548 /* RatingButton.swift */,
+				858A1866262A5225007D0B25 /* ButtonScrollView.swift */,
 			);
 			path = Detail;
 			sourceTree = "<group>";
@@ -925,6 +928,7 @@
 				85CF3582253A181F00A101C9 /* ImageEndPoint.swift in Sources */,
 				85CF34BE252E8EAB00A101C9 /* Router.swift in Sources */,
 				85CF3591253A346800A101C9 /* NetworkResponse.swift in Sources */,
+				858A1867262A5225007D0B25 /* ButtonScrollView.swift in Sources */,
 				85CF34AA252E602600A101C9 /* ParameterEncoding.swift in Sources */,
 				854B3E9625537F55003397E0 /* CoreDataStack.swift in Sources */,
 				8501405A254A00830088FA3E /* TouchDelegatingView.swift in Sources */,

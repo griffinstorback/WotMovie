@@ -95,6 +95,9 @@ class PersonDetailPresenter: GuessDetailPresenter, PersonDetailPresenterProtocol
             }
             
             self?.personDetails = details
+            
+            // try and update person that came with details object (method defined in super GuessDetailPresenter)
+            self?.updateEntityInCoreData(details?.person)
         }
     }
     
