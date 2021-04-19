@@ -14,7 +14,7 @@ import UIKit
 
 protocol GuessDetailPresenterProtocol {
     var item: Entity { get set }
-    func reloadItemFromCoreData()
+    func reloadItemFromCoreData(shouldSetLastViewedDate: Bool)
     
     func setViewDelegate(detailViewDelegate: GuessDetailViewDelegate?)
     func loadPosterImage(completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
@@ -73,13 +73,13 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
         self.item = item
         
         //loadCrewTypes()
-        reloadItemFromCoreData()
+        //reloadItemFromCoreData()
         
         // TODO (maybe not right here though): Check if Core data entity language matches user's current language - if not, retrieve from network and update movie.
     }
     
-    func reloadItemFromCoreData() {
-        guard let entityFromCoreData = coreDataManager.updateOrCreateEntity(entity: item) else { return }
+    func reloadItemFromCoreData(shouldSetLastViewedDate: Bool = true) {
+        guard let entityFromCoreData = coreDataManager.updateOrCreateEntity(entity: item, shouldSetLastViewedDate: shouldSetLastViewedDate) else { return }
         self.item = entityFromCoreData
         
         DispatchQueue.main.async {
@@ -92,7 +92,11 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
         if let entity = entity {
             DispatchQueue.global().async {
                 print("***** entity of type \(entity.type) (name: \(entity.name)) retrieved from details object, updating entity in Core Data now, on BG thread.")
-                self.coreDataManager.backgroundUpdateOrCreateEntity(entity: entity)
+                
+                // Importantly, DON'T SET lastViewedDate - we have to be careful when setting this, to not set it when the item is still .fullyHidden (i.e. is
+                //  not guessed or revealed). The other method in this class reloadItemFromCoreData(), will be called from within viewDidAppear
+                //  from GuessViewDetailController, on the condition that its state is not .fullyHidden (or .hintShown).
+                self.coreDataManager.backgroundUpdateOrCreateEntity(entity: entity, shouldSetLastViewedDate: false)
             }
         }
     }
@@ -168,7 +172,7 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
     //
     func hintWasShown() {
         item.isHintShown = true
-        coreDataManager.updateOrCreateEntity(entity: item)
+        coreDataManager.updateOrCreateEntity(entity: item, shouldSetLastViewedDate: false)
     }
     
     func answerWasRevealed() {

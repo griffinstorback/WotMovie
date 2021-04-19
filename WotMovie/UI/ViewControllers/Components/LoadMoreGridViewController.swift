@@ -11,7 +11,8 @@ import UIKit
 protocol LoadMoreGridViewDelegate: NSObjectProtocol {
     func getNumberOfItems(_ loadMoreGridViewController: LoadMoreGridViewController) -> Int
     func getItemFor(_ loadMoreGridViewController: LoadMoreGridViewController, index: Int) -> Entity?
-    func loadMoreItems(_ loadMoreGridViewController: LoadMoreGridViewController)
+    func isWaitingForUserToGuessMoreBeforeLoadingMore(_ loadMoreGridViewController: LoadMoreGridViewController) -> Bool
+    func loadMoreItems(_ loadMoreGridViewController: LoadMoreGridViewController) -> Bool
     func loadImageFor(_ loadMoreGridViewController: LoadMoreGridViewController, index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
     
     // methods for providing this grid view with a header - return nil if none to show.
@@ -166,9 +167,18 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
             delegate?.willDisplayHeader(self)
         } else if elementKind == UICollectionView.elementKindSectionFooter && shouldDisplayLoadMoreFooter {
             if let footerView = view as? GridCollectionViewFooterView {
-                if delegate?.getNumberOfItems(self) ?? 0 > 0 {
+                let numberOfItems = delegate?.getNumberOfItems(self) ?? 0
+                if numberOfItems > 0 {
                     footerView.startLoadingAnimation()
-                    delegate?.loadMoreItems(self)
+                    
+                    _ = delegate?.loadMoreItems(self)
+                    
+                    // This solution, to scrolling up above footer when no items should be loaded, was bad - it fires the animation before footer even appears
+                    //let itemLoadingWasInitiated = delegate?.loadMoreItems(self) ?? false
+                    // if item loading was not initiated (i.e. need to guess more on guess grid before loading more) scroll back up above footer.
+                    /*if !itemLoadingWasInitiated {
+                        collectionView.scrollToItem(at: IndexPath(item: numberOfItems-1, section: 0), at: .bottom, animated: true)
+                    }*/
                 } else {
                     print("**** LoadMoreGridViewController willdisplaysupplementaryview - nothing more to load?")
                 }
@@ -186,8 +196,32 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
         }
     }
     
+    var currentlyAnimatingUp: Bool = false
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         delegate?.scrollViewDidScroll(scrollView)
+        
+        // This solution makes it so when footer view is shown, but items are not initiated to load (because user needs to reveal some of the hidden
+        // ones first), the collection view animates the view back up so that the footer is just out of view again.
+        // IT KIND OF WORKS, but is slightly buggy, and overall, at this point unnecessary.
+        
+        /*
+        let bottomEdge = scrollView.contentOffset.y + scrollView.frame.size.height
+        if bottomEdge >= scrollView.contentSize.height {
+            let waitingForUserToGuessMore = delegate?.isWaitingForUserToGuessMoreBeforeLoadingMore(self) ?? false
+            if waitingForUserToGuessMore {
+                let lastItemIndex = (delegate?.getNumberOfItems(self) ?? 0) - 1
+                if lastItemIndex >= 0 && !currentlyAnimatingUp {
+                    currentlyAnimatingUp = true
+                    UIView.animate(withDuration: 0.2, animations: {
+                        self.collectionView.scrollToItem(at: IndexPath(item: lastItemIndex, section: 0), at: .bottom, animated: false)
+                    }, completion: { _ in
+                        self.currentlyAnimatingUp = false
+                    })
+                    //collectionView.scrollToItem(at: IndexPath(item: lastItemIndex, section: 0), at: .bottom, animated: true)
+                }
+            }
+        }
+        */
     }
 }
 

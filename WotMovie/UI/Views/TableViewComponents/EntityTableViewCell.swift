@@ -55,6 +55,8 @@ class EntityTableViewCell: ShrinkOnTouchTableViewCell {
     func setupViews() {
         backgroundColor = .clear
         
+        selectionStyle = .none
+        
         // TODO replace image with N/A image
         //setImage(image: UIImage(systemName: "x.circle.fill"))
     }

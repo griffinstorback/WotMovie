@@ -23,7 +23,7 @@ protocol GuessGridPresenterProtocol: TransitionPresenterProtocol {
     func setGenreToDisplay(genreID: Int)
     
     func shouldNotLoadMoreItems() -> Bool
-    func loadItems()
+    func loadItems() -> Bool
     
     func addItemToWatchlistOrFavorites(_ indexPath: IndexPath)
     func removeItemFromWatchlistOrFavorites(_ indexPath: IndexPath)
@@ -260,7 +260,7 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
     }
     
     // call when want to load another page of items.
-    func loadItems() {
+    func loadItems() -> Bool {
         // before loading next page, if genres haven't been loaded yet, load them.
         if genresList.isEmpty {
             loadGenresList()
@@ -269,7 +269,7 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
         // if there are too many hidden items on the page, tell user to guess some before loading more.
         if shouldNotLoadMoreItems() {
             guessGridViewDelegate?.displayLoadMoreItemsAlert(text: "Guess/Reveal some items before loading more!")
-            return
+            return false // return false to notify user item loading cancelled (so that LoadMoreGridViewController knows to scroll back up
         }
         
         loadNextPageOfItemsAsync()
@@ -277,6 +277,8 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
         // TODO: At this point, a new page has been loaded, or started to load.
         //       So, we should check if there are over say 1000 items in the list, and
         //       prune the first page off if there is, in order to avoid memory problems.
+        
+        return true // return true to notify user that item loading was initiated
     }
     
     

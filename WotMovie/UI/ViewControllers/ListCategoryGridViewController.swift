@@ -132,12 +132,18 @@ extension ListCategoryGridViewController: LoadMoreGridViewDelegate {
         return listCategoryGridPresenter.itemsCount
     }
     
+    func isWaitingForUserToGuessMoreBeforeLoadingMore(_ loadMoreGridViewController: LoadMoreGridViewController) -> Bool {
+        // this method only relevant for loadmoregrid in guessgridview
+        return false
+    }
+    
     func getItemFor(_ loadMoreGridViewController: LoadMoreGridViewController, index: Int) -> Entity? {
         return listCategoryGridPresenter.itemFor(index: index)
     }
     
-    func loadMoreItems(_ loadMoreGridViewController: LoadMoreGridViewController) {
+    func loadMoreItems(_ loadMoreGridViewController: LoadMoreGridViewController) -> Bool {
         // nothing
+        return true
     }
     
     func loadImageFor(_ loadMoreGridViewController: LoadMoreGridViewController, index: Int, completion: @escaping (UIImage?, String?) -> Void) {

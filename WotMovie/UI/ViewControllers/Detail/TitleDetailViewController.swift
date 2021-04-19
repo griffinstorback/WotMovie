@@ -34,7 +34,8 @@ class TitleDetailViewController: GuessDetailViewController {
                 // scroll to top of view to show title being revealed
                 scrollToTop()
                 
-                detailOverviewView.setTitle(titleDetailViewPresenter.getName())     //   // TODO *** animate this
+                detailOverviewView.setTitle(String(titleDetailViewPresenter.getID()) + ": " + titleDetailViewPresenter.getName())    //(UNCOMMENT THIS WHEN LOOKING FOR BAD DESCRIPTIONS - SHOWS THE ITEM ID FOR EASY REFERENCE)
+                //detailOverviewView.setTitle(titleDetailViewPresenter.getName())     //   // TODO *** animate this
                 detailOverviewView.setOverviewText(titleDetailViewPresenter.getOverview()) // uncensor title name from overview
                 detailOverviewView.addRating(rating: titleDetailViewPresenter.getRating())
             
@@ -99,7 +100,8 @@ class TitleDetailViewController: GuessDetailViewController {
         case .revealed, .revealedWithNoNextButton, .correct, .correctWithNoNextButton:
             addLoadingIndicatorOrErrorView()
             
-            detailOverviewView.setTitle(titleDetailViewPresenter.getName())
+            detailOverviewView.setTitle(String(titleDetailViewPresenter.getID()) + ": " + titleDetailViewPresenter.getName())    //(UNCOMMENT THIS WHEN LOOKING FOR BAD DESCRIPTIONS - SHOWS THE ITEM ID FOR EASY REFERENCE)
+            //detailOverviewView.setTitle(titleDetailViewPresenter.getName())
             detailOverviewView.setOverviewText(titleDetailViewPresenter.getOverview()) // uncensor title name from overview
             
             // if item was correctly guessed, show check at top left
@@ -114,7 +116,7 @@ class TitleDetailViewController: GuessDetailViewController {
         
         // only add info if credits have loaded. otherwise, wait until presenter tells us to reload.
         if titleDetailViewPresenter.creditsHaveLoaded() {
-            if state == .hintShown || state == .revealed || state == .revealedWithNoNextButton || state == .correct || state == .correctWithNoNextButton {
+            if state != .fullyHidden {
                 addInfo()
             }
         }
@@ -135,7 +137,7 @@ class TitleDetailViewController: GuessDetailViewController {
         
         // if collectionview items haven't been revealed (cast member names and their characters names), reveal them.
         if castCollectionView.state == .namesHidden && state != .hintShown {
-            castCollectionView.state = .namesShown
+            castCollectionView.state = .itemIsRevealedOrGuessed
         }
         
         // don't add/reload info views if they have already been added (otherwise will cause views to flash, annoyingly)

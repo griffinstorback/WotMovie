@@ -35,6 +35,11 @@ struct Constants {
         static let detailViewSectionHeader = UIFont.systemFont(ofSize: 22, weight: .bold)
     }
     
+    struct KeychainStrings {
+        static let personUpgradePurchasedKey = "person_guessing"
+        static let personUpgradePurchasedValue = "yes"
+    }
+    
     // When displaying grid, should omit these categories below, for they have descriptions that are either impossible to
     // guess from, or way too easy.
     struct BadCategories {
@@ -50,25 +55,35 @@ struct Constants {
     
     // Same as bad categories defined above, but for individual items. This should be reviewed each release of
     // the app, especially those listed under PRETTY BAD.
-    struct BadDescriptions {
+    struct BadDescriptions { // these are for ENGLISH
         // TODO??: Convert this to a list on TMDB under my account, which each user would query, to allow updates without updating the app?
         //          note: this would require adhering to the v4 api, which would mean slightly rethinking how networking is done.
         
         static let movies: Set<Int> = [
-            // TERRIBLE
+            // TERRIBLE (name is in description)
+            
+            
+            
             
             // PRETTY BAD
         ]
         static let tvShows: Set<Int> = [
-            // TERRIBLE
+            // TERRIBLE (name is in description)
+            31910, // naruuto shippuden
+            62104, // the seven deadly sins
+            43348, // pablo escobar the drug lord
+            65334, // miraculous: tales of ladybug & cat noir
+            16286, // yo soy betty, la fea (terribly long desc with name in it too)
+            
+            
+            
             
             // PRETTY BAD
+            61889, // daredevil (name in title, but not obviously)
+            62715, // dragon ball super
+            67335, // sin senos si hay paraiso (title not in english at all)
+            
         ]
-    }
-    
-    struct KeychainStrings {
-        static let personUpgradePurchasedKey = "person_guessing"
-        static let personUpgradePurchasedValue = "yes"
     }
 }
 

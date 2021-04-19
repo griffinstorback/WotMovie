@@ -41,7 +41,7 @@ class DataResetPresenter: DataResetPresenterProtocol {
         [.resetAll]
     ]
     let sectionTitles: [String] = [
-        "Note: If the People category hasn't been unlocked yet, resetting Movie/TV Show data will affect progress towards unlocking it",
+        "Note: If the People category hasn't been unlocked yet, resetting Movie/TV Show data will affect progress",
         "",
         ""
     ]

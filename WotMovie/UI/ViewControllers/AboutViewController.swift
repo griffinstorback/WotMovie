@@ -57,6 +57,7 @@ class AboutViewController: UIViewController {
         contactUsContainer.layer.cornerRadius = 10
         contactUsContainer.backgroundColor = .systemGray6
         contactUsLabel.text = "For support, or other inquiries, contact us at"
+        contactUsLabel.numberOfLines = 0
         contactUsLabel.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
         contactUsEmailLabel.text = "wotmovie_app@gmail.com"
         contactUsEmailLabel.textColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue
@@ -90,10 +91,10 @@ class AboutViewController: UIViewController {
         
         // make privacy policy button same size as contactUsContainer
         contentStackView.addArrangedSubview(privacyPolicyButton)
-        privacyPolicyButton.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: CGSize(width: 0, height: 50))
+        privacyPolicyButton.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: CGSize(width: 0, height: 40))
     
         tmdbAttributionContainer.addSubview(tmdbAttributionImage)
-        tmdbAttributionImage.anchor(top: tmdbAttributionContainer.topAnchor, leading: nil, bottom: nil, trailing: nil, padding: UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0), size: CGSize(width: 80, height: 80))
+        tmdbAttributionImage.anchor(top: tmdbAttributionContainer.topAnchor, leading: nil, bottom: nil, trailing: nil, padding: UIEdgeInsets(top: 5, left: 0, bottom: 0, right: 0), size: CGSize(width: 80, height: 80))
         tmdbAttributionImage.anchorToCenter(yAnchor: nil, xAnchor: tmdbAttributionContainer.centerXAnchor)
         tmdbAttributionContainer.addSubview(tmdbAttributionLabel)
         tmdbAttributionLabel.anchor(top: tmdbAttributionImage.bottomAnchor, leading: tmdbAttributionContainer.leadingAnchor, bottom: tmdbAttributionContainer.bottomAnchor, trailing: tmdbAttributionContainer.trailingAnchor, padding: UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0))

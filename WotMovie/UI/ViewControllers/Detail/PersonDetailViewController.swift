@@ -57,16 +57,18 @@ class PersonDetailViewController: GuessDetailViewController {
         personDetailViewPresenter = presenter ?? PersonDetailPresenter(item: item)
         
         personOverviewView = PersonOverviewView(frame: .zero, guessState: state)
-        knownForCollectionView = HorizontalCollectionViewController(title: "Known for")
+        
+        // no point in hiding names in horizontal collection view items, even when item is still hidden - the movie title is usually visible in image anyways
+        knownForCollectionView = HorizontalCollectionViewController(title: "Known for", state: .namesShownButItemIsStillHidden)
         knownForCollectionView.restorationIdentifier = "Known for"
         
-        actorInCollectionView = HorizontalCollectionViewController(title: "Actor")
+        actorInCollectionView = HorizontalCollectionViewController(title: "Actor", state: .namesShownButItemIsStillHidden)
         actorInCollectionView.restorationIdentifier = "Actor"
-        directedCollectionView = HorizontalCollectionViewController(title: "Director")
+        directedCollectionView = HorizontalCollectionViewController(title: "Director", state: .namesShownButItemIsStillHidden)
         directedCollectionView.restorationIdentifier = "Director"
-        wroteCollectionView = HorizontalCollectionViewController(title: "Writer")
+        wroteCollectionView = HorizontalCollectionViewController(title: "Writer", state: .namesShownButItemIsStillHidden)
         wroteCollectionView.restorationIdentifier = "Writer"
-        producedCollectionView = HorizontalCollectionViewController(title: "Producer")
+        producedCollectionView = HorizontalCollectionViewController(title: "Producer", state: .namesShownButItemIsStillHidden)
         producedCollectionView.restorationIdentifier = "Producer"
         
         //super.init(item: item, posterImageView: personOverviewView.posterImageView, startHidden: startHidden, fromGuessGrid: false, presenter: personDetailViewPresenter)
@@ -134,7 +136,7 @@ class PersonDetailViewController: GuessDetailViewController {
         }
         
         if personDetailViewPresenter.creditsHaveLoaded() {
-            if state == .hintShown || state == .revealed || state == .revealedWithNoNextButton || state == .correct || state == .correctWithNoNextButton {
+            if state != .fullyHidden {
                 addInfo()
             }
         }
@@ -204,7 +206,7 @@ class PersonDetailViewController: GuessDetailViewController {
     // makes addInfo() more readable, saves some lines
     func revealHorizontalCollectionViewCellsIfStateIsHidden(_ horizontalCollectionView: HorizontalCollectionViewController) {
         if horizontalCollectionView.state == .namesHidden && state != .hintShown {
-            horizontalCollectionView.state = .namesShown
+            horizontalCollectionView.state = .itemIsRevealedOrGuessed
         }
     }
     

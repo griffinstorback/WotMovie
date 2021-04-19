@@ -156,8 +156,14 @@ extension ListViewController: LoadMoreGridViewDelegate {
         return listPresenter.getRecentlyViewedFor(index: index)
     }
     
-    func loadMoreItems(_ loadMoreGridViewController: LoadMoreGridViewController) {
+    func isWaitingForUserToGuessMoreBeforeLoadingMore(_ loadMoreGridViewController: LoadMoreGridViewController) -> Bool {
+        // this method only relevant for loadmoregrid in guessgridview
+        return false
+    }
+    
+    func loadMoreItems(_ loadMoreGridViewController: LoadMoreGridViewController) -> Bool {
         // nothing (amount of recently viewed displayed is static - 60 as of writing this comment)
+        return true
     }
     
     func loadImageFor(_ loadMoreGridViewController: LoadMoreGridViewController, index: Int, completion: @escaping (UIImage?, String?) -> Void) {

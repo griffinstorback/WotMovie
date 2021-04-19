@@ -87,7 +87,10 @@ class GuessDetailViewController: DetailViewController {
         
         // Reload item from core data - so that if item was added to watchlist or favorites in different modal, and that was dismissed to this one,
         // changes will be reflected.
-        guessDetailViewPresenter.reloadItemFromCoreData()
+        if state != .fullyHidden {
+            let shouldSetLastViewedDate = state != .hintShown // don't set last viewed date if .hintshown
+            guessDetailViewPresenter.reloadItemFromCoreData(shouldSetLastViewedDate: shouldSetLastViewedDate)
+        }
     }
     
     @objc func showHintButtonPressed() {

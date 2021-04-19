@@ -32,7 +32,7 @@ class BriefAlertView: UIView {
         super.init(frame: .zero)
         
         setupViews(title: title)
-        //layoutViews()
+        //layoutViews() called when presenting instead
     }
     
     private func setupViews(title: String) {
@@ -47,6 +47,9 @@ class BriefAlertView: UIView {
         titleLabel.numberOfLines = 0
         titleLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
         titleLabel.textColor = .secondaryLabel
+        
+        let tapToDismissRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismiss))
+        addGestureRecognizer(tapToDismissRecognizer)
     }
     
     private func layoutViews() {
@@ -86,7 +89,7 @@ class BriefAlertView: UIView {
         })
     }
     
-    public func dismiss() {
+    @objc public func dismiss() {
         UIView.animate(withDuration: presentDismissDuration, animations: {
             self.alpha = 0
             self.transform = self.transform.scaledBy(x: self.presentDismissScale, y: self.presentDismissScale)

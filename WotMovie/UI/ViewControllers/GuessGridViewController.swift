@@ -180,8 +180,12 @@ extension GuessGridViewController: LoadMoreGridViewDelegate {
         return guessGridViewPresenter.itemFor(index: index)
     }
     
-    func loadMoreItems(_ loadMoreGridViewController: LoadMoreGridViewController) {
-        guessGridViewPresenter.loadItems()
+    func isWaitingForUserToGuessMoreBeforeLoadingMore(_ loadMoreGridViewController: LoadMoreGridViewController) -> Bool {
+        return guessGridViewPresenter.shouldNotLoadMoreItems()
+    }
+    
+    func loadMoreItems(_ loadMoreGridViewController: LoadMoreGridViewController) -> Bool {
+        return guessGridViewPresenter.loadItems()
     }
     
     func loadImageFor(_ loadMoreGridViewController: LoadMoreGridViewController, index: Int, completion: @escaping (UIImage?, String?) -> Void) {

@@ -16,13 +16,14 @@ protocol HorizontalCollectionViewDelegate: NSObjectProtocol {
 
 enum HorizontalCollectionViewState {
     case namesHidden
-    case namesShown
+    case namesShownButItemIsStillHidden // this is the case for person detail views, which display names of movies, yet these movies still shouldn't be opened yet.
+    case itemIsRevealedOrGuessed
 }
 
 class HorizontalCollectionViewController: DetailPresenterViewController {
 
-    // is hidden to start - reload when changed
-    var state: HorizontalCollectionViewState = .namesHidden {
+    // is hidden to start by default - reload when changed
+    var state: HorizontalCollectionViewState {
         didSet {
             collectionView.reloadData()
         }
@@ -33,7 +34,9 @@ class HorizontalCollectionViewController: DetailPresenterViewController {
     private var titleLabel: UILabel?
     private var collectionView: UICollectionView
     
-    init(title: String?) {
+    init(title: String?, state: HorizontalCollectionViewState = .namesHidden) {
+        self.state = state
+        
         if let title = title {
             titleLabel = UILabel()
             titleLabel?.text = title
@@ -119,14 +122,17 @@ extension HorizontalCollectionViewController: UICollectionViewDataSource, UIColl
             return cell
         }
         
-        if state == .namesHidden {
+        switch state {
+        case .namesHidden:
             cell.setNameHidden()
-        } else {
+        case .namesShownButItemIsStillHidden:
+            cell.setName(item.name)
+        case .itemIsRevealedOrGuessed:
             cell.setName(item.name)
         }
         
         // set the subtitle if one exists for this item (and if state isn't hidden)
-        if let subtitle = delegate?.getSubtitleFor(self, index: indexPath.row), state == .namesShown {
+        if let subtitle = delegate?.getSubtitleFor(self, index: indexPath.row), state != .namesHidden {
             cell.setSubtitle(subtitle)
         }
         
@@ -141,6 +147,12 @@ extension HorizontalCollectionViewController: UICollectionViewDataSource, UIColl
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath) as! HorizontalCollectionViewCell
         guard let item = delegate?.getItemFor(self, index: indexPath.row) else {
+            return
+        }
+        
+        // if the item user is guessing on hasn't been revealed (i.e its in .hintShown state), don't allow modals to be presented yet.
+        guard state == .itemIsRevealedOrGuessed else {
+            BriefAlertView(title: "Guess or Reveal first").present()
             return
         }
         
