@@ -6,12 +6,14 @@
 //
 
 import UIKit
+import SafariServices
+import MessageUI
 
 class AboutViewController: UIViewController {
     
     let contentStackView: UIStackView
     
-    let contactUsContainer: ShrinkOnTouchView
+    let contactUsContainer: ShrinkOnTouchButton
     let contactUsLabel: UILabel
     let contactUsEmailLabel: UILabel
     
@@ -25,7 +27,7 @@ class AboutViewController: UIViewController {
     init() {
         contentStackView = UIStackView()
         
-        contactUsContainer = ShrinkOnTouchView()
+        contactUsContainer = ShrinkOnTouchButton()
         contactUsLabel = UILabel()
         contactUsEmailLabel = UILabel()
         
@@ -53,6 +55,7 @@ class AboutViewController: UIViewController {
         contentStackView.alignment = .fill
         contentStackView.spacing = 20
         
+        contactUsContainer.addTarget(self, action: #selector(sendSupportEmail), for: .touchUpInside)
         contactUsContainer.layer.masksToBounds = true
         contactUsContainer.layer.cornerRadius = 10
         contactUsContainer.backgroundColor = .systemGray6
@@ -105,6 +108,28 @@ class AboutViewController: UIViewController {
     }
     
     @objc func openPrivacyPolicy() {
-        print("***** SHOW THE PRIVACY POLICY IN A WEB VIEW>")
+        if let url = URL(string: "https://messagemap.app/wotmovie_privacypolicy.html") {
+            let config = SFSafariViewController.Configuration()
+            config.entersReaderIfAvailable = false
+            
+            let vc = SFSafariViewController(url: url, configuration: config)
+            present(vc, animated: true)
+        }
+    }
+    
+    @objc func sendSupportEmail() {
+        if MFMailComposeViewController.canSendMail() {
+            let mail = MFMailComposeViewController()
+            mail.mailComposeDelegate = self
+            mail.setToRecipients(["wotmovie_app@gmail.com"])
+            
+            present(mail, animated: true)
+        }
+    }
+}
+
+extension AboutViewController: MFMailComposeViewControllerDelegate {
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true)
     }
 }

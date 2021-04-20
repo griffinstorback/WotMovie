@@ -61,14 +61,14 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if section == 0 { // there should only ever be one section
-            let numberOfItems = delegate?.getNumberOfItems(self) ?? 0
+            let numberOfItems = delegate?.getNumberOfItems(self)
             
-            // stop the loading indicator (not the footer one, the initial one) as soon as there is at least one item.
-            if numberOfItems > 0 {
+            // stop the loading indicator (not the footer one, the initial one) when there is a response
+            if numberOfItems != nil {
                 removeLoadingIndicatorOrErrorView()
             }
             
-            return delegate?.getNumberOfItems(self) ?? 0
+            return numberOfItems ?? 0
         }
         
         return 0

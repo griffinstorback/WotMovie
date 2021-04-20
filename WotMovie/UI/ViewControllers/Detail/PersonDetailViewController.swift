@@ -155,6 +155,15 @@ class PersonDetailViewController: GuessDetailViewController {
         }
         removeShowHintButton()
         
+        // if collectionview items haven't been revealed (allowing them to be opened in modals), reveal them.
+        if state != .hintShown {
+            if knownForCollectionView.state == .namesHidden || knownForCollectionView.state == .namesShownButItemIsStillHidden { knownForCollectionView.state = .itemIsRevealedOrGuessed }
+            if actorInCollectionView.state == .namesHidden || actorInCollectionView.state == .namesShownButItemIsStillHidden { actorInCollectionView.state = .itemIsRevealedOrGuessed }
+            if directedCollectionView.state == .namesHidden || directedCollectionView.state == .namesShownButItemIsStillHidden { directedCollectionView.state = .itemIsRevealedOrGuessed }
+            if wroteCollectionView.state == .namesHidden || wroteCollectionView.state == .namesShownButItemIsStillHidden { wroteCollectionView.state = .itemIsRevealedOrGuessed }
+            if producedCollectionView.state == .namesHidden || producedCollectionView.state == .namesShownButItemIsStillHidden { producedCollectionView.state = .itemIsRevealedOrGuessed }
+        }
+        
         // if horizontal collectionview items haven't been revealed, reveal them.
         revealHorizontalCollectionViewCellsIfStateIsHidden(knownForCollectionView)
         revealHorizontalCollectionViewCellsIfStateIsHidden(actorInCollectionView)
