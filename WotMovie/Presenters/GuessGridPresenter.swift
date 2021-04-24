@@ -269,7 +269,7 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
         // if there are too many hidden items on the page, tell user to guess some before loading more.
         if shouldNotLoadMoreItems() {
             guessGridViewDelegate?.displayLoadMoreItemsAlert(text: "Guess/Reveal some items before loading more!")
-            return false // return false to notify user item loading cancelled (so that LoadMoreGridViewController knows to scroll back up
+            return false // return false to notify view item loading cancelled
         }
         
         loadNextPageOfItemsAsync()
@@ -435,8 +435,8 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
                     
                     // update/create page in core data, then retrieve the newly posted page
                     if let strongSelf = self {
+                        // update the page in core data and this.items array on main thread
                         DispatchQueue.main.async {
-                            
                             let newlyAddedMovies = strongSelf.coreDataManager.updateOrCreateMoviePage(movies: movies, pageNumber: page, genreID: strongSelf.currentlyDisplayingGenre.id)
                             strongSelf.addItems(newlyAddedMovies ?? [])
                             completion(true)

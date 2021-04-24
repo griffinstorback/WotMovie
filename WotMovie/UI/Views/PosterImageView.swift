@@ -76,7 +76,7 @@ class PosterImageView: ShrinkOnTouchView {
     }()
     private lazy var checkMarkImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "guessed_correct_icon"))
-        imageView.contentMode = .scaleAspectFill
+        imageView.contentMode = .scaleAspectFit
         imageView.isUserInteractionEnabled = false
         return imageView
     }()
@@ -99,6 +99,7 @@ class PosterImageView: ShrinkOnTouchView {
     private func setupViews() {
         backgroundColor = .systemBackground
         imageView.backgroundColor = .systemGray4
+        imageView.contentMode = .scaleAspectFill
         imageView.startPosterImageLoadingAnimation()
         // should it have border? if so, need to add cornerRadius code here. also, it looks kinda cool with no border
         //imageView.layer.borderWidth = 1

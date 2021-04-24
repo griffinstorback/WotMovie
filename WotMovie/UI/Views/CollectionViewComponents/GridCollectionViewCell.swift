@@ -40,6 +40,7 @@ class GridCollectionViewCell: UICollectionViewCell {
     }
     
     override func prepareForReuse() {
+        isHidden = false
         self.indexPath = nil
         // self.delegate - don't need to reset, because all cells will have same delegate object??
         

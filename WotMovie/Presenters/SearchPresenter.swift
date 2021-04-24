@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Combine
 
 protocol SearchPresenterProtocol {
     //var sortParameters: SortParameters { get set }
@@ -50,17 +51,11 @@ class SearchPresenter: SearchPresenterProtocol {
             }
         }
     }
-    private var searchString: String = "" {
-        didSet {
-            // no use performing search if nothing to search
-            if !searchString.isEmpty {
-                performSearch()
-            }
-        }
-    }
-    private func setSearchResults(_ entities: [Entity]) {
-        searchResults = entities
-    }
+    
+    // subscribe to search string in init()
+    @Published private var searchString: String = ""
+    var cancellables = Set<AnyCancellable>()
+
     private var searchResults: [Entity] = [] {
         didSet {
             DispatchQueue.main.async {
@@ -105,22 +100,15 @@ class SearchPresenter: SearchPresenterProtocol {
         // TODO: do something about sort paramters - see what's avaible for searching, what's feasible, what's worth it to implement, whether or not to just scrap it.
         sortParameters = SortParameters(categoryType: .allGuessed)
         
-        
-        // TESTING! DELETE THIS CODE BELOW
-        /*DispatchQueue.global().async {
-            self.coreDataManager.performBackgroundFetch { movies in
-                if let movies = movies {
-                    print("&&& movies returned! here they are: \(movies)")
-                } else {
-                    print("&&& movies came back nil")
-                }
-            }
-        }*/
+        // Use a bit of combine, to easily get that debounce functionality, to prune redundant searches.
+        $searchString
+            .debounce(for: 0.3, scheduler: DispatchQueue.main)
+            .removeDuplicates()
+            .print()
+            .sink { [weak self] _ in
+                self?.performSearch()
+            }.store(in: &cancellables)
     }
-    
-    /*func loadItems() {
-        print("***** LOAD ITEMS (THIS PROBABLY SHOULDN'T EVEN BE HERE)")
-    }*/
     
     func setViewDelegate(_ searchViewDelegate: SearchViewDelegate?) {
         self.searchViewDelegate = searchViewDelegate
@@ -133,16 +121,23 @@ class SearchPresenter: SearchPresenterProtocol {
     }
     
     func setSearchText(_ searchText: String?) {
-        guard let searchText = searchText, !searchText.isEmpty else {
+        guard let searchText = searchText, !searchText.isEmpty, !searchText.trimmingCharacters(in: .whitespaces).isEmpty else {
             searchString = ""
             searchResults = []
             return
         }
         
+        searchViewDelegate?.searchStartedLoading()
+        
         searchString = searchText
     }
     
     private func performSearch() {
+        guard !searchString.isEmpty else {
+            searchResults = []
+            return
+        }
+        
         switch typesDisplayed {
         case .all, .moviesAndTVShows: // should never be movies & tv shows here, so if it is (for some bugged reason), just treat as '.all'
             networkManager.searchAll(searchText: searchString) { [weak self] entities, error in
@@ -152,7 +147,7 @@ class SearchPresenter: SearchPresenterProtocol {
                 }
                 
                 if let entities = entities {
-                    self?.setSearchResults(entities)
+                    self?.searchResults = entities
                 }
             }
         case .movies:
@@ -163,7 +158,7 @@ class SearchPresenter: SearchPresenterProtocol {
                 }
                 
                 if let movies = movies {
-                    self?.setSearchResults(movies)
+                    self?.searchResults = movies
                 }
             }
         case .tvShows:
@@ -174,7 +169,7 @@ class SearchPresenter: SearchPresenterProtocol {
                 }
                 
                 if let tvShows = tvShows {
-                    self?.setSearchResults(tvShows)
+                    self?.searchResults = tvShows
                 }
             }
         case .people:
@@ -185,7 +180,7 @@ class SearchPresenter: SearchPresenterProtocol {
                 }
                 
                 if let people = people {
-                    self?.setSearchResults(people)
+                    self?.searchResults = people
                 }
             }
         }

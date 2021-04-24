@@ -35,6 +35,11 @@ class DetailViewController: UIViewController {
     
     private let closeButton: UIButton!
     @objc func closeButtonPressed() {
+        guard state != .fullyHidden && state != .hintShown else {
+            presentRevealAndDismissConfirmation()
+            return
+        }
+        
         self.dismiss(animated: true)
     }
     func closeAll(_ action: UIAction) {
@@ -122,27 +127,16 @@ class DetailViewController: UIViewController {
         } else {
             print("**** NO BANNER returned from Appodeal.banner()")
         }
-        
-        // For testing if adding/removing ad causes any weird display issues in VC
-        /*DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            self?.removeTopBannerAd()
-        }*/
     }
     
+    // NOT USED ATM
     private func removeTopBannerAd() {
         //guard displayingTopBanner else { return }
         displayingTopBanner = false
-        
-        print("*** REMOVING BANNER")
-        
+                
         // remove the banner, and hide the extra space in scrollview content
         topBannerAdView.removeFromSuperview()
         spacingFromTop.isHidden = true
-        
-        // For testing if adding/removing ad causes any weird display issues in VC
-        /*DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            self?.addTopBannerAd()
-        }*/
     }
     
     private func setupViews() {

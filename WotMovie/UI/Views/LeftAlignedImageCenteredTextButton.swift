@@ -42,6 +42,8 @@ class LeftAlignedImageCenteredTextButton: ShrinkOnTouchButton {
         centeredTextLabel.adjustsFontSizeToFitWidth = true
         centeredTextLabel.textAlignment = .center
         centeredTextLabel.numberOfLines = 2
+        
+        rightAlignedEmptySpacingView.isUserInteractionEnabled = false
     }
     
     private func layoutViews() {

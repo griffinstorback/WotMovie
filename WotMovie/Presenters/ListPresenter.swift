@@ -92,6 +92,8 @@ class ListPresenter: NSObject, ListPresenterProtocol {
         DispatchQueue.global().async {
             self.coreDataManager.backgroundFetchRecentlyViewed(limit: self.numberOfRecentlyViewedToDisplay) { [weak self] entities in
                 if let items = entities, let amount = self?.numberOfRecentlyViewedToDisplay {
+                    
+                    // TODO: THIS MEANS UNGUESSED ITEMS, WHEN FIRST USING APP AND BEFORE ANH MODALS HAVE BEEN OPENED, WILL SHOW IN RECENTLY VIEWED
                     let sortedItems = items.sorted { $0.lastViewedDate ?? Date.distantPast > $1.lastViewedDate ?? Date.distantPast }
                     self?.setRecentlyViewedItems(items: Array(sortedItems.prefix(amount)))
                 } else {

@@ -105,7 +105,7 @@ class GuessGridViewController: DetailPresenterViewController {
         super.viewDidLoad()
         
         // load first page of movies/tv shows
-        guessGridViewPresenter.loadItems()
+        _ = guessGridViewPresenter.loadItems()
     }
     
     override func viewWillAppear(_ animated: Bool) {

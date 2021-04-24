@@ -30,11 +30,11 @@ class RatingButton: UIView {
     }
     
     private func setupViews() {
-        ratingLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        ratingLabel.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         ratingLabel.textColor = .white
         onTMDbLabel.font = UIFont.systemFont(ofSize: 12, weight: .regular)
         onTMDbLabel.textColor = .white
-        onTMDbLabel.text = " on TMDb"
+        onTMDbLabel.text = " / 10 on TMDb"
     }
     
     private func layoutViews() {

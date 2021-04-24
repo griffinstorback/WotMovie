@@ -9,6 +9,7 @@ import UIKit
 
 protocol SearchViewDelegate: NSObjectProtocol {
     func reloadData()
+    func searchStartedLoading()
 }
 
 class SearchViewController: UIViewController {
@@ -18,6 +19,7 @@ class SearchViewController: UIViewController {
     private let searchController: UISearchController
     
     private let placeholderLabelWhenNoResultsShown: UILabel
+    private let loadingIndicatorOrErrorView: LoadingIndicatorOrErrorView
     
     init(presenter: SearchPresenterProtocol? = nil) {
         searchPresenter = presenter ?? SearchPresenter()
@@ -26,6 +28,7 @@ class SearchViewController: UIViewController {
         searchController = UISearchController(searchResultsController: nil)
         
         placeholderLabelWhenNoResultsShown = UILabel()
+        loadingIndicatorOrErrorView = LoadingIndicatorOrErrorView(state: .loaded)
         
         super.init(nibName: nil, bundle: nil)
         
@@ -39,6 +42,7 @@ class SearchViewController: UIViewController {
     }
     
     private func setupViews() {
+        view.backgroundColor = .systemBackground
         navigationItem.largeTitleDisplayMode = .never
         navigationItem.searchController = searchController
         
@@ -60,6 +64,9 @@ class SearchViewController: UIViewController {
     private func layoutViews() {
         addChildViewController(resultsTableView)
         resultsTableView.view.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
+        
+        view.addSubview(loadingIndicatorOrErrorView)
+        loadingIndicatorOrErrorView.anchorToCenter(yAnchor: resultsTableView.view.centerYAnchor, xAnchor: resultsTableView.view.centerXAnchor)
         
         if searchPresenter.searchResultsCount == 0 {
             addOrUpdatePlaceholderLabelWhenNoResultsShown()
@@ -126,7 +133,15 @@ class SearchViewController: UIViewController {
 
 extension SearchViewController: SearchViewDelegate {
     func reloadData() {
+        resultsTableView.view.isHidden = false
+        loadingIndicatorOrErrorView.state = .loaded
         resultsTableView.reloadData()
+    }
+    
+    func searchStartedLoading() {
+        resultsTableView.view.isHidden = true
+        loadingIndicatorOrErrorView.state = .loading
+        removePlaceholderLabelBecauseResultsWereShown()
     }
 }
 

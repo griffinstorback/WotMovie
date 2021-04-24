@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Combine
 
 protocol EnterGuessPresenterProtocol {
     var searchResultsCount: Int { get }
@@ -14,7 +15,7 @@ protocol EnterGuessPresenterProtocol {
     func setViewDelegate(_ delegat: EnterGuessViewDelegate)
     func loadImage(for index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
     func searchResult(for index: Int) -> Entity?
-    func search(searchText: String)
+    func setSearchText(_ searchText: String?)
     func isCorrect(index: Int) -> Bool?
     func itemHasBeenGuessed(id: Int) -> Bool
     func getPlaceholderText() -> String
@@ -38,6 +39,10 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
             self.enterGuessViewDelegate?.reloadState()
         }
     }
+    
+    // subscribe in init()
+    @Published var searchString: String = ""
+    var cancellables = Set<AnyCancellable>()
     
     private func setSearchResults(_ entities: [Entity]) {
         // Keep it so there are at least 20 results. this helps the tableview populate cells from bottom instead of top
@@ -78,6 +83,14 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
         self.networkManager = networkManager
         self.imageDownloadManager = imageDownloadManager
         self.coreDataManager = coreDataManager
+        
+        $searchString
+            .debounce(for: 0.3, scheduler: DispatchQueue.main)
+            .removeDuplicates()
+            .print()
+            .sink { [weak self] _ in
+                self?.performSearch()
+            }.store(in: &cancellables)
     }
     
     func setViewDelegate(_ delegate: EnterGuessViewDelegate) {
@@ -110,15 +123,27 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
         return searchResults[index]
     }
     
-    func search(searchText: String) {
-        guard !searchText.isEmpty else {
+    func setSearchText(_ searchText: String?) {
+        guard let searchText = searchText, !searchText.isEmpty, !searchText.trimmingCharacters(in: .whitespaces).isEmpty else {
+            searchString = ""
+            searchResults = []
+            return
+        }
+        
+        enterGuessViewDelegate?.searchStartedLoading()
+        
+        searchString = searchText
+    }
+    
+    private func performSearch() {
+        guard !searchString.isEmpty else {
             searchResults = []
             return
         }
         
         switch item.type {
         case .movie:
-            networkManager.searchMovies(searchText: searchText) { [weak self] movies, error in
+            networkManager.searchMovies(searchText: searchString) { [weak self] movies, error in
                 if let error = error {
                     print(error)
                     return
@@ -129,7 +154,7 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
                 }
             }
         case .tvShow:
-            networkManager.searchTVShows(searchText: searchText) { [weak self] tvShows, error in
+            networkManager.searchTVShows(searchText: searchString) { [weak self] tvShows, error in
                 if let error = error {
                     print(error)
                     return
@@ -140,7 +165,7 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
                 }
             }
         case .person:
-            networkManager.searchPeople(searchText: searchText) { [weak self] people, error in
+            networkManager.searchPeople(searchText: searchString) { [weak self] people, error in
                 if let error = error {
                     print(error)
                     return

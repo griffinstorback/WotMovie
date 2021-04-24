@@ -18,6 +18,8 @@ enum SettingsKeys: String {
 class SettingsManager {
     static let shared = SettingsManager()
     private init() {
+        
+        
         UserDefaults.standard.register(defaults: [
             SettingsKeys.darkModeSetAutomatic.rawValue: true
         ])

@@ -132,10 +132,10 @@ class GuessDetailViewController: DetailViewController {
     
     private func addCheckMarkIconView() {
         contentStackView.addArrangedSubview(checkMarkIconContainerView)
-        checkMarkIconContainerView.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: CGSize(width: 0, height: 60))
+        checkMarkIconContainerView.anchor(top: nil, leading: nil, bottom: nil, trailing: nil)
         
         checkMarkIconContainerView.addSubview(checkMarkIconImageView)
-        checkMarkIconImageView.anchor(top: checkMarkIconContainerView.topAnchor, leading: checkMarkIconContainerView.leadingAnchor, bottom: checkMarkIconContainerView.bottomAnchor, trailing: nil, padding: UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 0), size: CGSize(width: 40, height: 40))
+        checkMarkIconImageView.anchor(top: checkMarkIconContainerView.topAnchor, leading: checkMarkIconContainerView.leadingAnchor, bottom: checkMarkIconContainerView.bottomAnchor, trailing: nil, padding: UIEdgeInsets(top: 5, left: 10, bottom: 0, right: 0), size: CGSize(width: 40, height: 40))
     }
     
     private func addEnterGuessView() {
@@ -283,7 +283,9 @@ extension GuessDetailViewController: EnterGuessProtocol {
     
     func nextQuestion() {
         self.dismiss(animated: true) {
-            self.transitionPresenter?.presentNextQuestion(currentQuestionID: self.guessDetailViewPresenter.getID())
+            DispatchQueue.main.async {
+                self.transitionPresenter?.presentNextQuestion(currentQuestionID: self.guessDetailViewPresenter.getID())
+            }
         }
     }
 }

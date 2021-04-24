@@ -140,6 +140,11 @@ class TitleDetailViewController: GuessDetailViewController {
             castCollectionView.state = .itemIsRevealedOrGuessed
         }
         
+        // do the same to crew list as we just did to cast collection view
+        if crewListViewController.state == .itemIsHiddenSoModalsShouldBePrevented && state != .hintShown {
+            crewListViewController.state = .itemIsRevealedOrGuessed
+        }
+        
         // don't add/reload info views if they have already been added (otherwise will cause views to flash, annoyingly)
         guard !infoHasBeenAdded else { return }
         

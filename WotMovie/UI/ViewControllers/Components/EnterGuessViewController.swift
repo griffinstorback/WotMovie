@@ -11,6 +11,8 @@ protocol EnterGuessViewDelegate: NSObjectProtocol {
     func reloadResults()
     func reloadGuesses()
     func reloadState()
+    
+    func searchStartedLoading()
 }
 
 class EnterGuessViewController: UIViewController {
@@ -21,7 +23,9 @@ class EnterGuessViewController: UIViewController {
     private let enterGuessControlsView: EnterGuessControlsView
     private var enterGuessControlsViewBottomConstraint: NSLayoutConstraint!
     
-    private let resultsTableView: UITableView!
+    private let resultsTableView: UITableView
+    
+    private let loadingIndicatorOrErrorView: LoadingIndicatorOrErrorView
 
     init(item: Entity, presenter: EnterGuessPresenterProtocol? = nil) {
         // use passed in presenter if provided (used in tests)
@@ -29,6 +33,8 @@ class EnterGuessViewController: UIViewController {
         enterGuessControlsView = EnterGuessControlsView()
         
         resultsTableView = UITableView()
+        
+        loadingIndicatorOrErrorView = LoadingIndicatorOrErrorView(state: .loaded)
         
         super.init(nibName: nil, bundle: nil)
         
@@ -65,6 +71,9 @@ class EnterGuessViewController: UIViewController {
         
         view.addSubview(resultsTableView)
         resultsTableView.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: enterGuessControlsView.topAnchor, trailing: view.trailingAnchor)
+        
+        view.addSubview(loadingIndicatorOrErrorView)
+        loadingIndicatorOrErrorView.anchorToCenter(yAnchor: resultsTableView.centerYAnchor, xAnchor: resultsTableView.centerXAnchor)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -141,7 +150,7 @@ extension EnterGuessViewController: UITableViewDelegate, UITableViewDataSource {
         resultsTableView.isHidden = true
         resultsTableView.alpha = 0
         
-        resultsTableView.backgroundColor = UIColor.black.withAlphaComponent(0.2)
+        resultsTableView.backgroundColor = UIColor.black.withAlphaComponent(0.1)
         
         // TODO: give results tableview blurred background
         
@@ -244,8 +253,10 @@ extension EnterGuessViewController: EnterGuessControlsDelegate {
     }
         
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(performSearch), object: searchBar)
-        self.perform(#selector(performSearch(_:)), with: searchBar, afterDelay: 0.2)
+        // This search delay is now done using Combine within the EnterGuessPresenter
+        //NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(performSearch), object: searchBar)
+        //self.perform(#selector(performSearch(_:)), with: searchBar, afterDelay: 0.2)
+        performSearch(searchBar)
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
@@ -270,27 +281,22 @@ extension EnterGuessViewController: EnterGuessControlsDelegate {
     }
     
     @objc func performSearch(_ searchBar: UISearchBar) {
-        guard let query = searchBar.text, query.trimmingCharacters(in: .whitespaces) != "" else {
-            // clear any results
-            enterGuessPresenter.search(searchText: "")
-            return
-        }
-        
-        enterGuessPresenter.search(searchText: query)
+        enterGuessPresenter.setSearchText(searchBar.text)
         scrollToBottom()
     }
 }
 
 extension EnterGuessViewController: EnterGuessViewDelegate {
     func reloadResults() {
-        resultsTableView.reloadData()
-        enterGuessControlsView.setWatchlistButtonText(text: enterGuessPresenter.getWatchlistButtonText())
-        enterGuessControlsView.setWatchlistButtonImage(imageName: enterGuessPresenter.getWatchlistImageName())
+        reloadGuesses()
+        reloadState()
         scrollToBottom()
     }
     
     // only reload the tableview. don't scroll to the bottom.
     func reloadGuesses() {
+        resultsTableView.isHidden = false
+        loadingIndicatorOrErrorView.state = .loaded
         resultsTableView.reloadData()
     }
     
@@ -300,9 +306,15 @@ extension EnterGuessViewController: EnterGuessViewDelegate {
         enterGuessControlsView.setWatchlistButtonImage(imageName: enterGuessPresenter.getWatchlistImageName())
     }
     
+    func searchStartedLoading() {
+        resultsTableView.isHidden = true
+        loadingIndicatorOrErrorView.state = .loading
+        //removePlaceholderLabelBecauseResultsWereShown()
+    }
+    
     // scroll to bottom when new results will be shown (because most relevant items start from bottom)
     func scrollToBottom(animated: Bool = false) {
-        if enterGuessPresenter.searchResultsCount > 0 {
+        if enterGuessPresenter.searchResultsCount > 0 && !resultsTableView.isHidden {
             let lastRow = IndexPath(row: enterGuessPresenter.searchResultsCount-1, section: 0)
             resultsTableView.scrollToRow(at: lastRow, at: .bottom, animated: animated)
         }

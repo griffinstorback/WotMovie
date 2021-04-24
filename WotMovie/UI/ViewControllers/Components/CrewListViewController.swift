@@ -19,12 +19,19 @@ protocol CrewListViewDelegate: NSObjectProtocol {
     func getCrewMember(for index: Int, section: CrewTypeSection) -> CrewMember?
 }
 
+enum CrewListViewState {
+    case itemIsRevealedOrGuessed
+    case itemIsHiddenSoModalsShouldBePrevented
+}
+
 class CrewListViewController: DetailPresenterViewController {
     
     // e.g, if 10, and there are 15 producers, will only show first 10. Set to nil if should remove limit. Limit is there because was worried
     // about putting limits in case there was some show with 1000 producers or something ridiculous - this is not a table view, so it's not optimized
     // for large amounts of data (also, why would user want to see a list of 1000 producers?)
     static let maxAmountToDisplayInEachJobSection: Int? = 15
+    
+    var state: CrewListViewState = .itemIsHiddenSoModalsShouldBePrevented
     
     weak var delegate: CrewListViewDelegate?
     
@@ -178,6 +185,11 @@ class CrewListViewController: DetailPresenterViewController {
 
 extension CrewListViewController: CrewListRowDelegate {
     func present(index: Int, section: CrewTypeSection, fromCard: UIView) {
+        guard state == .itemIsRevealedOrGuessed else {
+            BriefAlertView(title: "Guess or reveal first").present()
+            return
+        }
+        
         guard let crewMember = delegate?.getCrewMember(for: index, section: section) else { return }
         
         let personDetailViewController = PersonDetailViewController(item: crewMember, state: .revealedWithNoNextButton)

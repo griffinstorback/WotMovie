@@ -30,7 +30,7 @@ class ExamplePersonGuessView: UIView {
     private func setupViews() {
         backgroundColor = .clear
         
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         imageView.backgroundColor = .systemGray4
         imageView.layer.masksToBounds = true
         
