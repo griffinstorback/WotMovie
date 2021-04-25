@@ -36,6 +36,7 @@ struct Constants {
     }
     
     struct KeychainStrings {
+        static let userHasViewedTutorialPages = "tutorial_seen"
         static let personUpgradePurchasedKey = "person_guessing"
         static let personUpgradePurchasedValue = "yes"
     }

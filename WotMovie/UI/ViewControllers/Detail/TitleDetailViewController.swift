@@ -34,8 +34,8 @@ class TitleDetailViewController: GuessDetailViewController {
                 // scroll to top of view to show title being revealed
                 scrollToTop()
                 
-                detailOverviewView.setTitle(String(titleDetailViewPresenter.getID()) + ": " + titleDetailViewPresenter.getName())    //(UNCOMMENT THIS WHEN LOOKING FOR BAD DESCRIPTIONS - SHOWS THE ITEM ID FOR EASY REFERENCE)
-                //detailOverviewView.setTitle(titleDetailViewPresenter.getName())     //   // TODO *** animate this
+                //detailOverviewView.setTitle(String(titleDetailViewPresenter.getID()) + ": " + titleDetailViewPresenter.getName())    //(UNCOMMENT THIS WHEN LOOKING FOR BAD DESCRIPTIONS - SHOWS THE ITEM ID FOR EASY REFERENCE)
+                detailOverviewView.setTitle(titleDetailViewPresenter.getName())     //   // TODO *** animate this
                 detailOverviewView.setOverviewText(titleDetailViewPresenter.getOverview()) // uncensor title name from overview
                 detailOverviewView.addRating(rating: titleDetailViewPresenter.getRating())
             
@@ -100,8 +100,8 @@ class TitleDetailViewController: GuessDetailViewController {
         case .revealed, .revealedWithNoNextButton, .correct, .correctWithNoNextButton:
             addLoadingIndicatorOrErrorView()
             
-            detailOverviewView.setTitle(String(titleDetailViewPresenter.getID()) + ": " + titleDetailViewPresenter.getName())    //(UNCOMMENT THIS WHEN LOOKING FOR BAD DESCRIPTIONS - SHOWS THE ITEM ID FOR EASY REFERENCE)
-            //detailOverviewView.setTitle(titleDetailViewPresenter.getName())
+            //detailOverviewView.setTitle(String(titleDetailViewPresenter.getID()) + ": " + titleDetailViewPresenter.getName())    //(UNCOMMENT THIS WHEN LOOKING FOR BAD DESCRIPTIONS - SHOWS THE ITEM ID FOR EASY REFERENCE)
+            detailOverviewView.setTitle(titleDetailViewPresenter.getName())
             detailOverviewView.setOverviewText(titleDetailViewPresenter.getOverview()) // uncensor title name from overview
             
             // if item was correctly guessed, show check at top left

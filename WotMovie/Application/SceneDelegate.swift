@@ -25,7 +25,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // TODO: Check SettingsManager - if user hasn't seen intro pages, show intro pages view (swipe through) instead of RootTabView
         
-        window?.rootViewController = RootTabViewController()
+        // show the user the intro (Tutorial) pages if they havent seen them already
+        if SettingsManager.shared.userHasSeenIntroPages {
+            window?.rootViewController = RootTabViewController()
+        } else {
+            window?.rootViewController = TutorialPageViewController()
+        }
         
         // keep reference to the scene delegate in settings manager, so it can change user interface style.
         SettingsManager.shared.mainSceneDelegate = self
@@ -55,6 +60,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         } else {
             window?.overrideUserInterfaceStyle = .light
         }
+    }
+    
+    // used to set the root tab view controller after into/tutorial pages have been swiped through
+    func setRootViewController(_ vc: UIViewController) {
+        self.window?.rootViewController = vc
+        self.window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

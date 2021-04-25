@@ -27,6 +27,15 @@ class SettingsManager {
     
     var mainSceneDelegate: SceneDelegate?
     
+    var userHasSeenIntroPages: Bool {
+        get {
+            return UserDefaults.standard.bool(forKey: SettingsKeys.userHasSeenIntroPages.rawValue)
+        }
+        set {
+            UserDefaults.standard.setValue(newValue, forKey: SettingsKeys.userHasSeenIntroPages.rawValue)
+        }
+    }
+    
     var isDarkMode: Bool {
         get {
             return UserDefaults.standard.bool(forKey: SettingsKeys.isDarkMode.rawValue)
@@ -80,12 +89,8 @@ class SettingsManager {
         }
     }
     
-    var useHasSeenIntroPages: Bool {
-        get {
-            return UserDefaults.standard.bool(forKey: SettingsKeys.userHasSeenIntroPages.rawValue)
-        }
-        set {
-            UserDefaults.standard.setValue(newValue, forKey: SettingsKeys.userHasSeenIntroPages.rawValue)
-        }
+    // call when finished viewing tutorial/intro/onboarding pages
+    func setRootTabViewControllerAsRoot() {
+        mainSceneDelegate?.setRootViewController(RootTabViewController())
     }
 }
