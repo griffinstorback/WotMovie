@@ -66,9 +66,9 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
             let numberOfItems = delegate?.getNumberOfItems(self)
             
             // stop the loading indicator (not the footer one, the initial one) when there is a response
-            if numberOfItems != nil {
+            /*if numberOfItems != nil {
                 removeLoadingIndicatorOrErrorView()
-            }
+            }*/
             
             return numberOfItems ?? 0
         }

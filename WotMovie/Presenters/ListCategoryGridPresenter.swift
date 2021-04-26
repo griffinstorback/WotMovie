@@ -108,6 +108,11 @@ class ListCategoryGridPresenter: NSObject, ListCategoryGridPresenterProtocol {
     // contains all items retrieved for this ListCategoryType. filter from this and assign to 'items'
     private var allItems: [Entity] = [] {
         didSet {
+            // stop the loading indicator once items have been fetched
+            DispatchQueue.main.async {
+                self.listCategoryGridViewDelegate?.allItemsDidLoad()
+            }
+            
             updateFilter()
         }
     }

@@ -207,6 +207,7 @@ extension ListViewController: LoadMoreGridViewDelegate {
 extension ListViewController: ListViewDelegate {
     func reloadRecentlyViewedData() {
         recentlyViewedCollectionView.reloadData()
+        recentlyViewedCollectionView.removeLoadingIndicatorOrErrorView()
     }
     
     // reloads when counts for categories change.

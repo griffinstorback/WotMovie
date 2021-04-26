@@ -131,6 +131,7 @@ extension GuessGridViewController: GuessGridViewDelegate {
     
     func reloadData() {
         gridView.reloadData()
+        gridView.removeLoadingIndicatorOrErrorView()
     }
     
     func numberOfItemsPerRow() -> Int {

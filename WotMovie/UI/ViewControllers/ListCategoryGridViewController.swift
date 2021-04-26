@@ -10,6 +10,7 @@ import UIKit
 
 protocol ListCategoryGridViewDelegate: NSObjectProtocol {
     func reloadData()
+    func allItemsDidLoad()
     
     func revealEntities(at indices: [Int])
     func revealCorrectlyGuessedEntities(at indices: [Int])
@@ -197,6 +198,12 @@ extension ListCategoryGridViewController: LoadMoreGridViewDelegate {
 extension ListCategoryGridViewController: ListCategoryGridViewDelegate {
     func reloadData() {
         gridView.reloadData()
+    }
+    
+    // this is separate from reloadData because the loading indicator only tracks whether the main list of items has been loaded yet
+    // (i.e., loading indicator not shown when sort settings changed, or search string entered)
+    func allItemsDidLoad() {
+        gridView.removeLoadingIndicatorOrErrorView()
     }
     
     func revealEntities(at indices: [Int]) {
