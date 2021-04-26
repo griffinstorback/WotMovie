@@ -11,6 +11,7 @@ protocol TutorialPageDetailViewDelegate: NSObjectProtocol {
     func getTitleText(type: TutorialPageDetailViewType) -> String
     func getBodyText(type: TutorialPageDetailViewType) -> String
     func getImageName(type: TutorialPageDetailViewType) -> String
+    func dismissTutorial()
 }
 
 class TutorialPageDetailViewController: UIViewController {
@@ -113,7 +114,7 @@ class TutorialPageDetailViewController: UIViewController {
     }
     
     @objc private func finishShowingTutorialPages() {
-        SettingsManager.shared.setRootTabViewControllerAsRoot()
+        delegate?.dismissTutorial()
     }
     
     required init?(coder: NSCoder) {

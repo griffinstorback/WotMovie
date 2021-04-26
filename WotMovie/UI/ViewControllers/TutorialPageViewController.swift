@@ -108,4 +108,8 @@ extension TutorialPageViewController: TutorialPageDetailViewDelegate {
     func getImageName(type: TutorialPageDetailViewType) -> String {
         return tutorialPagePresenter.getImageNameFor(type: type)
     }
+    
+    func dismissTutorial() {
+        self.dismiss(animated: true)
+    }
 }

@@ -39,4 +39,15 @@ class RootTabViewController: UITabBarController {
         self.setViewControllers([guessViewController, listViewController, searchViewController, settingsViewController], animated: true)
         self.selectedViewController = guessViewController
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        
+        // show the tutorial pages if user has not seen them yet (first time launching)
+        if !SettingsManager.shared.userHasSeenIntroPages {
+            let tutorialPageViewController = TutorialPageViewController()
+            //tutorialPageViewController.modalPresentationStyle = .fullScreen
+            //tutorialPageViewController.modalTransitionStyle = .crossDissolve
+            present(tutorialPageViewController, animated: true)
+        }
+    }
 }
