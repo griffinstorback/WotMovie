@@ -19,7 +19,9 @@ protocol EntityTableViewDelegate: NSObjectProtocol {
     func getCountForSection(section: Int) -> Int
     func getSectionTitle(for index: Int) -> String?
     func getItem(for index: Int, section: Int) -> Entity?
+    
     func loadImage(for index: Int, section: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
+    func cancelLoadImageRequestFor(_ indexPath: IndexPath)
     
     func tableViewScrollViewDidScroll(_ scrollView: UIScrollView)
 }
@@ -134,6 +136,10 @@ extension EntityTableViewController: UITableViewDelegate, UITableViewDataSource 
         cell.accessoryType = .disclosureIndicator
 
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        delegate?.cancelLoadImageRequestFor(indexPath)
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

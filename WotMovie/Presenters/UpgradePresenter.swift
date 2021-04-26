@@ -16,6 +16,7 @@ protocol UpgradePresenterProtocol {
     
     func examplePeopleCount() -> Int
     func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?) -> Void)
+    func cancelLoadImageRequestFor(_ indexPath: IndexPath)
     
     func getLocalizedPrice() -> String?
     func purchasePersonGuessingUpgrade() -> Bool?
@@ -132,6 +133,16 @@ class UpgradePresenter: UpgradePresenterProtocol {
         }
     }
     
+    func cancelLoadImageRequestFor(_ indexPath: IndexPath) {
+        let index = indexPath.row
+        guard index < examplePeople.count else { return }
+        
+        let item = examplePeople[index]
+        if let posterPath = item.posterPath {
+            imageDownloadManager.cancelImageDownload(path: posterPath)
+        }
+    }
+    
     func getLocalizedPrice() -> String? {
         // there's only one product (as of now), so return the price for the first item in the products array
         guard products.count > 0 else { return nil }
@@ -139,7 +150,7 @@ class UpgradePresenter: UpgradePresenterProtocol {
     }
     
     func restorePurchases() {
-        //delegate.didStarLoading
+        //delegate.didStartLoading
         iapManager.restorePurchases { result in
             //delegate.didFinishLoading
             
@@ -256,18 +267,7 @@ class UpgradePresenter: UpgradePresenterProtocol {
     }
     
     private func productPurchasedSuccessfully(_ product: SKProduct) {
-        
         upgradeViewDelegate?.upgradeWasPurchased()
-        
-        return
-        
-        // TODO: DELETE THE KEYCHAIN LINE -- ITS DONE IN IAP MANAGER
-        // update keychain to reflect user has purchased the upgrade
-        keychain[Constants.KeychainStrings.personUpgradePurchasedKey] = Constants.KeychainStrings.personUpgradePurchasedValue
-        
-        // send notification to any view listening that upgrade was purchased.
-        let notification = Notification(name: .WMUserDidUpgrade)
-        NotificationQueue.default.enqueue(notification, postingStyle: .asap)
     }
     
     private func loadIAPProducts() {

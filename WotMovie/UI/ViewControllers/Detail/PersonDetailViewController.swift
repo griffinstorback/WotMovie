@@ -291,6 +291,10 @@ extension PersonDetailViewController: HorizontalCollectionViewDelegate {
             return
         }
     }
+    
+    func cancelLoadImageRequestFor(imagePath: String) {
+        personDetailViewPresenter.cancelLoadImageRequestFor(imagePath: imagePath)
+    }
 }
 
 extension PersonDetailViewController: GuessDetailViewDelegate {

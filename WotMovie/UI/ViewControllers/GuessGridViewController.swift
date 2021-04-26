@@ -192,6 +192,10 @@ extension GuessGridViewController: LoadMoreGridViewDelegate {
         guessGridViewPresenter.loadImageFor(index: index, completion: completion)
     }
     
+    func cancelLoadImageRequestFor(_ loadMoreGridViewController: LoadMoreGridViewController, indexPath: IndexPath) {
+        guessGridViewPresenter.cancelLoadImageRequestFor(indexPath)
+    }
+    
     func isPresentingFromGuessGrid() -> Bool {
         return true
     }

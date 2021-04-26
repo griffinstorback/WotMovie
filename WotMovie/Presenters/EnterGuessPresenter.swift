@@ -13,7 +13,10 @@ protocol EnterGuessPresenterProtocol {
     var searchResultsCount: Int { get }
     func setItem(item: Entity)
     func setViewDelegate(_ delegat: EnterGuessViewDelegate)
+    
     func loadImage(for index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
+    func cancelLoadImageRequestFor(_ indexPath: IndexPath)
+    
     func searchResult(for index: Int) -> Entity?
     func setSearchText(_ searchText: String?)
     func isCorrect(index: Int) -> Bool?
@@ -114,6 +117,15 @@ class EnterGuessPresenter: EnterGuessPresenterProtocol {
                     completion(image, posterPath)
                 }
             }
+        }
+    }
+    
+    func cancelLoadImageRequestFor(_ indexPath: IndexPath) {
+        let index = indexPath.row
+        guard let item = searchResult(for: index) else { return }
+        
+        if let posterPath = item.posterPath {
+            imageDownloadManager.cancelImageDownload(path: posterPath)
         }
     }
     

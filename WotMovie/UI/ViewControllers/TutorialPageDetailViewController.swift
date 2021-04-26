@@ -92,17 +92,18 @@ class TutorialPageDetailViewController: UIViewController {
             bottomButton.layer.cornerRadius = 10
             bottomButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
             bottomButton.setTitleColor(.white, for: .normal)
-            bottomButton.setTitle("  Get started  ", for: .normal)
+            bottomButton.setTitle("   Get started   ", for: .normal)
             bottomButton.addTarget(self, action: #selector(finishShowingTutorialPages), for: .touchUpInside)
         } else {
             bottomButton.backgroundColor = .clear
             bottomButton.setTitleColor(.secondaryLabel, for: .normal)
             bottomButton.setTitle("Swipe to continue >", for: .normal)
+            bottomButton.isUserInteractionEnabled = false
         }
         
         // bottomButton sits on top of spacingToBottom - only add if this is the first or last pages of the tutorial
         view.addSubview(bottomButton)
-        bottomButton.anchor(top: spacingToBottom.topAnchor, leading: nil, bottom: nil, trailing: nil, padding: UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0), size: CGSize(width: 0, height: 40))
+        bottomButton.anchor(top: spacingToBottom.topAnchor, leading: nil, bottom: nil, trailing: nil, padding: UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0), size: CGSize(width: 0, height: 50))
         bottomButton.anchorToCenter(yAnchor: nil, xAnchor: view.centerXAnchor)
     }
     

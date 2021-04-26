@@ -67,7 +67,7 @@ class TutorialPagePresenter: TutorialPagePresenterProtocol {
         case .browseAndSearch:
             return "Browse and Search"
         case .watchlistAndFavorites:
-            return "Build a Watchlist"
+            return "Watchlist"
         case .unlockPeople:
             return "Unlock People"
         }
@@ -76,13 +76,13 @@ class TutorialPagePresenter: TutorialPagePresenterProtocol {
     func getBodyTextFor(type: TutorialPageDetailViewType) -> String {
         switch type {
         case .guessAndReveal:
-            return "Guess Movies and TV Shows, or reveal them to discover new content"
+            return "Movie trivia and content discovery, all in one"
         case .genres:
-            return "Thousands of Movies and TV Shows to guess and discover, from your favorite genres"
+            return "Guess and discover from your favorite genres"
         case .browseAndSearch:
             return "Easily browse or search Movie, TV Show, and Person details"
         case .watchlistAndFavorites:
-            return "Build a watchlist for the Movies and TV Shows you find"
+            return "Build a watchlist as you discover new Movies and TV Shows"
         case .unlockPeople:
             return "Guess or Reveal 500 Movies and TV Shows to unlock the People category"
         }

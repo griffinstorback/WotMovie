@@ -28,7 +28,9 @@ protocol ListCategoryGridPresenterProtocol: TransitionPresenterProtocol {
     func setSearchText(_ text: String?)
     func getSortParameters() -> SortParameters
     func setSortParameters(_ sortParameters: SortParameters)
+    
     func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
+    func cancelLoadImageRequestFor(_ indexPath: IndexPath)
     
     func addItemToWatchlistOrFavorites(_ indexPath: IndexPath)
     func removeItemFromWatchlistOrFavorites(_ indexPath: IndexPath)
@@ -83,7 +85,16 @@ class ListCategoryGridPresenter: NSObject, ListCategoryGridPresenterProtocol {
         case .alphabetical:
             filteredResults = filteredResults.sorted { $0.name.lowercased() < $1.name.lowercased() }
         case .releaseDate:
-            break
+            // get rid of non-Title types (e.g. Person)
+            var filteredResultsTitles: [Title] = []
+            filteredResults.forEach { item in
+                if let title = item as? Title {
+                    filteredResultsTitles.append(title)
+                }
+            }
+            
+            // Sort by release date, newest appearing at top (and no release date items appearing at bottom, unless filtered out)
+            filteredResults = filteredResultsTitles.sorted { $0.releaseDate ?? "" > $1.releaseDate ?? "" }//.filter { $0.releaseDate == nil }
         }
         
         items = filteredResults
@@ -183,6 +194,7 @@ class ListCategoryGridPresenter: NSObject, ListCategoryGridPresenterProtocol {
     }
     
     func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) {
+        guard index < items.count else { return }
         let item = items[index]
         
         if let posterPath = item.posterPath {
@@ -203,6 +215,16 @@ class ListCategoryGridPresenter: NSObject, ListCategoryGridPresenterProtocol {
             DispatchQueue.main.async {
                 completion(nil, nil)
             }
+        }
+    }
+    
+    func cancelLoadImageRequestFor(_ indexPath: IndexPath) {
+        let index = indexPath.row
+        guard index < items.count else { return }
+        
+        let item = items[index]
+        if let posterPath = item.posterPath {
+            imageDownloadManager.cancelImageDownload(path: posterPath)
         }
     }
     

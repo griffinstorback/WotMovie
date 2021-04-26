@@ -170,6 +170,10 @@ extension ListViewController: LoadMoreGridViewDelegate {
         listPresenter.loadImageFor(index: index, completion: completion)
     }
     
+    func cancelLoadImageRequestFor(_ loadMoreGridViewController: LoadMoreGridViewController, indexPath: IndexPath) {
+        listPresenter.cancelLoadImageRequestFor(indexPath)
+    }
+    
     func isPresentingFromGuessGrid() -> Bool {
         // Since this is not a GuessGrid, all items should appear revealed
         return false

@@ -150,6 +150,10 @@ extension ListCategoryGridViewController: LoadMoreGridViewDelegate {
         listCategoryGridPresenter.loadImageFor(index: index, completion: completion)
     }
     
+    func cancelLoadImageRequestFor(_ loadMoreGridViewController: LoadMoreGridViewController, indexPath: IndexPath) {
+        listCategoryGridPresenter.cancelLoadImageRequestFor(indexPath)
+    }
+    
     func viewForHeader(_ loadMoreGridViewController: LoadMoreGridViewController, indexPath: IndexPath) -> UICollectionReusableView? {
         return nil
     }

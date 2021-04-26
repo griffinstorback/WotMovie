@@ -84,6 +84,11 @@ class HorizontalCollectionViewCell: ShrinkOnTouchCollectionViewCell {
         self.imagePath = path
     }
     
+    // called to cancel image request if this cell leaves the view before its finished.
+    public func getImagePath() -> String {
+        return imagePath
+    }
+    
     public func setImage(_ image: UIImage?, _ imagePath: String?) {
         // if image came back, we need to first make sure it matches imagePath that was set on this cell
         // (otherwise, cells occasionally flash the wrong image  - due to glitches with reusable cells)

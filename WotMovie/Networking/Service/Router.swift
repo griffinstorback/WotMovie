@@ -24,6 +24,25 @@ class Router<EndPoint: EndPointType>: NetworkRouter {
         self.task?.resume()
     }
     
+    // used for image api, so that data task can be canceled if image no longer on screen.
+    func requestAndReturnDataTask(_ route: EndPoint, completion: @escaping NetworkRouterCompletion) -> URLSessionDataTask? {
+        let session = URLSession.shared
+        let dataTask: URLSessionDataTask?
+        
+        do {
+            let request = try self.buildRequest(from: route)
+            dataTask = session.dataTask(with: request, completionHandler: { data, response, error in
+                completion(data, response, error)
+            })
+        } catch {
+            completion(nil, nil, error)
+            dataTask = nil
+        }
+        
+        dataTask?.resume()
+        return dataTask
+    }
+    
     func cancel() {
         self.task?.cancel()
     }

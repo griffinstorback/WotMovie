@@ -10,6 +10,7 @@ import UIKit
 
 protocol ImageDownloadManagerProtocol {
     // find a way to test that images are stored in variable imageCache
+    func cancelImageDownload(path: String)
     func downloadImage(path: String, completion: @escaping (_ image: UIImage?, _ error: String?) -> Void)
 }
 
@@ -23,6 +24,20 @@ final class ImageDownloadManager: ImageDownloadManagerProtocol {
     private let imageCache: ImageCacheManager
     private let imageRouter = Router<ImageApi>()
     
+    // since images are large, we want to be able to cancel queries for them
+    private var activeDownloads: [String:URLSessionDataTask] = [:]
+    
+    // TODO: currently, this method is called whenever an image leaves the screen. This is a very small computation when nothing to remove, but that's still wasted resources.
+    func cancelImageDownload(path: String) {
+        if let activeDownload = activeDownloads[path] {
+            activeDownload.cancel()
+            activeDownloads[path] = nil
+            print("******* cancelImageDownload - successfully cancelled download for path \(path) (activeDownloads count: \(activeDownloads.count))")
+        } else {
+            print("******* cancelImageDownload - NO ACTIVE DOWNLOAD found for path \(path) (activeDownloads count: \(activeDownloads.count))")
+        }
+    }
+    
     func downloadImage(path: String, completion: @escaping (_ image: UIImage?, _ error: String?) -> Void) {
         let nsStringPath = path as NSString
         
@@ -31,7 +46,10 @@ final class ImageDownloadManager: ImageDownloadManagerProtocol {
             return
         }
         
-        imageRouter.request(.imageWithPath(path: path)) { data, response, error in
+        activeDownloads[path] = imageRouter.requestAndReturnDataTask(.imageWithPath(path: path)) { data, response, error in
+            // request returned, so data task is no longer active
+            self.activeDownloads[path] = nil
+            
             if error != nil {
                 completion(nil, NetworkResponse.checkNetworkConnection.rawValue)
             }

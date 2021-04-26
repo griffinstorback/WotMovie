@@ -16,6 +16,7 @@ protocol GuessGridPresenterProtocol: TransitionPresenterProtocol {
     func setViewDelegate(_ guessGridViewDelegate: GuessGridViewDelegate?)
     func itemFor(index: Int) -> Entity?
     func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void) // this is used in multiple files - extractable?
+    func cancelLoadImageRequestFor(_ indexPath: IndexPath)
 
     func getGenreCurrentlyDisplaying() -> Genre
     func getMovieGenresAvailableToDisplay() -> [MovieGenre]
@@ -139,7 +140,7 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
             //print("Person objects with nil posterPath: ", people.filter { $0.posterPath == nil })
         }
         
-        // remove titles without a poster image
+        // remove items without a poster image
         newItems = newItems.filter { $0.posterPath != nil }
         
         // remove items guessed
@@ -148,6 +149,15 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
         // remove items revealed (unless they were revealed awhile ago, ~2 months?)
         newItems = newItems.filter { !$0.isRevealed }//&& $0.lastViewedDate ?? Date() > Date() }
         
+        // TODO: remove this for production
+        checkDuplicates(newItems)
+        
+        self.items += newItems
+    }
+    
+    // USED FOR TESTING
+    private func checkDuplicates(_ newItems: [Entity]) {
+        // dupCount tracks how many items to be added are already in self.items
         var dupCount = 0
         for newItem in newItems {
             for item in self.items {
@@ -157,6 +167,11 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
             }
         }
         
+        if dupCount > 0 {
+            print("****** DUPLICATES IN GUESSGRID: \(dupCount) duplicates found in newItems (items being added to self.items)")
+        }
+        
+        // totalDups tracks how many duplicate items there already are in self.items
         var totalDups = 0
         for item in self.items {
             for item2 in self.items {
@@ -164,13 +179,11 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
                     totalDups += 1
                 }
             }
-            totalDups -= 1
+            totalDups -= 1 // we're iterating over array twice, so it will inevitably find itself - this accounts for that
         }
         
-        self.items += newItems
-        
         if totalDups > 0 {
-            print("&&& ******* DUPS FOUND - GuessGridPresenter.addItems() - added \(newItems.count) new items, with \(dupCount) new dups. New total: \(self.items.count). Total dups: \(totalDups)")
+            print("****** DUPLICATES IN GUESSGRID: \(totalDups) duplicates found in self.items BEFORE adding newItems (about to add \(newItems.count) new items, with \(dupCount) new dups) (items count after newItems has been added: \(self.items.count + newItems.count)")
         }
     }
     
@@ -221,6 +234,16 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
             DispatchQueue.main.async {
                 completion(nil, nil)
             }
+        }
+    }
+    
+    func cancelLoadImageRequestFor(_ indexPath: IndexPath) {
+        let index = indexPath.row
+        guard index < items.count else { return }
+        
+        let item = items[index]
+        if let posterPath = item.posterPath {
+            imageDownloadManager.cancelImageDownload(path: posterPath)
         }
     }
     

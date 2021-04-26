@@ -11,7 +11,9 @@ protocol HorizontalCollectionViewDelegate: NSObjectProtocol {
     func getNumberOfItems(_ horizontalCollectionViewController: HorizontalCollectionViewController) -> Int
     func getItemFor(_ horizontalCollectionViewController: HorizontalCollectionViewController, index: Int) -> Entity?
     func getSubtitleFor(_ horizontalCollectionViewController: HorizontalCollectionViewController, index: Int) -> String?
+    
     func loadImageFor(_ horizontalCollectionViewController: HorizontalCollectionViewController, index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
+    func cancelLoadImageRequestFor(imagePath: String)
 }
 
 enum HorizontalCollectionViewState {
@@ -142,6 +144,18 @@ extension HorizontalCollectionViewController: UICollectionViewDataSource, UIColl
         
         delegate?.loadImageFor(self, index: indexPath.row, completion: cell.setImage)
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard let cell = cell as? HorizontalCollectionViewCell else {
+            print("** ERROR: could not cast cell as HorizontalCollectionViewCell in didEndDisplaying")
+            return
+        }
+        
+        let imagePath = cell.getImagePath()
+        guard !imagePath.isEmpty else { return } // if there is no image path set there's nothing to cancel
+        
+        delegate?.cancelLoadImageRequestFor(imagePath: imagePath)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

@@ -183,6 +183,10 @@ extension SearchViewController: EntityTableViewDelegate {
         searchPresenter.loadImageFor(index: index, completion: completion)
     }
     
+    func cancelLoadImageRequestFor(_ indexPath: IndexPath) {
+        searchPresenter.cancelLoadImageRequestFor(indexPath)
+    }
+    
     func tableViewScrollViewDidScroll(_ scrollView: UIScrollView) {
         //searchController.searchBar.resignFirstResponder()
     }

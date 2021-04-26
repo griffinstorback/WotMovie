@@ -1026,18 +1026,6 @@ final class CoreDataManager: CoreDataManagerProtocol {
             // update or create the movie, then add it to the provided page mo
             let movieMO = updateOrCreateMovie(movie: movie, shouldSetLastViewedDate: false, context: context)
             moviePageMO.addObject(value: movieMO, for: "movies")
-            
-            
-            // TODO: DELETE --- LEFT IT JUST KEEPING IN CASE SOMETHING GOES WRONG
-            // first check if movie already in core data
-            /*if let existingMovieMO = fetchMovie(id: movie.id) {
-                moviePageMO.addObject(value: existingMovieMO, for: "movies")
-            } else {
-                // None found, create a new movieMO object, and don't set the lastViewedDate field, because the movie hasn't
-                // explicitly been loaded into a detail VC yet.
-                let newMovie = createMovie(movie: movie, shouldSetLastViewedDate: false)
-                moviePageMO.addObject(value: newMovie, for: "movies")
-            }*/
         }
     }
     

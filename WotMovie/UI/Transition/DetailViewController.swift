@@ -43,6 +43,11 @@ class DetailViewController: UIViewController {
         self.dismiss(animated: true)
     }
     func closeAll(_ action: UIAction) {
+        guard state != .fullyHidden && state != .hintShown else {
+            presentRevealAndDismissConfirmation()
+            return
+        }
+        
         UIApplication.shared.windows.filter { $0.isKeyWindow }.first?.rootViewController?.dismiss(animated: true)
     }
     

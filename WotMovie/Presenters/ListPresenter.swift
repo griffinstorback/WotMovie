@@ -17,7 +17,9 @@ protocol ListPresenterProtocol: TransitionPresenterProtocol {
     func loadCategoryCounts()
     func getNumberOfRecentlyViewed() -> Int
     func getRecentlyViewedFor(index: Int) -> Entity
+    
     func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
+    func cancelLoadImageRequestFor(_ indexPath: IndexPath)
     
     func addItemToWatchlistOrFavorites(_ indexPath: IndexPath)
     func removeItemFromWatchlistOrFavorites(_ indexPath: IndexPath)
@@ -142,6 +144,16 @@ class ListPresenter: NSObject, ListPresenterProtocol {
             DispatchQueue.main.async {
                 completion(nil, nil)
             }
+        }
+    }
+    
+    func cancelLoadImageRequestFor(_ indexPath: IndexPath) {
+        let index = indexPath.row
+        guard index < recentlyViewedItems.count else { return }
+        
+        let item = recentlyViewedItems[index]
+        if let posterPath = item.posterPath {
+            imageDownloadManager.cancelImageDownload(path: posterPath)
         }
     }
     

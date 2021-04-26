@@ -13,7 +13,9 @@ protocol LoadMoreGridViewDelegate: NSObjectProtocol {
     func getItemFor(_ loadMoreGridViewController: LoadMoreGridViewController, index: Int) -> Entity?
     func isWaitingForUserToGuessMoreBeforeLoadingMore(_ loadMoreGridViewController: LoadMoreGridViewController) -> Bool
     func loadMoreItems(_ loadMoreGridViewController: LoadMoreGridViewController) -> Bool
+    
     func loadImageFor(_ loadMoreGridViewController: LoadMoreGridViewController, index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
+    func cancelLoadImageRequestFor(_ loadMoreGridViewController: LoadMoreGridViewController, indexPath: IndexPath)
     
     // methods for providing this grid view with a header - return nil if none to show.
     func viewForHeader(_ loadMoreGridViewController: LoadMoreGridViewController, indexPath: IndexPath) -> UICollectionReusableView?
@@ -100,6 +102,10 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
         cell.delegate = self
         
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        delegate?.cancelLoadImageRequestFor(self, indexPath: indexPath)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

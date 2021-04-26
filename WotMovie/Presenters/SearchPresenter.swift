@@ -19,7 +19,9 @@ protocol SearchPresenterProtocol {
     func setViewDelegate(_ searchViewDelegate: SearchViewDelegate?)
     func searchResultFor(index: Int) -> Entity?
     func setSearchText(_ searchText: String?)
+    
     func loadImageFor(index: Int, completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
+    func cancelLoadImageRequestFor(_ indexPath: IndexPath)
     
     func getTypesCurrentlyDisplaying() -> CategoryDisplayTypes
     func getTypesAvailableToDisplay() -> [(String,CategoryDisplayTypes)]
@@ -203,6 +205,15 @@ class SearchPresenter: SearchPresenterProtocol {
                     completion(image, posterPath)
                 }
             }
+        }
+    }
+    
+    func cancelLoadImageRequestFor(_ indexPath: IndexPath) {
+        let index = indexPath.row
+        guard let item = searchResultFor(index: index) else { return }
+        
+        if let posterPath = item.posterPath {
+            imageDownloadManager.cancelImageDownload(path: posterPath)
         }
     }
     

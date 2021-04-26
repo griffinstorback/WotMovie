@@ -176,6 +176,10 @@ extension TitleDetailViewController: HorizontalCollectionViewDelegate {
         titleDetailViewPresenter.loadCastPersonImage(index: index, completion: completion)
         return
     }
+    
+    func cancelLoadImageRequestFor(imagePath: String) {
+        titleDetailViewPresenter.cancelLoadImageRequestFor(imagePath: imagePath)
+    }
 }
 
 extension TitleDetailViewController: CrewListViewDelegate {

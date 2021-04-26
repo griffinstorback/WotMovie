@@ -18,6 +18,8 @@ protocol GuessDetailPresenterProtocol {
     
     func setViewDelegate(detailViewDelegate: GuessDetailViewDelegate?)
     func loadPosterImage(completion: @escaping (_ image: UIImage?, _ imagePath: String?) -> Void)
+    func cancelLoadImageRequestFor(imagePath: String)
+    
     //func loadCrewTypes()
     func getID() -> Int
     func getName() -> String
@@ -128,6 +130,10 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
                 completion(image, path)
             }
         }
+    }
+    
+    func cancelLoadImageRequestFor(imagePath: String) {
+        imageDownloadManager.cancelImageDownload(path: imagePath)
     }
     
     /*func loadCrewTypes() {

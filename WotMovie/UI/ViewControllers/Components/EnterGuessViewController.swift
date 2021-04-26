@@ -25,6 +25,7 @@ class EnterGuessViewController: UIViewController {
     
     private let resultsTableView: UITableView
     
+    private let placeholderLabelWhenNothingTyped: UILabel
     private let loadingIndicatorOrErrorView: LoadingIndicatorOrErrorView
 
     init(item: Entity, presenter: EnterGuessPresenterProtocol? = nil) {
@@ -34,6 +35,7 @@ class EnterGuessViewController: UIViewController {
         
         resultsTableView = UITableView()
         
+        placeholderLabelWhenNothingTyped = UILabel()
         loadingIndicatorOrErrorView = LoadingIndicatorOrErrorView(state: .loaded)
         
         super.init(nibName: nil, bundle: nil)
@@ -71,6 +73,11 @@ class EnterGuessViewController: UIViewController {
         
         view.addSubview(resultsTableView)
         resultsTableView.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: enterGuessControlsView.topAnchor, trailing: view.trailingAnchor)
+        
+        // show (un hide) this label when nothing typed
+        resultsTableView.addSubview(placeholderLabelWhenNothingTyped)
+        placeholderLabelWhenNothingTyped.anchorToCenter(yAnchor: resultsTableView.centerYAnchor, xAnchor: nil)
+        placeholderLabelWhenNothingTyped.anchor(top: nil, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20))
         
         view.addSubview(loadingIndicatorOrErrorView)
         loadingIndicatorOrErrorView.anchorToCenter(yAnchor: resultsTableView.centerYAnchor, xAnchor: resultsTableView.centerXAnchor)
@@ -162,6 +169,12 @@ extension EnterGuessViewController: UITableViewDelegate, UITableViewDataSource {
         resultsTableView.tableFooterView = UIView()
         resultsTableView.tableHeaderView = UIView()
         
+        placeholderLabelWhenNothingTyped.text = "Start typing the name, and select the correct result"
+        placeholderLabelWhenNothingTyped.textColor = .tertiaryLabel
+        placeholderLabelWhenNothingTyped.textAlignment = .center
+        placeholderLabelWhenNothingTyped.font = UIFont.systemFont(ofSize: 20, weight: .regular)
+        placeholderLabelWhenNothingTyped.numberOfLines = 0
+        
         resultsTableView.register(EntityTableViewCell.self, forCellReuseIdentifier: "ResultsCell")
     }
     
@@ -193,6 +206,10 @@ extension EnterGuessViewController: UITableViewDelegate, UITableViewDataSource {
         cell.accessoryView = enterGuessPresenter.itemHasBeenGuessed(id: item.id) ? xIconImageView : .none
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        enterGuessPresenter.cancelLoadImageRequestFor(indexPath)
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -257,6 +274,13 @@ extension EnterGuessViewController: EnterGuessControlsDelegate {
         //NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(performSearch), object: searchBar)
         //self.perform(#selector(performSearch(_:)), with: searchBar, afterDelay: 0.2)
         performSearch(searchBar)
+        
+        // if text is empty, or nil, add placeholder, otherwise hide it
+        if searchBar.text?.isEmpty ?? true {
+            placeholderLabelWhenNothingTyped.isHidden = false
+        } else {
+            placeholderLabelWhenNothingTyped.isHidden = true
+        }
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {

@@ -65,11 +65,13 @@ class PersonOverviewView: UIView {
     }()
     private lazy var birthdayLabel: UILabel = {
         let label = UILabel()
+        label.textAlignment = .center
         label.isHidden = true
         return label
     }()
     private lazy var deathdayLabel: UILabel = {
         let label = UILabel()
+        label.textAlignment = .center
         label.isHidden = true
         return label
     }()
