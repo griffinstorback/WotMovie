@@ -46,6 +46,9 @@ class TutorialPageViewController: UIPageViewController {
             setViewControllers([orderedPageDetailViewControllers[0]], direction: .forward, animated: true, completion: nil)
         } else {
             print("** ERROR: no detail views found for the TutorialPageViewController!")
+            DispatchQueue.main.async {
+                self.dismiss(animated: true)
+            }
         }
     }
     
@@ -92,7 +95,9 @@ extension TutorialPageViewController: UIPageViewControllerDataSource {
     }
     
     func presentationIndex(for pageViewController: UIPageViewController) -> Int {
-        return 0
+        guard let currentViewController = self.viewControllers?.first else { return 0 }
+        guard let viewControllerIndex = orderedPageDetailViewControllers.firstIndex(of: currentViewController) else { return 0 }
+        return viewControllerIndex
     }
 }
 
@@ -107,6 +112,15 @@ extension TutorialPageViewController: TutorialPageDetailViewDelegate {
     
     func getImageName(type: TutorialPageDetailViewType) -> String {
         return tutorialPagePresenter.getImageNameFor(type: type)
+    }
+    
+    func nextPage() {
+        guard let currentViewController = self.viewControllers?.first else { return }
+        guard let nextViewController = dataSource?.pageViewController(self, viewControllerAfter: currentViewController) else { return }
+        
+        // disable user interaction while animation is happening (otherwise, if user swiping around too willy nilly while pressing next, page control dots get out of sync)
+        view.isUserInteractionEnabled = false
+        setViewControllers([nextViewController], direction: .forward, animated: true, completion: {_ in self.view.isUserInteractionEnabled = true})
     }
     
     func dismissTutorial() {

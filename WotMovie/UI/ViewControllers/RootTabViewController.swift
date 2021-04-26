@@ -40,14 +40,20 @@ class RootTabViewController: UITabBarController {
         self.selectedViewController = guessViewController
     }
     
+    // This is just an extra check - flag to be set so that if something goes wrong with UserDefaults, this in memory check will at least
+    // make it so the tutorial doesn't pop up everytime the user closes a modal.
+    var presentedTutorialPagesThisSession: Bool = false
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
         // show the tutorial pages if user has not seen them yet (first time launching)
-        if !SettingsManager.shared.userHasSeenIntroPages {
+        if !SettingsManager.shared.userHasSeenIntroPages && !presentedTutorialPagesThisSession {
             let tutorialPageViewController = TutorialPageViewController()
-            //tutorialPageViewController.modalPresentationStyle = .fullScreen
-            //tutorialPageViewController.modalTransitionStyle = .crossDissolve
+            tutorialPageViewController.modalPresentationStyle = .fullScreen
+            tutorialPageViewController.modalTransitionStyle = .crossDissolve
             present(tutorialPageViewController, animated: true)
+            
+            presentedTutorialPagesThisSession = true
         }
     }
 }

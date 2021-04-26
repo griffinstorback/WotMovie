@@ -20,6 +20,7 @@ protocol TutorialPagePresenterProtocol {
 
 enum TutorialPageDetailViewType: String {
     case guessAndReveal = "Guess and Reveal"
+    case enterGuess = "Entering Guesses"
     case genres = "Genres"
     case browseAndSearch = "Browse and Search"
     case watchlistAndFavorites = "Watchlist and Favorites"
@@ -31,15 +32,14 @@ class TutorialPagePresenter: TutorialPagePresenterProtocol {
     
     let orderedDetailViews: [TutorialPageDetailViewType] = [
         .guessAndReveal,
+        .enterGuess,
         .genres,
         .browseAndSearch,
         .watchlistAndFavorites,
         .unlockPeople
     ]
     
-    init() {
-        
-    }
+    init() { }
     
     func setViewDelegate(_ delegate: TutorialPageViewDelegate?) {
         self.tutorialPageViewDelegate = delegate
@@ -62,6 +62,8 @@ class TutorialPagePresenter: TutorialPagePresenterProtocol {
         switch type {
         case .guessAndReveal:
             return "Welcome to WotMovie"
+        case .enterGuess:
+            return "Guessing"
         case .genres:
             return "Genres"
         case .browseAndSearch:
@@ -77,10 +79,12 @@ class TutorialPagePresenter: TutorialPagePresenterProtocol {
         switch type {
         case .guessAndReveal:
             return "Movie trivia and content discovery, all in one"
+        case .enterGuess:
+            return "Begin entering the name, and select the correct answer"
         case .genres:
             return "Guess and discover from your favorite genres"
         case .browseAndSearch:
-            return "Easily browse or search Movie, TV Show, and Person details"
+            return "Easily browse and search Movie, TV Show, and Person details"
         case .watchlistAndFavorites:
             return "Build a watchlist as you discover new Movies and TV Shows"
         case .unlockPeople:
@@ -92,6 +96,8 @@ class TutorialPagePresenter: TutorialPagePresenterProtocol {
         switch type {
         case .guessAndReveal:
             return "movie_category_icon"
+        case .enterGuess:
+            return "enter_guess_example"
         case .genres:
             return "genres_example_image"
         case .browseAndSearch:

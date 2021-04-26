@@ -11,6 +11,7 @@ protocol TutorialPageDetailViewDelegate: NSObjectProtocol {
     func getTitleText(type: TutorialPageDetailViewType) -> String
     func getBodyText(type: TutorialPageDetailViewType) -> String
     func getImageName(type: TutorialPageDetailViewType) -> String
+    func nextPage()
     func dismissTutorial()
 }
 
@@ -81,9 +82,10 @@ class TutorialPageDetailViewController: UIViewController {
         view.addSubview(spacingToBottom)
         spacingToBottom.anchor(top: bodyLabel.bottomAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
         
-        if type == .guessAndReveal || type == .unlockPeople {
+        /*if type == .guessAndReveal || type == .unlockPeople {
             addBottomButtonAndLayout()
-        }
+        }*/
+        addBottomButtonAndLayout()
     }
     
     private func addBottomButtonAndLayout() {
@@ -98,19 +100,18 @@ class TutorialPageDetailViewController: UIViewController {
         } else {
             bottomButton.backgroundColor = .clear
             bottomButton.setTitleColor(.secondaryLabel, for: .normal)
-            bottomButton.setTitle("Swipe to continue >", for: .normal)
-            bottomButton.isUserInteractionEnabled = false
+            bottomButton.setTitle("Next", for: .normal)
+            bottomButton.addTarget(self, action: #selector(nextPageButtonPressed), for: .touchUpInside)
+            //bottomButton.isUserInteractionEnabled = false
         }
         
-        // bottomButton sits on top of spacingToBottom - only add if this is the first or last pages of the tutorial
         view.addSubview(bottomButton)
-        bottomButton.anchor(top: spacingToBottom.topAnchor, leading: nil, bottom: nil, trailing: nil, padding: UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0), size: CGSize(width: 0, height: 50))
-        bottomButton.anchorToCenter(yAnchor: nil, xAnchor: view.centerXAnchor)
+        bottomButton.anchor(top: nil, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 10, bottom: 10, right: 10), size: CGSize(width: 0, height: 50))
+        //bottomButton.anchorToCenter(yAnchor: nil, xAnchor: view.centerXAnchor)
     }
     
-    // this called if button pressed on first view in the Page view controller (" swipe to continue ")
-    @objc private func automateFirstPageSwipe() {
-        // is there even a point to having this?
+    @objc private func nextPageButtonPressed() {
+        delegate?.nextPage()
     }
     
     @objc private func finishShowingTutorialPages() {
