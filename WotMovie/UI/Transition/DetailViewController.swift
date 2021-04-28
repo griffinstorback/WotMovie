@@ -210,7 +210,7 @@ class DetailViewController: UIViewController {
         
         // add close button to top right corner
         scrollView.addSubview(closeButton)
-        closeButton.anchor(top: statusBarCoverView.bottomAnchor, leading: nil, bottom: nil, trailing: scrollView.trailingAnchor, size: CGSize(width: 54, height: 54))
+        closeButton.anchor(top: statusBarCoverView.bottomAnchor, leading: nil, bottom: nil, trailing: scrollView.trailingAnchor, size: CGSize(width: 60, height: 60))
     }
     
     @objc func handleDismissalPan(gesture: UIPanGestureRecognizer) {

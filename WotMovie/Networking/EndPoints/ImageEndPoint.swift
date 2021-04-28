@@ -8,7 +8,8 @@
 import Foundation
 
 public enum ImageApi {
-    case imageWithPath(path: String)
+    case imageWithPath(path: String) // gets smaller image, for use in grids and lists
+    case originalImageWithPath(path: String) // gets original full size image
 }
 
 extension ImageApi: EndPointType {
@@ -27,6 +28,8 @@ extension ImageApi: EndPointType {
         switch self {
         case .imageWithPath(let path):
             return "w342\(path)"
+        case .originalImageWithPath(let path):
+            return "original\(path)"
         }
     }
     
@@ -36,7 +39,7 @@ extension ImageApi: EndPointType {
     
     var task: HTTPTask {
         switch self {
-        case .imageWithPath:
+        case .imageWithPath, .originalImageWithPath:
             //let urlParameters: [String: Any] = ["api_key": NetworkManager.MovieAPIKey]
             //return .requestParameters(bodyParameters: nil, bodyEncoding: .urlEncoding, urlParameters: urlParameters)
             return .request // don't need api key for images

@@ -107,9 +107,14 @@ class SearchViewController: UIViewController {
         let entityTypesSelectionButton = UIBarButtonItem(title: searchPresenter.getTypesCurrentlyDisplaying().rawValue, style: .done, target: self, action: #selector(selectEntityTypesToDisplay))
         navigationItem.rightBarButtonItem = entityTypesSelectionButton
         
+        /*
+         
+         TODO: is there a point to having sort options for search?
+        
         // bookmark button is actually the sort button.
         searchController.searchBar.setImage(UIImage(named: "sort_icon")?.withTintColor(UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue), for: .bookmark, state: .normal)
         searchController.searchBar.showsBookmarkButton = true
+        */
     }
     
     // right bar item

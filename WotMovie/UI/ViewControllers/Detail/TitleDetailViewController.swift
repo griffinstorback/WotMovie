@@ -82,6 +82,9 @@ class TitleDetailViewController: GuessDetailViewController {
         detailOverviewView.setOverviewText(titleDetailViewPresenter.getOverviewCensored())
         detailOverviewView.setReleaseDate(dateString: titleDetailViewPresenter.getReleaseDate())
         
+        // subscribe to detailOverview's posterImageView's taps
+        detailOverviewView.posterImageView.tapDelegate = self
+        
         // set self as delegate for the loading indicator/error view, to receive events like 'retry button pressed'
         setLoadingIndicatorOrErrorViewDelegate(self)
         
@@ -258,6 +261,21 @@ extension TitleDetailViewController: GuessDetailViewDelegate {
     // FOLLOWING TWO METHODS ARE PART OF GuessDetailViewDelegate, but are satisfied in super class GuessDetailViewController (so don't implement here)
     // func updateItemOnEnterGuessView()
     // func answerWasRevealedDuringAttemptToDismiss()
+}
+
+// when poster image tapped, present full screen image view controller.
+extension TitleDetailViewController: PosterImageViewTapDelegate {
+    func tapped() {
+        // only allow it to present if item is revealed
+        if state != .fullyHidden && state != .hintShown {
+            let fullScreenImageViewController = FullScreenImageViewController(item: titleDetailViewPresenter.item)
+            fullScreenImageViewController.modalPresentationStyle = .overFullScreen
+            fullScreenImageViewController.modalTransitionStyle = .crossDissolve
+            present(fullScreenImageViewController, animated: true)
+        } else {
+            BriefAlertView(title: "Guess or Reveal first").present()
+        }
+    }
 }
 
 extension TitleDetailViewController: LoadingIndicatorOrErrorViewDelegate {

@@ -30,10 +30,17 @@ enum PosterImageViewState {
     }
 }
 
+protocol PosterImageViewTapDelegate: NSObjectProtocol {
+    func tapped()
+}
+
 class PosterImageView: ShrinkOnTouchView {
+    
+    // only register delegate if need to know when its tapped
+    weak var tapDelegate: PosterImageViewTapDelegate?
 
     // don't set state directly, use setState() instance method
-    var state: PosterImageViewState = .hidden
+    private(set) var state: PosterImageViewState = .hidden
     
     private let imageView: UIImageView
     override var bounds: CGRect {
@@ -297,26 +304,13 @@ class PosterImageView: ShrinkOnTouchView {
         }
     }
     
-    // Decided against having posterimageview be the one to shrink when pressed - it was messing
-    // with the collectionview cells.
-    /*override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        print("touch began")
-        setSelected(true)
-    }
-    
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesMoved(touches, with: event)
-        setSelectedIfTouchWithinBoundsOfView(touches)
-    }
-    
+    // shrinking on tap functionality is already done in superclass ShrinkOnTouchView. we override here again to notify possible delegate of tap.
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
-        unselectIfTouchWithinBoundsOfView(touches)
+        
+        if touchIsWithinBoundsOfView(touches) {
+            // notify delegate, if there is one, that this posterimageview was tapped. (used for presenting full screen images in detail views)
+            tapDelegate?.tapped()
+        }
     }
-    
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesCancelled(touches, with: event)
-        setSelected(false)
-    }*/
 }

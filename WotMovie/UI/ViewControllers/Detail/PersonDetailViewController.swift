@@ -90,6 +90,9 @@ class PersonDetailViewController: GuessDetailViewController {
         personDetailViewPresenter.loadPosterImage(completion: personOverviewView.setPosterImage)
         //personOverviewView.setOverviewText(personDetailViewPresenter.getOverview())
         
+        // subscribe to posterimageviews taps
+        personOverviewView.posterImageView.tapDelegate = self
+        
         // set self as delegate for the loading indicator/error view, to receive events like 'retry button pressed'
         setLoadingIndicatorOrErrorViewDelegate(self)
         
@@ -351,6 +354,16 @@ extension PersonDetailViewController: GuessDetailViewDelegate {
     // FOLLOWING TWO METHODS ARE PART OF GuessDetailViewDelegate, but are satisfied in super class GuessDetailViewController (so don't implement here)
     // func updateItemOnEnterGuessView()
     // func answerWasRevealedDuringAttemptToDismiss()
+}
+
+// when poster image tapped, present full screen image view controller.
+extension PersonDetailViewController: PosterImageViewTapDelegate {
+    func tapped() {
+        let fullScreenImageViewController = FullScreenImageViewController(item: personDetailViewPresenter.item)
+        fullScreenImageViewController.modalPresentationStyle = .overFullScreen
+        fullScreenImageViewController.modalTransitionStyle = .crossDissolve
+        present(fullScreenImageViewController, animated: true)
+    }
 }
 
 extension PersonDetailViewController: LoadingIndicatorOrErrorViewDelegate {

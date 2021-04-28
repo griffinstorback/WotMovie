@@ -21,6 +21,8 @@
 		852594CF2633B9000059DF38 /* TutorialPageDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 852594CE2633B9000059DF38 /* TutorialPageDetailViewController.swift */; };
 		852594D42633BB680059DF38 /* TutorialPagePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 852594D32633BB680059DF38 /* TutorialPagePresenter.swift */; };
 		852594D9263890B40059DF38 /* AppStoreReviewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 852594D8263890B40059DF38 /* AppStoreReviewManager.swift */; };
+		852594DE2639DA370059DF38 /* FullScreenImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 852594DD2639DA370059DF38 /* FullScreenImageViewController.swift */; };
+		852594E32639DD550059DF38 /* FullScreenImagePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 852594E22639DD550059DF38 /* FullScreenImagePresenter.swift */; };
 		8527826525BCF67A00FC257A /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8527826425BCF67A00FC257A /* ListViewController.swift */; };
 		8527826A25BCF6C300FC257A /* ListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8527826925BCF6C300FC257A /* ListPresenter.swift */; };
 		8527827525BD3FF100FC257A /* LoadMoreGridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8527827425BD3FF100FC257A /* LoadMoreGridViewController.swift */; };
@@ -170,6 +172,8 @@
 		852594CE2633B9000059DF38 /* TutorialPageDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialPageDetailViewController.swift; sourceTree = "<group>"; };
 		852594D32633BB680059DF38 /* TutorialPagePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialPagePresenter.swift; sourceTree = "<group>"; };
 		852594D8263890B40059DF38 /* AppStoreReviewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreReviewManager.swift; sourceTree = "<group>"; };
+		852594DD2639DA370059DF38 /* FullScreenImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenImageViewController.swift; sourceTree = "<group>"; };
+		852594E22639DD550059DF38 /* FullScreenImagePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenImagePresenter.swift; sourceTree = "<group>"; };
 		8527826425BCF67A00FC257A /* ListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
 		8527826925BCF6C300FC257A /* ListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListPresenter.swift; sourceTree = "<group>"; };
 		8527827425BD3FF100FC257A /* LoadMoreGridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadMoreGridViewController.swift; sourceTree = "<group>"; };
@@ -606,6 +610,7 @@
 				854BD1DE26279C3D0034E2EB /* DataResetViewController.swift */,
 				852594C92633B6A80059DF38 /* TutorialPageViewController.swift */,
 				852594CE2633B9000059DF38 /* TutorialPageDetailViewController.swift */,
+				852594DD2639DA370059DF38 /* FullScreenImageViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -696,6 +701,7 @@
 				85D1787E261E69A300B940C0 /* SearchPresenter.swift */,
 				854BD1E326279CD50034E2EB /* DataResetPresenter.swift */,
 				852594D32633BB680059DF38 /* TutorialPagePresenter.swift */,
+				852594E22639DD550059DF38 /* FullScreenImagePresenter.swift */,
 			);
 			path = Presenters;
 			sourceTree = "<group>";
@@ -946,6 +952,7 @@
 				85CF34AA252E602600A101C9 /* ParameterEncoding.swift in Sources */,
 				854B3E9625537F55003397E0 /* CoreDataStack.swift in Sources */,
 				8501405A254A00830088FA3E /* TouchDelegatingView.swift in Sources */,
+				852594DE2639DA370059DF38 /* FullScreenImageViewController.swift in Sources */,
 				85CF354E25365D3B00A101C9 /* GuessDetailViewController.swift in Sources */,
 				85CF35D32543912300A101C9 /* HorizontalCollectionViewController.swift in Sources */,
 				8501405F254B50C20088FA3E /* EnterGuessPresenter.swift in Sources */,
@@ -1003,6 +1010,7 @@
 				85AAA33E2613A8C1002BBA20 /* CrewListViewController.swift in Sources */,
 				8535964825D8A97000F093BA /* SettingsPresenter.swift in Sources */,
 				85D1787F261E69A300B940C0 /* SearchPresenter.swift in Sources */,
+				852594E32639DD550059DF38 /* FullScreenImagePresenter.swift in Sources */,
 				85905C44256B046A00443348 /* NetworkEnvironment.swift in Sources */,
 				85CF35302536301F00A101C9 /* PropertyWrappers.swift in Sources */,
 				853C679F25CB388E00EBEFBE /* ListCategoryTableViewCell.swift in Sources */,
