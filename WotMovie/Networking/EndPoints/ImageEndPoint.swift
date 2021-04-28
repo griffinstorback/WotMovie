@@ -26,7 +26,7 @@ extension ImageApi: EndPointType {
     var path: String {
         switch self {
         case .imageWithPath(let path):
-            return "w500\(path)"
+            return "w342\(path)"
         }
     }
     

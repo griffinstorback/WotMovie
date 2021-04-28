@@ -134,6 +134,21 @@ final class CoreDataManager: CoreDataManagerProtocol {
     
 // MARK: -- GENERIC METHODS
 
+    // called from AppStoreReviewManager, to decide whether a "Rate this app" pop-up should show
+    func userHasUsedAppEnoughToWarrantAskingForReview() -> Bool {
+        // if user hasn't correctly guessed 5 items yet
+        if fetchMovieGuessedCount() + fetchTVShowGuessedCount() + fetchPersonGuessedCount() < 5 {
+            return false
+        }
+        
+        // if user hasn't revealed 5 items yet
+        if fetchMovieRevealedCount() + fetchTVShowRevealedCount() + fetchPersonRevealedCount() < 5 {
+            return false
+        }
+        
+        return true
+    }
+    
     func getTotalNumberGuessed() -> Int {
         return fetchMovieGuessedCount() + fetchPersonGuessedCount() + fetchTVShowGuessedCount()
     }
@@ -215,12 +230,12 @@ final class CoreDataManager: CoreDataManagerProtocol {
             switch movieOrTVShow.type {
             case .movie:
                 let movie = Movie(movieOrTVShow: movieOrTVShow)
-                return Movie(movieMO: updateOrCreateMovie(movie: movie, context: context))
+                return Movie(movieMO: updateOrCreateMovie(movie: movie, shouldSetLastViewedDate: shouldSetLastViewedDate, context: context))
             case .tvShow:
                 let tvShow = TVShow(movieOrTVShow: movieOrTVShow)
-                return TVShow(tvShowMO: updateOrCreateTVShow(tvShow: tvShow, context: context))
+                return TVShow(tvShowMO: updateOrCreateTVShow(tvShow: tvShow, shouldSetLastViewedDate: shouldSetLastViewedDate, context: context))
             case .person:
-                print("** WARNING: updateOrCreateEntity called on type MovieOrTVShow, but it's type was set to .person - this should NEVER happen.")
+                print("** ERROR: updateOrCreateEntity called on type MovieOrTVShow, but it's type was set to .person - this should NEVER happen.")
                 return nil
             }
         }
@@ -346,7 +361,6 @@ final class CoreDataManager: CoreDataManagerProtocol {
     
     func resetMovieData(context: NSManagedObjectContext? = nil) {
         let context = context ?? coreDataStack.persistentContainer.viewContext
-        print("***** RESET MOVIE DATA STARTED")
         
         // delete all MovieGuessed objects
         deleteAllData("MovieGuessed")
@@ -361,24 +375,19 @@ final class CoreDataManager: CoreDataManagerProtocol {
             let moviesWithHintShown = try context.fetch(movieFetch)
             
             if moviesWithHintShown.count > 0 {
-                print("**** in resetMovieData - \(moviesWithHintShown.count) movies found with hint shown.")
                 for movieWithHintShown in moviesWithHintShown {
                     movieWithHintShown.isHintShown = false
                 }
-            } else {
-                print("**** in resetMovieData - no movies with isHintShown==true found. ")
             }
         } catch {
             print("** ERROR in resetMovieData - could not complete fetch & replace movie.isHintShown==true with false")
         }
         
-        print("***** RESET MOVIE DATA FINISHED")
         coreDataStack.saveContext(context)
     }
     
     func resetTVShowData(context: NSManagedObjectContext? = nil) {
         let context = context ?? coreDataStack.persistentContainer.viewContext
-        print("***** RESET TVShow DATA STARTED")
         
         // delete all TVShowGuessed objects
         deleteAllData("TVShowGuessed")
@@ -393,24 +402,19 @@ final class CoreDataManager: CoreDataManagerProtocol {
             let tvShowsWithHintShown = try context.fetch(tvShowFetch)
             
             if tvShowsWithHintShown.count > 0 {
-                print("**** in resetTVShowData - \(tvShowsWithHintShown.count) tv shows found with hint shown.")
                 for tvShowWithHintShown in tvShowsWithHintShown {
                     tvShowWithHintShown.isHintShown = false
                 }
-            } else {
-                print("**** in resetTVShowData - no tv Shows with isHintShown==true found. ")
             }
         } catch {
             print("** ERROR in resetTVShowData - could not complete fetch & replace tvshow.isHintShown==true with false")
         }
         
-        print("***** RESET TVShow DATA FINISHED")
         coreDataStack.saveContext(context)
     }
     
     func resetPersonData(context: NSManagedObjectContext? = nil) {
         let context = context ?? coreDataStack.persistentContainer.viewContext
-        print("***** RESET Person DATA STARTED")
         
         // delete all PersonGuessed objects
         deleteAllData("PersonGuessed")
@@ -425,46 +429,37 @@ final class CoreDataManager: CoreDataManagerProtocol {
             let peopleWithHintShown = try context.fetch(personFetch)
             
             if peopleWithHintShown.count > 0 {
-                print("**** in resetPersonData - \(peopleWithHintShown.count) people found with hint shown.")
                 for personWithHintShown in peopleWithHintShown {
                     personWithHintShown.isHintShown = false
                 }
-            } else {
-                print("**** in resetPersonData - no people with isHintShown==true found. ")
             }
         } catch {
             print("** ERROR in resetPersonData - could not complete fetch & replace person.isHintShown==true with false")
         }
         
-        print("***** RESET Person DATA FINISHED")
         coreDataStack.saveContext(context)
     }
     
     func resetWatchlistData(context: NSManagedObjectContext? = nil) {
         let context = context ?? coreDataStack.persistentContainer.viewContext
-        print("***** RESET WATCHLIST DATA STARTED")
         
         deleteAllData("MovieWatchlist")
         deleteAllData("TVShowWatchlist")
         
-        print("***** RESET WATCHLIST DATA FINISHED")
         coreDataStack.saveContext(context)
     }
     
     func resetFavoritesData(context: NSManagedObjectContext? = nil) {
         let context = context ?? coreDataStack.persistentContainer.viewContext
-        print("***** RESET WATCHLIST DATA STARTED")
         
         deleteAllData("PersonFavorites")
         
-        print("***** RESET FAVORITES DATA FINISHED")
         coreDataStack.saveContext(context)
     }
     
     // warning: will reset watchlist and favorites data as well.
     func resetAllData(context: NSManagedObjectContext? = nil) {
         let context = context ?? coreDataStack.persistentContainer.viewContext
-        print("\n\n\n******* DELETING ALL:\n")
         
         resetMovieData(context: context)
         resetTVShowData(context: context)
@@ -903,7 +898,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
                 if title.type == .movie {
                     guard let movieOrTVShow = title as? MovieOrTVShow else { continue }
                     let movie = Movie(movieOrTVShow: movieOrTVShow)
-                    let movieMO = updateOrCreateMovie(movie: movie, context: context)
+                    let movieMO = updateOrCreateMovie(movie: movie, shouldSetLastViewedDate: false, context: context)
                     
                     // only add movie if it doesnt already exist on personMOs knownForMovies
                     if !(personMO.knownForMovies?.contains(movieMO) ?? false) {
@@ -913,7 +908,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
                 } else if title.type == .tvShow {
                     guard let movieOrTVShow = title as? MovieOrTVShow else { continue }
                     let tvShow = TVShow(movieOrTVShow: movieOrTVShow)
-                    let tvShowMO = updateOrCreateTVShow(tvShow: tvShow, context: context)
+                    let tvShowMO = updateOrCreateTVShow(tvShow: tvShow, shouldSetLastViewedDate: false, context: context)
                     
                     // only add tv show if it doesnt already exist on personMOs knownForTVShows
                     if !(personMO.knownForTVShows?.contains(tvShowMO) ?? false) {
@@ -1192,7 +1187,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
         let fetchRequest = NSFetchRequest<MovieMO>(entityName: "Movie")
         fetchRequest.fetchLimit = limit
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "lastViewedDate", ascending: false)]
-        //fetchRequest.predicate = NSPredicate(format: "revealed != nil || guessed != nil")
+        fetchRequest.predicate = NSPredicate(format: "lastViewedDate != nil")
         
         do {
             let fetchedMovies: [MovieMO] = try context.fetch(fetchRequest)
@@ -1209,6 +1204,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
         let fetchRequest = NSFetchRequest<TVShowMO>(entityName: "TVShow")
         fetchRequest.fetchLimit = limit
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "lastViewedDate", ascending: false)]
+        fetchRequest.predicate = NSPredicate(format: "lastViewedDate != nil")
         //fetchRequest.predicate = NSPredicate(format: "revealed != nil || guessed != nil")
         
         do {
@@ -1226,6 +1222,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
         let fetchRequest = NSFetchRequest<PersonMO>(entityName: "Person")
         fetchRequest.fetchLimit = limit
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "lastViewedDate", ascending: false)]
+        fetchRequest.predicate = NSPredicate(format: "lastViewedDate != nil")
         //fetchRequest.predicate = NSPredicate(format: "revealed != nil || guessed != nil")
         
         do {

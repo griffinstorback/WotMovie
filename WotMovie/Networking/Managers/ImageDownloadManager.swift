@@ -30,7 +30,12 @@ final class ImageDownloadManager: ImageDownloadManagerProtocol {
     // TODO: currently, this method is called whenever an image leaves the screen. This is a very small computation when nothing to remove, but that's still wasted resources.
     func cancelImageDownload(path: String) {
         if let activeDownload = activeDownloads[path] {
-            activeDownload.cancel()
+            
+            // need to cancel on a background thread, or else it sometimes crashes?
+            DispatchQueue.global().async {
+                activeDownload.cancel()
+            }
+            
             activeDownloads[path] = nil
             print("******* cancelImageDownload - successfully cancelled download for path \(path) (activeDownloads count: \(activeDownloads.count))")
         } else {
@@ -41,10 +46,10 @@ final class ImageDownloadManager: ImageDownloadManagerProtocol {
     func downloadImage(path: String, completion: @escaping (_ image: UIImage?, _ error: String?) -> Void) {
         let nsStringPath = path as NSString
         
-        if let cachedImage = imageCache[nsStringPath] {
+        /*if let cachedImage = imageCache[nsStringPath] {
             completion(cachedImage, nil)
             return
-        }
+        }*/
         
         activeDownloads[path] = imageRouter.requestAndReturnDataTask(.imageWithPath(path: path)) { data, response, error in
             // request returned, so data task is no longer active

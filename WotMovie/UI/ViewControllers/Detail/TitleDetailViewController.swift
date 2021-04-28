@@ -100,7 +100,7 @@ class TitleDetailViewController: GuessDetailViewController {
         case .revealed, .revealedWithNoNextButton, .correct, .correctWithNoNextButton:
             addLoadingIndicatorOrErrorView()
             
-            //detailOverviewView.setTitle(String(titleDetailViewPresenter.getID()) + ": " + titleDetailViewPresenter.getName())    //(UNCOMMENT THIS WHEN LOOKING FOR BAD DESCRIPTIONS - SHOWS THE ITEM ID FOR EASY REFERENCE)
+            //detailOverviewView.setTitle(String(titleDetailViewPresenter.getID()) + ": " + titleDetailViewPresenter.getName())    // easily get id for finding bad desc.
             detailOverviewView.setTitle(titleDetailViewPresenter.getName())
             detailOverviewView.setOverviewText(titleDetailViewPresenter.getOverview()) // uncensor title name from overview
             
@@ -114,7 +114,6 @@ class TitleDetailViewController: GuessDetailViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        // only add info if credits have loaded. otherwise, wait until presenter tells us to reload.
         if titleDetailViewPresenter.creditsHaveLoaded() {
             if state != .fullyHidden {
                 addInfo()

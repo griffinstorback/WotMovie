@@ -63,12 +63,10 @@ class SettingsViewController: UIViewController {
         isDarkModeSwitch.addTarget(self, action: #selector(isDarkModeSwitchChanged), for: .valueChanged)
         isDarkModeSetAutomaticallySwitch.isOn = settingsPresenter.isDarkModeSetAutomaticallyOn()
         isDarkModeSetAutomaticallySwitch.addTarget(self, action: #selector(isDarkModeSetAutomaticallySwitchChanged), for: .valueChanged)
-        
-        //
-        //
-        //
-        //
-        // TEMP - DELETE THIS AFTER TESTING IAP PURCHASES (OR COMMENT OUT)
+    }
+    
+    // DO NOT CALL THIS IN PRODUCTION
+    private func addClearKeychainButtonForTestingPurposes() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "CLEAR KC", style: .plain, target: self, action: #selector(clearKeychain))
     }
     @objc func clearKeychain() { // TEMP - DELETE THIS !

@@ -15,14 +15,32 @@ struct Constants {
     // main screen boxes (Movies, TV Shows, People, along with their image) corner radius ratio
     static let guessCategoryViewRadiusRatio: CGFloat = 1/7
     
+    // both this Movie detail and Person poster images are now same sizes on all devices; keeping them small so that resolution still looks OK.
     struct DetailOverviewPosterImage {
-        
-        // TODO: return larger if running ipad?
-        static let size: CGSize = CGSize(width: 160, height: 240)
+        static var size: CGSize = CGSize(width: 170, height: 255)
+        /*static var size: CGSize {
+            switch UIDevice.current.userInterfaceIdiom {
+            case .phone:
+                return CGSize(width: 170, height: 255)
+            case .pad:
+                return CGSize(width: 170, height: 255)
+            default:
+                return CGSize(width: 170, height: 255)
+            }
+        }*/
     }
-    
     struct PersonOverviewPosterImage {
-        static let size: CGSize = CGSize(width: 200, height: 300)
+        static var size: CGSize = CGSize(width: 170, height: 255)
+        /*static var size: CGSize {
+            switch UIDevice.current.userInterfaceIdiom {
+            case .phone:
+                return CGSize(width: 170, height: 255)
+            case .pad:
+                return CGSize(width: 170, height: 255)
+            default:
+                return CGSize(width: 200, height: 300)
+            }
+        }*/
     }
     
     struct Colors {

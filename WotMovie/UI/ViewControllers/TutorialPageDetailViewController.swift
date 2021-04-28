@@ -95,10 +95,13 @@ class TutorialPageDetailViewController: UIViewController {
             bottomButton.layer.cornerRadius = 10
             bottomButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
             bottomButton.setTitleColor(.white, for: .normal)
-            bottomButton.setTitle("   Get started   ", for: .normal)
+            bottomButton.setTitle("Get started", for: .normal)
             bottomButton.addTarget(self, action: #selector(finishShowingTutorialPages), for: .touchUpInside)
         } else {
-            bottomButton.backgroundColor = .clear
+            bottomButton.backgroundColor = .systemGray6
+            bottomButton.layer.masksToBounds = true
+            bottomButton.layer.cornerRadius = 10
+            bottomButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
             bottomButton.setTitleColor(.secondaryLabel, for: .normal)
             bottomButton.setTitle("Next", for: .normal)
             bottomButton.addTarget(self, action: #selector(nextPageButtonPressed), for: .touchUpInside)

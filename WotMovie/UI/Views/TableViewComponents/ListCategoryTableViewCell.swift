@@ -9,7 +9,16 @@ import UIKit
 
 class ListCategoryTableViewCell: UITableViewCell {
     
-    private let iconImageViewSize = CGSize(width: 40, height: 40)
+    private var iconImageViewSize: CGSize {
+        switch UIDevice.current.userInterfaceIdiom {
+        case .phone:
+            return CGSize(width: 40, height: 40)
+        case .pad:
+            return CGSize(width: 50, height: 50)
+        default:
+            return CGSize(width: 40, height: 40)
+        }
+    }
     
     private let iconImageView: UIImageView
     private let containerView: UIView

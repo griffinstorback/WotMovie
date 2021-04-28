@@ -20,6 +20,7 @@
 		852594CA2633B6A80059DF38 /* TutorialPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 852594C92633B6A80059DF38 /* TutorialPageViewController.swift */; };
 		852594CF2633B9000059DF38 /* TutorialPageDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 852594CE2633B9000059DF38 /* TutorialPageDetailViewController.swift */; };
 		852594D42633BB680059DF38 /* TutorialPagePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 852594D32633BB680059DF38 /* TutorialPagePresenter.swift */; };
+		852594D9263890B40059DF38 /* AppStoreReviewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 852594D8263890B40059DF38 /* AppStoreReviewManager.swift */; };
 		8527826525BCF67A00FC257A /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8527826425BCF67A00FC257A /* ListViewController.swift */; };
 		8527826A25BCF6C300FC257A /* ListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8527826925BCF6C300FC257A /* ListPresenter.swift */; };
 		8527827525BD3FF100FC257A /* LoadMoreGridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8527827425BD3FF100FC257A /* LoadMoreGridViewController.swift */; };
@@ -168,6 +169,7 @@
 		852594C92633B6A80059DF38 /* TutorialPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialPageViewController.swift; sourceTree = "<group>"; };
 		852594CE2633B9000059DF38 /* TutorialPageDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialPageDetailViewController.swift; sourceTree = "<group>"; };
 		852594D32633BB680059DF38 /* TutorialPagePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialPagePresenter.swift; sourceTree = "<group>"; };
+		852594D8263890B40059DF38 /* AppStoreReviewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreReviewManager.swift; sourceTree = "<group>"; };
 		8527826425BCF67A00FC257A /* ListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
 		8527826925BCF6C300FC257A /* ListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListPresenter.swift; sourceTree = "<group>"; };
 		8527827425BD3FF100FC257A /* LoadMoreGridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadMoreGridViewController.swift; sourceTree = "<group>"; };
@@ -580,6 +582,7 @@
 				856FF74F2602DF9500D438A6 /* IAPManager.swift */,
 				856FF75A2605725A00D438A6 /* Keychain.swift */,
 				852F44BF260923570068917F /* PersonGuessing.storekit */,
+				852594D8263890B40059DF38 /* AppStoreReviewManager.swift */,
 			);
 			path = Application;
 			sourceTree = "<group>";
@@ -917,6 +920,7 @@
 				8527827525BD3FF100FC257A /* LoadMoreGridViewController.swift in Sources */,
 				85791AD125C0FC2B00F8FE75 /* ListCategoryGridViewController.swift in Sources */,
 				853C67B325CC8EF500EBEFBE /* LeftAlignedImageCenteredTextButton.swift in Sources */,
+				852594D9263890B40059DF38 /* AppStoreReviewManager.swift in Sources */,
 				8588FD18255F51670054EC17 /* DetailPresenterViewController.swift in Sources */,
 				8586DF422555CC540066EE65 /* PersonDetailViewController.swift in Sources */,
 				85D1787A261E698800B940C0 /* SearchViewController.swift in Sources */,

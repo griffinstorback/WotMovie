@@ -34,6 +34,8 @@ final class NetworkManager: NetworkManagerProtocol {
     
     static let environment: NetworkEnvironment = .production
     static let api3Key = "3a71a701782ff20157039d47ddd62df9"
+    
+    // api4key not currently being used
     static let api4Key = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzYTcxYTcwMTc4MmZmMjAxNTcwMzlkNDdkZGQ2MmRmOSIsInN1YiI6IjVmN2NmNmI2YjdhYmI1MDAzODY1OTE3OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Ux9zSqaWbDu6kR2dkO5Rs8iD7QT1tirxq69aH_of36Y"
     
     private let movieRouter = Router<MovieApi>()

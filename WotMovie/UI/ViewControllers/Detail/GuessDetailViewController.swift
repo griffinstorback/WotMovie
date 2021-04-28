@@ -229,7 +229,7 @@ class GuessDetailViewController: DetailViewController {
     func updateItemOnEnterGuessView() {
         enterGuessViewController.updateItem(item: guessDetailViewPresenter.item)
     }
-    // Call this from presenter when super class (DetailViewController) wants to reveal answer (because user tried to dismiss without revealing/guessing)
+    // (NOT USED ANYMORE) Call this from presenter when super class (DetailViewController) wants to reveal answer (because user tried to dismiss without revealing/guessing)
     func answerWasRevealedDuringAttemptToDismiss() {
         revealAnswer()
     }

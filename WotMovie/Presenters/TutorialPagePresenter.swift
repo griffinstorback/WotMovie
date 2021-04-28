@@ -32,8 +32,8 @@ class TutorialPagePresenter: TutorialPagePresenterProtocol {
     
     let orderedDetailViews: [TutorialPageDetailViewType] = [
         .guessAndReveal,
-        .enterGuess,
         .genres,
+        .enterGuess,
         .browseAndSearch,
         .watchlistAndFavorites,
         .unlockPeople

@@ -13,7 +13,16 @@ class RecentlyViewedCollectionViewHeader: UICollectionReusableView {
     
     // These are static so they can be used in other classes (specifically ListViewController) to
     // calculate header height.
-    static let categoryTableViewCellHeight: CGFloat = 80 // multiply this by # cells to get tableview height
+    static var categoryTableViewCellHeight: CGFloat { // multiply this by # cells to get tableview height
+        switch UIDevice.current.userInterfaceIdiom {
+        case .phone:
+            return 80
+        case .pad:
+            return 120
+        default:
+            return 80
+        }
+    }
     static let recentlyViewedTitleHeight: CGFloat = 90
     static let spaceFromTop: CGFloat = 10
     

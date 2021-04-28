@@ -13,13 +13,13 @@ enum SettingsKeys: String {
     case isDarkMode = "IsDarkMode" // if darkModeSetAutomatic is true, set this value to mirror it. (true means dark mode, false light mode)
     
     case userHasSeenIntroPages = "UserHasSeenIntroPages" // set to true as soon as user has swiped through intro pages (first time launching app)
+    
+    case lastReviewRequestAppVersion = "LastReviewRequestAppVersion" // date of last time user was asked to rate the app
 }
 
 class SettingsManager {
     static let shared = SettingsManager()
     private init() {
-        
-        
         UserDefaults.standard.register(defaults: [
             SettingsKeys.darkModeSetAutomatic.rawValue: true
         ])
@@ -66,6 +66,15 @@ class SettingsManager {
             if newValue == true {
                 UserDefaults.standard.set(isDeviceDarkModeSet(), forKey: SettingsKeys.isDarkMode.rawValue)
             }
+        }
+    }
+    
+    var lastReviewRequestAppVersion: String? {
+        get {
+            return UserDefaults.standard.string(forKey: SettingsKeys.lastReviewRequestAppVersion.rawValue)
+        }
+        set {
+            UserDefaults.standard.setValue(newValue, forKey: SettingsKeys.lastReviewRequestAppVersion.rawValue)
         }
     }
     

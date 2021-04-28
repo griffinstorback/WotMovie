@@ -188,8 +188,8 @@ extension ListViewController: LoadMoreGridViewDelegate {
         let contentOffset = scrollView.contentOffset.y
         
         // hide or unhide the opaque view under status bar, depending on if scrolled to top or not.
-        if contentOffset <= 20 {
-            statusBarCoverView.alpha = max(min(contentOffset/20, 1), 0)
+        if contentOffset <= 10 {
+            statusBarCoverView.alpha = max(min(contentOffset/10, 1), 0)
         } else {
             statusBarCoverView.alpha = 1
         }

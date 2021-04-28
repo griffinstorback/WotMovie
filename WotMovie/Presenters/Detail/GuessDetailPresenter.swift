@@ -184,14 +184,20 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
     func answerWasRevealed() {
         item.isRevealed = true
         coreDataManager.updateOrCreateEntity(entity: item)
+        
+        // check if should ask user to review app
+        AppStoreReviewManager.requestReviewIfAppropriate()
     }
     
     func answerWasRevealedAsCorrect() {
         item.correctlyGuessed = true
         coreDataManager.updateOrCreateEntity(entity: item)
+        
+        // check if should ask user to review app
+        AppStoreReviewManager.requestReviewIfAppropriate()
     }
     
-    // Call this from DetailViewController when user is trying to dismiss detail view without having guessed/revealed.
+    // (NOT USED ANYMORE) Call this from DetailViewController when user is trying to dismiss detail view without having guessed/revealed.
     func answerWasRevealedDuringAttemptToDismiss() {
         detailViewDelegate?.answerWasRevealedDuringAttemptToDismiss()
     }
