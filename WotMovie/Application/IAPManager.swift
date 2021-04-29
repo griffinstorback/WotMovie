@@ -84,7 +84,7 @@ class IAPManager: NSObject {
     
     // essentially does the same as the method below it, but separated them for clarity, for public function scope, and for possible future updates
     func userUnlockedPersonUpgradeByPlaying() {
-        print("***** (IAP MANAGER) UPDATING KEYCHAIN WITH PERSON UPGRADE UNLOCK VIA PLAYING.")
+        //print("***** (IAP MANAGER) UPDATING KEYCHAIN WITH PERSON UPGRADE UNLOCK VIA PLAYING.")
         
         // update keychain to reflect user has UNLOCKED the upgrade
         Keychain.shared[Constants.KeychainStrings.personUpgradePurchasedKey] = Constants.KeychainStrings.personUpgradePurchasedValue
@@ -96,7 +96,7 @@ class IAPManager: NSObject {
     
     // call when user purchases/restores the person category upgrade.
     private func updateKeychainWithPersonUpgradePurchase() {
-        print("***** (IAP MANAGER) UPDATING KEYCHAIN WITH PERSON UPGRADE PURCHASE, AND SENDING NOTIFICATION THAT USER UPGRADED.")
+        //print("***** (IAP MANAGER) UPDATING KEYCHAIN WITH PERSON UPGRADE PURCHASE, AND SENDING NOTIFICATION THAT USER UPGRADED.")
         
         // update keychain to reflect user has PURCHASED the upgrade
         Keychain.shared[Constants.KeychainStrings.personUpgradePurchasedKey] = Constants.KeychainStrings.personUpgradePurchasedValue
@@ -163,7 +163,6 @@ extension IAPManager: SKPaymentTransactionObserver {
             updateKeychainWithPersonUpgradePurchase()
             onBuyProductHandler?(.success(true))
         } else {
-            print("***** (IAP MANAGER) NO IAP PRODUCTS TO RESTORE")
             onBuyProductHandler?(.success(false))
         }
     }
@@ -171,7 +170,6 @@ extension IAPManager: SKPaymentTransactionObserver {
     func paymentQueue(_ queue: SKPaymentQueue, restoreCompletedTransactionsFailedWithError error: Error) {
         if let error = error as? SKError {
             if error.code != .paymentCancelled {
-                print("** ERROR: IAPManager: restore purchase error: \(error.localizedDescription)")
                 onBuyProductHandler?(.failure(error))
             } else {
                 onBuyProductHandler?(.failure(IAPManagerError.paymentWasCancelled))

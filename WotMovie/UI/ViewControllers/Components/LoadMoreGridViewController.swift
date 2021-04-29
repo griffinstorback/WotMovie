@@ -185,8 +185,6 @@ class LoadMoreGridViewController: GridViewController, UICollectionViewDataSource
                     /*if !itemLoadingWasInitiated {
                         collectionView.scrollToItem(at: IndexPath(item: numberOfItems-1, section: 0), at: .bottom, animated: true)
                     }*/
-                } else {
-                    print("**** LoadMoreGridViewController willdisplaysupplementaryview - nothing more to load?")
                 }
             }
         }

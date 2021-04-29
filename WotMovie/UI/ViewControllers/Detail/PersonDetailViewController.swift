@@ -185,21 +185,18 @@ class PersonDetailViewController: GuessDetailViewController {
             addChildToStackView(wroteCollectionView)
             addChildToStackView(actorInCollectionView)
             addChildToStackView(producedCollectionView)
-            print("***** PERSON IS KNOWN FOR DIRECTING")
             return
         } else if personDetailViewPresenter.personIsKnownForProducing() {
             addChildToStackView(producedCollectionView)
             addChildToStackView(directedCollectionView)
             addChildToStackView(wroteCollectionView)
             addChildToStackView(actorInCollectionView)
-            print("***** PERSON IS KNOWN FOR PRODUCING")
             return
         } else if personDetailViewPresenter.personIsKnownForWriting() {
             addChildToStackView(wroteCollectionView)
             addChildToStackView(directedCollectionView)
             addChildToStackView(actorInCollectionView)
             addChildToStackView(producedCollectionView)
-            print("***** PERSON IS KNOWN FOR WRITING")
             return
         }
         
@@ -302,7 +299,6 @@ extension PersonDetailViewController: HorizontalCollectionViewDelegate {
 
 extension PersonDetailViewController: GuessDetailViewDelegate {
     func displayErrorLoadingCredits() {
-        print("error loading detail view")
         displayErrorInLoadingIndicatorOrErrorView()
     }
     

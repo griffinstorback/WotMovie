@@ -118,6 +118,7 @@ class TutorialPageDetailViewController: UIViewController {
     }
     
     @objc private func finishShowingTutorialPages() {
+        SettingsManager.shared.userHasSeenIntroPages = true
         delegate?.dismissTutorial()
     }
     

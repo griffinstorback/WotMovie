@@ -122,11 +122,11 @@ extension GuessGridViewController: GuessGridViewDelegate {
     }
     
     func displayItems() {
-        print("displayitems")
+        //print("displayitems")
     }
     
     func displayErrorLoadingItems() {
-        print("displayErrorLoadingitems")
+        BriefAlertView(title: "Error loading items").present()
     }
     
     func reloadData() {

@@ -68,7 +68,7 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
             
             // for now, don't do any updates in this observer unless there are new elements to add/remove.
             guard items.count != oldValue.count else {
-                print("*** didSet items.count is same as oldValue.count - not reloading.")
+                //print("*** didSet items.count is same as oldValue.count - not reloading.")
                 return
             }
             
@@ -128,17 +128,15 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
         // the filter looks a bit convoluted, but simply evaluates to: if overview is empty or nil
         if let movies = newItems as? [Movie] {
             newItems = movies.filter { !($0.overview?.isEmpty ?? true) }
-            print("Movie objects with nil overview: ", movies.filter { $0.overview?.isEmpty ?? true })
+            //print("Movie objects with nil overview: ", movies.filter { $0.overview?.isEmpty ?? true })
         } else if let tvShows = newItems as? [TVShow] {
             newItems = tvShows.filter { !($0.overview?.isEmpty ?? true) }
-            print("TV objects with nil posterPath: ", tvShows.filter { $0.overview?.isEmpty ?? true })
-        } else if let people = newItems as? [Person] {
+            //print("TV objects with nil posterPath: ", tvShows.filter { $0.overview?.isEmpty ?? true })
+        }/* else if let people = newItems as? [Person] {
             
             // TODO? : Filter out any Person object with undesirable attributes
             
-            //newItems = people.filter { $0.posterPath != nil }
-            //print("Person objects with nil posterPath: ", people.filter { $0.posterPath == nil })
-        }
+        }*/
         
         // remove items without a poster image
         newItems = newItems.filter { $0.posterPath != nil }
@@ -150,7 +148,7 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
         newItems = newItems.filter { !$0.isRevealed }//&& $0.lastViewedDate ?? Date() > Date() }
         
         // TODO: remove this for production
-        checkDuplicates(newItems)
+        //checkDuplicates(newItems)
         
         self.items += newItems
     }
@@ -320,7 +318,7 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
         guard nextPage < 1000 else { return } // in case of bug, don't just keep trying to load new pages forever.
         
         if isLoading {
-            print("*** GuessGridPresenter.loadNextPageOfItems() - ABORTING ATTEMPT TO QUERY PAGE \(nextPage) (isLoading is true)")
+            //print("*** GuessGridPresenter.loadNextPageOfItems() - ABORTING ATTEMPT TO QUERY PAGE \(nextPage) (isLoading is true)")
             return
         }
         isLoading = true
@@ -331,16 +329,16 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
                     self.nextPage += 1
                     self.isLoading = false
                     
-                    print("*** GuessGridPresenter.loadNextPageOfItems() - got page \(self.nextPage-1) from core data")
+                    //print("*** GuessGridPresenter.loadNextPageOfItems() - got page \(self.nextPage-1) from core data")
                     if self.items.count < 20 {
-                        print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is only \(self.items.count), so loading another page (page \(self.nextPage))...")
+                        //print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is only \(self.items.count), so loading another page (page \(self.nextPage))...")
                         
                         // dispatch the request on main queue, so that isLoading semaphore is thread safe
                         DispatchQueue.main.async {
                             self.loadNextPageOfItemsAsync()
                         }
                     } else {
-                        print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is \(self.items.count), so we're done.")
+                        //print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is \(self.items.count), so we're done.")
                     }
                 } else {
                     // page from core data came back nil or empty - get it from the network.
@@ -349,20 +347,20 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
                             self.nextPage += 1
                             self.isLoading = false
                             
-                            print("*** GuessGridPresenter.loadNextPageOfItems() - got page \(self.nextPage-1) from network")
+                            //print("*** GuessGridPresenter.loadNextPageOfItems() - got page \(self.nextPage-1) from network")
                             if self.items.count < 20 {
-                                print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is only \(self.items.count), so loading another page (page \(self.nextPage))...")
+                                //print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is only \(self.items.count), so loading another page (page \(self.nextPage))...")
                                 
                                 // dispatch the request on main queue, so that isLoading semaphore is thread safe
                                 DispatchQueue.main.async {
                                     self.loadNextPageOfItemsAsync()
                                 }
                             } else {
-                                print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is \(self.items.count), so we're done.")
+                                //print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is \(self.items.count), so we're done.")
                             }
                         } else {
                             // network request failed - still increment nextPage, in case there was trouble with just that one page.
-                            print("** ERROR: trouble loading page \(self.nextPage) for type \(self.category) - incrementing to page \(self.nextPage + 1), but not retrying here.")
+                            //print("** ERROR: trouble loading page \(self.nextPage) for type \(self.category) - incrementing to page \(self.nextPage + 1), but not retrying here.")
                             self.nextPage += 1
                             self.isLoading = false
                         }
@@ -381,20 +379,20 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
                     self.nextPage += 1
                     self.isLoading = false
                     
-                    print("*** GuessGridPresenter.loadNextPageOfItems() - got page \(self.nextPage-1) from network")
+                    //print("*** GuessGridPresenter.loadNextPageOfItems() - got page \(self.nextPage-1) from network")
                     if self.items.count < 20 {
-                        print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is only \(self.items.count), so loading another page (page \(self.nextPage))...")
+                        //print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is only \(self.items.count), so loading another page (page \(self.nextPage))...")
                         
                         // dispatch the request on main queue, so that isLoading semaphore is thread safe
                         DispatchQueue.main.async {
                             self.loadNextPageOfItemsSync()
                         }
                     } else {
-                        print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is \(self.items.count), so we're done.")
+                        //print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is \(self.items.count), so we're done.")
                     }
                 } else {
                     // network request failed - still increment nextPage, in case there was trouble with just that one page.
-                    print("** ERROR: trouble loading page \(self.nextPage) for type \(self.category) - incrementing to page \(self.nextPage + 1), but not retrying here.")
+                    //print("** ERROR: trouble loading page \(self.nextPage) for type \(self.category) - incrementing to page \(self.nextPage + 1), but not retrying here.")
                     self.nextPage += 1
                     self.isLoading = false
                 }
@@ -403,12 +401,12 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
             nextPage += 1
             isLoading = false
             
-            print("*** GuessGridPresenter.loadNextPageOfItems() - got page \(nextPage-1) from core data")
+            //print("*** GuessGridPresenter.loadNextPageOfItems() - got page \(nextPage-1) from core data")
             if self.items.count < 20 {
-                print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is only \(self.items.count), so loading another page (page \(nextPage))...")
+                //print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is only \(self.items.count), so loading another page (page \(nextPage))...")
                 loadNextPageOfItemsSync()
             } else {
-                print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is \(self.items.count), so we're done.")
+                //print("*** GuessGridPresenter.loadNextPageOfItems() - items.count is \(self.items.count), so we're done.")
             }
         }
         
@@ -446,7 +444,7 @@ class GuessGridPresenter: NSObject, GuessGridPresenterProtocol {
     
     // returns true if successful
     private func getPageFromNetworkThenCacheInCoreData(page: Int, completion: @escaping (_ success: Bool) -> Void) {
-        print("** Retrieving grid of type \(category) (p. \(page)) items from network..")
+        //print("** Retrieving grid of type \(category) (p. \(page)) items from network..")
         if category == .movie {
             networkManager.getListOfMoviesByGenre(id: currentlyDisplayingGenre.id, page: page) { [weak self] movies, error in
                 if let error = error {

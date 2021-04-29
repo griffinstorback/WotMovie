@@ -135,7 +135,6 @@ class EnterGuessViewController: UIViewController {
                 self.view.layoutIfNeeded()
             },
             completion: { [weak self] _ in
-                print("done animation")
                 self?.scrollToBottom(animated: true)
             }
         )
@@ -158,9 +157,7 @@ extension EnterGuessViewController: UITableViewDelegate, UITableViewDataSource {
         resultsTableView.alpha = 0
         
         resultsTableView.backgroundColor = UIColor.black.withAlphaComponent(0.1)
-        
-        // TODO: give results tableview blurred background
-        
+                
         resultsTableView.separatorColor = .separator
         resultsTableView.delegate = self
         resultsTableView.dataSource = self

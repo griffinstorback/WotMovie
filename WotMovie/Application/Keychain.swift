@@ -29,17 +29,17 @@ class Keychain {
         if SecItemCopyMatching(query, nil) == noErr {
             if let dictData = objectData {
                 let status = SecItemUpdate(query, NSDictionary(dictionary: [kSecValueData: dictData]))
-                print("** Update status: ", status)
+                //print("** Update status: ", status)
             } else {
                 let status = SecItemDelete(query)
-                print("** Delete status: ", status)
+                //print("** Delete status: ", status)
             }
         } else {
             // create new
             if let dictData = objectData {
                 query.setValue(dictData, forKey: kSecValueData as String)
                 let status = SecItemAdd(query, nil)
-                print("** Add status: ", status)
+                //print("** Add status: ", status)
             }
         }
     }
@@ -55,7 +55,7 @@ class Keychain {
         guard let resultsDict = result as? NSDictionary,
               let resultsData = resultsDict.value(forKey: kSecValueData as String) as? Data,
               status == noErr else {
-            print("** Load status: ", status)
+            //print("** Load status: ", status)
             return nil
         }
         

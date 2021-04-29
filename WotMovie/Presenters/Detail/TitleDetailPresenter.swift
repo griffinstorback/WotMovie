@@ -311,12 +311,10 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
     func getGenres(completion: @escaping (_ genres: String?) -> Void) {
         // first, try to load the genres from core data
         if let genresString = getGenresFromCoreData() {
-            print("*** Got genres from core data, string: \(genresString)")
             completion(genresString)
             return
         }
         
-        print("*** No genres found in core data, fetching from network")
         getGenresFromNetworkThenCacheInCoreData(completion: completion)
     }
     
@@ -417,8 +415,6 @@ class TitleDetailPresenter: GuessDetailPresenter, TitleDetailPresenterProtocol {
         // if empty list was returned, means there is no genres in core data
         if genres.count > 0 {
             return getGenresStringFor(genres: genres)
-        } else {
-            print("** got no genres from core data")
         }
         
         return nil

@@ -39,18 +39,18 @@ final class ImageDownloadManager: ImageDownloadManagerProtocol {
             
             activeDownloads[path] = nil
             print("******* cancelImageDownload - successfully cancelled download for path \(path) (activeDownloads count: \(activeDownloads.count))")
-        } else {
+        }/* else {
             print("******* cancelImageDownload - NO ACTIVE DOWNLOAD found for path \(path) (activeDownloads count: \(activeDownloads.count))")
-        }
+        }*/
     }
     
     func downloadImage(path: String, completion: @escaping (_ image: UIImage?, _ error: String?) -> Void) {
         let nsStringPath = path as NSString
         
-        /*if let cachedImage = imageCache[nsStringPath] {
+        if let cachedImage = imageCache[nsStringPath] {
             completion(cachedImage, nil)
             return
-        }*/
+        }
         
         activeDownloads[path] = imageRouter.requestAndReturnDataTask(.imageWithPath(path: path)) { data, response, error in
             // request returned, so data task is no longer active (do this on main thread, causes crashes otherwise)

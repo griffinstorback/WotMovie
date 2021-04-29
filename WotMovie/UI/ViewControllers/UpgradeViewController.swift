@@ -120,8 +120,6 @@ class UpgradeViewController: UIViewController {
         infoLabelsTitle.attributedText = getWotMoviePeopleTitleString()
         
         infoLabelsStackView.axis = .vertical
-        //infoLabelsStackView.layoutMargins = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
-        //infoLabelsStackView.isLayoutMarginsRelativeArrangement = true
         infoLabelsStackView.spacing = 15
         
         infoLabel1Stack.axis = .horizontal
@@ -161,7 +159,8 @@ class UpgradeViewController: UIViewController {
         bottomContainerItemSeparator.textColor = .secondaryLabel
         bottomContainerItemSeparator.textAlignment = .center
         
-        buyUpgradeButton.setTitle("Unlock now - $1.29", for: .normal)
+        
+        buyUpgradeButton.setTitle(getUnlockPriceString(), for: .normal)
         buyUpgradeButton.setTitleColor(.white, for: .normal)
         buyUpgradeButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         buyUpgradeButton.backgroundColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue
@@ -246,6 +245,18 @@ class UpgradeViewController: UIViewController {
         bottomSpacingView.anchorSize(height: bottomContainer.heightAnchor, width: nil)
     }
     
+    private func getUnlockPriceString() -> String {
+        let priceString: String
+        
+        if let localizedPrice = upgradePresenter.getLocalizedPrice() {
+            priceString = " - \(localizedPrice)"
+        } else {
+            priceString = ""
+        }
+        
+        return "Unlock now" + priceString
+    }
+    
     private func getWotMoviePeopleTitleString() -> NSMutableAttributedString {
         let proTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 24, weight: .bold), NSAttributedString.Key.foregroundColor: UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue]
         let proText = NSMutableAttributedString(string: " People", attributes: proTextAttributes)
@@ -282,11 +293,11 @@ class UpgradeViewController: UIViewController {
     @objc func buyUpgradeButtonPressed() {
         if let deviceCanMakePayments = upgradePresenter.purchasePersonGuessingUpgrade() {
             if !deviceCanMakePayments {
-                print("***** DEVICE CANNOT MAKE PAYMENTS. SHOW ALERT")
+                BriefAlertView(title: "Error purchasing").present()
                 return
             }
         } else {
-            print("***** PRODUCTS LIST WAS EMPTY")
+            BriefAlertView(title: "Error retrieving purchase").present()
             return
         }
     }
@@ -382,14 +393,16 @@ class UpgradeViewController: UIViewController {
 
 extension UpgradeViewController: UpgradeViewDelegate {
     func reloadData() {
-        print("***** UPGRADE VIEW reload data")
         
         // set the three example person images.
         loadExamplePersonImages()
+        
+        // set localized price on unlock now button - if it hasn't already been set
+        buyUpgradeButton.setTitle(getUnlockPriceString(), for: .normal)
     }
     
     func displayError() {
-        print("***** ERROR IN UPGRADE VIEW CONTROLLER: \(upgradePresenter.error)")
+        print("** ERROR IN UPGRADE VIEW CONTROLLER: \(upgradePresenter.error)")
     }
     
     func upgradeWasPurchased() {

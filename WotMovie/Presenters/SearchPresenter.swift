@@ -100,6 +100,7 @@ class SearchPresenter: SearchPresenterProtocol {
         typesDisplayed = .all
         
         // TODO: do something about sort paramters - see what's avaible for searching, what's feasible, what's worth it to implement, whether or not to just scrap it.
+        // Its not being used here currently.
         sortParameters = SortParameters(categoryType: .allGuessed)
         
         // Use a bit of combine, to easily get that debounce functionality, to prune redundant searches.

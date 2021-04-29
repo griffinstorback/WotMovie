@@ -158,10 +158,8 @@ class UpgradePresenter: UpgradePresenterProtocol {
             case .success(let success):
                 if success {
                     // did finish restoring purchased products
-                    print("**** DID FINISH RESTORING PURCHASED PRODUCTS")
                 } else {
                     // did finish restoring purchases with 0 products
-                    print("**** DID FINISH RESTORING PURCHASED PRODUCTS WITH 0 PRODUCTS")
                 }
             case .failure(let error):
                 self.error = error
@@ -179,22 +177,15 @@ class UpgradePresenter: UpgradePresenterProtocol {
     func loadExamplePeople() {
         if !loadExamplePeopleFromCoreData() {
             loadExamplePeopleFromNetwork() { [weak self] success in
-                if success {
-                    print("**** GOT EXAMPLE PEOPLE FROM NETWORK. (\(self?.examplePeople.count))")
-                } else {
-                    print("**** FAILED TO GET EXAMPLE PEOPLE FROM NETWORK.")
+                if !success {
                     // try one more time
                     self?.loadExamplePeopleFromNetwork() { [weak self] success in
-                        if success {
-                            print("** **** GOT EXAMPLE PEOPLE FROM NETWORK (AFTER FAILURE. (\(self?.examplePeople.count))")
-                        } else {
-                            print("** **** FAILED (TWICE!) TO GET EXAMPLE PEOPLE FROM NETWORK.")
+                        if !success {
+                            print("** FAILED (TWICE!) TO GET EXAMPLE PEOPLE FROM NETWORK.")
                         }
                     }
                 }
             }
-        } else {
-            print("**** GOT EXAMPLE PEOPLE FROM CORE DATA. (\(examplePeople.count))")
         }
     }
     

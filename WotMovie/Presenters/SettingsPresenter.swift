@@ -133,7 +133,6 @@ class SettingsPresenter: SettingsPresenterProtocol {
         guard row < sections[section].count else { return }
         
         let selectedRow = sections[section][row]
-        print("*** SELECTED \(selectedRow)")
         
         switch selectedRow {
         case .about:
@@ -148,13 +147,13 @@ class SettingsPresenter: SettingsPresenterProtocol {
                 case .success(let success):
                     if success {
                         // did finish restoring purchased products
-                        print("***** DID FINISH RESTORING PURCHASED PRODUCTS")
+                        self.settingsViewDelegate?.presentBriefAlert(title: "Products restored")
                     } else {
                         // did finish restoring purchases with 0 products
-                        print("***** DID FINISH RESTORING PURCHASED PRODUCTS WITH 0 PRODUCTS")
+                        self.settingsViewDelegate?.presentBriefAlert(title: "No products found to restore")
                     }
                 case .failure(let error):
-                    print("***** ERROR RESTORING PURCHASES: \(error)")
+                    print("** ERROR RESTORING PURCHASES: \(error)")
                 }
             }
         case .dataReset:

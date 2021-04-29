@@ -648,7 +648,6 @@ final class CoreDataManager: CoreDataManagerProtocol {
         let context = context ?? coreDataStack.persistentContainer.viewContext
         
         let movieMO = fetchMovie(id: movie.id, context: context) ?? {
-            print("** UPDATE MOVIE: Movie (\(movie.name)) not found, creating new movieMO.")
             let movieMO = MovieMO(context: context)
             movieMO.id = Int64(movie.id)
             movieMO.isHintShown = movie.isHintShown
@@ -697,13 +696,11 @@ final class CoreDataManager: CoreDataManagerProtocol {
             if let genreMO = fetchMovieGenre(id: genreID, context: context) {
                 // only add genre if it doesnt already exist on movie object
                 if !(movieMO.genres?.contains(genreMO) ?? false) {
-                    print("** UPDATE MOVIE - adding EXISTING genreMO: \(genreMO)")
                     movieMO.addObject(value: genreMO, for: "genres")
                 }
             } else {
                 let genreMO = MovieGenreMO(context: context)
                 genreMO.id = Int64(genreID)
-                print("** UPDATE MOVIE - adding NEW genreMO: \(genreMO)")
                 movieMO.addObject(value: genreMO, for: "genres")
             }
         }
@@ -748,7 +745,6 @@ final class CoreDataManager: CoreDataManagerProtocol {
         let context = context ?? coreDataStack.persistentContainer.viewContext
         
         let tvShowMO = fetchTVShow(id: tvShow.id, context: context) ?? {
-            print("** UPDATE TV SHOW: NO PERSON FOUND FOR \(tvShow.name), CREATING ONE NOW")
             let tvShowMO = TVShowMO(context: context)
             tvShowMO.id = Int64(tvShow.id)
             tvShowMO.isHintShown = tvShow.isHintShown
@@ -797,13 +793,11 @@ final class CoreDataManager: CoreDataManagerProtocol {
             if let genreMO = fetchTVShowGenre(id: genreID, context: context) {
                 // only add genre if it doesnt already exist on tvshow object
                 if !(tvShowMO.genres?.contains(genreMO) ?? false) {
-                    print("** UPDATE TV SHOW - adding EXISTING genreMO: \(genreMO)")
                     tvShowMO.addObject(value: genreMO, for: "genres")
                 }
             } else {
                 let genreMO = TVShowGenreMO(context: context)
                 genreMO.id = Int64(genreID)
-                print("** UPDATE TV SHOW - adding NEW genreMO: \(genreMO)")
                 tvShowMO.addObject(value: genreMO, for: "genres")
             }
         }
@@ -846,7 +840,6 @@ final class CoreDataManager: CoreDataManagerProtocol {
         
         // get existing person or create new one and set its id
         let personMO = fetchPerson(id: person.id, context: context) ?? {
-            print("** UPDATE PERSON: NO PERSON FOUND FOR \(person.name), CREATING ONE NOW")
             let personMO = PersonMO(context: context)
             personMO.id = Int64(person.id)
             personMO.isHintShown = person.isHintShown
@@ -902,7 +895,6 @@ final class CoreDataManager: CoreDataManagerProtocol {
                     
                     // only add movie if it doesnt already exist on personMOs knownForMovies
                     if !(personMO.knownForMovies?.contains(movieMO) ?? false) {
-                        print("** UPDATE PERSON - ADDING MOVIE TO KNOWN FOR MOVIES: \(movieMO)")
                         personMO.addObject(value: movieMO, for: "knownForMovies")
                     }
                 } else if title.type == .tvShow {
@@ -912,7 +904,6 @@ final class CoreDataManager: CoreDataManagerProtocol {
                     
                     // only add tv show if it doesnt already exist on personMOs knownForTVShows
                     if !(personMO.knownForTVShows?.contains(tvShowMO) ?? false) {
-                        print("** UPDATE PERSON - ADDING TV SHOW TO KNOWN FOR TVSHOWS: \(tvShowMO)")
                         personMO.addObject(value: tvShowMO, for: "knownForTVShows")
                     }
                 }
@@ -995,7 +986,6 @@ final class CoreDataManager: CoreDataManagerProtocol {
         let context = context ?? coreDataStack.persistentContainer.viewContext
         
         let moviePageMO = fetchMoviePageMO(pageNumber, genreID, context: context) ?? {
-            print("** UPDATE MOVIE PAGE: no movie page found for page \(pageNumber), genre \(genreID), creating one now")
             let pageMO = MoviePageMO(context: context)
             pageMO.genreID = Int64(genreID)
             pageMO.pageNumber = Int64(pageNumber)
@@ -1071,7 +1061,6 @@ final class CoreDataManager: CoreDataManagerProtocol {
         let context = context ?? coreDataStack.persistentContainer.viewContext
         
         let tvShowPageMO = fetchTVShowPageMO(pageNumber, genreID, context: context) ?? {
-            print("** UPDATE TV SHOW PAGE: no tv show page found for page \(pageNumber), genre \(genreID), creating one now")
             let pageMO = TVShowPageMO(context: context)
             pageMO.genreID = Int64(genreID)
             pageMO.pageNumber = Int64(pageNumber)
@@ -1147,7 +1136,6 @@ final class CoreDataManager: CoreDataManagerProtocol {
         let context = context ?? coreDataStack.persistentContainer.viewContext
         
         let personPageMO = fetchPersonPageMO(pageNumber, context: context) ?? {
-            print("** UPDATE PERSON PAGE: no person page found for page \(pageNumber), creating one now")
             let pageMO = PersonPageMO(context: context)
             pageMO.pageNumber = Int64(pageNumber)
             return pageMO
@@ -1657,7 +1645,6 @@ final class CoreDataManager: CoreDataManagerProtocol {
         
         do {
             let fetchedGenres = try context.fetch(genreFetch)
-            print("FETCHED Genres: \(fetchedGenres)")
             
             if fetchedGenres.count > 0 {
                 if fetchedGenres.count > 1 {

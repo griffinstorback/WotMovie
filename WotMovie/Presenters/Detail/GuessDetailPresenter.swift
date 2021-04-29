@@ -52,6 +52,7 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
         }
     }
     
+    // not used atm
     var crewTypes: [Department] = [] {
         didSet {
             print(crewTypes)
@@ -93,7 +94,6 @@ class GuessDetailPresenter: GuessDetailPresenterProtocol {
     func updateEntityInCoreData(_ entity: Entity?) {
         if let entity = entity {
             DispatchQueue.global().async {
-                print("***** entity of type \(entity.type) (name: \(entity.name)) retrieved from details object, updating entity in Core Data now, on BG thread.")
                 
                 // Importantly, DON'T SET lastViewedDate - we have to be careful when setting this, to not set it when the item is still .fullyHidden (i.e. is
                 //  not guessed or revealed). The other method in this class reloadItemFromCoreData(), will be called from within viewDidAppear

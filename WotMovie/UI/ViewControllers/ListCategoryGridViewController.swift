@@ -91,15 +91,8 @@ class ListCategoryGridViewController: UIViewController {
             let entityTypesSelectionButton = UIBarButtonItem(title: listCategoryGridPresenter.getTypesCurrentlyDisplaying().rawValue, style: .done, target: self, action: #selector(selectEntityTypesToDisplay))
             navigationItem.rightBarButtonItem = entityTypesSelectionButton
         case .personFavorites:
-            // Maybe instead of "All genres" in top right, have "All job types" with a drop down
-            // with options e.g. "Actor/Actress", "Director", etc.
-            // --- prob not now that types are in top right instead of genre.
-            // ------- prob should have job types under sort menu instead
             break
         case .allGuessed:
-            
-            // TODO: only show all genres button if movies or tv shows only are selected,
-            //       as genres for people makes no sense? (also could have "all jobs" for person)
             let entityTypesSelectionButton = UIBarButtonItem(title: listCategoryGridPresenter.getTypesCurrentlyDisplaying().rawValue, style: .done, target: self, action: #selector(selectEntityTypesToDisplay))
             navigationItem.rightBarButtonItem = entityTypesSelectionButton
         case .allRevealed:

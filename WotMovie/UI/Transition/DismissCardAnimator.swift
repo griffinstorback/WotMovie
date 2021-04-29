@@ -68,7 +68,7 @@ final class DismissCardTransitionDriver {
         // Basically, use the state of the poster image view on detail screen, but if it is 'correctlyGuessedWithoutCheckmark'
         // change it to 'correctlyGuessed' so that checkmark will show on transition to grid
         let posterImageState: PosterImageViewState = screens.presented.posterImageView.state == .correctlyGuessedWithoutCheckmark ? .correctlyGuessed : screens.presented.posterImageView.state
-        print("***** presented detail poster image state: \(screens.presented.posterImageView.state), while computed state: \(posterImageState)")
+        //print("***** presented detail poster image state: \(screens.presented.posterImageView.state), while computed state: \(posterImageState)")
         cardDetailPosterImageViewCopy = PosterImageView(state: posterImageState)
         
         // If a person type was presented, and was not guessed or revealed, it needs to animate back to a hidden state while on the grid.

@@ -22,9 +22,7 @@ enum AppStoreReviewManager {
         let lastVersion = settingsManager.lastReviewRequestAppVersion
         
         if lastVersion == nil || lastVersion != currentVersion {
-            print("****************** lastVersion was found to be \(lastVersion)")
             if coreDataManager.userHasUsedAppEnoughToWarrantAskingForReview() {
-                print("****************** core data manager says its ok to ask for review")
                 SKStoreReviewController.requestReview()
                 settingsManager.lastReviewRequestAppVersion = currentVersion
             }

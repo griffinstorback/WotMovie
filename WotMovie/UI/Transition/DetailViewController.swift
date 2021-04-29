@@ -8,7 +8,7 @@
 import UIKit
 import Appodeal
 
-// Detail modal must extend this class
+// Base class of Detail Views (Title, Person)
 class DetailViewController: UIViewController {
     
     weak var transitionPresenter: TransitionPresenterProtocol?
@@ -120,7 +120,8 @@ class DetailViewController: UIViewController {
         
         if let banner = Appodeal.banner() {
             let bannerHeight = banner.frame.height
-            print("*** ADDING BANNER, SIZE: \(banner.frame)")
+            //print("*** ADDING BANNER, SIZE: \(banner.frame)")
+            
             // add the banner view
             topBannerAdView = banner
             statusBarCoverView.addSubview(topBannerAdView)
@@ -129,8 +130,6 @@ class DetailViewController: UIViewController {
             // add spacing to top of scrollview content, so that banner doesnt overlay the checkmark/title
             spacingFromTop.isHidden = false
             spacingFromTopHeightConstraint?.constant = bannerHeight
-        } else {
-            print("**** NO BANNER returned from Appodeal.banner()")
         }
     }
     
@@ -323,11 +322,11 @@ class DetailViewController: UIViewController {
         
         switch entityType {
         case .movie:
-            BriefAlertView(title: "Guess or reveal the Movie before closing").present(duration: 2.0)
+            BriefAlertView(title: "Guess or Reveal the Movie before closing").present()
         case .tvShow:
-            BriefAlertView(title: "Guess or reveal the TV Show before closing").present(duration: 2.0)
+            BriefAlertView(title: "Guess or Reveal the TV Show before closing").present()
         case .person:
-            BriefAlertView(title: "Guess or reveal the Person before closing").present(duration: 2.0)
+            BriefAlertView(title: "Guess or Reveal the Person before closing").present()
         }
     
         /* OLD WAY not used now, because a single brief message is better:
@@ -430,25 +429,25 @@ extension DetailViewController {
 
 extension DetailViewController: AppodealBannerDelegate {
     func bannerDidLoadAdIsPrecache(_ precache: Bool) {
-        print("*** BANNER DID LOAD AD IS PRECACHE")
+        //print("*** BANNER DID LOAD AD IS PRECACHE")
     }
     
     func bannerDidShow() {
-        print("*** BANNER DID SHOW")
+        //print("*** BANNER DID SHOW")
     }
     
     // banner failed to load
     func bannerDidFailToLoadAd() {
-        print("*** BANNER DID FAIL TO LOAD AD")
+        //print("*** BANNER DID FAIL TO LOAD AD")
     }
     
     // banner was clicked
     func bannerDidClick() {
-        print("*** BANNER DID CLICK")
+        //print("*** BANNER DID CLICK")
     }
     
     // banner did expire and could not be shown
     func bannerDidExpired() {
-        print("*** BANNER DID EXPIRED")
+        //print("*** BANNER DID EXPIRED")
     }
 }

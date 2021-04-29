@@ -114,6 +114,6 @@ class StatsPresenter: StatsPresenterProtocol {
         let row = indexPath.row
         guard row < section.numberOfStatRows else { return }
         
-        print("** DO SOMETHING?")
+        print("** TODO: SOMETHING?")
     }
 }

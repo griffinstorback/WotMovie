@@ -89,11 +89,10 @@ final class ImageCacheManager {
     // insert cached image at key. (DONT use publicly - use subscript)
     private func insertImage(_ cachedImage: CachedImage) {
         let key = cachedImage.key as NSString
-        //print("***** INSERTING IMAGE INTO CACHE (key: \(cachedImage.key))")
         imageCache.setObject(cachedImage, forKey: key)
-        if keyTracker.keys.insert(key).inserted {
+        /*if keyTracker.keys.insert(key).inserted {
             print("*****   KEY WAS INSERTED IN KEYTRACKER. KEYS COUNT: \(keyTracker.keys.count)")
-        }
+        }*/
     }
     
     // Get the image data (if it exists) associated with the key
@@ -136,12 +135,12 @@ extension ImageCacheManager {
                 
                 // don't save to disk less items than there already are (disk has max maxNumberOfItemsToPersist - we don't want to rewrite 150 with 5, for example.)
                 if keyTracker.keys.count >= numberOfPersistedCachedItems {
-                    print("***** SAVING CACHE TO DISK - keyTracker has \(keyTracker.keys.count) keys, while numberOfPersistedCachedItems was set as \(numberOfPersistedCachedItems)")
+                    //print("***** SAVING CACHE TO DISK - keyTracker has \(keyTracker.keys.count) keys, while numberOfPersistedCachedItems was set as \(numberOfPersistedCachedItems)")
                     if saveToDisk() {
                         numberOfCachedItemsSinceSaveToDisk = 0
                     }
                 } else {
-                    print("***** NOT SAVING CACHE TO DISK - keyTracker has \(keyTracker.keys.count) keys, while numberOfPersistedCachedItems was set as \(numberOfPersistedCachedItems)")
+                    //print("***** NOT SAVING CACHE TO DISK - keyTracker has \(keyTracker.keys.count) keys, while numberOfPersistedCachedItems was set as \(numberOfPersistedCachedItems)")
                 }
             }
         }
@@ -198,7 +197,7 @@ extension ImageCacheManager: Codable {
         let fileURL = folderURLs[0].appendingPathComponent(ImageCacheManager.cacheFilename)
         
         // write data in this image cache manager to the URL
-        print("***** SAVING CACHE DATA TO DISK AT URL: \(fileURL)")
+        //print("***** SAVING CACHE DATA TO DISK AT URL: \(fileURL)")
         do {
             let data = try JSONEncoder().encode(self)
             try data.write(to: fileURL)
@@ -217,7 +216,7 @@ extension ImageCacheManager: Codable {
             let data = try Data(contentsOf: fileURL)
             let storedImageCacheManager = try JSONDecoder().decode(ImageCacheManager.self, from: data)
             storedImageCacheManager.numberOfPersistedCachedItems = storedImageCacheManager.keyTracker.keys.count
-            print("***** RETRIEVED CACHE FROM DISK, SIZE: \(data.count/1024/1024) megabytes, KEY COUNT: \(storedImageCacheManager.numberOfPersistedCachedItems)")
+            //print("***** RETRIEVED CACHE FROM DISK, SIZE: \(data.count/1024/1024) megabytes, KEY COUNT: \(storedImageCacheManager.numberOfPersistedCachedItems)")
             
             return storedImageCacheManager
         } catch {

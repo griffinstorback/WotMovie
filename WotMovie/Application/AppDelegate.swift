@@ -18,8 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         IAPManager.shared.startObserving()
         
-        Appodeal.initialize(withApiKey: "b69e97c9e3951577965b129806e50a3026c74d5ea551fdd0", types: [.banner, .interstitial], hasConsent: false)
-        Appodeal.setTestingEnabled(true)
+        Appodeal.initialize(withApiKey: "b69e97c9e3951577965b129806e50a3026c74d5ea551fdd0", types: [.banner], hasConsent: false)
         
         return true
     }

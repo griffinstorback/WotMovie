@@ -221,6 +221,6 @@ extension GuessViewController: GuessViewDelegate {
     
     func presentBriefAlertThatUserUnlockedPersonGuessing() {
         // TODO: MAKE THE BRIEF ALERT DO HAPTIC SUCCESS
-        BriefAlertView(title: "Congratulations!\nYou've unlocked People").present(duration: 4.0)
+        BriefAlertView(title: "Congratulations!\nYou've unlocked People").present(duration: 3.5)
     }
 }

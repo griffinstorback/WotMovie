@@ -186,7 +186,7 @@ class CrewListViewController: DetailPresenterViewController {
 extension CrewListViewController: CrewListRowDelegate {
     func present(index: Int, section: CrewTypeSection, fromCard: UIView) {
         guard state == .itemIsRevealedOrGuessed else {
-            BriefAlertView(title: "Guess or reveal first").present()
+            BriefAlertView(title: "Guess or Reveal first").present()
             return
         }
         

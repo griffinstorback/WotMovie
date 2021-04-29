@@ -11,6 +11,7 @@ protocol SettingsViewDelegate: NSObjectProtocol {
     func reloadData()
     func reloadSwitchesState()
     func presentDetailViewController(_ vc: UIViewController)
+    func presentBriefAlert(title: String)
 }
 
 class SettingsViewController: UIViewController {
@@ -203,5 +204,9 @@ extension SettingsViewController: SettingsViewDelegate {
     
     func presentDetailViewController(_ vc: UIViewController) {
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func presentBriefAlert(title: String) {
+        BriefAlertView(title: title).present()
     }
 }

@@ -22,9 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
         
         window?.tintColor = UIColor(named: "AccentColor") ?? Constants.Colors.defaultBlue
-        
-        // TODO: Check SettingsManager - if user hasn't seen intro pages, show intro pages view (swipe through) instead of RootTabView
-        
+                
         window?.rootViewController = RootTabViewController()
         
         // keep reference to the scene delegate in settings manager, so it can change user interface style.

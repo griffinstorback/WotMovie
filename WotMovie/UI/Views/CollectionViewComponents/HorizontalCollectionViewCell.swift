@@ -37,9 +37,7 @@ class HorizontalCollectionViewCell: ShrinkOnTouchCollectionViewCell {
         subtitleLabel.textAlignment = .center
         subtitleLabel.textColor = .secondaryLabel
         
-        let emptySpacingView = UIView()
-        emptySpacingView.backgroundColor = .clear
-        labelStackView = UIStackView(arrangedSubviews: [nameLabel, subtitleLabel, emptySpacingView])
+        labelStackView = UIStackView()
         labelStackView.axis = .vertical
         
         // for testing multiple line support of labels.
@@ -59,6 +57,13 @@ class HorizontalCollectionViewCell: ShrinkOnTouchCollectionViewCell {
         
         addSubview(labelStackView)
         labelStackView.anchor(top: imageView.bottomAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
+        
+        labelStackView.addArrangedSubview(nameLabel)
+        labelStackView.addArrangedSubview(subtitleLabel)
+        
+        let emptySpacingView = UIView()
+        emptySpacingView.backgroundColor = .clear
+        labelStackView.addArrangedSubview(emptySpacingView)
         
         /*addSubview(nameLabel)
         nameLabel.anchor(top: imageView.bottomAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor)

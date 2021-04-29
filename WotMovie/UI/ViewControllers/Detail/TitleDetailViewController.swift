@@ -212,7 +212,6 @@ extension TitleDetailViewController: CrewListViewDelegate {
 
 extension TitleDetailViewController: GuessDetailViewDelegate {
     func displayErrorLoadingCredits() {
-        print("** error loading detail view")
         displayErrorInLoadingIndicatorOrErrorView()
     }
     
@@ -236,9 +235,7 @@ extension TitleDetailViewController: GuessDetailViewDelegate {
         castCollectionView.reloadData()
         crewListViewController.reloadData()
         updateItemOnEnterGuessView() // this is defined in parent class GuessDetailVC
-        
-        print("*** RELOADING DATA in TitleDetailVC: item: \(guessDetailViewPresenter.item)")
-        
+                
         // don't set state if it was presented from a non guess grid (i.e. Watching or Favorites)
         if state == .revealedWithNoNextButton || state == .correctWithNoNextButton {
             return
