@@ -121,7 +121,7 @@ class AboutViewController: UIViewController {
         if MFMailComposeViewController.canSendMail() {
             let mail = MFMailComposeViewController()
             mail.mailComposeDelegate = self
-            mail.setToRecipients(["wotmovie_app@gmail.com"])
+            mail.setToRecipients(["wotmovieapp@gmail.com"])
             
             present(mail, animated: true)
         }

@@ -23,6 +23,8 @@ class DetailViewController: UIViewController {
     let scrollView: ButtonScrollView
     
     let statusBarCoverView: UIView
+    var statusBarCoverBottomConstraint: NSLayoutConstraint? // set this to inactive when ad displaying
+    
     var topBannerAdView: UIView
     var displayingTopBanner: Bool = false
     
@@ -130,6 +132,8 @@ class DetailViewController: UIViewController {
             // add spacing to top of scrollview content, so that banner doesnt overlay the checkmark/title
             spacingFromTop.isHidden = false
             spacingFromTopHeightConstraint?.constant = bannerHeight
+            
+            statusBarCoverBottomConstraint?.isActive = false
         }
     }
     
@@ -141,6 +145,8 @@ class DetailViewController: UIViewController {
         // remove the banner, and hide the extra space in scrollview content
         topBannerAdView.removeFromSuperview()
         spacingFromTop.isHidden = true
+        
+        statusBarCoverBottomConstraint?.isActive = true
     }
     
     private func setupViews() {
@@ -204,8 +210,8 @@ class DetailViewController: UIViewController {
         // add the status bar cover view, which will contain the banner ad
         scrollView.addSubview(statusBarCoverView)
         statusBarCoverView.anchor(top: scrollView.topAnchor, leading: scrollView.leadingAnchor, bottom: nil, trailing: scrollView.trailingAnchor)
-        let statusBarCoverBottomConstraint = statusBarCoverView.bottomAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.topAnchor)
-        statusBarCoverBottomConstraint.isActive = true
+        statusBarCoverBottomConstraint = statusBarCoverView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor)
+        statusBarCoverBottomConstraint?.isActive = true
         
         // add close button to top right corner
         scrollView.addSubview(closeButton)

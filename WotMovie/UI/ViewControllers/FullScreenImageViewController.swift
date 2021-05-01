@@ -33,18 +33,23 @@ class FullScreenImageViewController: UIViewController {
         setupViews()
         layoutViews()
         
+        loadPosterImageFromPresenter()
+    }
+    
+    private func loadPosterImageFromPresenter() {
         fullScreenImagePresenter.loadPosterImage { image in
             if let image = image {
                 self.loadingIndicatorOrErrorView.state = .loaded
                 self.imageView.image = image
             } else {
                 self.loadingIndicatorOrErrorView.state = .error
-                print("ERROR receiving image from FullScreenImagePresenter")
             }
         }
     }
     
     private func setupViews() {
+        fullScreenImagePresenter.setViewDelegate(self)
+        
         scrollView.backgroundColor = UIColor.black.withAlphaComponent(0.2)
         view.giveBlurredBackground(style: .systemMaterial)
         scrollView.delegate = self
@@ -59,6 +64,12 @@ class FullScreenImageViewController: UIViewController {
         closeButton.imageView?.contentMode = .scaleAspectFit
         closeButton.tintColor = .systemGray
         closeButton.addTarget(self, action: #selector(closeButtonPressed), for: .touchUpInside)
+        
+        loadingIndicatorOrErrorView.setDelegate(self)
+        
+        // close whenever tapped. this doesnt affect panning, or two finger zooming.
+        let scrollViewTap = UITapGestureRecognizer(target: self, action: #selector(closeButtonPressed))
+        scrollView.addGestureRecognizer(scrollViewTap)
     }
     
     private func layoutViews() {
@@ -70,6 +81,10 @@ class FullScreenImageViewController: UIViewController {
         imageView.heightAnchor.constraint(lessThanOrEqualTo: scrollView.heightAnchor).isActive = true
         imageView.widthAnchor.constraint(lessThanOrEqualTo: scrollView.widthAnchor).isActive = true
         imageView.anchorToCenter(yAnchor: scrollView.centerYAnchor, xAnchor: scrollView.centerXAnchor)
+        
+        view.addSubview(loadingIndicatorOrErrorView)
+        loadingIndicatorOrErrorView.anchorToCenter(yAnchor: view.centerYAnchor, xAnchor: nil)
+        loadingIndicatorOrErrorView.anchor(top: nil, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20))
         
         view.addSubview(closeButton)
         closeButton.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: nil, bottom: nil, trailing: view.safeAreaLayoutGuide.trailingAnchor, size: CGSize(width: 60, height: 60))
@@ -90,8 +105,15 @@ extension FullScreenImageViewController: UIScrollViewDelegate {
     }
 }
 
+extension FullScreenImageViewController: LoadingIndicatorOrErrorViewDelegate {
+    func retryButtonPressed() {
+        loadingIndicatorOrErrorView.state = .loading
+        loadPosterImageFromPresenter()
+    }
+}
+
 extension FullScreenImageViewController: FullScreenImageViewDelegate {
     func reloadData() {
-        // reload imageview image
+        // not used right now - getting image involves passing a closure to Presenter's loadImage function
     }
 }

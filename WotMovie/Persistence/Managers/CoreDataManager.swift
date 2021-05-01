@@ -1816,7 +1816,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
         }
     }
     
-    func deleteAllDataFromAllEntities() {
+    /*func deleteAllDataFromAllEntities() {
         deleteAllData("Movie")
         deleteAllData("TVShow")
         deleteAllData("Person")
@@ -1843,5 +1843,5 @@ final class CoreDataManager: CoreDataManagerProtocol {
         
         deleteAllData("MovieGenre")
         deleteAllData("TVShowGenre")
-    }
+    }*/
 }

@@ -57,7 +57,7 @@ class LoadingIndicatorOrErrorView: UIView {
     
     private func setupViews() {
         loadingIndicator.hidesWhenStopped = true
-        errorText.text = "Error loading credits. Check your network connection and try again."
+        errorText.text = "Error loading. Check your network connection."
         errorText.textAlignment = .center
         errorText.textColor = .secondaryLabel
         errorText.font = UIFont.systemFont(ofSize: 16, weight: .medium)

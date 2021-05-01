@@ -365,5 +365,7 @@ extension PersonDetailViewController: PosterImageViewTapDelegate {
 extension PersonDetailViewController: LoadingIndicatorOrErrorViewDelegate {
     func retryButtonPressed() {
         personDetailViewPresenter.loadCredits()
+        
+        personDetailViewPresenter.loadPosterImage(completion: personOverviewView.setPosterImage)
     }
 }

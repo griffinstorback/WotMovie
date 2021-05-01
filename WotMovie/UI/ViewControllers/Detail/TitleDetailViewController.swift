@@ -278,5 +278,8 @@ extension TitleDetailViewController: PosterImageViewTapDelegate {
 extension TitleDetailViewController: LoadingIndicatorOrErrorViewDelegate {
     func retryButtonPressed() {
         titleDetailViewPresenter.loadCredits()
+        
+        titleDetailViewPresenter.loadPosterImage(completion: detailOverviewView.setPosterImage)
+        titleDetailViewPresenter.getGenres(completion: detailOverviewView.setGenreList)
     }
 }

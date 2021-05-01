@@ -55,7 +55,7 @@ class HorizontalCollectionViewCell: ShrinkOnTouchCollectionViewCell {
         addSubview(imageView)
         imageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor, size: CGSize(width: 0, height: HorizontalCollectionViewCell.cellHeight))
         
-        addSubview(labelStackView)
+        /*addSubview(labelStackView)
         labelStackView.anchor(top: imageView.bottomAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
         
         labelStackView.addArrangedSubview(nameLabel)
@@ -63,12 +63,12 @@ class HorizontalCollectionViewCell: ShrinkOnTouchCollectionViewCell {
         
         let emptySpacingView = UIView()
         emptySpacingView.backgroundColor = .clear
-        labelStackView.addArrangedSubview(emptySpacingView)
+        labelStackView.addArrangedSubview(emptySpacingView)*/
         
-        /*addSubview(nameLabel)
+        addSubview(nameLabel)
         nameLabel.anchor(top: imageView.bottomAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor)
         addSubview(subtitleLabel)
-        subtitleLabel.anchor(top: nameLabel.bottomAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor)*/
+        subtitleLabel.anchor(top: nameLabel.bottomAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor)
         
         // bottom constraint is less than or equal to so that label text appears at top (instead of being centered)
         //subtitleLabel.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -5).isActive = true
